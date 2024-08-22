@@ -39,5 +39,5 @@ func (b *tokenBuilder) Consume(r rune) {
 }
 
 func (b *tokenBuilder) Build() tuple.Of2[Token, []rune] {
-	return tuple.New2(newToken(string(b.buffer), automatonNameToTokenType(b.atm.Name())), b.residue)
+	return tuple.New2(NewToken(string(b.buffer), automatonNameToTokenType(b.atm.Name())), b.residue)
 }

@@ -11,11 +11,15 @@ type Token struct {
 	tokenType TokenType
 }
 
-func newToken(value string, tokenType TokenType) Token {
+func NewToken(value string, tokenType TokenType) Token {
 	return Token{
 		value:     value,
 		tokenType: tokenType,
 	}
+}
+
+func (t Token) Value() string {
+	return t.value
 }
 
 func (t Token) String() string {
@@ -56,4 +60,12 @@ func automatonNameToTokenType(name automaton.Name) TokenType {
 		return Symbol
 	}
 	return Unknown
+}
+
+func IsLineBreak(t Token) bool {
+	return t.tokenType == LineBreak
+}
+
+func IsIdentifier(t Token) bool {
+	return t.tokenType == Identifier
 }
