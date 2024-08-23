@@ -7,5 +7,5 @@ import (
 )
 
 func NewParser() func(s []tokenizer.Token) []tuple.Of2[syntaxtree.File, []tokenizer.Token] {
-	return fileParser
+	return file
 }

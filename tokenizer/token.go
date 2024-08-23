@@ -69,3 +69,15 @@ func IsLineBreak(t Token) bool {
 func IsIdentifier(t Token) bool {
 	return t.tokenType == Identifier
 }
+
+func IsSymbol(t Token) bool {
+	return t.tokenType == Symbol
+}
+
+func IsString(t Token) bool {
+	return t.tokenType == String
+}
+
+func IsNumber(t Token) bool {
+	return t.tokenType == Number
+}

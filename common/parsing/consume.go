@@ -1,8 +1,22 @@
 package parsing
 
 import (
+	"phi-lang/common/rslt"
 	"phi-lang/common/tuple"
 )
+
+func ConsumeOne[S, R any](f func(S) rslt.Of[R]) func([]S) []tuple.Of2[R, []S] {
+	return func(s []S) []tuple.Of2[R, []S] {
+		if len(s) <= 0 {
+			return nil
+		}
+		e := f(s[0])
+		if e.IsOk() {
+			return []tuple.Of2[R, []S]{tuple.New2(e.Value(), s[1:])}
+		}
+		return nil
+	}
+}
 
 func ConsumeIf[S any](f func(S) bool) func([]S) []tuple.Of2[S, []S] {
 	return func(s []S) []tuple.Of2[S, []S] {
