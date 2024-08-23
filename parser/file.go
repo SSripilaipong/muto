@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"phi-lang/common/parsing"
+	"phi-lang/common/tuple"
 	st "phi-lang/parser/syntaxtree"
 	"phi-lang/tokenizer"
 )
@@ -14,17 +15,17 @@ var statementsParser = parsing.GreedyRepeat(parsing.DrainTrailing(tokenizer.IsLi
 
 var statementParser = parsing.Map(st.RuleToStatement, ruleWithLineBreakParser)
 
-var ruleWithLineBreakParser = parsing.Sequence2(mergeRuleWithLineBreak, ruleParser, lineBreak)
+var ruleWithLineBreakParser = parsing.Map(mergeRuleWithLineBreak, parsing.Sequence2(ruleParser, lineBreak))
 
-func mergeRuleWithLineBreak(a st.Rule, _ tokenizer.Token) st.Rule {
+var mergeRuleWithLineBreak = tuple.Fn2(func(a st.Rule, _ tokenizer.Token) st.Rule {
 	return a
-}
+})
 
-var ruleParser = parsing.Sequence3(mergeRule, rulePatternParser, equalSign, ruleResultParser)
+var ruleParser = parsing.Map(mergeRule, parsing.Sequence3(rulePatternParser, equalSign, ruleResultParser))
 
-func mergeRule(p st.RulePattern, _ tokenizer.Token, r st.RuleResult) st.Rule {
+var mergeRule = tuple.Fn3(func(p st.RulePattern, _ tokenizer.Token, r st.RuleResult) st.Rule {
 	return st.NewRule(p, r)
-}
+})
 
 var rulePatternParser = parsing.Map(mergeRulePattern, parsing.ConsumeIf(tokenizer.IsIdentifier))
 
