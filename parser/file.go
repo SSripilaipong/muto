@@ -11,7 +11,7 @@ import (
 
 var fileParser = parsing.Map(st.NewFile, parsing.DrainLeading(tokenizer.IsLineBreak, statementsParser))
 
-var statementsParser = parsing.GreedyRepeat(parsing.DrainTrailing(tokenizer.IsLineBreak, statementParser))
+var statementsParser = parsing.OptionalGreedyRepeat(parsing.DrainTrailing(tokenizer.IsLineBreak, statementParser))
 
 var statementParser = parsing.Map(st.RuleToStatement, ruleWithLineBreakParser)
 
