@@ -1,11 +1,16 @@
 package parser
 
 import (
+	"strings"
+
 	"phi-lang/common/tuple"
-	"phi-lang/parser/syntaxtree"
-	"phi-lang/tokenizer"
+	st "phi-lang/parser/syntaxtree"
+	"phi-lang/parser/tokenizer"
 )
 
-func NewParser() func(s []tokenizer.Token) []tuple.Of2[syntaxtree.File, []tokenizer.Token] {
-	return file
+var ParseToken = file
+
+func ParseString(source string) []tuple.Of2[st.File, []tokenizer.Token] {
+	tokens := TokensWithoutSpace(tokenizer.Tokenize(strings.NewReader(source)))
+	return ParseToken(tokens)
 }

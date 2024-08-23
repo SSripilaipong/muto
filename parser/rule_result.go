@@ -3,7 +3,7 @@ package parser
 import (
 	ps "phi-lang/common/parsing"
 	st "phi-lang/parser/syntaxtree"
-	"phi-lang/tokenizer"
+	"phi-lang/parser/tokenizer"
 )
 
 var ruleResult = ps.Or(

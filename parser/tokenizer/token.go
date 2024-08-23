@@ -3,7 +3,7 @@ package tokenizer
 import (
 	"fmt"
 
-	"phi-lang/tokenizer/automaton"
+	"phi-lang/parser/tokenizer/automaton"
 )
 
 type Token struct {
@@ -60,6 +60,10 @@ func automatonNameToTokenType(name automaton.Name) TokenType {
 		return Symbol
 	}
 	return Unknown
+}
+
+func IsSpace(t Token) bool {
+	return t.tokenType == Space
 }
 
 func IsLineBreak(t Token) bool {

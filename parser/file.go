@@ -4,7 +4,7 @@ import (
 	ps "phi-lang/common/parsing"
 	"phi-lang/common/tuple"
 	st "phi-lang/parser/syntaxtree"
-	"phi-lang/tokenizer"
+	"phi-lang/parser/tokenizer"
 )
 
 var file = ps.Map(st.NewFile, ignoreLeadingLineBreak(statements))

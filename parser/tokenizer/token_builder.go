@@ -2,18 +2,18 @@ package tokenizer
 
 import (
 	"phi-lang/common/tuple"
-	"phi-lang/tokenizer/automaton"
+	automaton2 "phi-lang/parser/tokenizer/automaton"
 )
 
 type tokenBuilder struct {
-	atm     automaton.Abstract
+	atm     automaton2.Abstract
 	buffer  []rune
 	residue []rune
 }
 
 func newTokenBuilder() *tokenBuilder {
 	return &tokenBuilder{
-		atm:     automaton.New(),
+		atm:     automaton2.New(),
 		buffer:  nil,
 		residue: nil,
 	}

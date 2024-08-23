@@ -6,7 +6,7 @@ import (
 
 	ps "phi-lang/common/parsing"
 	"phi-lang/common/tuple"
-	"phi-lang/tokenizer"
+	"phi-lang/parser/tokenizer"
 )
 
 func isFirstLetterCapital(s string) bool {

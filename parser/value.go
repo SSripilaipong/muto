@@ -2,7 +2,7 @@ package parser
 
 import (
 	ps "phi-lang/common/parsing"
-	"phi-lang/tokenizer"
+	"phi-lang/parser/tokenizer"
 )
 
 var string_ = ps.ConsumeIf(tokenizer.IsString)

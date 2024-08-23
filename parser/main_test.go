@@ -7,11 +7,10 @@ import (
 
 	"phi-lang/common/tuple"
 	st "phi-lang/parser/syntaxtree"
-	tk "phi-lang/tokenizer"
+	tk "phi-lang/parser/tokenizer"
 )
 
-func TestParser(t *testing.T) {
-	parser := NewParser()
+func TestParseToken(t *testing.T) {
 	tokens := []tk.Token{
 		tk.NewToken("hello", tk.Identifier),
 		tk.NewToken("X", tk.Identifier),
@@ -34,6 +33,17 @@ func TestParser(t *testing.T) {
 	})
 	assert.Equal(t,
 		[]tuple.Of2[st.File, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
-		parser(tokens),
+		ParseToken(tokens),
+	)
+}
+
+func TestParseString(t *testing.T) {
+	s := `main A = + 1 "abc"`
+	expectedParsedTree := st.NewFile([]st.Statement{
+		st.NewRule(st.NewRulePattern("main", []st.RuleParamPattern{st.NewVariable("A")}), st.NewRuleResultObject("+", []st.ObjectParam{st.NewNumber("1"), st.NewString("abc")})),
+	})
+	assert.Equal(t,
+		[]tuple.Of2[st.File, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
+		ParseString(s),
 	)
 }
