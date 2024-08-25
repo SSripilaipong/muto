@@ -3,8 +3,8 @@ package parser
 import (
 	ps "phi-lang/common/parsing"
 	"phi-lang/common/tuple"
-	st "phi-lang/parser/syntaxtree"
 	"phi-lang/parser/tokenizer"
+	st "phi-lang/syntaxtree"
 )
 
 var rulePattern = ps.Map(mergeRulePattern, ps.Sequence2(identifier, ps.OptionalGreedyRepeat(ruleParamPattern)))

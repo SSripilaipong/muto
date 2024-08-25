@@ -2,8 +2,8 @@ package parser
 
 import (
 	ps "phi-lang/common/parsing"
-	st "phi-lang/parser/syntaxtree"
 	"phi-lang/parser/tokenizer"
+	"phi-lang/syntaxtree"
 )
 
 var ruleResult = ps.Or(
@@ -17,15 +17,15 @@ var valueRuleResult = ps.Or(
 	ps.Map(numberToRuleResult, number),
 )
 
-func numberToRuleResult(x tokenizer.Token) st.RuleResult {
-	return st.NewNumber(x.Value())
+func numberToRuleResult(x tokenizer.Token) syntaxtree.RuleResult {
+	return syntaxtree.NewNumber(x.Value())
 }
 
-func stringToRuleResult(x tokenizer.Token) st.RuleResult {
+func stringToRuleResult(x tokenizer.Token) syntaxtree.RuleResult {
 	s := x.Value()
-	return st.NewString(s[1 : len(s)-1])
+	return syntaxtree.NewString(s[1 : len(s)-1])
 }
 
-func variableToRuleResult(x tokenizer.Token) st.RuleResult {
-	return st.NewVariable(x.Value())
+func variableToRuleResult(x tokenizer.Token) syntaxtree.RuleResult {
+	return syntaxtree.NewVariable(x.Value())
 }

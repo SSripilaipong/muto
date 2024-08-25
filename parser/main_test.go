@@ -6,8 +6,8 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"phi-lang/common/tuple"
-	st "phi-lang/parser/syntaxtree"
 	tk "phi-lang/parser/tokenizer"
+	"phi-lang/syntaxtree"
 )
 
 func TestParseToken(t *testing.T) {
@@ -27,23 +27,23 @@ func TestParseToken(t *testing.T) {
 		tk.NewToken(`123`, tk.Number),
 		tk.NewToken("X", tk.Identifier),
 	}
-	expectedParsedTree := st.NewFile([]st.Statement{
-		st.NewRule(st.NewRulePattern("hello", []st.RuleParamPattern{st.NewVariable("X"), st.NewVariable("Y"), st.NewVariable("Z")}), st.NewVariable("Y")),
-		st.NewRule(st.NewRulePattern("main", []st.RuleParamPattern{st.NewVariable("X")}), st.NewRuleResultObject("hello", []st.ObjectParam{st.NewString("world"), st.NewNumber("123"), st.NewVariable("X")})),
-	})
+	expectedParsedTree := syntaxtree.NewPackage([]syntaxtree.File{syntaxtree.NewFile([]syntaxtree.Statement{
+		syntaxtree.NewRule(syntaxtree.NewRulePattern("hello", []syntaxtree.RuleParamPattern{syntaxtree.NewVariable("X"), syntaxtree.NewVariable("Y"), syntaxtree.NewVariable("Z")}), syntaxtree.NewVariable("Y")),
+		syntaxtree.NewRule(syntaxtree.NewRulePattern("main", []syntaxtree.RuleParamPattern{syntaxtree.NewVariable("X")}), syntaxtree.NewRuleResultObject("hello", []syntaxtree.ObjectParam{syntaxtree.NewString("world"), syntaxtree.NewNumber("123"), syntaxtree.NewVariable("X")})),
+	})})
 	assert.Equal(t,
-		[]tuple.Of2[st.File, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
+		[]tuple.Of2[syntaxtree.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
 		ParseToken(tokens),
 	)
 }
 
 func TestParseString(t *testing.T) {
 	s := `main A = + 1 "abc"`
-	expectedParsedTree := st.NewFile([]st.Statement{
-		st.NewRule(st.NewRulePattern("main", []st.RuleParamPattern{st.NewVariable("A")}), st.NewRuleResultObject("+", []st.ObjectParam{st.NewNumber("1"), st.NewString("abc")})),
-	})
+	expectedParsedTree := syntaxtree.NewPackage([]syntaxtree.File{syntaxtree.NewFile([]syntaxtree.Statement{
+		syntaxtree.NewRule(syntaxtree.NewRulePattern("main", []syntaxtree.RuleParamPattern{syntaxtree.NewVariable("A")}), syntaxtree.NewRuleResultObject("+", []syntaxtree.ObjectParam{syntaxtree.NewNumber("1"), syntaxtree.NewString("abc")})),
+	})})
 	assert.Equal(t,
-		[]tuple.Of2[st.File, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
+		[]tuple.Of2[syntaxtree.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
 		ParseString(s),
 	)
 }

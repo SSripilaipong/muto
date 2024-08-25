@@ -8,4 +8,6 @@ func NewFile(statements []Statement) File {
 	return File{statements: statements}
 }
 
-var _ Node = File{}
+func (f File) Statements() []Statement {
+	return f.statements
+}
