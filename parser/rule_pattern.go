@@ -11,6 +11,7 @@ var rulePattern = ps.Map(mergeRulePattern, ps.Sequence2(identifier, ps.OptionalG
 
 var ruleParamPattern = ps.Or(
 	ps.Map(variableToRuleParamPattern, variable),
+	ps.Map(stringToRuleParamPattern, string_),
 )
 
 var mergeRulePattern = tuple.Fn2(func(name tokenizer.Token, params []st.RuleParamPattern) st.RulePattern {
@@ -19,4 +20,8 @@ var mergeRulePattern = tuple.Fn2(func(name tokenizer.Token, params []st.RulePara
 
 func variableToRuleParamPattern(x tokenizer.Token) st.RuleParamPattern {
 	return st.NewVariable(x.Value())
+}
+
+func stringToRuleParamPattern(x tokenizer.Token) st.RuleParamPattern {
+	return st.NewString(x.Value())
 }

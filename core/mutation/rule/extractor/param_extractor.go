@@ -14,6 +14,8 @@ var newParamExtractors = fn.Compose(slc.Map(newParamExtractor), st.ParamsOfRuleP
 func newParamExtractor(p st.RuleParamPattern) func(base.Node) optional.Of[*data.Mutation] {
 	if st.IsRuleParamPatternVariable(p) {
 		return newVariableParamExtractor(st.UnsafeRuleParamPatternToVariable(p))
+	} else if st.IsRuleParamPatternString(p) {
+		return newStringParamExtractor(st.UnsafeRuleParamPatternToString(p))
 	}
 	panic("not implemented")
 }
@@ -21,5 +23,14 @@ func newParamExtractor(p st.RuleParamPattern) func(base.Node) optional.Of[*data.
 func newVariableParamExtractor(v st.Variable) func(base.Node) optional.Of[*data.Mutation] {
 	return func(x base.Node) optional.Of[*data.Mutation] {
 		return optional.Value(data.NewMutationWithVariableMapping(data.NewVariableMapping(v.Name(), x)))
+	}
+}
+
+func newStringParamExtractor(v st.String) func(base.Node) optional.Of[*data.Mutation] {
+	return func(x base.Node) optional.Of[*data.Mutation] {
+		if base.IsStringNode(x) && base.UnsafeNodeToString(x).Value() == v.StringValue() {
+			return optional.Value(data.NewMutation())
+		}
+		return optional.Empty[*data.Mutation]()
 	}
 }

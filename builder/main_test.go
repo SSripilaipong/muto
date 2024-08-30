@@ -42,6 +42,15 @@ main = hello "world"
 		program := BuildFromString(`main = ++ "hello" " world"`).Value()
 		assert.Equal(t, base.NewString("hello world"), mutateN(3, program))
 	})
+
+	t.Run("should match rule by string value", func(t *testing.T) {
+		program := BuildFromString(`
+hello "a" = 1
+hello "b" = 2
+main = hello "b"
+`).Value()
+		assert.Equal(t, base.NewNumber(datatype.NewNumber("2")), mutateN(2, program))
+	})
 }
 
 func mutateN(n int, program Program) base.Node {
