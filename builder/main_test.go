@@ -22,7 +22,14 @@ func TestBuildFromString(t *testing.T) {
 
 	t.Run("should resolve to object", func(t *testing.T) {
 		program := BuildFromString(`main = hello "world"`).Value()
-
 		assert.Equal(t, base.NewObject(base.NewNamedClass("hello"), []base.Node{base.NewString("world")}), program.Mutate(program.InitialObject()).Value())
+	})
+
+	t.Run("should resolve variable", func(t *testing.T) {
+		program := BuildFromString(`
+hello X = X
+main = hello "world"
+`).Value()
+		assert.Equal(t, base.NewString("world"), program.Mutate(program.Mutate(program.InitialObject()).Value()).Value())
 	})
 }

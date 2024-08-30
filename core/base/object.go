@@ -28,3 +28,7 @@ func NewObject(class Class, children []Node) Object {
 func ObjectToNode(x Object) Node {
 	return x
 }
+
+func UnsafeNodeToObject(x Node) Object {
+	return x.(Object)
+}

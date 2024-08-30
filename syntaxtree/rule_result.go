@@ -46,6 +46,10 @@ func IsRuleResultTypeObject(r RuleResult) bool {
 	return r.RuleResultType() == RuleResultTypeObject
 }
 
+func IsRuleResultTypeVariable(r RuleResult) bool {
+	return r.RuleResultType() == RuleResultTypeVariable
+}
+
 type ObjectParam interface {
 	RuleResultType() RuleResultType
 }

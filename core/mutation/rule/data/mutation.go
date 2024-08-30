@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"maps"
 
 	"phi-lang/common/optional"
@@ -11,25 +12,37 @@ type Mutation struct {
 	variableMapping map[string]VariableMapping
 }
 
-func (m Mutation) Merge(n Mutation) optional.Of[Mutation] {
+func NewMutation() *Mutation {
+	return &Mutation{
+		variableMapping: make(map[string]VariableMapping),
+	}
+}
+
+func (m *Mutation) Merge(n *Mutation) optional.Of[*Mutation] {
 	return m.mergeVariableMappings(n.variableMapping)
 }
 
-func (m Mutation) mergeVariableMappings(mapping map[string]VariableMapping) optional.Of[Mutation] {
+func (m *Mutation) VariableValue(name string) optional.Of[base.Node] {
+	variable, exists := m.variableMapping[name]
+	return optional.New(variable.node, exists)
+}
+
+func (m *Mutation) mergeVariableMappings(mapping map[string]VariableMapping) optional.Of[*Mutation] {
+	fmt.Printf("%#v\n", m.variableMapping)
 	newMapping := maps.Clone(m.variableMapping)
 	for k, x := range mapping {
 		if y, ok := m.variableMapping[k]; !ok {
 			newMapping[k] = x
 		} else if x != y {
-			return optional.Empty[Mutation]()
+			return optional.Empty[*Mutation]()
 		}
 	}
 	m.variableMapping = newMapping
 	return optional.Value(m)
 }
 
-func NewMutationWithVariableMapping(mapping VariableMapping) Mutation {
-	m := Mutation{}.mergeVariableMappings(map[string]VariableMapping{mapping.name: mapping})
+func NewMutationWithVariableMapping(mapping VariableMapping) *Mutation {
+	m := NewMutation().mergeVariableMappings(map[string]VariableMapping{mapping.name: mapping})
 	if m.IsEmpty() {
 		panic("wtf")
 	}

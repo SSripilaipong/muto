@@ -20,3 +20,6 @@ func (p RulePattern) Params() []RuleParamPattern {
 func NewRulePattern(objectName string, params []RuleParamPattern) RulePattern {
 	return RulePattern{objectName: objectName, params: params}
 }
+func ParamsOfRulePattern(p RulePattern) []RuleParamPattern {
+	return p.Params()
+}

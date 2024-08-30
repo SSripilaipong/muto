@@ -24,3 +24,7 @@ func (o Of[T]) IsEmpty() bool {
 func (o Of[T]) Return() (T, bool) {
 	return o.x, !o.isEmpty
 }
+
+func New[T any](node T, exists bool) Of[T] {
+	return Of[T]{x: node, isEmpty: !exists}
+}
