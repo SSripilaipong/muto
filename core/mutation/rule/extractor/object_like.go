@@ -7,4 +7,9 @@ import (
 type ObjectLike interface {
 	ClassName() string
 	Children() []base.Node
+	NodeType() base.NodeType
+}
+
+func UnsafeNodeToObjectLike(x base.Node) ObjectLike {
+	return x.(ObjectLike)
 }

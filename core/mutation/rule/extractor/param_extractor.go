@@ -9,7 +9,9 @@ import (
 	st "phi-lang/syntaxtree"
 )
 
-var newParamExtractors = fn.Compose(slc.Map(newParamExtractor), st.ParamsOfRulePattern)
+func newParamExtractors(x st.RulePattern) []func(base.Node) optional.Of[*data.Mutation] {
+	return fn.Compose(slc.Map(newParamExtractor), st.ParamsOfRulePattern)(x)
+}
 
 func newParamExtractor(p st.RuleParamPattern) func(base.Node) optional.Of[*data.Mutation] {
 	if st.IsRuleParamPatternVariable(p) {
@@ -18,6 +20,8 @@ func newParamExtractor(p st.RuleParamPattern) func(base.Node) optional.Of[*data.
 		return newStringParamExtractor(st.UnsafeRuleParamPatternToString(p))
 	} else if st.IsRuleParamPatternNumber(p) {
 		return newNumberParamExtractor(st.UnsafeRuleParamPatternToNumber(p))
+	} else if st.IsRuleParamPatternNestedRulePattern(p) {
+		return newNestedRuleExtractor(st.UnsafeRuleParamPatternToRulePattern(p))
 	}
 	panic("not implemented")
 }
@@ -43,6 +47,16 @@ func newNumberParamExtractor(v st.Number) func(base.Node) optional.Of[*data.Muta
 	return func(x base.Node) optional.Of[*data.Mutation] {
 		if base.IsNumberNode(x) && base.UnsafeNodeToNumber(x).Value() == value {
 			return optional.Value(data.NewMutation())
+		}
+		return optional.Empty[*data.Mutation]()
+	}
+}
+
+func newNestedRuleExtractor(p st.RulePattern) func(base.Node) optional.Of[*data.Mutation] {
+	extract := New(p)
+	return func(x base.Node) optional.Of[*data.Mutation] {
+		if base.IsObjectNode(x) {
+			return extract(UnsafeNodeToObjectLike(x))
 		}
 		return optional.Empty[*data.Mutation]()
 	}
