@@ -13,9 +13,11 @@ func (p Program) InitialObject() base.Object {
 	return base.NewObject(base.NewNamedClass("main"), nil)
 }
 
-func (p Program) Mutate(node base.Node) optional.Of[base.Node] {
+func (p Program) Mutate(node base.Node) base.Node {
 	if base.IsObjectNode(node) {
-		return p.mutate(base.UnsafeNodeToObject(node))
+		if newNode := p.mutate(base.UnsafeNodeToObject(node)); !newNode.IsEmpty() {
+			return newNode.Value()
+		}
 	}
-	return optional.Value(node)
+	return node
 }

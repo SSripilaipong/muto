@@ -11,3 +11,11 @@ func NewString(value string) String {
 func (s String) NodeType() NodeType {
 	return NodeTypeString
 }
+
+func (s String) Value() string {
+	return s.value
+}
+
+func UnsafeNodeToString(n Node) String {
+	return n.(String)
+}

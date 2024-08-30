@@ -9,6 +9,10 @@ func Value[T any](x T) Of[T] {
 	return Of[T]{x: x, isEmpty: false}
 }
 
+func ValueOf[T any](x Of[T]) T {
+	return x.Value()
+}
+
 func Empty[T any]() Of[T] {
 	return Of[T]{isEmpty: true}
 }

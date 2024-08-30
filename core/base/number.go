@@ -13,3 +13,11 @@ func NewNumber(value datatype.Number) Node {
 func (n Number) NodeType() NodeType {
 	return NodeTypeNumber
 }
+
+func (n Number) Value() datatype.Number {
+	return n.value
+}
+
+func UnsafeNodeToNumber(n Node) Number {
+	return n.(Number)
+}

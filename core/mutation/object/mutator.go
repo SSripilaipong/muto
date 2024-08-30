@@ -11,6 +11,13 @@ type Mutator struct {
 	mutationRules []func(t ruleMutationExtractor.ObjectLike) optional.Of[base.Node]
 }
 
+func NewMutator(name string, mutationRules []func(t ruleMutationExtractor.ObjectLike) optional.Of[base.Node]) Mutator {
+	return Mutator{
+		name:          name,
+		mutationRules: mutationRules,
+	}
+}
+
 func (t Mutator) Mutate(obj ruleMutationExtractor.ObjectLike) optional.Of[base.Node] {
 	if t.name != obj.ClassName() {
 		return optional.Empty[base.Node]()

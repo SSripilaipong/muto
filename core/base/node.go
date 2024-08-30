@@ -20,3 +20,11 @@ func IsObjectNode(node Node) bool {
 func IsVariableNode(node Node) bool {
 	return node.NodeType() == NodeTypeVariable
 }
+
+func IsNumberNode(node Node) bool {
+	return node.NodeType() == NodeTypeNumber
+}
+
+func IsStringNode(node Node) bool {
+	return node.NodeType() == NodeTypeString
+}
