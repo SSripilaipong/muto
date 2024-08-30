@@ -9,7 +9,9 @@ import (
 func concatMutator() object.Mutator {
 	return object.NewMutator("++", []func(t base.ObjectLike) optional.Of[base.Node]{
 		concatTwo,
+		concatTwoTerminate,
 		concatOne,
+		terminate,
 	})
 }
 
@@ -20,13 +22,21 @@ func concatTwo(t base.ObjectLike) optional.Of[base.Node] {
 	}
 	n, m := children[0], children[1]
 	if !base.IsStringNode(n) || !base.IsStringNode(m) {
-		return optional.Value[base.Node](t)
+		return optional.Empty[base.Node]()
 	}
 	a, b := base.UnsafeNodeToString(n), base.UnsafeNodeToString(m)
 	c := a.Value() + b.Value()
 
 	newChildren := append([]base.Node{base.NewString(c)}, children[2:]...)
 	return optional.Value(base.ObjectToNode(base.NewObject(base.NewNamedClass("++"), newChildren)))
+}
+
+func concatTwoTerminate(t base.ObjectLike) optional.Of[base.Node] {
+	children := t.Children()
+	if len(children) < 2 {
+		return optional.Empty[base.Node]()
+	}
+	return optional.Value[base.Node](t.Terminate())
 }
 
 func concatOne(t base.ObjectLike) optional.Of[base.Node] {
@@ -36,7 +46,7 @@ func concatOne(t base.ObjectLike) optional.Of[base.Node] {
 	}
 	n := children[0]
 	if !base.IsStringNode(n) {
-		return optional.Value[base.Node](t)
+		return optional.Empty[base.Node]()
 	}
 	return optional.Value(n)
 }

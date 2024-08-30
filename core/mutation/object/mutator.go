@@ -21,8 +21,15 @@ func (t Mutator) Mutate(obj base.ObjectLike) optional.Of[base.Node] {
 	if t.name != obj.ClassName() {
 		return optional.Empty[base.Node]()
 	}
+	if obj.IsTerminated() {
+		return optional.Empty[base.Node]()
+	}
 	for _, mutate := range t.mutationRules {
 		if result := mutate(obj); !result.IsEmpty() {
+			node := result.Value()
+			if base.IsObjectNode(node) && base.UnsafeNodeToObject(node).IsTerminated() {
+				return optional.Empty[base.Node]()
+			}
 			return result
 		}
 	}
