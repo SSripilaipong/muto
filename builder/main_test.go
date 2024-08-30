@@ -65,9 +65,9 @@ main = hello 2
 	t.Run("should resolve nested object", func(t *testing.T) {
 		program := BuildFromString(`
 hello (f X Y) = X
-main = hello "abc"
+main = hello (f "abc" 123)
 `).Value()
-		assert.Equal(t, base.NewObject(base.NewNamedClass("hello"), []base.Node{base.NewString("abc")}), mutateN(2, program))
+		assert.Equal(t, base.NewString("abc"), mutateN(2, program))
 	})
 }
 
