@@ -2,15 +2,16 @@ package extractor
 
 import (
 	"phi-lang/common/optional"
+	"phi-lang/core/base"
 	"phi-lang/core/mutation/rule/data"
 	st "phi-lang/syntaxtree"
 )
 
-func New(rule st.RulePattern) func(obj ObjectLike) optional.Of[*data.Mutation] {
+func New(rule st.RulePattern) func(obj base.ObjectLike) optional.Of[*data.Mutation] {
 	signatureCheck := newSignatureChecker(rule)
 	paramExtract := newParamExtractors(rule)
 
-	return func(obj ObjectLike) optional.Of[*data.Mutation] {
+	return func(obj base.ObjectLike) optional.Of[*data.Mutation] {
 		if !signatureCheck(obj) {
 			return optional.Empty[*data.Mutation]()
 		}

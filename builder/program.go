@@ -6,10 +6,10 @@ import (
 )
 
 type Program struct {
-	mutate func(object base.Object) optional.Of[base.Node]
+	mutate func(object base.ObjectLike) optional.Of[base.Node]
 }
 
-func (p Program) InitialObject() base.Object {
+func (p Program) InitialObject() base.ObjectLike {
 	return base.NewObject(base.NewNamedClass("main"), nil)
 }
 

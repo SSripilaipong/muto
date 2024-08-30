@@ -4,17 +4,16 @@ import (
 	"phi-lang/common/optional"
 	"phi-lang/core/base"
 	"phi-lang/core/mutation/object"
-	"phi-lang/core/mutation/rule/extractor"
 )
 
 func concatMutator() object.Mutator {
-	return object.NewMutator("++", []func(t extractor.ObjectLike) optional.Of[base.Node]{
+	return object.NewMutator("++", []func(t base.ObjectLike) optional.Of[base.Node]{
 		concatTwo,
 		concatOne,
 	})
 }
 
-func concatTwo(t extractor.ObjectLike) optional.Of[base.Node] {
+func concatTwo(t base.ObjectLike) optional.Of[base.Node] {
 	children := t.Children()
 	if len(children) < 2 {
 		return optional.Empty[base.Node]()
@@ -30,7 +29,7 @@ func concatTwo(t extractor.ObjectLike) optional.Of[base.Node] {
 	return optional.Value(base.ObjectToNode(base.NewObject(base.NewNamedClass("++"), newChildren)))
 }
 
-func concatOne(t extractor.ObjectLike) optional.Of[base.Node] {
+func concatOne(t base.ObjectLike) optional.Of[base.Node] {
 	children := t.Children()
 	if len(children) < 1 {
 		return optional.Empty[base.Node]()

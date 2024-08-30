@@ -13,6 +13,11 @@ type Object struct {
 
 func (Object) NodeType() NodeType { return NodeTypeObject }
 
+func (obj Object) Terminate() ObjectLike {
+	obj.isTerminated = true
+	return obj
+}
+
 func (obj Object) IsTerminated() bool {
 	return obj.isTerminated
 }
@@ -40,11 +45,6 @@ func (obj Object) String() string {
 
 func NewObject(class Class, children []Node) Object {
 	return Object{class: class, children: children}
-}
-
-func TerminateObject(obj Object) Object {
-	obj.isTerminated = true
-	return obj
 }
 
 func ObjectToNode(x Object) Node {

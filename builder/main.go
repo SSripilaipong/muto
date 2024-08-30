@@ -26,6 +26,6 @@ func BuildFromSyntaxTree(p st.Package) rslt.Of[Program] {
 	})
 }
 
-func mutationFromFile(f st.File) func(object base.Object) optional.Of[base.Node] {
+func mutationFromFile(f st.File) func(object base.ObjectLike) optional.Of[base.Node] {
 	return mutation.NewFromStatements(f.Statements())
 }

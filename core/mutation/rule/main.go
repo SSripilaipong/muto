@@ -9,7 +9,7 @@ import (
 	st "phi-lang/syntaxtree"
 )
 
-func New(rule st.Rule) func(t extractor.ObjectLike) optional.Of[base.Node] {
+func New(rule st.Rule) func(t base.ObjectLike) optional.Of[base.Node] {
 	return mutator.New(
 		mutator.BuilderFunc(builder.New(rule.Result())),
 		mutator.ExtractorFunc(extractor.New(rule.Pattern())),
