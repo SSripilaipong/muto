@@ -1,8 +1,6 @@
 package builtin
 
 import (
-	"fmt"
-
 	"phi-lang/common/optional"
 	"phi-lang/core/base"
 	"phi-lang/core/mutation/object"
@@ -31,7 +29,6 @@ func concatTwo(t extractor.ObjectLike) optional.Of[base.Node] {
 }
 
 func concatOne(t extractor.ObjectLike) optional.Of[base.Node] {
-	fmt.Println("addOne")
 	children := t.Children()
 	if len(children) < 1 {
 		return optional.Empty[base.Node]()

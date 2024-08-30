@@ -1,5 +1,10 @@
 package base
 
+import (
+	"fmt"
+	"strings"
+)
+
 type Object struct {
 	class    Class
 	children []Node
@@ -19,6 +24,15 @@ func (obj Object) Class() Class {
 
 func (obj Object) ClassName() string {
 	return obj.Class().Name()
+}
+
+func (obj Object) String() string {
+	var children []string
+	for _, child := range obj.Children() {
+		children = append(children, fmt.Sprint(child))
+	}
+	jointChildren := strings.Join(children, " ")
+	return fmt.Sprintf(`%s %s`, obj.ClassName(), jointChildren)
 }
 
 func NewObject(class Class, children []Node) Object {

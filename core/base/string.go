@@ -1,5 +1,7 @@
 package base
 
+import "fmt"
+
 type String struct {
 	value string
 }
@@ -14,6 +16,10 @@ func (s String) NodeType() NodeType {
 
 func (s String) Value() string {
 	return s.value
+}
+
+func (s String) String() string {
+	return fmt.Sprintf("%#v", s.value)
 }
 
 func UnsafeNodeToString(n Node) String {

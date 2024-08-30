@@ -1,8 +1,6 @@
 package builtin
 
 import (
-	"fmt"
-
 	"phi-lang/common/optional"
 	"phi-lang/core/base"
 	"phi-lang/core/base/datatype"
@@ -32,7 +30,6 @@ func addTwo(t extractor.ObjectLike) optional.Of[base.Node] {
 }
 
 func addOne(t extractor.ObjectLike) optional.Of[base.Node] {
-	fmt.Println("addOne")
 	children := t.Children()
 	if len(children) < 1 {
 		return optional.Empty[base.Node]()

@@ -48,5 +48,5 @@ func mutateN(n int, program Program) base.Node {
 	if n == 0 {
 		return program.InitialObject()
 	}
-	return program.Mutate(mutateN(n-1, program))
+	return program.MutateOnce(mutateN(n-1, program))
 }

@@ -1,7 +1,6 @@
 package data
 
 import (
-	"fmt"
 	"maps"
 
 	"phi-lang/common/optional"
@@ -28,7 +27,6 @@ func (m *Mutation) VariableValue(name string) optional.Of[base.Node] {
 }
 
 func (m *Mutation) mergeVariableMappings(mapping map[string]VariableMapping) optional.Of[*Mutation] {
-	fmt.Printf("%#v\n", m.variableMapping)
 	newMapping := maps.Clone(m.variableMapping)
 	for k, x := range mapping {
 		if y, ok := m.variableMapping[k]; !ok {

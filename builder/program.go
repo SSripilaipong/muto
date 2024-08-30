@@ -13,11 +13,23 @@ func (p Program) InitialObject() base.Object {
 	return base.NewObject(base.NewNamedClass("main"), nil)
 }
 
-func (p Program) Mutate(node base.Node) base.Node {
-	if base.IsObjectNode(node) {
-		if newNode := p.mutate(base.UnsafeNodeToObject(node)); !newNode.IsEmpty() {
-			return newNode.Value()
+func (p Program) MutateUntilTerminated(node base.Node) base.Node {
+	for base.IsObjectNode(node) {
+		newNode := p.mutate(base.UnsafeNodeToObject(node))
+		if newNode.IsEmpty() {
+			break
 		}
+		node = newNode.Value()
+	}
+	return node
+}
+
+func (p Program) MutateOnce(node base.Node) base.Node {
+	if !base.IsObjectNode(node) {
+		return node
+	}
+	if newNode := p.mutate(base.UnsafeNodeToObject(node)); !newNode.IsEmpty() {
+		return newNode.Value()
 	}
 	return node
 }
