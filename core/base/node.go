@@ -2,23 +2,19 @@ package base
 
 type Node interface {
 	NodeType() NodeType
+	IsTerminated() bool
 }
 
 type NodeType string
 
 const (
-	NodeTypeString   NodeType = "STRING"
-	NodeTypeNumber   NodeType = "NUMBER"
-	NodeTypeObject   NodeType = "OBJECT"
-	NodeTypeVariable NodeType = "VARIABLE"
+	NodeTypeString NodeType = "STRING"
+	NodeTypeNumber NodeType = "NUMBER"
+	NodeTypeObject NodeType = "OBJECT"
 )
 
 func IsObjectNode(node Node) bool {
 	return node.NodeType() == NodeTypeObject
-}
-
-func IsVariableNode(node Node) bool {
-	return node.NodeType() == NodeTypeVariable
 }
 
 func IsNumberNode(node Node) bool {

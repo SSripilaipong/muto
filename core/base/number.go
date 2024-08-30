@@ -14,9 +14,9 @@ func NewNumber(value datatype.Number) Node {
 	return Number{value: value}
 }
 
-func (n Number) NodeType() NodeType {
-	return NodeTypeNumber
-}
+func (Number) NodeType() NodeType { return NodeTypeNumber }
+
+func (Number) IsTerminated() bool { return true }
 
 func (n Number) Value() datatype.Number {
 	return n.value

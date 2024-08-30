@@ -21,11 +21,13 @@ func concatTwo(t extractor.ObjectLike) optional.Of[base.Node] {
 	}
 	n, m := children[0], children[1]
 	if !base.IsStringNode(n) || !base.IsStringNode(m) {
-		return optional.Empty[base.Node]()
+		return optional.Value[base.Node](t)
 	}
 	a, b := base.UnsafeNodeToString(n), base.UnsafeNodeToString(m)
 	c := a.Value() + b.Value()
-	return optional.Value(base.ObjectToNode(base.NewObject(base.NewNamedClass("++"), []base.Node{base.NewString(c)})))
+
+	newChildren := append([]base.Node{base.NewString(c)}, children[2:]...)
+	return optional.Value(base.ObjectToNode(base.NewObject(base.NewNamedClass("++"), newChildren)))
 }
 
 func concatOne(t extractor.ObjectLike) optional.Of[base.Node] {
@@ -35,7 +37,7 @@ func concatOne(t extractor.ObjectLike) optional.Of[base.Node] {
 	}
 	n := children[0]
 	if !base.IsStringNode(n) {
-		return optional.Empty[base.Node]()
+		return optional.Value[base.Node](t)
 	}
 	return optional.Value(n)
 }

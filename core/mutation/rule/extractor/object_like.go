@@ -8,6 +8,7 @@ type ObjectLike interface {
 	ClassName() string
 	Children() []base.Node
 	NodeType() base.NodeType
+	IsTerminated() bool
 }
 
 func UnsafeNodeToObjectLike(x base.Node) ObjectLike {

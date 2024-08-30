@@ -6,12 +6,15 @@ import (
 )
 
 type Object struct {
-	class    Class
-	children []Node
+	class        Class
+	children     []Node
+	isTerminated bool
 }
 
-func (obj Object) NodeType() NodeType {
-	return NodeTypeObject
+func (Object) NodeType() NodeType { return NodeTypeObject }
+
+func (obj Object) IsTerminated() bool {
+	return obj.isTerminated
 }
 
 func (obj Object) Children() []Node {
@@ -37,6 +40,11 @@ func (obj Object) String() string {
 
 func NewObject(class Class, children []Node) Object {
 	return Object{class: class, children: children}
+}
+
+func TerminateObject(obj Object) Object {
+	obj.isTerminated = true
+	return obj
 }
 
 func ObjectToNode(x Object) Node {

@@ -22,11 +22,13 @@ func addTwo(t extractor.ObjectLike) optional.Of[base.Node] {
 	}
 	n, m := children[0], children[1]
 	if !base.IsNumberNode(n) || !base.IsNumberNode(m) {
-		return optional.Empty[base.Node]()
+		return optional.Value[base.Node](t)
 	}
 	a, b := base.UnsafeNodeToNumber(n), base.UnsafeNodeToNumber(m)
 	c := datatype.AddNumber(a.Value(), b.Value())
-	return optional.Value(base.ObjectToNode(base.NewObject(base.NewNamedClass("+"), []base.Node{base.NewNumber(c)})))
+
+	newChildren := append([]base.Node{base.NewNumber(c)}, children[2:]...)
+	return optional.Value(base.ObjectToNode(base.NewObject(base.NewNamedClass("+"), newChildren)))
 }
 
 func addOne(t extractor.ObjectLike) optional.Of[base.Node] {
@@ -36,7 +38,7 @@ func addOne(t extractor.ObjectLike) optional.Of[base.Node] {
 	}
 	n := children[0]
 	if !base.IsNumberNode(n) {
-		return optional.Empty[base.Node]()
+		return optional.Value[base.Node](t)
 	}
 	return optional.Value(n)
 }

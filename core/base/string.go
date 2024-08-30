@@ -10,9 +10,9 @@ func NewString(value string) String {
 	return String{value: value}
 }
 
-func (s String) NodeType() NodeType {
-	return NodeTypeString
-}
+func (String) NodeType() NodeType { return NodeTypeString }
+
+func (String) IsTerminated() bool { return true }
 
 func (s String) Value() string {
 	return s.value
