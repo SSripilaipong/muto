@@ -16,6 +16,8 @@ func newParamExtractor(p st.RuleParamPattern) func(base.Node) optional.Of[*data.
 		return newVariableParamExtractor(st.UnsafeRuleParamPatternToVariable(p))
 	} else if st.IsRuleParamPatternString(p) {
 		return newStringParamExtractor(st.UnsafeRuleParamPatternToString(p))
+	} else if st.IsRuleParamPatternNumber(p) {
+		return newNumberParamExtractor(st.UnsafeRuleParamPatternToNumber(p))
 	}
 	panic("not implemented")
 }
@@ -27,8 +29,19 @@ func newVariableParamExtractor(v st.Variable) func(base.Node) optional.Of[*data.
 }
 
 func newStringParamExtractor(v st.String) func(base.Node) optional.Of[*data.Mutation] {
+	value := v.StringValue()
 	return func(x base.Node) optional.Of[*data.Mutation] {
-		if base.IsStringNode(x) && base.UnsafeNodeToString(x).Value() == v.StringValue() {
+		if base.IsStringNode(x) && base.UnsafeNodeToString(x).Value() == value {
+			return optional.Value(data.NewMutation())
+		}
+		return optional.Empty[*data.Mutation]()
+	}
+}
+
+func newNumberParamExtractor(v st.Number) func(base.Node) optional.Of[*data.Mutation] {
+	value := v.NumberValue()
+	return func(x base.Node) optional.Of[*data.Mutation] {
+		if base.IsNumberNode(x) && base.UnsafeNodeToNumber(x).Value() == value {
 			return optional.Value(data.NewMutation())
 		}
 		return optional.Empty[*data.Mutation]()
