@@ -1,6 +1,18 @@
 package slc
 
-func ReduceGroup[A, T any, G comparable](merge func(A, T) A, group func(T) G) func(zero A) func(xs []T) []A {
+func Fold[A, T any](f func(A, T) A) func(zero A) func(xs []T) A {
+	return func(zero A) func(xs []T) A {
+		return func(xs []T) A {
+			y := zero
+			for _, x := range xs {
+				y = f(y, x)
+			}
+			return y
+		}
+	}
+}
+
+func FoldGroup[A, T any, G comparable](merge func(A, T) A, group func(T) G) func(zero A) func(xs []T) []A {
 	return func(zero A) func(xs []T) []A {
 		return func(xs []T) []A {
 			aggregate := make(map[G]A)

@@ -26,6 +26,14 @@ func (RuleResultObject) RuleResultType() RuleResultType {
 	return RuleResultTypeObject
 }
 
+func (obj RuleResultObject) ObjectName() string {
+	return obj.objectName
+}
+
+func (obj RuleResultObject) Params() []ObjectParam {
+	return obj.params
+}
+
 func IsRuleResultTypeString(r RuleResult) bool {
 	return r.RuleResultType() == RuleResultTypeString
 }
@@ -34,4 +42,14 @@ func IsRuleResultTypeNumber(r RuleResult) bool {
 	return r.RuleResultType() == RuleResultTypeNumber
 }
 
-type ObjectParam interface{}
+func IsRuleResultTypeObject(r RuleResult) bool {
+	return r.RuleResultType() == RuleResultTypeObject
+}
+
+type ObjectParam interface {
+	RuleResultType() RuleResultType
+}
+
+func ObjectParamToRuleResult(x ObjectParam) RuleResult {
+	return x
+}

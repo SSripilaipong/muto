@@ -24,3 +24,7 @@ func (obj Object) ClassName() string {
 func NewObject(class Class, children []Node) Object {
 	return Object{class: class, children: children}
 }
+
+func ObjectToNode(x Object) Node {
+	return x
+}

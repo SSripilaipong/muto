@@ -19,4 +19,10 @@ func TestBuildFromString(t *testing.T) {
 		program := BuildFromString(`main = 123.45`).Value()
 		assert.Equal(t, base.NewNumber(datatype.NewNumber("123.45")), program.Mutate(program.InitialObject()).Value())
 	})
+
+	t.Run("should resolve to object", func(t *testing.T) {
+		program := BuildFromString(`main = hello "world"`).Value()
+
+		assert.Equal(t, base.NewObject(base.NewNamedClass("hello"), []base.Node{base.NewString("world")}), program.Mutate(program.InitialObject()).Value())
+	})
 }
