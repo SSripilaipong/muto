@@ -1,6 +1,6 @@
 package builtin
 
-import "phi-lang/core/mutation/object"
+import "muto/core/mutation/object"
 
 func NewMutators() []object.Mutator {
 	return []object.Mutator{

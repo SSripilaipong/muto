@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/phi-lang.iml" filepath="$PROJECT_DIR$/.idea/phi-lang.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/muto.iml" filepath="$PROJECT_DIR$/.idea/muto.iml" />
     </modules>
   </component>
 </project>

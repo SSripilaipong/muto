@@ -1,8 +1,8 @@
 package object
 
 import (
-	"phi-lang/common/optional"
-	"phi-lang/core/base"
+	"muto/common/optional"
+	"muto/core/base"
 )
 
 type Mutator struct {

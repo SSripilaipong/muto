@@ -1,8 +1,8 @@
 package parsing
 
 import (
-	"phi-lang/common/rslt"
-	"phi-lang/common/tuple"
+	"muto/common/rslt"
+	"muto/common/tuple"
 )
 
 func ConsumeOne[S, R any](f func(S) rslt.Of[R]) func([]S) []tuple.Of2[R, []S] {

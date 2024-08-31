@@ -1,9 +1,9 @@
 package parser
 
 import (
-	ps "phi-lang/common/parsing"
-	"phi-lang/parser/tokenizer"
-	"phi-lang/syntaxtree"
+	ps "muto/common/parsing"
+	"muto/parser/tokenizer"
+	"muto/syntaxtree"
 )
 
 var ruleResult = ps.Or(

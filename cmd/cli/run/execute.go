@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"phi-lang/builder"
+	"muto/builder"
 )
 
 func ExecuteByFileName(fileName string) error {

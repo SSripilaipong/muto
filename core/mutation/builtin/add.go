@@ -1,10 +1,10 @@
 package builtin
 
 import (
-	"phi-lang/common/optional"
-	"phi-lang/core/base"
-	"phi-lang/core/base/datatype"
-	"phi-lang/core/mutation/object"
+	"muto/common/optional"
+	"muto/core/base"
+	"muto/core/base/datatype"
+	"muto/core/mutation/object"
 )
 
 var addMutator = object.NewMutator("+", []func(t base.ObjectLike) optional.Of[base.Node]{

@@ -1,6 +1,6 @@
 package rslt
 
-import "phi-lang/common/fn"
+import "muto/common/fn"
 
 func Fmap[A, B any](f func(A) B) func(Of[A]) Of[B] {
 	return func(x Of[A]) Of[B] {

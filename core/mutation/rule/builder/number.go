@@ -1,11 +1,11 @@
 package builder
 
 import (
-	"phi-lang/common/optional"
-	"phi-lang/core/base"
-	"phi-lang/core/base/datatype"
-	"phi-lang/core/mutation/rule/data"
-	st "phi-lang/syntaxtree"
+	"muto/common/optional"
+	"muto/core/base"
+	"muto/core/base/datatype"
+	"muto/core/mutation/rule/data"
+	st "muto/syntaxtree"
 )
 
 func buildNumber(x st.Number) func(*data.Mutation) optional.Of[base.Node] {

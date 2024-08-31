@@ -1,8 +1,8 @@
 package extractor
 
 import (
-	"phi-lang/core/base"
-	st "phi-lang/syntaxtree"
+	"muto/core/base"
+	st "muto/syntaxtree"
 )
 
 func newSignatureChecker(pattern st.RulePattern) func(base.ObjectLike) bool {

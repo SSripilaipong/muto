@@ -3,13 +3,13 @@ package builder
 import (
 	"errors"
 
-	"phi-lang/common/fn"
-	"phi-lang/common/optional"
-	"phi-lang/common/rslt"
-	"phi-lang/core/base"
-	"phi-lang/core/mutation"
-	"phi-lang/parser"
-	st "phi-lang/syntaxtree"
+	"muto/common/fn"
+	"muto/common/optional"
+	"muto/common/rslt"
+	"muto/core/base"
+	"muto/core/mutation"
+	"muto/parser"
+	st "muto/syntaxtree"
 )
 
 var BuildFromString = fn.Compose3(

@@ -1,8 +1,8 @@
 package tokenizer
 
 import (
-	"phi-lang/common/tuple"
-	"phi-lang/parser/tokenizer/automaton"
+	"muto/common/tuple"
+	"muto/parser/tokenizer/automaton"
 )
 
 type tokenBuilder struct {

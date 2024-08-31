@@ -1,8 +1,8 @@
 package parser
 
 import (
-	ps "phi-lang/common/parsing"
-	"phi-lang/parser/tokenizer"
+	ps "muto/common/parsing"
+	"muto/parser/tokenizer"
 )
 
 var string_ = ps.ConsumeIf(tokenizer.IsString)

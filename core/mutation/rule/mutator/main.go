@@ -1,9 +1,9 @@
 package mutator
 
 import (
-	"phi-lang/common/fn"
-	"phi-lang/common/optional"
-	"phi-lang/core/base"
+	"muto/common/fn"
+	"muto/common/optional"
+	"muto/core/base"
 )
 
 func New[T, M any](builder Builder[M], extractor Extractor[T, M]) func(t T) optional.Of[base.Node] {

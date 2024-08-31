@@ -1,7 +1,7 @@
 package parsing
 
 import (
-	"phi-lang/common/tuple"
+	"muto/common/tuple"
 )
 
 func Sequence2[S, R1, R2 any](

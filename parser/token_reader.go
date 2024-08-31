@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"phi-lang/common/rslt"
-	"phi-lang/parser/tokenizer"
+	"muto/common/rslt"
+	"muto/parser/tokenizer"
 )
 
 func TokensWithoutSpace(iter func() rslt.Of[tokenizer.Token]) []tokenizer.Token {

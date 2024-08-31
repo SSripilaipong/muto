@@ -3,7 +3,7 @@ package base
 import (
 	"fmt"
 
-	"phi-lang/core/base/datatype"
+	"muto/core/base/datatype"
 )
 
 type Number struct {

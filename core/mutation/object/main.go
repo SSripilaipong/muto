@@ -1,10 +1,10 @@
 package object
 
 import (
-	"phi-lang/common/fn"
-	"phi-lang/common/slc"
-	ruleMutation "phi-lang/core/mutation/rule"
-	st "phi-lang/syntaxtree"
+	"muto/common/fn"
+	"muto/common/slc"
+	ruleMutation "muto/core/mutation/rule"
+	st "muto/syntaxtree"
 )
 
 var NewMutatorsFromStatements = fn.Compose(reduceMutatorFromRules, mapFilterRuleFromStatement)

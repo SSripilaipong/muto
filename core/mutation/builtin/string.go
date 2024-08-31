@@ -1,9 +1,9 @@
 package builtin
 
 import (
-	"phi-lang/common/optional"
-	"phi-lang/core/base"
-	"phi-lang/core/mutation/object"
+	"muto/common/optional"
+	"muto/core/base"
+	"muto/core/mutation/object"
 )
 
 var stringMutator = object.NewMutator("string", []func(t base.ObjectLike) optional.Of[base.Node]{

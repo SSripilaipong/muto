@@ -1,12 +1,12 @@
 package mutation
 
 import (
-	"phi-lang/common/fn"
-	"phi-lang/common/optional"
-	"phi-lang/common/slc"
-	"phi-lang/core/base"
-	"phi-lang/core/mutation/builtin"
-	"phi-lang/core/mutation/object"
+	"muto/common/fn"
+	"muto/common/optional"
+	"muto/common/slc"
+	"muto/core/base"
+	"muto/core/mutation/builtin"
+	"muto/core/mutation/object"
 )
 
 var NewFromStatements = fn.Compose(globalMutationFromObjectMutators, object.NewMutatorsFromStatements)

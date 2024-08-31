@@ -1,8 +1,8 @@
 package builtin
 
 import (
-	"phi-lang/common/optional"
-	"phi-lang/core/base"
+	"muto/common/optional"
+	"muto/core/base"
 )
 
 func terminate(t base.ObjectLike) optional.Of[base.Node] {

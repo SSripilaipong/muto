@@ -1,12 +1,12 @@
 package mutation
 
 import (
-	"phi-lang/common/optional"
-	"phi-lang/core/base"
-	"phi-lang/core/mutation/rule/builder"
-	"phi-lang/core/mutation/rule/extractor"
-	"phi-lang/core/mutation/rule/mutator"
-	st "phi-lang/syntaxtree"
+	"muto/common/optional"
+	"muto/core/base"
+	"muto/core/mutation/rule/builder"
+	"muto/core/mutation/rule/extractor"
+	"muto/core/mutation/rule/mutator"
+	st "muto/syntaxtree"
 )
 
 func New(rule st.Rule) func(t base.ObjectLike) optional.Of[base.Node] {

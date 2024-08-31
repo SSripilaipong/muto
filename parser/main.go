@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"strings"
 
-	"phi-lang/common/parsing"
-	"phi-lang/common/rslt"
-	"phi-lang/common/tuple"
-	"phi-lang/parser/tokenizer"
-	"phi-lang/syntaxtree"
+	"muto/common/parsing"
+	"muto/common/rslt"
+	"muto/common/tuple"
+	"muto/parser/tokenizer"
+	"muto/syntaxtree"
 )
 
 var ParseToken = parsing.Map(newPackage, file)

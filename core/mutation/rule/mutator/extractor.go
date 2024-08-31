@@ -1,6 +1,6 @@
 package mutator
 
-import "phi-lang/common/optional"
+import "muto/common/optional"
 
 type Extractor[T, M any] interface {
 	Extract(T) optional.Of[M]

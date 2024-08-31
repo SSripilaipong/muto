@@ -1,12 +1,12 @@
 package extractor
 
 import (
-	"phi-lang/common/fn"
-	"phi-lang/common/optional"
-	"phi-lang/common/slc"
-	"phi-lang/core/base"
-	"phi-lang/core/mutation/rule/data"
-	st "phi-lang/syntaxtree"
+	"muto/common/fn"
+	"muto/common/optional"
+	"muto/common/slc"
+	"muto/core/base"
+	"muto/core/mutation/rule/data"
+	st "muto/syntaxtree"
 )
 
 func newParamExtractors(x st.RulePattern) []func(base.Node) optional.Of[*data.Mutation] {

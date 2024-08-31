@@ -1,10 +1,10 @@
 package parser
 
 import (
-	ps "phi-lang/common/parsing"
-	"phi-lang/common/tuple"
-	"phi-lang/parser/tokenizer"
-	st "phi-lang/syntaxtree"
+	ps "muto/common/parsing"
+	"muto/common/tuple"
+	"muto/parser/tokenizer"
+	st "muto/syntaxtree"
 )
 
 func rulePattern() func(xs []tokenizer.Token) []tuple.Of2[st.RulePattern, []tokenizer.Token] {

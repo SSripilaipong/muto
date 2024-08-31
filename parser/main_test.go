@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"phi-lang/common/tuple"
-	tk "phi-lang/parser/tokenizer"
-	"phi-lang/syntaxtree"
+	"muto/common/tuple"
+	tk "muto/parser/tokenizer"
+	"muto/syntaxtree"
 )
 
 func TestParseToken(t *testing.T) {

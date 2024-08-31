@@ -3,7 +3,7 @@ package tokenizer
 import (
 	"fmt"
 
-	"phi-lang/parser/tokenizer/automaton"
+	"muto/parser/tokenizer/automaton"
 )
 
 type Token struct {

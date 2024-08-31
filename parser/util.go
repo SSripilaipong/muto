@@ -4,9 +4,9 @@ import (
 	"strings"
 	"unicode"
 
-	ps "phi-lang/common/parsing"
-	"phi-lang/common/tuple"
-	"phi-lang/parser/tokenizer"
+	ps "muto/common/parsing"
+	"muto/common/tuple"
+	"muto/parser/tokenizer"
 )
 
 func isFirstLetterCapital(s string) bool {

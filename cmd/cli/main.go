@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"phi-lang/cmd/cli/run"
+	"muto/cmd/cli/run"
 )
 
 func main() {

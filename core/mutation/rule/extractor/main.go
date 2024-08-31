@@ -1,10 +1,10 @@
 package extractor
 
 import (
-	"phi-lang/common/optional"
-	"phi-lang/core/base"
-	"phi-lang/core/mutation/rule/data"
-	st "phi-lang/syntaxtree"
+	"muto/common/optional"
+	"muto/core/base"
+	"muto/core/mutation/rule/data"
+	st "muto/syntaxtree"
 )
 
 func New(rule st.RulePattern) func(obj base.ObjectLike) optional.Of[*data.Mutation] {

@@ -1,4 +1,4 @@
-module phi-lang
+module muto
 
 go 1.22
 

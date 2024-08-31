@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"phi-lang/common/rslt"
+	"muto/common/rslt"
 )
 
 func Tokenize(reader io.RuneReader) func() rslt.Of[Token] {

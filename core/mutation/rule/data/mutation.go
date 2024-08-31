@@ -3,8 +3,8 @@ package data
 import (
 	"maps"
 
-	"phi-lang/common/optional"
-	"phi-lang/core/base"
+	"muto/common/optional"
+	"muto/core/base"
 )
 
 type Mutation struct {

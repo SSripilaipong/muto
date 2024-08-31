@@ -1,10 +1,10 @@
 package builder
 
 import (
-	"phi-lang/common/optional"
-	"phi-lang/core/base"
-	"phi-lang/core/mutation/rule/data"
-	st "phi-lang/syntaxtree"
+	"muto/common/optional"
+	"muto/core/base"
+	"muto/core/mutation/rule/data"
+	st "muto/syntaxtree"
 )
 
 func buildString(s st.String) func(mapping *data.Mutation) optional.Of[base.Node] {

@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"phi-lang/core/base"
+	"muto/core/base"
 )
 
 func TestString(t *testing.T) {

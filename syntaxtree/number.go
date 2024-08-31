@@ -1,6 +1,6 @@
 package syntaxtree
 
-import "phi-lang/core/base/datatype"
+import "muto/core/base/datatype"
 
 type Number struct {
 	value string
