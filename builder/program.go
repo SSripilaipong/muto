@@ -10,7 +10,7 @@ type Program struct {
 }
 
 func (p Program) InitialObject() base.ObjectLike {
-	return base.NewObject(base.NewNamedClass("main"), nil)
+	return base.NewNamedObject("main", nil)
 }
 
 func (p Program) MutateUntilTerminated(node base.Node) base.Node {

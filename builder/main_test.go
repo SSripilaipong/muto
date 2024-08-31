@@ -6,7 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"phi-lang/core/base"
-	"phi-lang/core/base/datatype"
 )
 
 func TestBuildFromString(t *testing.T) {
@@ -17,12 +16,12 @@ func TestBuildFromString(t *testing.T) {
 
 	t.Run("should resolve to number", func(t *testing.T) {
 		program := BuildFromString(`main = 123.45`).Value()
-		assert.Equal(t, base.NewNumber(datatype.NewNumber("123.45")), mutateN(1, program))
+		assert.Equal(t, base.NewNumberFromString("123.45"), mutateN(1, program))
 	})
 
 	t.Run("should resolve to object", func(t *testing.T) {
 		program := BuildFromString(`main = hello "world"`).Value()
-		assert.Equal(t, base.NewObject(base.NewNamedClass("hello"), []base.Node{base.NewString("world")}), mutateN(1, program))
+		assert.Equal(t, base.NewNamedObject("hello", []base.Node{base.NewString("world")}), mutateN(1, program))
 	})
 
 	t.Run("should resolve variable", func(t *testing.T) {
@@ -35,7 +34,7 @@ main = hello "world"
 
 	t.Run("should resolve builtin add object", func(t *testing.T) {
 		program := BuildFromString(`main = + 1 2`).Value()
-		assert.Equal(t, base.NewNumber(datatype.NewNumber("3")), mutateN(3, program))
+		assert.Equal(t, base.NewNumberFromString("3"), mutateN(3, program))
 	})
 
 	t.Run("should resolve builtin concat object", func(t *testing.T) {
@@ -49,7 +48,7 @@ hello "a" = 1
 hello "b" = 2
 main = hello "b"
 `).Value()
-		assert.Equal(t, base.NewNumber(datatype.NewNumber("2")), mutateN(2, program))
+		assert.Equal(t, base.NewNumberFromString("2"), mutateN(2, program))
 	})
 
 	t.Run("should match rule by number value", func(t *testing.T) {

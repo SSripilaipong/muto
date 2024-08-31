@@ -7,14 +7,12 @@ import (
 	"phi-lang/core/mutation/object"
 )
 
-func addMutator() object.Mutator {
-	return object.NewMutator("+", []func(t base.ObjectLike) optional.Of[base.Node]{
-		addTwo,
-		addTwoTerminate,
-		addOne,
-		terminate,
-	})
-}
+var addMutator = object.NewMutator("+", []func(t base.ObjectLike) optional.Of[base.Node]{
+	addTwo,
+	addTwoTerminate,
+	addOne,
+	terminate,
+})
 
 func addTwo(t base.ObjectLike) optional.Of[base.Node] {
 	children := t.Children()
@@ -29,7 +27,7 @@ func addTwo(t base.ObjectLike) optional.Of[base.Node] {
 	c := datatype.AddNumber(a.Value(), b.Value())
 
 	newChildren := append([]base.Node{base.NewNumber(c)}, children[2:]...)
-	return optional.Value(base.ObjectToNode(base.NewObject(base.NewNamedClass("+"), newChildren)))
+	return optional.Value(base.ObjectToNode(base.NewNamedObject("+", newChildren)))
 }
 
 func addTwoTerminate(t base.ObjectLike) optional.Of[base.Node] {

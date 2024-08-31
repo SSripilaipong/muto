@@ -13,7 +13,7 @@ func buildObject(obj st.RuleResultObject) func(*data.Mutation) optional.Of[base.
 	buildParams := slc.Map(buildObjectParam)(obj.Params())
 
 	return func(mapping *data.Mutation) optional.Of[base.Node] {
-		newObj := base.NewObject(base.NewNamedClass(obj.ObjectName()), nil)
+		newObj := base.NewNamedObject(obj.ObjectName(), nil)
 
 		return fn.Compose3(
 			optional.Map(base.ObjectToNode),

@@ -25,3 +25,7 @@ func (s String) String() string {
 func UnsafeNodeToString(n Node) String {
 	return n.(String)
 }
+
+func StringToNode(s String) Node {
+	return s
+}

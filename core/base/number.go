@@ -14,12 +14,23 @@ func NewNumber(value datatype.Number) Node {
 	return Number{value: value}
 }
 
+func NewNumberFromString(s string) Node {
+	return Number{value: datatype.NewNumber(s)}
+}
+
 func (Number) NodeType() NodeType { return NodeTypeNumber }
 
 func (Number) IsTerminated() bool { return true }
 
 func (n Number) Value() datatype.Number {
 	return n.value
+}
+
+func (n Number) MutoString() string {
+	if n.value.IsFloat() {
+		return fmt.Sprint(n.value.ToFloat())
+	}
+	return fmt.Sprint(n.value.ToInt())
 }
 
 func (n Number) String() string {

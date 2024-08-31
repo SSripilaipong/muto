@@ -47,6 +47,10 @@ func NewObject(class Class, children []Node) Object {
 	return Object{class: class, children: children}
 }
 
+func NewNamedObject(name string, children []Node) Object {
+	return NewObject(NewNamedClass(name), children)
+}
+
 func ObjectToNode(x Object) Node {
 	return x
 }

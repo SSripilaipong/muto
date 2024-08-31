@@ -6,14 +6,12 @@ import (
 	"phi-lang/core/mutation/object"
 )
 
-func concatMutator() object.Mutator {
-	return object.NewMutator("++", []func(t base.ObjectLike) optional.Of[base.Node]{
-		concatTwo,
-		concatTwoTerminate,
-		concatOne,
-		terminate,
-	})
-}
+var concatMutator = object.NewMutator("++", []func(t base.ObjectLike) optional.Of[base.Node]{
+	concatTwo,
+	concatTwoTerminate,
+	concatOne,
+	terminate,
+})
 
 func concatTwo(t base.ObjectLike) optional.Of[base.Node] {
 	children := t.Children()
@@ -28,7 +26,7 @@ func concatTwo(t base.ObjectLike) optional.Of[base.Node] {
 	c := a.Value() + b.Value()
 
 	newChildren := append([]base.Node{base.NewString(c)}, children[2:]...)
-	return optional.Value(base.ObjectToNode(base.NewObject(base.NewNamedClass("++"), newChildren)))
+	return optional.Value(base.ObjectToNode(base.NewNamedObject("++", newChildren)))
 }
 
 func concatTwoTerminate(t base.ObjectLike) optional.Of[base.Node] {
