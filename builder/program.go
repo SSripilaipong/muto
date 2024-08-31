@@ -23,13 +23,3 @@ func (p Program) MutateUntilTerminated(node base.Node) base.Node {
 	}
 	return node
 }
-
-func (p Program) MutateOnce(node base.Node) base.Node {
-	if !base.IsObjectNode(node) {
-		return node
-	}
-	if newNode := p.mutate(base.UnsafeNodeToObject(node)); !newNode.IsEmpty() {
-		return newNode.Value()
-	}
-	return node
-}

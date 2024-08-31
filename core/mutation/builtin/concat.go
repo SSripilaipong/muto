@@ -34,7 +34,7 @@ func concatTwoTerminate(t base.ObjectLike) optional.Of[base.Node] {
 	if len(children) < 2 {
 		return optional.Empty[base.Node]()
 	}
-	return optional.Value[base.Node](t.Terminate())
+	return optional.Value[base.Node](t.ConfirmTermination())
 }
 
 func concatOne(t base.ObjectLike) optional.Of[base.Node] {

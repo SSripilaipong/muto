@@ -13,12 +13,17 @@ type Object struct {
 
 func (Object) NodeType() NodeType { return NodeTypeObject }
 
-func (obj Object) Terminate() ObjectLike {
+func (obj Object) ConfirmTermination() ObjectLike {
 	obj.isTerminated = true
 	return obj
 }
 
-func (obj Object) IsTerminated() bool {
+func (obj Object) ReplaceChild(i int, n Node) ObjectLike {
+	obj.children[i] = n
+	return obj
+}
+
+func (obj Object) IsTerminationConfirmed() bool {
 	return obj.isTerminated
 }
 

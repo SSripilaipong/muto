@@ -20,7 +20,7 @@ func NewNumberFromString(s string) Node {
 
 func (Number) NodeType() NodeType { return NodeTypeNumber }
 
-func (Number) IsTerminated() bool { return true }
+func (Number) IsTerminationConfirmed() bool { return true }
 
 func (n Number) Value() datatype.Number {
 	return n.value

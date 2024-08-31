@@ -4,8 +4,9 @@ type ObjectLike interface {
 	ClassName() string
 	Children() []Node
 	NodeType() NodeType
-	IsTerminated() bool
-	Terminate() ObjectLike
+	IsTerminationConfirmed() bool
+	ConfirmTermination() ObjectLike
+	ReplaceChild(i int, n Node) ObjectLike
 }
 
 func UnsafeNodeToObjectLike(x Node) ObjectLike {

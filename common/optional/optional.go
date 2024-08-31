@@ -25,6 +25,10 @@ func (o Of[T]) IsEmpty() bool {
 	return o.isEmpty
 }
 
+func (o Of[T]) IsNotEmpty() bool {
+	return !o.IsEmpty()
+}
+
 func (o Of[T]) Return() (T, bool) {
 	return o.x, !o.isEmpty
 }

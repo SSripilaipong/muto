@@ -6,7 +6,7 @@ import (
 )
 
 func terminate(t base.ObjectLike) optional.Of[base.Node] {
-	return optional.Value[base.Node](t.Terminate())
+	return optional.Value[base.Node](t.ConfirmTermination())
 }
 
 func valueWithRemainingChildren(value base.Node, remainingChildren []base.Node) optional.Of[base.Node] {

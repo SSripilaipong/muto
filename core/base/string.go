@@ -12,7 +12,7 @@ func NewString(value string) String {
 
 func (String) NodeType() NodeType { return NodeTypeString }
 
-func (String) IsTerminated() bool { return true }
+func (String) IsTerminationConfirmed() bool { return true }
 
 func (s String) Value() string {
 	return s.value

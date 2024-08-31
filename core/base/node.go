@@ -2,7 +2,7 @@ package base
 
 type Node interface {
 	NodeType() NodeType
-	IsTerminated() bool
+	IsTerminationConfirmed() bool
 }
 
 type NodeType string
