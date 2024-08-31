@@ -42,7 +42,13 @@ func (obj Object) ClassName() string {
 func (obj Object) String() string {
 	var children []string
 	for _, child := range obj.Children() {
-		children = append(children, fmt.Sprint(child))
+		var s string
+		if IsObjectNode(child) {
+			s = fmt.Sprintf("(%s)", child)
+		} else {
+			s = fmt.Sprint(child)
+		}
+		children = append(children, s)
 	}
 	jointChildren := strings.Join(children, " ")
 	return fmt.Sprintf(`%s %s`, obj.ClassName(), jointChildren)

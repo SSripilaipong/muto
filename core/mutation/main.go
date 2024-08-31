@@ -24,7 +24,7 @@ func globalMutationFromObjectMutators(ts []object.Mutator) (recursiveMutate func
 				if newChild := recursiveMutate(childObj); newChild.IsNotEmpty() {
 					return optional.Value[base.Node](obj.ReplaceChild(i, newChild.Value()))
 				}
-				return optional.Value[base.Node](obj.ReplaceChild(i, childObj.ConfirmTermination()))
+				obj = obj.ReplaceChild(i, childObj.ConfirmTermination())
 			}
 		}
 		return mutate(obj)
