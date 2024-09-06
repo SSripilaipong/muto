@@ -5,7 +5,7 @@ import (
 	"muto/core/base"
 )
 
-func terminate(t base.ObjectLike) optional.Of[base.Node] {
+func terminate(t base.Object) optional.Of[base.Node] {
 	return optional.Value[base.Node](t.ConfirmTermination())
 }
 

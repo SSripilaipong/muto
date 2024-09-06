@@ -7,17 +7,17 @@ import (
 
 type Mutator struct {
 	name          string
-	mutationRules []func(t base.ObjectLike) optional.Of[base.Node]
+	mutationRules []func(t base.Object) optional.Of[base.Node]
 }
 
-func NewMutator(name string, mutationRules []func(t base.ObjectLike) optional.Of[base.Node]) Mutator {
+func NewMutator(name string, mutationRules []func(t base.Object) optional.Of[base.Node]) Mutator {
 	return Mutator{
 		name:          name,
 		mutationRules: mutationRules,
 	}
 }
 
-func (t Mutator) Mutate(obj base.ObjectLike) optional.Of[base.Node] {
+func (t Mutator) Mutate(obj base.Object) optional.Of[base.Node] {
 	if t.name != obj.ClassName() {
 		return optional.Empty[base.Node]()
 	}

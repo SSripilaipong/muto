@@ -15,22 +15,22 @@ type NamedObject struct {
 
 func (NamedObject) NodeType() NodeType { return NodeTypeNamedObject }
 
-func (obj NamedObject) ConfirmTermination() ObjectLike {
+func (obj NamedObject) ConfirmTermination() Object {
 	obj.isTerminated = true
 	return obj
 }
 
-func (obj NamedObject) ReplaceChild(i int, n Node) ObjectLike {
+func (obj NamedObject) ReplaceChild(i int, n Node) Object {
 	obj.children[i] = n
 	return obj
 }
 
-func (obj NamedObject) MutateWithObjMutateFunc(objMutate func(ObjectLike) optional.Of[Node]) optional.Of[Node] {
+func (obj NamedObject) MutateWithObjMutateFunc(objMutate func(Object) optional.Of[Node]) optional.Of[Node] {
 	if obj.IsTerminationConfirmed() {
 		return optional.Empty[Node]()
 	}
 
-	var x ObjectLike = obj
+	var x Object = obj
 	for i, child := range x.Children() {
 		if !child.IsTerminationConfirmed() {
 			childObj := UnsafeNodeToNamedObject(child)

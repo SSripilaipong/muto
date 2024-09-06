@@ -7,11 +7,11 @@ import (
 	st "muto/syntaxtree"
 )
 
-func New(rule st.RulePattern) func(obj base.ObjectLike) optional.Of[*data.Mutation] {
+func New(rule st.RulePattern) func(obj base.Object) optional.Of[*data.Mutation] {
 	signatureCheck := newSignatureChecker(rule)
 	paramExtract := newParamExtractors(rule)
 
-	return func(obj base.ObjectLike) optional.Of[*data.Mutation] {
+	return func(obj base.Object) optional.Of[*data.Mutation] {
 		if !signatureCheck(obj) {
 			return optional.Empty[*data.Mutation]()
 		}

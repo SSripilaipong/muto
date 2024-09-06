@@ -6,14 +6,14 @@ import (
 	"muto/core/mutation/object"
 )
 
-var concatMutator = object.NewMutator("++", []func(t base.ObjectLike) optional.Of[base.Node]{
+var concatMutator = object.NewMutator("++", []func(t base.Object) optional.Of[base.Node]{
 	concatTwo,
 	concatTwoTerminate,
 	concatOne,
 	terminate,
 })
 
-func concatTwo(t base.ObjectLike) optional.Of[base.Node] {
+func concatTwo(t base.Object) optional.Of[base.Node] {
 	children := t.Children()
 	if len(children) < 2 {
 		return optional.Empty[base.Node]()
@@ -29,7 +29,7 @@ func concatTwo(t base.ObjectLike) optional.Of[base.Node] {
 	return optional.Value(base.NamedObjectToNode(base.NewNamedObject("++", newChildren)))
 }
 
-func concatTwoTerminate(t base.ObjectLike) optional.Of[base.Node] {
+func concatTwoTerminate(t base.Object) optional.Of[base.Node] {
 	children := t.Children()
 	if len(children) < 2 {
 		return optional.Empty[base.Node]()
@@ -37,7 +37,7 @@ func concatTwoTerminate(t base.ObjectLike) optional.Of[base.Node] {
 	return optional.Value[base.Node](t.ConfirmTermination())
 }
 
-func concatOne(t base.ObjectLike) optional.Of[base.Node] {
+func concatOne(t base.Object) optional.Of[base.Node] {
 	children := t.Children()
 	if len(children) < 1 {
 		return optional.Empty[base.Node]()

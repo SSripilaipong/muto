@@ -6,11 +6,11 @@ import (
 )
 
 type Program struct {
-	mutate            func(object base.ObjectLike) optional.Of[base.Node]
+	mutate            func(object base.Object) optional.Of[base.Node]
 	afterMutationHook func(node base.Node)
 }
 
-func (p Program) InitialObject() base.ObjectLike {
+func (p Program) InitialObject() base.Object {
 	return base.NewNamedObject("main", nil)
 }
 

@@ -6,12 +6,12 @@ import (
 	"muto/core/mutation/object"
 )
 
-var stringMutator = object.NewMutator("string", []func(t base.ObjectLike) optional.Of[base.Node]{
+var stringMutator = object.NewMutator("string", []func(t base.Object) optional.Of[base.Node]{
 	stringOne,
 	terminate,
 })
 
-func stringOne(t base.ObjectLike) optional.Of[base.Node] {
+func stringOne(t base.Object) optional.Of[base.Node] {
 	children := t.Children()
 	if len(children) == 0 {
 		return optional.Empty[base.Node]()

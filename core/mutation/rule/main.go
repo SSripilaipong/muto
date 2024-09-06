@@ -9,7 +9,7 @@ import (
 	st "muto/syntaxtree"
 )
 
-func New(rule st.Rule) func(t base.ObjectLike) optional.Of[base.Node] {
+func New(rule st.Rule) func(t base.Object) optional.Of[base.Node] {
 	return mutator.New(
 		mutator.BuilderFunc(builder.New(rule.Result())),
 		mutator.ExtractorFunc(extractor.New(rule.Pattern())),
