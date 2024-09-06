@@ -55,7 +55,7 @@ func newNumberParamExtractor(v st.Number) func(base.Node) optional.Of[*data.Muta
 func newNestedRuleExtractor(p st.RulePattern) func(base.Node) optional.Of[*data.Mutation] {
 	extract := New(p)
 	return func(x base.Node) optional.Of[*data.Mutation] {
-		if base.IsObjectNode(x) {
+		if base.IsNamedObjectNode(x) {
 			return extract(base.UnsafeNodeToObjectLike(x))
 		}
 		return optional.Empty[*data.Mutation]()

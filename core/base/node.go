@@ -8,13 +8,13 @@ type Node interface {
 type NodeType string
 
 const (
-	NodeTypeString NodeType = "STRING"
-	NodeTypeNumber NodeType = "NUMBER"
-	NodeTypeObject NodeType = "OBJECT"
+	NodeTypeString      NodeType = "STRING"
+	NodeTypeNumber      NodeType = "NUMBER"
+	NodeTypeNamedObject NodeType = "NAMED_OBJECT"
 )
 
-func IsObjectNode(node Node) bool {
-	return node.NodeType() == NodeTypeObject
+func IsNamedObjectNode(node Node) bool {
+	return node.NodeType() == NodeTypeNamedObject
 }
 
 func IsNumberNode(node Node) bool {

@@ -7,32 +7,33 @@ import (
 	"muto/common/optional"
 )
 
-type Object struct {
+type NamedObject struct {
 	class        Class
 	children     []Node
 	isTerminated bool
 }
 
-func (Object) NodeType() NodeType { return NodeTypeObject }
+func (NamedObject) NodeType() NodeType { return NodeTypeNamedObject }
 
-func (obj Object) ConfirmTermination() ObjectLike {
+func (obj NamedObject) ConfirmTermination() ObjectLike {
 	obj.isTerminated = true
 	return obj
 }
 
-func (obj Object) ReplaceChild(i int, n Node) ObjectLike {
+func (obj NamedObject) ReplaceChild(i int, n Node) ObjectLike {
 	obj.children[i] = n
 	return obj
 }
 
-func (obj Object) MutateWithObjMutateFunc(objMutate func(ObjectLike) optional.Of[Node]) optional.Of[Node] {
+func (obj NamedObject) MutateWithObjMutateFunc(objMutate func(ObjectLike) optional.Of[Node]) optional.Of[Node] {
 	if obj.IsTerminationConfirmed() {
 		return optional.Empty[Node]()
 	}
+
 	var x ObjectLike = obj
 	for i, child := range x.Children() {
 		if !child.IsTerminationConfirmed() {
-			childObj := UnsafeNodeToObject(child)
+			childObj := UnsafeNodeToNamedObject(child)
 			if newChild := childObj.MutateWithObjMutateFunc(objMutate); newChild.IsNotEmpty() {
 				return optional.Value[Node](obj.ReplaceChild(i, newChild.Value()))
 			}
@@ -42,27 +43,27 @@ func (obj Object) MutateWithObjMutateFunc(objMutate func(ObjectLike) optional.Of
 	return objMutate(x)
 }
 
-func (obj Object) IsTerminationConfirmed() bool {
+func (obj NamedObject) IsTerminationConfirmed() bool {
 	return obj.isTerminated
 }
 
-func (obj Object) Children() []Node {
+func (obj NamedObject) Children() []Node {
 	return obj.children
 }
 
-func (obj Object) Class() Class {
+func (obj NamedObject) Class() Class {
 	return obj.class
 }
 
-func (obj Object) ClassName() string {
+func (obj NamedObject) ClassName() string {
 	return obj.Class().Name()
 }
 
-func (obj Object) String() string {
+func (obj NamedObject) String() string {
 	var children []string
 	for _, child := range obj.Children() {
 		var s string
-		if IsObjectNode(child) {
+		if IsNamedObjectNode(child) {
 			s = fmt.Sprintf("(%s)", child)
 		} else {
 			s = fmt.Sprint(child)
@@ -73,18 +74,14 @@ func (obj Object) String() string {
 	return fmt.Sprintf(`%s %s`, obj.ClassName(), jointChildren)
 }
 
-func NewObject(class Class, children []Node) Object {
-	return Object{class: class, children: children}
+func NewNamedObject(name string, children []Node) NamedObject {
+	return NamedObject{class: NewNamedClass(name), children: children}
 }
 
-func NewNamedObject(name string, children []Node) Object {
-	return NewObject(NewNamedClass(name), children)
-}
-
-func ObjectToNode(x Object) Node {
+func NamedObjectToNode(x NamedObject) Node {
 	return x
 }
 
-func UnsafeNodeToObject(x Node) Object {
-	return x.(Object)
+func UnsafeNodeToNamedObject(x Node) NamedObject {
+	return x.(NamedObject)
 }

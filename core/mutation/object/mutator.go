@@ -24,7 +24,7 @@ func (t Mutator) Mutate(obj base.ObjectLike) optional.Of[base.Node] {
 	for _, mutate := range t.mutationRules {
 		if result := mutate(obj); !result.IsEmpty() {
 			node := result.Value()
-			if base.IsObjectNode(node) && base.UnsafeNodeToObject(node).IsTerminationConfirmed() {
+			if base.IsNamedObjectNode(node) && base.UnsafeNodeToNamedObject(node).IsTerminationConfirmed() {
 				return optional.Empty[base.Node]()
 			}
 			return result

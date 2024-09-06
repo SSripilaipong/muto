@@ -27,7 +27,7 @@ func addTwo(t base.ObjectLike) optional.Of[base.Node] {
 	c := datatype.AddNumber(a.Value(), b.Value())
 
 	newChildren := append([]base.Node{base.NewNumber(c)}, children[2:]...)
-	return optional.Value(base.ObjectToNode(base.NewNamedObject("+", newChildren)))
+	return optional.Value(base.NamedObjectToNode(base.NewNamedObject("+", newChildren)))
 }
 
 func addTwoTerminate(t base.ObjectLike) optional.Of[base.Node] {

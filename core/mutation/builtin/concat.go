@@ -26,7 +26,7 @@ func concatTwo(t base.ObjectLike) optional.Of[base.Node] {
 	c := a.Value() + b.Value()
 
 	newChildren := append([]base.Node{base.NewString(c)}, children[2:]...)
-	return optional.Value(base.ObjectToNode(base.NewNamedObject("++", newChildren)))
+	return optional.Value(base.NamedObjectToNode(base.NewNamedObject("++", newChildren)))
 }
 
 func concatTwoTerminate(t base.ObjectLike) optional.Of[base.Node] {
