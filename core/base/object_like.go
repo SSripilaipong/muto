@@ -1,5 +1,7 @@
 package base
 
+import "muto/common/optional"
+
 type ObjectLike interface {
 	ClassName() string
 	Children() []Node
@@ -7,6 +9,7 @@ type ObjectLike interface {
 	IsTerminationConfirmed() bool
 	ConfirmTermination() ObjectLike
 	ReplaceChild(i int, n Node) ObjectLike
+	MutateWithObjMutateFunc(objMutate func(ObjectLike) optional.Of[Node]) optional.Of[Node]
 }
 
 func UnsafeNodeToObjectLike(x Node) ObjectLike {

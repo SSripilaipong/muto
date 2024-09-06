@@ -3,6 +3,8 @@ package base
 import (
 	"fmt"
 	"strings"
+
+	"muto/common/optional"
 )
 
 type Object struct {
@@ -21,6 +23,23 @@ func (obj Object) ConfirmTermination() ObjectLike {
 func (obj Object) ReplaceChild(i int, n Node) ObjectLike {
 	obj.children[i] = n
 	return obj
+}
+
+func (obj Object) MutateWithObjMutateFunc(objMutate func(ObjectLike) optional.Of[Node]) optional.Of[Node] {
+	if obj.IsTerminationConfirmed() {
+		return optional.Empty[Node]()
+	}
+	var x ObjectLike = obj
+	for i, child := range x.Children() {
+		if !child.IsTerminationConfirmed() {
+			childObj := UnsafeNodeToObject(child)
+			if newChild := childObj.MutateWithObjMutateFunc(objMutate); newChild.IsNotEmpty() {
+				return optional.Value[Node](obj.ReplaceChild(i, newChild.Value()))
+			}
+			x = x.ReplaceChild(i, childObj.ConfirmTermination())
+		}
+	}
+	return objMutate(x)
 }
 
 func (obj Object) IsTerminationConfirmed() bool {
