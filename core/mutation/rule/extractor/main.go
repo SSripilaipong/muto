@@ -10,6 +10,7 @@ import (
 func New(rule st.RulePattern) func(obj base.Object) optional.Of[*data.Mutation] {
 	signatureCheck := newSignatureChecker(rule)
 	paramExtract := newParamExtractors(rule)
+	nConsumed := len(paramExtract)
 
 	return func(obj base.Object) optional.Of[*data.Mutation] {
 		if !signatureCheck(obj) {
@@ -17,7 +18,7 @@ func New(rule st.RulePattern) func(obj base.Object) optional.Of[*data.Mutation] 
 		}
 
 		mutation := data.NewMutation()
-		for i, child := range obj.Children() {
+		for i, child := range obj.Children()[:nConsumed] {
 			e := paramExtract[i](child)
 			if e.IsEmpty() {
 				return optional.Empty[*data.Mutation]()
@@ -28,6 +29,6 @@ func New(rule st.RulePattern) func(obj base.Object) optional.Of[*data.Mutation] 
 			}
 			mutation = m.Value()
 		}
-		return optional.Value(mutation)
+		return optional.Value(mutation.WithRemainingChildren(obj.Children()[nConsumed:]))
 	}
 }

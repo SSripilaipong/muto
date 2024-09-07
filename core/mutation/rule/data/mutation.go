@@ -2,13 +2,15 @@ package data
 
 import (
 	"maps"
+	"slices"
 
 	"muto/common/optional"
 	"muto/core/base"
 )
 
 type Mutation struct {
-	variableMapping map[string]VariableMapping
+	variableMapping   map[string]VariableMapping
+	remainingChildren []base.Node
 }
 
 func NewMutation() *Mutation {
@@ -27,16 +29,34 @@ func (m *Mutation) VariableValue(name string) optional.Of[base.Node] {
 }
 
 func (m *Mutation) mergeVariableMappings(mapping map[string]VariableMapping) optional.Of[*Mutation] {
-	newMapping := maps.Clone(m.variableMapping)
+	newM := m.Clone()
 	for k, x := range mapping {
-		if y, ok := m.variableMapping[k]; !ok {
-			newMapping[k] = x
+		if y, ok := newM.variableMapping[k]; !ok {
+			newM.variableMapping[k] = x
 		} else if x != y {
 			return optional.Empty[*Mutation]()
 		}
 	}
-	m.variableMapping = newMapping
-	return optional.Value(m)
+	return optional.Value(newM)
+}
+
+func (m *Mutation) Clone() *Mutation {
+	return &Mutation{
+		variableMapping:   maps.Clone(m.variableMapping),
+		remainingChildren: slices.Clone(m.remainingChildren),
+	}
+}
+
+func (m *Mutation) WithRemainingChildren(nodes []base.Node) *Mutation {
+	newM := m.Clone()
+	if len(nodes) > 0 {
+		newM.remainingChildren = nodes
+	}
+	return newM
+}
+
+func (m *Mutation) RemainingChildren() []base.Node {
+	return m.remainingChildren
 }
 
 func NewMutationWithVariableMapping(mapping VariableMapping) *Mutation {

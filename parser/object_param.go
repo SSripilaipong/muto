@@ -11,6 +11,7 @@ func objectParam(xs []tokenizer.Token) []tuple.Of2[syntaxtree.ObjectParam, []tok
 	return ps.Or(
 		objectParamValue,
 		ps.Map(variableToObjectParam, variable),
+		ps.Map(namedObjectWithoutChildToObjectParam, objectName),
 		ps.Map(namedObjectToObjectParam, ps.Sequence3(openParenthesis, namedObject, closeParenthesis)),
 		ps.Map(anonymousObjectToObjectParam, ps.Sequence3(openParenthesis, anonymousObject, closeParenthesis)),
 	)(xs)
@@ -24,6 +25,10 @@ var objectParamValue = ps.Or(
 var anonymousObjectToObjectParam = tuple.Fn3(func(_ tokenizer.Token, obj anonymousObjectNode, _ tokenizer.Token) syntaxtree.ObjectParam {
 	return syntaxtree.NewRuleResultAnonymousObject(obj.Head(), obj.Params())
 })
+
+func namedObjectWithoutChildToObjectParam(objName tokenizer.Token) syntaxtree.ObjectParam {
+	return syntaxtree.NewRuleResultNamedObject(objName.Value(), nil)
+}
 
 var namedObjectToObjectParam = tuple.Fn3(func(_ tokenizer.Token, obj namedObjectNode, _ tokenizer.Token) syntaxtree.ObjectParam {
 	return syntaxtree.NewRuleResultNamedObject(obj.Name(), obj.Params())
