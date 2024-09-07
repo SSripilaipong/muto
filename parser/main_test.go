@@ -7,7 +7,7 @@ import (
 
 	"muto/common/tuple"
 	tk "muto/parser/tokenizer"
-	"muto/syntaxtree"
+	st "muto/syntaxtree"
 )
 
 func TestParseToken(t *testing.T) {
@@ -27,23 +27,57 @@ func TestParseToken(t *testing.T) {
 		tk.NewToken(`123`, tk.Number),
 		tk.NewToken("X", tk.Identifier),
 	}
-	expectedParsedTree := syntaxtree.NewPackage([]syntaxtree.File{syntaxtree.NewFile([]syntaxtree.Statement{
-		syntaxtree.NewRule(syntaxtree.NewRulePattern("hello", []syntaxtree.RuleParamPattern{syntaxtree.NewVariable("X"), syntaxtree.NewVariable("Y"), syntaxtree.NewVariable("Z")}), syntaxtree.NewVariable("Y")),
-		syntaxtree.NewRule(syntaxtree.NewRulePattern("main", []syntaxtree.RuleParamPattern{syntaxtree.NewVariable("X")}), syntaxtree.NewRuleResultObject("hello", []syntaxtree.ObjectParam{syntaxtree.NewString("world"), syntaxtree.NewNumber("123"), syntaxtree.NewVariable("X")})),
+	expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
+		st.NewRule(st.NewRulePattern("hello", []st.RuleParamPattern{st.NewVariable("X"), st.NewVariable("Y"), st.NewVariable("Z")}), st.NewVariable("Y")),
+		st.NewRule(st.NewRulePattern("main", []st.RuleParamPattern{st.NewVariable("X")}), st.NewRuleResultNamedObject("hello", []st.ObjectParam{st.NewString("world"), st.NewNumber("123"), st.NewVariable("X")})),
 	})})
 	assert.Equal(t,
-		[]tuple.Of2[syntaxtree.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
+		[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
 		ParseToken(tokens),
 	)
 }
 
 func TestParseString(t *testing.T) {
 	s := `main A = + 1 "abc"`
-	expectedParsedTree := syntaxtree.NewPackage([]syntaxtree.File{syntaxtree.NewFile([]syntaxtree.Statement{
-		syntaxtree.NewRule(syntaxtree.NewRulePattern("main", []syntaxtree.RuleParamPattern{syntaxtree.NewVariable("A")}), syntaxtree.NewRuleResultObject("+", []syntaxtree.ObjectParam{syntaxtree.NewNumber("1"), syntaxtree.NewString("abc")})),
+	expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
+		st.NewRule(st.NewRulePattern("main", []st.RuleParamPattern{st.NewVariable("A")}), st.NewRuleResultNamedObject("+", []st.ObjectParam{st.NewNumber("1"), st.NewString("abc")})),
 	})})
 	assert.Equal(t,
-		[]tuple.Of2[syntaxtree.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
+		[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
 		ParseString(s),
 	)
+}
+
+func TestParseAnonymousObject(t *testing.T) {
+	t.Run("should parse anonymous object", func(t *testing.T) {
+
+		s := `main A = (+ 1 2) 3 4`
+		expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
+			st.NewRule(st.NewRulePattern(
+				"main", []st.RuleParamPattern{st.NewVariable("A")}),
+				st.NewRuleResultAnonymousObject(st.NewRuleResultNamedObject("+", []st.ObjectParam{st.NewNumber("1"), st.NewNumber("2")}), []st.ObjectParam{st.NewNumber("3"), st.NewNumber("4")}),
+			),
+		})})
+		assert.Equal(t,
+			[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
+			ParseString(s),
+		)
+	})
+
+	t.Run("should parse nested anonymous object", func(t *testing.T) {
+		s := `main A = ((+ 1 2) 3 4) 5 6`
+		expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
+			st.NewRule(st.NewRulePattern(
+				"main", []st.RuleParamPattern{st.NewVariable("A")}),
+				st.NewRuleResultAnonymousObject(
+					st.NewRuleResultAnonymousObject(st.NewRuleResultNamedObject("+", []st.ObjectParam{st.NewNumber("1"), st.NewNumber("2")}), []st.ObjectParam{st.NewNumber("3"), st.NewNumber("4")}),
+					[]st.ObjectParam{st.NewNumber("5"), st.NewNumber("6")},
+				),
+			),
+		})})
+		assert.Equal(t,
+			[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
+			ParseString(s),
+		)
+	})
 }

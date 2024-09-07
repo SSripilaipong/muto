@@ -9,11 +9,11 @@ import (
 	st "muto/syntaxtree"
 )
 
-func buildObject(obj st.RuleResultObject) func(*data.Mutation) optional.Of[base.Node] {
+func buildObject(obj st.RuleResultNamedObject) func(*data.Mutation) optional.Of[base.Node] {
 	return buildNamedObject(obj)
 }
 
-func buildNamedObject(obj st.RuleResultObject) func(*data.Mutation) optional.Of[base.Node] {
+func buildNamedObject(obj st.RuleResultNamedObject) func(*data.Mutation) optional.Of[base.Node] {
 	buildParams := slc.Map(buildObjectParam)(obj.Params())
 
 	return func(mapping *data.Mutation) optional.Of[base.Node] {

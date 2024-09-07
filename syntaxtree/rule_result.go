@@ -7,32 +7,12 @@ type RuleResult interface {
 type RuleResultType string
 
 const (
-	RuleResultTypeString   RuleResultType = "STRING"
-	RuleResultTypeNumber   RuleResultType = "NUMBER"
-	RuleResultTypeObject   RuleResultType = "OBJECT"
-	RuleResultTypeVariable RuleResultType = "VARIABLE"
+	RuleResultTypeString          RuleResultType = "STRING"
+	RuleResultTypeNumber          RuleResultType = "NUMBER"
+	RuleResultTypeNamedObject     RuleResultType = "NAMED_OBJECT"
+	RuleResultTypeAnonymousObject RuleResultType = "ANONYMOUS_OBJECT"
+	RuleResultTypeVariable        RuleResultType = "VARIABLE"
 )
-
-type RuleResultObject struct {
-	objectName string
-	params     []ObjectParam
-}
-
-func NewRuleResultObject(objectName string, params []ObjectParam) RuleResultObject {
-	return RuleResultObject{objectName: objectName, params: params}
-}
-
-func (RuleResultObject) RuleResultType() RuleResultType {
-	return RuleResultTypeObject
-}
-
-func (obj RuleResultObject) ObjectName() string {
-	return obj.objectName
-}
-
-func (obj RuleResultObject) Params() []ObjectParam {
-	return obj.params
-}
 
 func IsRuleResultTypeString(r RuleResult) bool {
 	return r.RuleResultType() == RuleResultTypeString
@@ -43,7 +23,7 @@ func IsRuleResultTypeNumber(r RuleResult) bool {
 }
 
 func IsRuleResultTypeObject(r RuleResult) bool {
-	return r.RuleResultType() == RuleResultTypeObject
+	return r.RuleResultType() == RuleResultTypeNamedObject
 }
 
 func IsRuleResultTypeVariable(r RuleResult) bool {

@@ -13,7 +13,7 @@ func New(r st.RuleResult) func(*data.Mutation) optional.Of[base.Node] {
 	} else if st.IsRuleResultTypeNumber(r) {
 		return buildNumber(r.(st.Number))
 	} else if st.IsRuleResultTypeObject(r) {
-		return buildObject(r.(st.RuleResultObject))
+		return buildObject(r.(st.RuleResultNamedObject))
 	} else if st.IsRuleResultTypeVariable(r) {
 		return buildVariable(r.(st.Variable))
 	}

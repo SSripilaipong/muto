@@ -9,7 +9,8 @@ import (
 var ruleResult = ps.Or(
 	valueRuleResult,
 	ps.Map(variableToRuleResult, variable),
-	ps.Map(objectToRuleResult, object),
+	ps.Map(namedObjectNodeToRuleResult, namedObject),
+	ps.Map(anonymousObjectNodeToRuleResult, anonymousObject),
 )
 
 var valueRuleResult = ps.Or(
@@ -28,4 +29,12 @@ func stringToRuleResult(x tokenizer.Token) syntaxtree.RuleResult {
 
 func variableToRuleResult(x tokenizer.Token) syntaxtree.RuleResult {
 	return syntaxtree.NewVariable(x.Value())
+}
+
+var namedObjectNodeToRuleResult = func(obj namedObjectNode) syntaxtree.RuleResult {
+	return syntaxtree.NewRuleResultNamedObject(obj.Name(), obj.Params())
+}
+
+var anonymousObjectNodeToRuleResult = func(obj anonymousObjectNode) syntaxtree.RuleResult {
+	return syntaxtree.NewRuleResultAnonymousObject(obj.Head(), obj.Params())
 }
