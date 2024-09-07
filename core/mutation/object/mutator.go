@@ -17,8 +17,8 @@ func NewMutator(name string, mutationRules []func(t base.Object) optional.Of[bas
 	}
 }
 
-func (t Mutator) Mutate(obj base.Object) optional.Of[base.Node] {
-	if t.name != obj.ClassName() {
+func (t Mutator) Mutate(obj base.NamedObject) optional.Of[base.Node] {
+	if t.name != obj.Name() {
 		return optional.Empty[base.Node]()
 	}
 	for _, mutate := range t.mutationRules {

@@ -11,10 +11,6 @@ func NewRuleResultNamedObject(objectName string, params []ObjectParam) RuleResul
 
 func (RuleResultNamedObject) RuleResultType() RuleResultType { return RuleResultTypeNamedObject }
 
-func (RuleResultNamedObject) AnonymousObjectHeadType() AnonymousObjectHeadType {
-	return AnonymousObjectHeadTypeNamedObject
-}
-
 func (obj RuleResultNamedObject) ObjectName() string {
 	return obj.objectName
 }

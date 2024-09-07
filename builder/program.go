@@ -15,8 +15,8 @@ func (p Program) InitialObject() base.Object {
 }
 
 func (p Program) MutateUntilTerminated(node base.Node) base.Node {
-	for base.IsNamedObjectNode(node) {
-		newNode := p.mutate(base.UnsafeNodeToNamedObject(node))
+	for base.IsObjectNode(node) {
+		newNode := p.mutate(base.UnsafeNodeToObject(node))
 		if newNode.IsEmpty() {
 			break
 		}

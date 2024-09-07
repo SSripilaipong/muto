@@ -1,8 +1,6 @@
 package parser
 
 import (
-	"fmt"
-
 	ps "muto/common/parsing"
 	"muto/common/tuple"
 	"muto/parser/tokenizer"
@@ -11,7 +9,6 @@ import (
 
 func namedObject(xs []tokenizer.Token) []tuple.Of2[namedObjectNode, []tokenizer.Token] {
 	pattern := ps.Sequence2(objectName, ps.OptionalGreedyRepeat(objectParam))
-	fmt.Println("in:", xs)
 	r := ps.Map(mergeNamedObjectNode, pattern)(xs)
 	return r
 }
@@ -30,10 +27,6 @@ func objectName(xs []tokenizer.Token) []tuple.Of2[tokenizer.Token, []tokenizer.T
 type namedObjectNode struct {
 	name   string
 	params []syntaxtree.ObjectParam
-}
-
-func (namedObjectNode) AnonymousObjectHeadType() syntaxtree.AnonymousObjectHeadType {
-	return syntaxtree.AnonymousObjectHeadTypeNamedObject
 }
 
 func (obj namedObjectNode) Name() string {

@@ -11,27 +11,27 @@ func anonymousObject(xs []tokenizer.Token) []tuple.Of2[anonymousObjectNode, []to
 	return ps.Map(mergeAnonymousObject, ps.Sequence2(anonymousObjectHead, ps.OptionalGreedyRepeat(objectParam)))(xs)
 }
 
-var mergeAnonymousObject = tuple.Fn2(func(head syntaxtree.AnonymousObjectHead, params []syntaxtree.ObjectParam) anonymousObjectNode {
+var mergeAnonymousObject = tuple.Fn2(func(head syntaxtree.RuleResult, params []syntaxtree.ObjectParam) anonymousObjectNode {
 	return anonymousObjectNode{head: head, params: params}
 })
 
-func anonymousObjectHead(xs []tokenizer.Token) []tuple.Of2[syntaxtree.AnonymousObjectHead, []tokenizer.Token] {
+func anonymousObjectHead(xs []tokenizer.Token) []tuple.Of2[syntaxtree.RuleResult, []tokenizer.Token] {
 	return ps.Or(
 		ps.Map(mergeAnonymousObjectHeadForNamedObject, ps.Sequence3(openParenthesis, namedObject, closeParenthesis)),
 		ps.Map(mergeAnonymousObjectHeadForAnonymousObject, ps.Sequence3(openParenthesis, anonymousObject, closeParenthesis)),
 	)(xs)
 }
 
-var mergeAnonymousObjectHeadForNamedObject = tuple.Fn3(func(_ tokenizer.Token, x namedObjectNode, _ tokenizer.Token) syntaxtree.AnonymousObjectHead {
+var mergeAnonymousObjectHeadForNamedObject = tuple.Fn3(func(_ tokenizer.Token, x namedObjectNode, _ tokenizer.Token) syntaxtree.RuleResult {
 	return syntaxtree.NewRuleResultNamedObject(x.Name(), x.Params())
 })
 
-var mergeAnonymousObjectHeadForAnonymousObject = tuple.Fn3(func(_ tokenizer.Token, x anonymousObjectNode, _ tokenizer.Token) syntaxtree.AnonymousObjectHead {
+var mergeAnonymousObjectHeadForAnonymousObject = tuple.Fn3(func(_ tokenizer.Token, x anonymousObjectNode, _ tokenizer.Token) syntaxtree.RuleResult {
 	return syntaxtree.NewRuleResultAnonymousObject(x.Head(), x.Params())
 })
 
 type anonymousObjectNode struct {
-	head   syntaxtree.AnonymousObjectHead
+	head   syntaxtree.RuleResult
 	params []syntaxtree.ObjectParam
 }
 
@@ -39,6 +39,6 @@ func (n anonymousObjectNode) Params() []syntaxtree.ObjectParam {
 	return n.params
 }
 
-func (n anonymousObjectNode) Head() syntaxtree.AnonymousObjectHead {
+func (n anonymousObjectNode) Head() syntaxtree.RuleResult {
 	return n.head
 }

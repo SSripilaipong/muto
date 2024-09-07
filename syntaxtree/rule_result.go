@@ -22,7 +22,11 @@ func IsRuleResultTypeNumber(r RuleResult) bool {
 	return r.RuleResultType() == RuleResultTypeNumber
 }
 
-func IsRuleResultTypeObject(r RuleResult) bool {
+func IsRuleResultTypeAnonymousObject(r RuleResult) bool {
+	return r.RuleResultType() == RuleResultTypeAnonymousObject
+}
+
+func IsRuleResultTypeNamedObject(r RuleResult) bool {
 	return r.RuleResultType() == RuleResultTypeNamedObject
 }
 

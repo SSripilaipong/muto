@@ -8,13 +8,16 @@ import (
 )
 
 func New(r st.RuleResult) func(*data.Mutation) optional.Of[base.Node] {
-	if st.IsRuleResultTypeString(r) {
+	switch {
+	case st.IsRuleResultTypeString(r):
 		return buildString(r.(st.String))
-	} else if st.IsRuleResultTypeNumber(r) {
+	case st.IsRuleResultTypeNumber(r):
 		return buildNumber(r.(st.Number))
-	} else if st.IsRuleResultTypeObject(r) {
-		return buildObject(r.(st.RuleResultNamedObject))
-	} else if st.IsRuleResultTypeVariable(r) {
+	case st.IsRuleResultTypeNamedObject(r):
+		return buildNamedObject(r.(st.RuleResultNamedObject))
+	case st.IsRuleResultTypeAnonymousObject(r):
+		return buildAnonymousObject(r.(st.RuleResultAnonymousObject))
+	case st.IsRuleResultTypeVariable(r):
 		return buildVariable(r.(st.Variable))
 	}
 	panic("not implemented")

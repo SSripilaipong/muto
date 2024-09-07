@@ -2,7 +2,6 @@ package base
 
 import (
 	"fmt"
-	"strings"
 
 	"muto/common/optional"
 )
@@ -15,17 +14,12 @@ type NamedObject struct {
 
 func (NamedObject) NodeType() NodeType { return NodeTypeNamedObject }
 
-func (obj NamedObject) ConfirmTermination() Object {
-	obj.isTerminated = true
-	return obj
-}
-
 func (obj NamedObject) ReplaceChild(i int, n Node) Object {
 	obj.children[i] = n
 	return obj
 }
 
-func (obj NamedObject) MutateWithObjMutateFunc(objMutate func(Object) optional.Of[Node]) optional.Of[Node] {
+func (obj NamedObject) MutateWithObjMutateFunc(objMutate func(string, NamedObject) optional.Of[Node]) optional.Of[Node] {
 	if obj.IsTerminationConfirmed() {
 		return optional.Empty[Node]()
 	}
@@ -40,38 +34,46 @@ func (obj NamedObject) MutateWithObjMutateFunc(objMutate func(Object) optional.O
 			x = x.ReplaceChild(i, childObj.ConfirmTermination())
 		}
 	}
-	return objMutate(x)
+
+	if IsNamedObjectNode(x) {
+		namedObj := UnsafeNodeToNamedObject(x)
+		return objMutate(namedObj.Name(), namedObj)
+	}
+	return optional.Value[Node](x)
 }
 
-func (obj NamedObject) IsTerminationConfirmed() bool {
-	return obj.isTerminated
+func (obj NamedObject) AppendChildren(children []Node) Object {
+	obj.children = append(obj.children, children...)
+	return obj
 }
 
 func (obj NamedObject) Children() []Node {
 	return obj.children
 }
 
-func (obj NamedObject) Class() Class {
-	return obj.class
+func (obj NamedObject) IsTerminationConfirmed() bool {
+	return obj.isTerminated
 }
 
-func (obj NamedObject) ClassName() string {
-	return obj.Class().Name()
+func (obj NamedObject) ConfirmTermination() Object {
+	obj.isTerminated = true
+	return obj
+}
+
+func (obj NamedObject) LiftTermination() Object {
+	obj.isTerminated = false
+	return obj
+}
+
+func (obj NamedObject) Name() string {
+	return obj.class.Name()
 }
 
 func (obj NamedObject) String() string {
-	var children []string
-	for _, child := range obj.Children() {
-		var s string
-		if IsNamedObjectNode(child) {
-			s = fmt.Sprintf("(%s)", child)
-		} else {
-			s = fmt.Sprint(child)
-		}
-		children = append(children, s)
+	if len(obj.Children()) == 0 {
+		return fmt.Sprintf(`%s`, obj.Name())
 	}
-	jointChildren := strings.Join(children, " ")
-	return fmt.Sprintf(`%s %s`, obj.ClassName(), jointChildren)
+	return fmt.Sprintf(`%s %s`, obj.Name(), objectChildrenToString(obj))
 }
 
 func NewNamedObject(name string, children []Node) NamedObject {
@@ -85,3 +87,9 @@ func NamedObjectToNode(x NamedObject) Node {
 func UnsafeNodeToNamedObject(x Node) NamedObject {
 	return x.(NamedObject)
 }
+
+func UnsafeObjectToNamedObject(x Object) NamedObject {
+	return x.(NamedObject)
+}
+
+var _ Object = NamedObject{}

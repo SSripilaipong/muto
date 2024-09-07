@@ -19,10 +19,10 @@ func globalMutationFromObjectMutators(ts []object.Mutator) (recursiveMutate func
 	}
 }
 
-func selectiveMutator(ms []object.Mutator) func(base.Object) optional.Of[base.Node] {
+func selectiveMutator(ms []object.Mutator) func(string, base.NamedObject) optional.Of[base.Node] {
 	mutator := slc.ToMapValue(object.MutatorName)(ms)
 
-	return func(obj base.Object) optional.Of[base.Node] {
-		return mutator[obj.ClassName()].Mutate(obj)
+	return func(name string, obj base.NamedObject) optional.Of[base.Node] {
+		return mutator[name].Mutate(obj)
 	}
 }
