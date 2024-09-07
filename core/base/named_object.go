@@ -27,7 +27,7 @@ func (obj NamedObject) MutateWithObjMutateFunc(objMutate func(string, NamedObjec
 	var x Object = obj
 	for i, child := range x.Children() {
 		if !child.IsTerminationConfirmed() {
-			childObj := UnsafeNodeToNamedObject(child)
+			childObj := UnsafeNodeToObject(child)
 			if newChild := childObj.MutateWithObjMutateFunc(objMutate); newChild.IsNotEmpty() {
 				return optional.Value[Node](obj.ReplaceChild(i, newChild.Value()))
 			}

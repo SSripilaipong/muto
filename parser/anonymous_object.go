@@ -17,9 +17,14 @@ var mergeAnonymousObject = tuple.Fn2(func(head syntaxtree.RuleResult, params []s
 
 func anonymousObjectHead(xs []tokenizer.Token) []tuple.Of2[syntaxtree.RuleResult, []tokenizer.Token] {
 	return ps.Or(
+		ps.Map(mergeAnonymousObjectHeadForVariable, variable),
 		ps.Map(mergeAnonymousObjectHeadForNamedObject, ps.Sequence3(openParenthesis, namedObject, closeParenthesis)),
 		ps.Map(mergeAnonymousObjectHeadForAnonymousObject, ps.Sequence3(openParenthesis, anonymousObject, closeParenthesis)),
 	)(xs)
+}
+
+func mergeAnonymousObjectHeadForVariable(v tokenizer.Token) syntaxtree.RuleResult {
+	return syntaxtree.NewVariable(v.Value())
 }
 
 var mergeAnonymousObjectHeadForNamedObject = tuple.Fn3(func(_ tokenizer.Token, x namedObjectNode, _ tokenizer.Token) syntaxtree.RuleResult {
