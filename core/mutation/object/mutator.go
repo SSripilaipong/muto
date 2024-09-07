@@ -22,11 +22,7 @@ func (t Mutator) Mutate(obj base.NamedObject) optional.Of[base.Node] {
 		return optional.Empty[base.Node]()
 	}
 	for _, mutate := range t.mutationRules {
-		if result := mutate(obj); !result.IsEmpty() {
-			node := result.Value()
-			if base.IsNamedObjectNode(node) && base.UnsafeNodeToNamedObject(node).IsTerminationConfirmed() {
-				return optional.Empty[base.Node]()
-			}
+		if result := mutate(obj); result.IsNotEmpty() {
 			return result
 		}
 	}

@@ -37,7 +37,8 @@ func (obj NamedObject) MutateWithObjMutateFunc(objMutate func(string, NamedObjec
 
 	if IsNamedObjectNode(x) {
 		namedObj := UnsafeNodeToNamedObject(x)
-		return objMutate(namedObj.Name(), namedObj)
+		r := objMutate(namedObj.Name(), namedObj)
+		return r
 	}
 	return optional.Value[Node](x)
 }

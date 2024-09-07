@@ -11,6 +11,7 @@ func buildVariable(variable st.Variable) func(*data.Mutation) optional.Of[base.N
 	name := variable.Name()
 
 	return func(mutation *data.Mutation) optional.Of[base.Node] {
-		return mutation.VariableValue(name)
+		r := mutation.VariableValue(name)
+		return r
 	}
 }

@@ -22,7 +22,7 @@ func objectChildrenToString(obj Object) string {
 	var children []string
 	for _, child := range obj.Children() {
 		var s string
-		if IsNamedObjectNode(child) {
+		if IsObjectNode(child) {
 			s = fmt.Sprintf("(%s)", child)
 		} else {
 			s = fmt.Sprint(child)
