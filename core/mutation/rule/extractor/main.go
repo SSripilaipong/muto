@@ -1,6 +1,7 @@
 package extractor
 
 import (
+	"muto/common/fn"
 	"muto/common/optional"
 	"muto/core/base"
 	"muto/core/mutation/rule/data"
@@ -8,7 +9,10 @@ import (
 )
 
 func New(rule st.RulePattern) func(obj base.Object) optional.Of[*data.Mutation] {
-	paramPart := rule.ParamPart()
+	return newForParamPart(rule.ParamPart())
+}
+
+func newForParamPart(paramPart st.RulePatternParamPart) func(obj base.Object) optional.Of[*data.Mutation] {
 	switch {
 	case st.IsRulePatternParamPartTypeFixed(paramPart):
 		return newForFixedParamPart(st.UnsafeRulePatternParamPartToArrayOfRuleParamPatterns(paramPart))
@@ -19,30 +23,15 @@ func New(rule st.RulePattern) func(obj base.Object) optional.Of[*data.Mutation] 
 }
 
 func newForVariadicParamPart(paramPart st.RulePatternVariadicParamPart) func(obj base.Object) optional.Of[*data.Mutation] {
+	switch {
+	case st.IsRulePatternVariadicParamPartTypeRight(paramPart):
+		return newForRightVariadicParamPart(st.UnsafeRulePatternVariadicParamPartTypeToRightVariadic(paramPart))
+	case st.IsRulePatternVariadicParamPartTypeLeft(paramPart):
+		return newForLeftVariadicParamPart(st.UnsafeRulePatternVariadicParamPartTypeToLeftVariadic(paramPart))
+	}
 	panic("not implemented")
 }
 
 func newForFixedParamPart(params []st.RuleParamPattern) func(obj base.Object) optional.Of[*data.Mutation] {
-	paramExtract := newParamExtractors(params)
-	nConsumed := len(paramExtract)
-
-	return func(obj base.Object) optional.Of[*data.Mutation] {
-		if len(params) > len(obj.Children()) {
-			return optional.Empty[*data.Mutation]()
-		}
-
-		mutation := data.NewMutation()
-		for i, child := range obj.Children()[:nConsumed] {
-			e := paramExtract[i](child)
-			if e.IsEmpty() {
-				return optional.Empty[*data.Mutation]()
-			}
-			m := mutation.Merge(e.Value())
-			if m.IsEmpty() {
-				return optional.Empty[*data.Mutation]()
-			}
-			mutation = m.Value()
-		}
-		return optional.Value(mutation.WithRemainingChildren(obj.Children()[nConsumed:]))
-	}
+	return fn.Compose(extractChildrenNodes(params), base.ObjectToChildren)
 }

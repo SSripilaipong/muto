@@ -13,10 +13,6 @@ func (p RulePattern) ObjectName() string {
 	return p.objectName
 }
 
-func (p RulePattern) CheckNParams(n int) bool {
-	return p.ParamPart().CheckNParams(n)
-}
-
 func (p RulePattern) ParamPart() RulePatternParamPart {
 	return p.params
 }
@@ -35,7 +31,6 @@ func UnsafeRuleParamPatternToRulePattern(p RuleParamPattern) RulePattern {
 
 type RulePatternParamPart interface {
 	RulePatternParamPartType() RulePatternParamPartType
-	CheckNParams(n int) bool
 }
 
 type RulePatternParamPartType string

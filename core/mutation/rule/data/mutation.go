@@ -9,18 +9,24 @@ import (
 )
 
 type Mutation struct {
-	variableMapping   map[string]VariableMapping
-	remainingChildren []base.Node
+	variableMapping    map[string]VariableMapping
+	variadicVarMapping map[string]VariadicVarMapping
+	remainingChildren  []base.Node
 }
 
 func NewMutation() *Mutation {
 	return &Mutation{
-		variableMapping: make(map[string]VariableMapping),
+		variableMapping:    make(map[string]VariableMapping),
+		variadicVarMapping: make(map[string]VariadicVarMapping),
 	}
 }
 
 func (m *Mutation) Merge(n *Mutation) optional.Of[*Mutation] {
-	return m.mergeVariableMappings(n.variableMapping)
+	m1, ok := m.mergeVariableMappings(n.variableMapping).Return()
+	if !ok {
+		return optional.Value(m1)
+	}
+	return m1.mergeVariadicVarMappings(n.variadicVarMapping)
 }
 
 func (m *Mutation) VariableValue(name string) optional.Of[base.Node] {
@@ -40,10 +46,34 @@ func (m *Mutation) mergeVariableMappings(mapping map[string]VariableMapping) opt
 	return optional.Value(newM)
 }
 
+func (m *Mutation) mergeVariadicVarMappings(mapping map[string]VariadicVarMapping) optional.Of[*Mutation] {
+	newM := m.Clone()
+	for k, x := range mapping {
+		if y, ok := newM.variadicVarMapping[k]; !ok {
+			newM.variadicVarMapping[k] = x
+		} else if !x.Equal(y) {
+			return optional.Empty[*Mutation]()
+		}
+	}
+	return optional.Value(newM)
+}
+
+func (m *Mutation) WithVariadicVarMappings(x VariadicVarMapping) optional.Of[*Mutation] {
+	newM := m.Clone()
+	k := x.name
+	if y, ok := newM.variadicVarMapping[k]; !ok {
+		newM.variadicVarMapping[k] = x
+	} else if !x.Equal(y) {
+		return optional.Empty[*Mutation]()
+	}
+	return optional.Value(newM)
+}
+
 func (m *Mutation) Clone() *Mutation {
 	return &Mutation{
-		variableMapping:   maps.Clone(m.variableMapping),
-		remainingChildren: slices.Clone(m.remainingChildren),
+		variableMapping:    maps.Clone(m.variableMapping),
+		variadicVarMapping: maps.Clone(m.variadicVarMapping),
+		remainingChildren:  slices.Clone(m.remainingChildren),
 	}
 }
 
@@ -77,4 +107,31 @@ func NewVariableMapping(name string, node base.Node) VariableMapping {
 		name: name,
 		node: node,
 	}
+}
+
+type VariadicVarMapping struct {
+	name  string
+	nodes []base.Node
+}
+
+func NewVariadicVarMapping(name string, nodes []base.Node) VariadicVarMapping {
+	return VariadicVarMapping{
+		name:  name,
+		nodes: nodes,
+	}
+}
+
+func (x VariadicVarMapping) Equal(y VariadicVarMapping) bool {
+	if y.name != x.name {
+		return false
+	}
+	if len(x.nodes) != len(y.nodes) {
+		return false
+	}
+	for i := range x.nodes {
+		if x.nodes[i] != y.nodes[i] {
+			return false
+		}
+	}
+	return true
 }

@@ -38,7 +38,7 @@ func mergeLeftVariadicRulePattern(xs tuple.Of3[tokenizer.Token, variadicVarNode,
 
 func mergeRightVariadicRulePattern(xs tuple.Of3[tokenizer.Token, []st.RuleParamPattern, variadicVarNode]) st.RulePattern {
 	return tuple.Fn3(func(name tokenizer.Token, params []st.RuleParamPattern, v variadicVarNode) st.RulePattern {
-		return st.NewRulePattern(name.Value(), st.NewRulePatternRightVariadicParamPart(v.Name(), st.RulePatternFixedParamPart(params)))
+		return st.NewRulePattern(name.Value(), st.NewRulePatternRightVariadicParamPart(v.Name(), params))
 	})(xs)
 }
 

@@ -15,7 +15,7 @@ func objectParamPart(xs []tokenizer.Token) []tuple.Of2[st.ObjectParamPart, []tok
 	return ps.Or(
 		ps.Map(mergeLeftVariadicParamPart, ps.Sequence2(variadicVar, ps.OptionalGreedyRepeat(objectParam))),
 		ps.Map(mergeRightVariadicParamPart, ps.Sequence2(ps.GreedyRepeatAtLeastOnce(objectParam), variadicVar)),
-		ps.Map(st.ObjectParamsToObjectFixedParamPart, ps.GreedyRepeatAtLeastOnce(objectParam)),
+		ps.Map(st.ObjectParamsToObjectFixedParamPart, ps.OptionalGreedyRepeat(objectParam)),
 	)(xs)
 }
 

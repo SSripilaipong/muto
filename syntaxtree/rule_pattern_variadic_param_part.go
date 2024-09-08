@@ -1,6 +1,22 @@
 package syntaxtree
 
 type RulePatternVariadicParamPart interface {
+	RulePatternVariadicParamPartType() RulePatternVariadicParamPartType
+}
+
+type RulePatternVariadicParamPartType string
+
+const (
+	RulePatternVariadicParamPartTypeLeft  RulePatternVariadicParamPartType = "LEFT"
+	RulePatternVariadicParamPartTypeRight RulePatternVariadicParamPartType = "RIGHT"
+)
+
+func IsRulePatternVariadicParamPartTypeLeft(pp RulePatternVariadicParamPart) bool {
+	return pp.RulePatternVariadicParamPartType() == RulePatternVariadicParamPartTypeLeft
+}
+
+func IsRulePatternVariadicParamPartTypeRight(pp RulePatternVariadicParamPart) bool {
+	return pp.RulePatternVariadicParamPartType() == RulePatternVariadicParamPartTypeRight
 }
 
 func UnsafeRulePatternParamPartToVariadicParamPart(p RulePatternParamPart) RulePatternVariadicParamPart {
@@ -9,35 +25,59 @@ func UnsafeRulePatternParamPartToVariadicParamPart(p RulePatternParamPart) RuleP
 
 type RulePatternLeftVariadicParamPart struct {
 	name      string
-	otherPart RulePatternParamPart
+	otherPart RulePatternFixedParamPart
 }
 
 func (RulePatternLeftVariadicParamPart) RulePatternParamPartType() RulePatternParamPartType {
 	return RulePatternParamPartTypeVariadic
 }
 
-func (p RulePatternLeftVariadicParamPart) CheckNParams(n int) bool {
-	return p.otherPart.CheckNParams(n)
+func (RulePatternLeftVariadicParamPart) RulePatternVariadicParamPartType() RulePatternVariadicParamPartType {
+	return RulePatternVariadicParamPartTypeLeft
 }
 
-func NewRulePatternLeftVariadicParamPart(name string, otherPart RulePatternParamPart) RulePatternLeftVariadicParamPart {
+func (p RulePatternLeftVariadicParamPart) OtherPart() RulePatternFixedParamPart {
+	return p.otherPart
+}
+
+func (p RulePatternLeftVariadicParamPart) Name() string {
+	return p.name
+}
+
+func UnsafeRulePatternVariadicParamPartTypeToLeftVariadic(p RulePatternVariadicParamPart) RulePatternLeftVariadicParamPart {
+	return p.(RulePatternLeftVariadicParamPart)
+}
+
+func NewRulePatternLeftVariadicParamPart(name string, otherPart RulePatternFixedParamPart) RulePatternLeftVariadicParamPart {
 	return RulePatternLeftVariadicParamPart{name: name, otherPart: otherPart}
 }
 
 type RulePatternRightVariadicParamPart struct {
 	name      string
-	otherPart RulePatternParamPart
+	otherPart RulePatternFixedParamPart
 }
 
 func (RulePatternRightVariadicParamPart) RulePatternParamPartType() RulePatternParamPartType {
 	return RulePatternParamPartTypeVariadic
 }
 
-func (p RulePatternRightVariadicParamPart) CheckNParams(n int) bool {
-	return p.otherPart.CheckNParams(n)
+func (RulePatternRightVariadicParamPart) RulePatternVariadicParamPartType() RulePatternVariadicParamPartType {
+	return RulePatternVariadicParamPartTypeRight
 }
 
-func NewRulePatternRightVariadicParamPart(name string, otherPart RulePatternParamPart) RulePatternRightVariadicParamPart {
+func (p RulePatternRightVariadicParamPart) OtherPart() RulePatternFixedParamPart {
+	return p.otherPart
+}
+
+func (p RulePatternRightVariadicParamPart) Name() string {
+	return p.name
+}
+
+func UnsafeRulePatternVariadicParamPartTypeToRightVariadic(p RulePatternVariadicParamPart) RulePatternRightVariadicParamPart {
+	return p.(RulePatternRightVariadicParamPart)
+}
+
+func NewRulePatternRightVariadicParamPart(name string, otherPart RulePatternFixedParamPart) RulePatternRightVariadicParamPart {
 	return RulePatternRightVariadicParamPart{name: name, otherPart: otherPart}
 }
 
@@ -49,10 +89,6 @@ type RulePatternMiddleVariadicParamPart struct {
 
 func (RulePatternMiddleVariadicParamPart) RulePatternParamPartType() RulePatternParamPartType {
 	return RulePatternParamPartTypeVariadic
-}
-
-func (p RulePatternMiddleVariadicParamPart) CheckNParams(n int) bool {
-	return p.rightPart.CheckNParams(n)
 }
 
 func NewRulePatternMiddleVariadicParamPart(name string, leftPart RulePatternParamPart) RulePatternMiddleVariadicParamPart {

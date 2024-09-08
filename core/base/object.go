@@ -32,6 +32,10 @@ func objectChildrenToString(obj Object) string {
 	return strings.Join(children, " ")
 }
 
+func ObjectToChildren(obj Object) []Node {
+	return obj.Children()
+}
+
 func UnsafeNodeToObject(x Node) Object {
 	return x.(Object)
 }

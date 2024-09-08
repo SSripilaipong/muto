@@ -6,10 +6,6 @@ func (RulePatternFixedParamPart) RulePatternParamPartType() RulePatternParamPart
 	return RulePatternParamPartTypeFixed
 }
 
-func (xs RulePatternFixedParamPart) CheckNParams(n int) bool {
-	return len(xs) <= n
-}
-
 func UnsafeRulePatternParamPartToArrayOfRuleParamPatterns(p RulePatternParamPart) []RuleParamPattern {
 	return p.(RulePatternFixedParamPart)
 }
