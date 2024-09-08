@@ -8,12 +8,26 @@ import (
 )
 
 func New(rule st.RulePattern) func(obj base.Object) optional.Of[*data.Mutation] {
-	signatureCheck := newSignatureChecker(rule)
-	paramExtract := newParamExtractors(rule)
+	paramPart := rule.ParamPart()
+	switch {
+	case st.IsRulePatternParamPartTypeFixed(paramPart):
+		return newForFixedParamPart(st.UnsafeRulePatternParamPartToArrayOfRuleParamPatterns(paramPart))
+	case st.IsRulePatternParamPartTypeVariadic(paramPart):
+		return newForVariadicParamPart(st.UnsafeRulePatternParamPartToVariadicParamPart(paramPart))
+	}
+	panic("not implemented")
+}
+
+func newForVariadicParamPart(paramPart st.RulePatternVariadicParamPart) func(obj base.Object) optional.Of[*data.Mutation] {
+	panic("not implemented")
+}
+
+func newForFixedParamPart(params []st.RuleParamPattern) func(obj base.Object) optional.Of[*data.Mutation] {
+	paramExtract := newParamExtractors(params)
 	nConsumed := len(paramExtract)
 
 	return func(obj base.Object) optional.Of[*data.Mutation] {
-		if !signatureCheck(obj) {
+		if len(params) > len(obj.Children()) {
 			return optional.Empty[*data.Mutation]()
 		}
 

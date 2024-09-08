@@ -16,5 +16,6 @@ var nonCapitalIdentifier = ps.ConsumeIf(func(x tokenizer.Token) bool {
 	return tokenizer.IsIdentifier(x) && !isFirstLetterCapital(x.Value())
 })
 var variable = ps.ConsumeIf(func(x tokenizer.Token) bool {
-	return tokenizer.IsIdentifier(x) && isFirstLetterCapital(x.Value())
+	name := x.Value()
+	return tokenizer.IsIdentifier(x) && isFirstLetterCapital(name) && noVarSuffix(name)
 })
