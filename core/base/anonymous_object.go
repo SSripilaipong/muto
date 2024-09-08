@@ -41,7 +41,7 @@ func (obj AnonymousObject) MutateWithObjMutateFunc(objMutate func(string, NamedO
 	head := obj.Head()
 	switch {
 	case head.IsTerminationConfirmed():
-		return optional.Value[Node](obj.bubbleUp())
+		return optional.Value(obj.bubbleUp())
 	case IsObjectNode(head):
 		headObj := UnsafeNodeToObject(head)
 		newHead, ok := headObj.MutateWithObjMutateFunc(objMutate).Return()
@@ -53,10 +53,13 @@ func (obj AnonymousObject) MutateWithObjMutateFunc(objMutate func(string, NamedO
 	panic("not implemented")
 }
 
-func (obj AnonymousObject) bubbleUp() Object {
+func (obj AnonymousObject) bubbleUp() Node {
 	head := obj.Head()
 	if !IsObjectNode(head) {
-		return NewDataObject(append([]Node{head}, obj.Children()...))
+		if len(obj.Children()) > 0 {
+			return NewDataObject(append([]Node{head}, obj.Children()...))
+		}
+		return head
 	}
 	return UnsafeNodeToObject(obj.Head()).
 		AppendChildren(obj.Children()).
