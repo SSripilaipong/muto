@@ -13,7 +13,7 @@ func newSymbol() Symbol {
 }
 
 func (s Symbol) Accept(x rune) (Abstract, bool) {
-	if unicode.IsSymbol(x) || unicode.IsPunct(x) {
+	if (unicode.IsSymbol(x) || unicode.IsPunct(x)) && !isBracket(x) {
 		return newSymbol(), true
 	}
 	return s, false
