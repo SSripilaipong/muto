@@ -34,6 +34,11 @@ func (m *Mutation) VariableValue(name string) optional.Of[base.Node] {
 	return optional.New(variable.node, exists)
 }
 
+func (m *Mutation) VariadicVarValue(name string) optional.Of[[]base.Node] {
+	variable, exists := m.variadicVarMapping[name]
+	return optional.New(variable.nodes, exists)
+}
+
 func (m *Mutation) mergeVariableMappings(mapping map[string]VariableMapping) optional.Of[*Mutation] {
 	newM := m.Clone()
 	for k, x := range mapping {

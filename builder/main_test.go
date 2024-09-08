@@ -73,6 +73,13 @@ main = hello (f "abc" 123)
 		program := BuildFromString(`main = ++ "hello " (string (+ 3 1)) (string (+ 1 1))`).Value()
 		assert.Equal(t, base.NewString("hello 42"), execute(program))
 	})
+
+	t.Run("should resolve variadic variable", func(t *testing.T) {
+		program := BuildFromString(`f X Xs... = g Xs...
+main = f 1 2 3
+`).Value()
+		assert.Equal(t, base.NewNamedObject("g", []base.Node{base.NewNumberFromString("2"), base.NewNumberFromString("3")}), execute(program))
+	})
 }
 
 func execute(program Program) base.Node {

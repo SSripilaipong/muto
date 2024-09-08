@@ -10,6 +10,10 @@ func UnsafeObjectParamPartToObjectFixedParamPart(part ObjectParamPart) ObjectFix
 	return part.(ObjectFixedParamPart)
 }
 
-func ObjectParamsToObjectFixedParamPart(params []ObjectParam) ObjectParamPart {
-	return ObjectFixedParamPart(params)
+func ObjectParamsToObjectFixedParamPart(params []ObjectParam) ObjectFixedParamPart {
+	return params
+}
+
+func ObjectParamsToObjectParamPart(params []ObjectParam) ObjectParamPart {
+	return ObjectParamsToObjectFixedParamPart(params)
 }

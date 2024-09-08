@@ -8,10 +8,11 @@ import (
 )
 
 func rulePattern() func(xs []tokenizer.Token) []tuple.Of2[st.RulePattern, []tokenizer.Token] {
+	fixedParam := fixedRuleParamPattern()
 	return ps.Or(
-		ps.Map(mergeFixedRulePattern, ps.Sequence2(identifier, ps.OptionalGreedyRepeat(fixedRuleParamPattern()))),
-		ps.Map(mergeLeftVariadicRulePattern, ps.Sequence3(identifier, variadicVar, ps.OptionalGreedyRepeat(fixedRuleParamPattern()))),
-		ps.Map(mergeRightVariadicRulePattern, ps.Sequence3(identifier, ps.GreedyRepeatAtLeastOnce(fixedRuleParamPattern()), variadicVar)),
+		ps.Map(mergeFixedRulePattern, ps.Sequence2(objectName, ps.OptionalGreedyRepeat(fixedParam))),
+		ps.Map(mergeLeftVariadicRulePattern, ps.Sequence3(objectName, variadicVar, ps.OptionalGreedyRepeat(fixedParam))),
+		ps.Map(mergeRightVariadicRulePattern, ps.Sequence3(objectName, ps.GreedyRepeatAtLeastOnce(fixedParam), variadicVar)),
 	)
 }
 
@@ -20,6 +21,7 @@ func fixedRuleParamPattern() func(xs []tokenizer.Token) []tuple.Of2[st.RuleParam
 		ps.Map(variableToRuleParamPattern, variable),
 		ps.Map(stringToRuleParamPattern, string_),
 		ps.Map(numberToRuleParamPattern, number),
+		ps.Map(objectNameToRuleParamPattern, objectName),
 		nestedObjectRuleParamPattern,
 	)
 }
@@ -61,4 +63,8 @@ func stringToRuleParamPattern(x tokenizer.Token) st.RuleParamPattern {
 
 func numberToRuleParamPattern(x tokenizer.Token) st.RuleParamPattern {
 	return st.NewNumber(x.Value())
+}
+
+func objectNameToRuleParamPattern(x tokenizer.Token) st.RuleParamPattern {
+	return st.NewRulePattern(x.Value(), st.RulePatternFixedParamPart{})
 }
