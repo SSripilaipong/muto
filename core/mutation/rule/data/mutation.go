@@ -24,7 +24,7 @@ func NewMutation() *Mutation {
 func (m *Mutation) Merge(n *Mutation) optional.Of[*Mutation] {
 	m1, ok := m.mergeVariableMappings(n.variableMapping).Return()
 	if !ok {
-		return optional.Value(m1)
+		return optional.Empty[*Mutation]()
 	}
 	return m1.mergeVariadicVarMappings(n.variadicVarMapping)
 }

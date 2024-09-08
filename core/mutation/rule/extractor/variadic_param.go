@@ -43,10 +43,6 @@ func variadicExtractor(name string, fixedParam st.RulePatternFixedParamPart, nCh
 			return optional.Empty[*data.Mutation]()
 		}
 
-		if len(variadic) == 0 {
-			return optional.Value(mFixed)
-		}
-
 		mVar, ok := data.NewMutation().WithVariadicVarMappings(data.NewVariadicVarMapping(name, variadic)).Return()
 		if !ok {
 			return optional.Empty[*data.Mutation]()
