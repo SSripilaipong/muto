@@ -10,22 +10,13 @@ import (
 )
 
 func buildNamedObject(obj st.RuleResultNamedObject) func(*data.Mutation) optional.Of[base.Node] {
-	buildParams := slc.Map(buildObjectParam)(obj.Params())
-
-	return func(mapping *data.Mutation) optional.Of[base.Node] {
-		newObj := base.NewNamedObject(obj.ObjectName(), nil)
-
-		return fn.Compose3(
-			optional.Map(base.NamedObjectToNode),
-			slc.Fold(aggregateNamedObjectParams)(optional.Value[base.NamedObject](newObj)),
-			slc.Map(fn.CallWith[optional.Of[base.Node]](mapping)),
-		)(buildParams)
+	name := obj.ObjectName()
+	buildObject := func(children []base.Node) base.Node {
+		return base.NewNamedObject(name, children)
 	}
-}
 
-var aggregateNamedObjectParams = optional.MergeFn(func(obj base.NamedObject, n base.Node) optional.Of[base.NamedObject] {
-	return optional.Value(base.NewNamedObject(obj.Name(), append(obj.Children(), n)))
-})
+	return fn.Compose(optional.Map(buildObject), buildChildren(obj.ParamPart()))
+}
 
 func buildAnonymousObject(obj st.RuleResultAnonymousObject) func(*data.Mutation) optional.Of[base.Node] {
 	buildHead := New(obj.Head())

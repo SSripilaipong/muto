@@ -11,7 +11,7 @@ func rulePattern() func(xs []tokenizer.Token) []tuple.Of2[st.RulePattern, []toke
 	return ps.Or(
 		ps.Map(mergeFixedRulePattern, ps.Sequence2(identifier, ps.OptionalGreedyRepeat(fixedRuleParamPattern()))),
 		ps.Map(mergeLeftVariadicRulePattern, ps.Sequence3(identifier, variadicVar, ps.OptionalGreedyRepeat(fixedRuleParamPattern()))),
-		ps.Map(mergeRightVariadicRulePattern, ps.Sequence3(identifier, ps.OptionalGreedyRepeat(fixedRuleParamPattern()), variadicVar)),
+		ps.Map(mergeRightVariadicRulePattern, ps.Sequence3(identifier, ps.GreedyRepeatAtLeastOnce(fixedRuleParamPattern()), variadicVar)),
 	)
 }
 

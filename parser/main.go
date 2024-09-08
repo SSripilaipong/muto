@@ -20,6 +20,7 @@ func ParseString(source string) []tuple.Of2[syntaxtree.Package, []tokenizer.Toke
 }
 
 func ParseResult(s []tuple.Of2[syntaxtree.Package, []tokenizer.Token]) rslt.Of[syntaxtree.Package] {
+	s = FilterSuccess(s)
 	if len(s) == 0 {
 		return rslt.Error[syntaxtree.Package](errors.New("unknown error"))
 	}
@@ -32,4 +33,13 @@ func ParseResult(s []tuple.Of2[syntaxtree.Package, []tokenizer.Token]) rslt.Of[s
 
 func newPackage(f syntaxtree.File) syntaxtree.Package {
 	return syntaxtree.NewPackage([]syntaxtree.File{f})
+}
+
+func FilterSuccess(rs []tuple.Of2[syntaxtree.Package, []tokenizer.Token]) (ss []tuple.Of2[syntaxtree.Package, []tokenizer.Token]) {
+	for _, r := range rs {
+		if len(r.X2()) == 0 {
+			ss = append(ss, r)
+		}
+	}
+	return
 }

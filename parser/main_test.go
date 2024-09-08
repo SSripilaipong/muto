@@ -15,12 +15,12 @@ func TestParseString(t *testing.T) {
 	expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
 		st.NewRule(
 			st.NewRulePattern("main", st.RulePatternFixedParamPart([]st.RuleParamPattern{st.NewVariable("A")})),
-			st.NewRuleResultNamedObject("+", []st.ObjectParam{st.NewNumber("1"), st.NewString("abc")}),
+			st.NewRuleResultNamedObject("+", st.ObjectFixedParamPart([]st.ObjectParam{st.NewNumber("1"), st.NewString("abc")})),
 		),
 	})})
 	assert.Equal(t,
 		[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
-		ParseString(s),
+		FilterSuccess(ParseString(s)),
 	)
 }
 
@@ -30,12 +30,15 @@ func TestParseAnonymousObject(t *testing.T) {
 		expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
 			st.NewRule(
 				st.NewRulePattern("main", st.RulePatternFixedParamPart([]st.RuleParamPattern{st.NewVariable("A")})),
-				st.NewRuleResultAnonymousObject(st.NewRuleResultNamedObject("+", []st.ObjectParam{st.NewNumber("1"), st.NewNumber("2")}), []st.ObjectParam{st.NewNumber("3"), st.NewNumber("4")}),
+				st.NewRuleResultAnonymousObject(
+					st.NewRuleResultNamedObject("+", st.ObjectFixedParamPart([]st.ObjectParam{st.NewNumber("1"), st.NewNumber("2")})),
+					[]st.ObjectParam{st.NewNumber("3"), st.NewNumber("4")},
+				),
 			),
 		})})
 		assert.Equal(t,
 			[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
-			ParseString(s),
+			FilterSuccess(ParseString(s)),
 		)
 	})
 
@@ -45,14 +48,14 @@ func TestParseAnonymousObject(t *testing.T) {
 			st.NewRule(
 				st.NewRulePattern("main", st.RulePatternFixedParamPart([]st.RuleParamPattern{st.NewVariable("A")})),
 				st.NewRuleResultAnonymousObject(
-					st.NewRuleResultAnonymousObject(st.NewRuleResultNamedObject("+", []st.ObjectParam{st.NewNumber("1"), st.NewNumber("2")}), []st.ObjectParam{st.NewNumber("3"), st.NewNumber("4")}),
+					st.NewRuleResultAnonymousObject(st.NewRuleResultNamedObject("+", st.ObjectFixedParamPart([]st.ObjectParam{st.NewNumber("1"), st.NewNumber("2")})), []st.ObjectParam{st.NewNumber("3"), st.NewNumber("4")}),
 					[]st.ObjectParam{st.NewNumber("5"), st.NewNumber("6")},
 				),
 			),
 		})})
 		assert.Equal(t,
 			[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
-			ParseString(s),
+			FilterSuccess(ParseString(s)),
 		)
 	})
 }
@@ -63,12 +66,12 @@ func TestParseObject(t *testing.T) {
 		expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
 			st.NewRule(
 				st.NewRulePattern("main", st.RulePatternFixedParamPart([]st.RuleParamPattern{})),
-				st.NewRuleResultNamedObject("a", []st.ObjectParam{st.NewRuleResultNamedObject("b", nil)}),
+				st.NewRuleResultNamedObject("a", st.ObjectFixedParamPart([]st.ObjectParam{st.NewRuleResultNamedObject("b", nil)})),
 			),
 		})})
 		assert.Equal(t,
 			[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
-			ParseString(s),
+			FilterSuccess(ParseString(s)),
 		)
 	})
 }
@@ -79,12 +82,12 @@ func TestParseVariadicVarPattern(t *testing.T) {
 		expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
 			st.NewRule(
 				st.NewRulePattern("f", st.NewRulePatternLeftVariadicParamPart("Xs", st.RulePatternFixedParamPart([]st.RuleParamPattern{st.NewVariable("X")}))),
-				st.NewRuleResultNamedObject("g", []st.ObjectParam{st.NewVariable("X")}),
+				st.NewRuleResultNamedObject("g", st.ObjectFixedParamPart([]st.ObjectParam{st.NewVariable("X")})),
 			),
 		})})
 		assert.Equal(t,
 			[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
-			ParseString(s),
+			FilterSuccess(ParseString(s)),
 		)
 	})
 
@@ -93,12 +96,12 @@ func TestParseVariadicVarPattern(t *testing.T) {
 		expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
 			st.NewRule(
 				st.NewRulePattern("f", st.NewRulePatternRightVariadicParamPart("Xs", st.RulePatternFixedParamPart([]st.RuleParamPattern{st.NewVariable("X")}))),
-				st.NewRuleResultNamedObject("g", []st.ObjectParam{st.NewVariable("X")}),
+				st.NewRuleResultNamedObject("g", st.ObjectFixedParamPart([]st.ObjectParam{st.NewVariable("X")})),
 			),
 		})})
 		assert.Equal(t,
 			[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
-			ParseString(s),
+			FilterSuccess(ParseString(s)),
 		)
 	})
 
@@ -107,12 +110,42 @@ func TestParseVariadicVarPattern(t *testing.T) {
 		expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
 			st.NewRule(
 				st.NewRulePattern("f", st.RulePatternFixedParamPart([]st.RuleParamPattern{st.NewVariable("X"), st.NewRulePattern("g", st.NewRulePatternRightVariadicParamPart("Ys", st.RulePatternFixedParamPart([]st.RuleParamPattern{st.NewVariable("Y")})))})),
-				st.NewRuleResultNamedObject("g", []st.ObjectParam{st.NewVariable("Y")}),
+				st.NewRuleResultNamedObject("g", st.ObjectFixedParamPart([]st.ObjectParam{st.NewVariable("Y")})),
 			),
 		})})
 		assert.Equal(t,
 			[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
-			ParseString(s),
+			FilterSuccess(ParseString(s)),
+		)
+	})
+}
+
+func TestParseVariadicParamPart(t *testing.T) {
+	t.Run("should parse left variadic param part", func(t *testing.T) {
+		s := `f Xs... = g Xs... X`
+		expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
+			st.NewRule(
+				st.NewRulePattern("f", st.NewRulePatternLeftVariadicParamPart("Xs", st.RulePatternFixedParamPart{})),
+				st.NewRuleResultNamedObject("g", st.NewObjectLeftVariadicParamPart("Xs", st.ObjectParamsToObjectFixedParamPart([]st.ObjectParam{st.NewVariable("X")}))),
+			),
+		})})
+		assert.Equal(t,
+			[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
+			FilterSuccess(ParseString(s)),
+		)
+	})
+
+	t.Run("should parse right variadic param part", func(t *testing.T) {
+		s := `f Xs... X = g X Xs...`
+		expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
+			st.NewRule(
+				st.NewRulePattern("f", st.NewRulePatternLeftVariadicParamPart("Xs", st.RulePatternFixedParamPart([]st.RuleParamPattern{st.NewVariable("X")}))),
+				st.NewRuleResultNamedObject("g", st.NewObjectRightVariadicParamPart("Xs", st.ObjectParamsToObjectFixedParamPart([]st.ObjectParam{st.NewVariable("X")}))),
+			),
+		})})
+		assert.Equal(t,
+			[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
+			FilterSuccess(ParseString(s)),
 		)
 	})
 }
