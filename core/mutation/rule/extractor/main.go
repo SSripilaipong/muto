@@ -9,29 +9,33 @@ import (
 )
 
 func New(rule st.RulePattern) func(obj base.Object) optional.Of[*data.Mutation] {
-	return newForParamPart(rule.ParamPart())
+	return newForParamPart(rule.ParamPart(), nonStrictlyMatchChildren)
 }
 
-func newForParamPart(paramPart st.RulePatternParamPart) func(obj base.Object) optional.Of[*data.Mutation] {
+func newWithStrictlyChildrenMatch(rule st.RulePattern) func(obj base.Object) optional.Of[*data.Mutation] {
+	return newForParamPart(rule.ParamPart(), strictlyMatchChildren)
+}
+
+func newForParamPart(paramPart st.RulePatternParamPart, nChildrenMatch func(nP int, nC int) bool) func(obj base.Object) optional.Of[*data.Mutation] {
 	switch {
 	case st.IsRulePatternParamPartTypeFixed(paramPart):
-		return newForFixedParamPart(st.UnsafeRulePatternParamPartToArrayOfRuleParamPatterns(paramPart))
+		return newForFixedParamPart(st.UnsafeRulePatternParamPartToArrayOfRuleParamPatterns(paramPart), nChildrenMatch)
 	case st.IsRulePatternParamPartTypeVariadic(paramPart):
-		return newForVariadicParamPart(st.UnsafeRulePatternParamPartToVariadicParamPart(paramPart))
+		return newForVariadicParamPart(st.UnsafeRulePatternParamPartToVariadicParamPart(paramPart), nChildrenMatch)
 	}
 	panic("not implemented")
 }
 
-func newForVariadicParamPart(paramPart st.RulePatternVariadicParamPart) func(obj base.Object) optional.Of[*data.Mutation] {
+func newForVariadicParamPart(paramPart st.RulePatternVariadicParamPart, nChildrenMatch func(nP int, nC int) bool) func(obj base.Object) optional.Of[*data.Mutation] {
 	switch {
 	case st.IsRulePatternVariadicParamPartTypeRight(paramPart):
-		return newForRightVariadicParamPart(st.UnsafeRulePatternVariadicParamPartTypeToRightVariadic(paramPart))
+		return newForRightVariadicParamPart(st.UnsafeRulePatternVariadicParamPartTypeToRightVariadic(paramPart), nChildrenMatch)
 	case st.IsRulePatternVariadicParamPartTypeLeft(paramPart):
-		return newForLeftVariadicParamPart(st.UnsafeRulePatternVariadicParamPartTypeToLeftVariadic(paramPart))
+		return newForLeftVariadicParamPart(st.UnsafeRulePatternVariadicParamPartTypeToLeftVariadic(paramPart), nChildrenMatch)
 	}
 	panic("not implemented")
 }
 
-func newForFixedParamPart(params []st.RuleParamPattern) func(obj base.Object) optional.Of[*data.Mutation] {
-	return fn.Compose(extractChildrenNodes(params), base.ObjectToChildren)
+func newForFixedParamPart(params []st.RuleParamPattern, nChildrenMatch func(nP int, nC int) bool) func(obj base.Object) optional.Of[*data.Mutation] {
+	return fn.Compose(extractChildrenNodes(params, nChildrenMatch), base.ObjectToChildren)
 }

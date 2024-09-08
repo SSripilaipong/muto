@@ -52,7 +52,8 @@ func newNumberParamExtractor(v st.Number) func(base.Node) optional.Of[*data.Muta
 }
 
 func newNestedRuleExtractor(p st.RulePattern) func(base.Node) optional.Of[*data.Mutation] {
-	extract := New(p)
+	extract := newWithStrictlyChildrenMatch(p)
+
 	return func(x base.Node) optional.Of[*data.Mutation] {
 		if base.IsNamedObjectNode(x) {
 			return extract(base.UnsafeNodeToObject(x))

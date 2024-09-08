@@ -7,10 +7,10 @@ import (
 	st "muto/syntaxtree"
 )
 
-func newForRightVariadicParamPart(pp st.RulePatternRightVariadicParamPart) func(obj base.Object) optional.Of[*data.Mutation] {
+func newForRightVariadicParamPart(pp st.RulePatternRightVariadicParamPart, nChildrenMatch func(nP int, nC int) bool) func(obj base.Object) optional.Of[*data.Mutation] {
 	fixedPart := pp.OtherPart()
 	nFixed := len(fixedPart)
-	extract := variadicExtractor(pp.Name(), fixedPart)
+	extract := variadicExtractor(pp.Name(), fixedPart, nChildrenMatch)
 
 	return func(obj base.Object) optional.Of[*data.Mutation] {
 		children := obj.Children()
@@ -18,10 +18,10 @@ func newForRightVariadicParamPart(pp st.RulePatternRightVariadicParamPart) func(
 	}
 }
 
-func newForLeftVariadicParamPart(pp st.RulePatternLeftVariadicParamPart) func(obj base.Object) optional.Of[*data.Mutation] {
+func newForLeftVariadicParamPart(pp st.RulePatternLeftVariadicParamPart, nChildrenMatch func(nP int, nC int) bool) func(obj base.Object) optional.Of[*data.Mutation] {
 	fixedPart := pp.OtherPart()
 	nFixed := len(fixedPart)
-	extract := variadicExtractor(pp.Name(), fixedPart)
+	extract := variadicExtractor(pp.Name(), fixedPart, nChildrenMatch)
 
 	return func(obj base.Object) optional.Of[*data.Mutation] {
 		children := obj.Children()
@@ -30,8 +30,8 @@ func newForLeftVariadicParamPart(pp st.RulePatternLeftVariadicParamPart) func(ob
 	}
 }
 
-func variadicExtractor(name string, fixedParam st.RulePatternFixedParamPart) func(fixedPart []base.Node, variadicPart []base.Node) optional.Of[*data.Mutation] {
-	extractChildren := extractChildrenNodes(fixedParam)
+func variadicExtractor(name string, fixedParam st.RulePatternFixedParamPart, nChildrenMatch func(nP int, nC int) bool) func(fixedPart []base.Node, variadicPart []base.Node) optional.Of[*data.Mutation] {
+	extractChildren := extractChildrenNodes(fixedParam, nChildrenMatch)
 
 	return func(fixed []base.Node, variadic []base.Node) optional.Of[*data.Mutation] {
 		if len(variadic) < 0 {

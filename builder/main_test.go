@@ -80,6 +80,13 @@ main = f 1 2 3
 `).Value()
 		assert.Equal(t, base.NewNamedObject("g", []base.Node{base.NewNumberFromString("2"), base.NewNumberFromString("3")}), execute(program))
 	})
+
+	t.Run("should match children strictly for nested pattern", func(t *testing.T) {
+		program := BuildFromString(`g (f 1) = 555
+main = g (f 1 2)
+`).Value()
+		assert.Equal(t, base.NewNamedObject("g", []base.Node{base.NewNamedObject("f", []base.Node{base.NewNumberFromString("1"), base.NewNumberFromString("2")}).ConfirmTermination()}), execute(program))
+	})
 }
 
 func execute(program Program) base.Node {
