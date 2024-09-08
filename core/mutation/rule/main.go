@@ -23,9 +23,12 @@ func withRemainingChildren(f func(*data.Mutation) optional.Of[base.Node]) func(*
 		if !ok {
 			return optional.Empty[base.Node]()
 		}
-		if base.IsObjectNode(node) {
-			node = base.UnsafeNodeToObject(node).AppendChildren(mutation.RemainingChildren())
+		if len(mutation.RemainingChildren()) == 0 {
+			return optional.Value(node)
 		}
-		return optional.Value(node)
+		if base.IsObjectNode(node) {
+			return optional.Value[base.Node](base.UnsafeNodeToObject(node).AppendChildren(mutation.RemainingChildren()))
+		}
+		return optional.Value[base.Node](base.NewDataObject([]base.Node{node}).AppendChildren(mutation.RemainingChildren()))
 	}
 }
