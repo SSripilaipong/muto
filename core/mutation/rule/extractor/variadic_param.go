@@ -26,6 +26,9 @@ func newForLeftVariadicParamPart(pp st.RulePatternLeftVariadicParamPart, nChildr
 	return func(obj base.Object) optional.Of[*data.Mutation] {
 		children := obj.Children()
 		nVariadic := len(children) - nFixed
+		if nVariadic < 0 {
+			return optional.Empty[*data.Mutation]()
+		}
 		return extract(children[nVariadic:], children[:nVariadic])
 	}
 }

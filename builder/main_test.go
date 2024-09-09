@@ -122,6 +122,13 @@ main = f (h "1" "2")
 `).Value()
 		assert.Equal(t, base.NewNamedObject("g", []base.Node{base.NewNamedObject("h", []base.Node{base.NewString("1"), base.NewString("2")}).ConfirmTermination()}), execute(program))
 	})
+
+	t.Run("should not fail when variadic param part tries to match with no children", func(t *testing.T) {
+		program := BuildFromString(`f (G S... 0) = 0
+main = f $
+`).Value()
+		assert.Equal(t, base.NewNamedObject("f", []base.Node{base.NewNamedObject("$", nil).ConfirmTermination()}), execute(program))
+	})
 }
 
 func execute(program Program) base.Node {
