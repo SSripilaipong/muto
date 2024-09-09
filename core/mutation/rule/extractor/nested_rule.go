@@ -11,7 +11,7 @@ func newNestedNamedRuleExtractor(p st.NamedRulePattern) func(base.Node) optional
 	extractFromChildren := newWithStrictlyChildrenMatch(p.ParamPart())
 
 	return func(x base.Node) optional.Of[*data.Mutation] {
-		if base.IsNamedObjectNode(x) {
+		if base.IsNamedObjectNode(x) && base.UnsafeNodeToNamedObject(x).Name() == p.ObjectName() {
 			return extractFromChildren(base.UnsafeNodeToObject(x))
 		}
 		return optional.Empty[*data.Mutation]()
