@@ -1,6 +1,9 @@
 package automaton
 
-import "unicode"
+import (
+	"slices"
+	"unicode"
+)
 
 type Identifier struct {
 	namer
@@ -13,7 +16,7 @@ func newIdentifier() Identifier {
 }
 
 func (t Identifier) Accept(x rune) (Abstract, bool) {
-	if unicode.IsLetter(x) || unicode.IsDigit(x) || x == '_' {
+	if unicode.IsLetter(x) || unicode.IsDigit(x) || slices.Contains([]rune{'_', '?'}, x) {
 		return newIdentifier(), true
 	}
 	if x == '.' {

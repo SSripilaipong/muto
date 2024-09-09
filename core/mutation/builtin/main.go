@@ -10,5 +10,8 @@ func NewMutators() []object.Mutator {
 		addMutator,
 		subtractMutator,
 		concatMutator,
+		isStringMutator,
+		isNumberMutator,
+		isBooleanMutator,
 	}
 }

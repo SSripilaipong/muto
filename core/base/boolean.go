@@ -13,3 +13,11 @@ func NewBoolean(x bool) Boolean {
 	}
 	return Boolean{NewNamedObject(name, nil)}
 }
+
+func IsBooleanNode(x Node) bool {
+	if !IsNamedObjectNode(x) {
+		return false
+	}
+	name := UnsafeNodeToNamedObject(x).Name()
+	return name == "true" || name == "false"
+}

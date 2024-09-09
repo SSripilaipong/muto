@@ -8,32 +8,18 @@ import (
 	"muto/core/mutation/object"
 )
 
-var addMutator = object.NewMutator("+", slc.Pure(func(t base.Object) optional.Of[base.Node] {
-	children := t.Children()
-	if len(children) < 2 {
+var addMutator = object.NewMutator("+", slc.Pure(binaryOp(func(x, y base.Node) optional.Of[base.Node] {
+	if !base.IsNumberNode(x) || !base.IsNumberNode(y) {
 		return optional.Empty[base.Node]()
 	}
-	n, m := children[0], children[1]
-	if !base.IsNumberNode(n) || !base.IsNumberNode(m) {
-		return optional.Empty[base.Node]()
-	}
-	a, b := base.UnsafeNodeToNumber(n), base.UnsafeNodeToNumber(m)
-	c := datatype.AddNumber(a.Value(), b.Value())
+	a, b := base.UnsafeNodeToNumber(x), base.UnsafeNodeToNumber(y)
+	return optional.Value[base.Node](base.NewNumber(datatype.AddNumber(a.Value(), b.Value())))
+})))
 
-	return valueWithRemainingChildren(base.NewNumber(c), children[2:])
-}))
-
-var subtractMutator = object.NewMutator("-", slc.Pure(func(t base.Object) optional.Of[base.Node] {
-	children := t.Children()
-	if len(children) < 2 {
+var subtractMutator = object.NewMutator("-", slc.Pure(binaryOp(func(x, y base.Node) optional.Of[base.Node] {
+	if !base.IsNumberNode(x) || !base.IsNumberNode(y) {
 		return optional.Empty[base.Node]()
 	}
-	n, m := children[0], children[1]
-	if !base.IsNumberNode(n) || !base.IsNumberNode(m) {
-		return optional.Empty[base.Node]()
-	}
-	a, b := base.UnsafeNodeToNumber(n), base.UnsafeNodeToNumber(m)
-	c := datatype.SubtractNumber(a.Value(), b.Value())
-
-	return valueWithRemainingChildren(base.NewNumber(c), children[2:])
-}))
+	a, b := base.UnsafeNodeToNumber(x), base.UnsafeNodeToNumber(y)
+	return optional.Value[base.Node](base.NewNumber(datatype.SubtractNumber(a.Value(), b.Value())))
+})))
