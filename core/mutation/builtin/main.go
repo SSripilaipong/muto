@@ -7,5 +7,8 @@ func NewMutators() []object.Mutator {
 		rollingAddMutator,
 		rollingConcatMutator,
 		stringMutator,
+		addMutator,
+		subtractMutator,
+		concatMutator,
 	}
 }

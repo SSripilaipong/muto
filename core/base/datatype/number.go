@@ -70,3 +70,10 @@ func AddNumber(a Number, b Number) Number {
 	}
 	return newNumberFloat(a.ToFloat() + b.ToFloat())
 }
+
+func SubtractNumber(a Number, b Number) Number {
+	if a.IsInt() && b.IsInt() {
+		return newNumberInt(a.ToInt() - b.ToInt())
+	}
+	return newNumberFloat(a.ToFloat() - b.ToFloat())
+}
