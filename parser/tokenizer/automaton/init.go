@@ -27,6 +27,8 @@ func (t Init) Accept(x rune) (Abstract, bool) {
 		return newSpace(), true
 	} else if isBracket(x) {
 		return newBracket(), true
+	} else if x == '-' {
+		return newLeadingNegative(), true
 	} else if unicode.IsSymbol(x) || unicode.IsPunct(x) {
 		return newSymbol(), true
 	}
