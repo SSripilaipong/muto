@@ -1,11 +1,11 @@
 package syntaxtree
 
 type Rule struct {
-	pattern RulePattern
+	pattern NamedRulePattern
 	result  RuleResult
 }
 
-func NewRule(p RulePattern, r RuleResult) Rule {
+func NewRule(p NamedRulePattern, r RuleResult) Rule {
 	return Rule{pattern: p, result: r}
 }
 
@@ -13,7 +13,7 @@ func (r Rule) StatementType() StatementType { return RuleStatement }
 
 func (r Rule) Result() RuleResult { return r.result }
 
-func (r Rule) Pattern() RulePattern { return r.pattern }
+func (r Rule) Pattern() NamedRulePattern { return r.pattern }
 
 func (r Rule) PatternName() string { return r.Pattern().ObjectName() }
 

@@ -6,6 +6,14 @@ func (RulePatternFixedParamPart) RulePatternParamPartType() RulePatternParamPart
 	return RulePatternParamPartTypeFixed
 }
 
+func RuleParamPatternsToRulePatternFixedParamPart(xs []RuleParamPattern) RulePatternFixedParamPart {
+	return xs
+}
+
+func RuleParamPatternsToRulePatternParamPart(xs []RuleParamPattern) RulePatternParamPart {
+	return RuleParamPatternsToRulePatternFixedParamPart(xs)
+}
+
 func UnsafeRulePatternParamPartToArrayOfRuleParamPatterns(p RulePatternParamPart) []RuleParamPattern {
 	return p.(RulePatternFixedParamPart)
 }

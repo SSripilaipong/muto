@@ -8,11 +8,11 @@ import (
 	st "muto/syntaxtree"
 )
 
-func New(rule st.RulePattern) func(obj base.Object) optional.Of[*data.Mutation] {
+func New(rule st.NamedRulePattern) func(obj base.Object) optional.Of[*data.Mutation] {
 	return newForParamPart(rule.ParamPart(), nonStrictlyMatchChildren)
 }
 
-func newWithStrictlyChildrenMatch(rule st.RulePattern) func(obj base.Object) optional.Of[*data.Mutation] {
+func newWithStrictlyChildrenMatch(rule st.NamedRulePattern) func(obj base.Object) optional.Of[*data.Mutation] {
 	return newForParamPart(rule.ParamPart(), strictlyMatchChildren)
 }
 

@@ -7,14 +7,30 @@ import (
 	st "muto/syntaxtree"
 )
 
-func rulePattern() func(xs []tokenizer.Token) []tuple.Of2[st.RulePattern, []tokenizer.Token] {
+func namedRulePattern() func(xs []tokenizer.Token) []tuple.Of2[st.NamedRulePattern, []tokenizer.Token] {
+	return ps.Map(mergeNamedRulePattern, ps.Sequence2(objectName, rulePatternParamPart()))
+}
+
+func variableRulePattern() func(xs []tokenizer.Token) []tuple.Of2[st.VariableRulePattern, []tokenizer.Token] {
+	return ps.Map(mergeVariableRulePattern, ps.Sequence2(variable, rulePatternParamPart()))
+}
+
+func rulePatternParamPart() func([]tokenizer.Token) []tuple.Of2[st.RulePatternParamPart, []tokenizer.Token] {
 	fixedParam := fixedRuleParamPattern()
 	return ps.Or(
-		ps.Map(mergeFixedRulePattern, ps.Sequence2(objectName, ps.OptionalGreedyRepeat(fixedParam))),
-		ps.Map(mergeLeftVariadicRulePattern, ps.Sequence3(objectName, variadicVar, ps.OptionalGreedyRepeat(fixedParam))),
-		ps.Map(mergeRightVariadicRulePattern, ps.Sequence3(objectName, ps.GreedyRepeatAtLeastOnce(fixedParam), variadicVar)),
+		ps.Map(st.RuleParamPatternsToRulePatternParamPart, ps.OptionalGreedyRepeat(fixedParam)),
+		ps.Map(mergeLeftVariadicRulePatternParamPart, ps.Sequence2(variadicVar, ps.OptionalGreedyRepeat(fixedParam))),
+		ps.Map(mergeRightVariadicRulePatternParamPart, ps.Sequence2(ps.GreedyRepeatAtLeastOnce(fixedParam), variadicVar)),
 	)
 }
+
+var mergeLeftVariadicRulePatternParamPart = tuple.Fn2(func(v variadicVarNode, p []st.RuleParamPattern) st.RulePatternParamPart {
+	return st.NewRulePatternLeftVariadicParamPart(v.Name(), p)
+})
+
+var mergeRightVariadicRulePatternParamPart = tuple.Fn2(func(p []st.RuleParamPattern, v variadicVarNode) st.RulePatternParamPart {
+	return st.NewRulePatternRightVariadicParamPart(v.Name(), p)
+})
 
 func fixedRuleParamPattern() func(xs []tokenizer.Token) []tuple.Of2[st.RuleParamPattern, []tokenizer.Token] {
 	return ps.Or(
@@ -26,31 +42,12 @@ func fixedRuleParamPattern() func(xs []tokenizer.Token) []tuple.Of2[st.RuleParam
 	)
 }
 
-func mergeFixedRulePattern(xs tuple.Of2[tokenizer.Token, []st.RuleParamPattern]) st.RulePattern {
-	return tuple.Fn2(func(name tokenizer.Token, params []st.RuleParamPattern) st.RulePattern {
-		return st.NewRulePattern(name.Value(), st.RulePatternFixedParamPart(params))
-	})(xs)
-}
+var mergeNamedRulePattern = tuple.Fn2(func(name tokenizer.Token, params st.RulePatternParamPart) st.NamedRulePattern {
+	return st.NewNamedRulePattern(name.Value(), params)
+})
 
-func mergeLeftVariadicRulePattern(xs tuple.Of3[tokenizer.Token, variadicVarNode, []st.RuleParamPattern]) st.RulePattern {
-	return tuple.Fn3(func(name tokenizer.Token, v variadicVarNode, params []st.RuleParamPattern) st.RulePattern {
-		return st.NewRulePattern(name.Value(), st.NewRulePatternLeftVariadicParamPart(v.Name(), st.RulePatternFixedParamPart(params)))
-	})(xs)
-}
-
-func mergeRightVariadicRulePattern(xs tuple.Of3[tokenizer.Token, []st.RuleParamPattern, variadicVarNode]) st.RulePattern {
-	return tuple.Fn3(func(name tokenizer.Token, params []st.RuleParamPattern, v variadicVarNode) st.RulePattern {
-		return st.NewRulePattern(name.Value(), st.NewRulePatternRightVariadicParamPart(v.Name(), params))
-	})(xs)
-}
-
-func nestedObjectRuleParamPattern(xs []tokenizer.Token) []tuple.Of2[st.RuleParamPattern, []tokenizer.Token] {
-	pattern := ps.Sequence3(openParenthesis, rulePattern(), closeParenthesis)
-	return ps.Map(mergeNestedObjectRuleParamPattern, pattern)(xs)
-}
-
-var mergeNestedObjectRuleParamPattern = tuple.Fn3(func(_ tokenizer.Token, o st.RulePattern, _ tokenizer.Token) st.RuleParamPattern {
-	return o
+var mergeVariableRulePattern = tuple.Fn2(func(name tokenizer.Token, params st.RulePatternParamPart) st.VariableRulePattern {
+	return st.NewVariableRulePattern(name.Value(), params)
 })
 
 func variableToRuleParamPattern(x tokenizer.Token) st.RuleParamPattern {
@@ -66,5 +63,5 @@ func numberToRuleParamPattern(x tokenizer.Token) st.RuleParamPattern {
 }
 
 func objectNameToRuleParamPattern(x tokenizer.Token) st.RuleParamPattern {
-	return st.NewRulePattern(x.Value(), st.RulePatternFixedParamPart{})
+	return st.NewNamedRulePattern(x.Value(), st.RulePatternFixedParamPart{})
 }

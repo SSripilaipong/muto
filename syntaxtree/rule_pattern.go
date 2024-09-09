@@ -1,32 +1,57 @@
 package syntaxtree
 
-type RulePattern struct {
+type NamedRulePattern struct {
 	objectName string
 	params     RulePatternParamPart
 }
 
-func (RulePattern) RuleParamPatternType() RuleParamPatternType {
-	return RuleParamPatternTypeNestedRulePattern
+func (NamedRulePattern) RuleParamPatternType() RuleParamPatternType {
+	return RuleParamPatternTypeNestedNamedRulePattern
 }
 
-func (p RulePattern) ObjectName() string {
+func (p NamedRulePattern) ObjectName() string {
 	return p.objectName
 }
 
-func (p RulePattern) ParamPart() RulePatternParamPart {
+func (p NamedRulePattern) ParamPart() RulePatternParamPart {
 	return p.params
 }
 
-func NewRulePattern(objectName string, params RulePatternParamPart) RulePattern {
-	return RulePattern{objectName: objectName, params: params}
+func NewNamedRulePattern(objectName string, params RulePatternParamPart) NamedRulePattern {
+	return NamedRulePattern{objectName: objectName, params: params}
 }
 
-func ParamPartOfRulePattern(p RulePattern) RulePatternParamPart {
-	return p.ParamPart()
+func NamedRulePatternToRulePatternParam(x NamedRulePattern) RuleParamPattern {
+	return x
 }
 
-func UnsafeRuleParamPatternToRulePattern(p RuleParamPattern) RulePattern {
-	return p.(RulePattern)
+func UnsafeRuleParamPatternToNamedRulePattern(p RuleParamPattern) NamedRulePattern {
+	return p.(NamedRulePattern)
+}
+
+type VariableRulePattern struct {
+	variableName string
+	params       RulePatternParamPart
+}
+
+func (VariableRulePattern) RuleParamPatternType() RuleParamPatternType {
+	return RuleParamPatternTypeNestedVariableRulePattern
+}
+
+func (p VariableRulePattern) VariableName() string {
+	return p.variableName
+}
+
+func (p VariableRulePattern) ParamPart() RulePatternParamPart {
+	return p.params
+}
+
+func NewVariableRulePattern(variableName string, params RulePatternParamPart) VariableRulePattern {
+	return VariableRulePattern{variableName: variableName, params: params}
+}
+
+func VariableRulePatternToRulePatternParam(x VariableRulePattern) RuleParamPattern {
+	return x
 }
 
 type RulePatternParamPart interface {
