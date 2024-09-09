@@ -33,12 +33,12 @@ main = hello "world"
 	})
 
 	t.Run("should resolve builtin add object", func(t *testing.T) {
-		program := BuildFromString(`main = + 1 2`).Value()
+		program := BuildFromString(`main = +~ 1 2`).Value()
 		assert.Equal(t, base.NewNumberFromString("3"), execute(program))
 	})
 
 	t.Run("should resolve builtin concat object", func(t *testing.T) {
-		program := BuildFromString(`main = ++ "hello" " world"`).Value()
+		program := BuildFromString(`main = ++~ "hello" " world"`).Value()
 		assert.Equal(t, base.NewString("hello world"), execute(program))
 	})
 
@@ -70,7 +70,7 @@ main = hello (f "abc" 123)
 	})
 
 	t.Run("should resolve with post-order mutation", func(t *testing.T) {
-		program := BuildFromString(`main = ++ "hello " (string (+ 3 1)) (string (+ 1 1))`).Value()
+		program := BuildFromString(`main = ++~ "hello " (string (+~ 3 1)) (string (+~ 1 1))`).Value()
 		assert.Equal(t, base.NewString("hello 42"), execute(program))
 	})
 

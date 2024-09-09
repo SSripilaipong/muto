@@ -6,14 +6,16 @@ import (
 	"muto/core/mutation/object"
 )
 
-var concatMutator = object.NewMutator("++", []func(t base.Object) optional.Of[base.Node]{
-	concatTwo,
-	concatTwoTerminate,
-	concatOne,
+const rollingConcatSymbol = "++~"
+
+var rollingConcatMutator = object.NewMutator(rollingConcatSymbol, []func(t base.Object) optional.Of[base.Node]{
+	rollingConcatTwo,
+	rollingConcatTwoTerminate,
+	rollingConcatOne,
 	terminate,
 })
 
-func concatTwo(t base.Object) optional.Of[base.Node] {
+func rollingConcatTwo(t base.Object) optional.Of[base.Node] {
 	children := t.Children()
 	if len(children) < 2 {
 		return optional.Empty[base.Node]()
@@ -26,10 +28,10 @@ func concatTwo(t base.Object) optional.Of[base.Node] {
 	c := a.Value() + b.Value()
 
 	newChildren := append([]base.Node{base.NewString(c)}, children[2:]...)
-	return optional.Value(base.NamedObjectToNode(base.NewNamedObject("++", newChildren)))
+	return optional.Value(base.NamedObjectToNode(base.NewNamedObject(rollingConcatSymbol, newChildren)))
 }
 
-func concatTwoTerminate(t base.Object) optional.Of[base.Node] {
+func rollingConcatTwoTerminate(t base.Object) optional.Of[base.Node] {
 	children := t.Children()
 	if len(children) < 2 {
 		return optional.Empty[base.Node]()
@@ -37,7 +39,7 @@ func concatTwoTerminate(t base.Object) optional.Of[base.Node] {
 	return optional.Value[base.Node](t.ConfirmTermination())
 }
 
-func concatOne(t base.Object) optional.Of[base.Node] {
+func rollingConcatOne(t base.Object) optional.Of[base.Node] {
 	children := t.Children()
 	if len(children) < 1 {
 		return optional.Empty[base.Node]()
