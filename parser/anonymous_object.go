@@ -8,10 +8,7 @@ import (
 )
 
 func anonymousObject(xs []tokenizer.Token) []tuple.Of2[anonymousObjectNode, []tokenizer.Token] {
-	paramPart := ps.Or(
-		ps.OptionalGreedyRepeat(objectParam),
-	)
-	return ps.Map(mergeAnonymousObject, ps.Sequence2(anonymousObjectHead, paramPart))(xs)
+	return ps.Map(mergeAnonymousObject, ps.Sequence2(anonymousObjectHead, ps.OptionalGreedyRepeat(objectParam)))(xs)
 }
 
 var mergeAnonymousObject = tuple.Fn2(func(head syntaxtree.RuleResult, params []syntaxtree.ObjectParam) anonymousObjectNode {

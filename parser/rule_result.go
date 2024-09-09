@@ -8,9 +8,9 @@ import (
 
 var ruleResult = ps.Or(
 	valueRuleResult,
-	ps.Map(variableToRuleResult, variable),
 	ps.Map(namedObjectNodeToRuleResult, namedObject),
 	ps.Map(anonymousObjectNodeToRuleResult, anonymousObject),
+	ps.Map(variableToRuleResult, variable),
 )
 
 var valueRuleResult = ps.Or(
