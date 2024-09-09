@@ -36,5 +36,5 @@ var namedObjectNodeToRuleResult = func(obj namedObjectNode) syntaxtree.RuleResul
 }
 
 var anonymousObjectNodeToRuleResult = func(obj anonymousObjectNode) syntaxtree.RuleResult {
-	return syntaxtree.NewRuleResultAnonymousObject(obj.Head(), obj.Params())
+	return syntaxtree.NewRuleResultAnonymousObject(obj.Head(), obj.ParamPart())
 }

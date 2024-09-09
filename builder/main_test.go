@@ -115,6 +115,13 @@ main = f (hello "world")
 `).Value()
 		assert.Equal(t, base.NewNamedObject("h", []base.Node{base.NewNamedObject("hello", []base.Node{base.NewString("world")}).ConfirmTermination()}), execute(program))
 	})
+
+	t.Run("should build nested variable object with variadic params", func(t *testing.T) {
+		program := BuildFromString(`f (H X...) = g (H X...)
+main = f (h "1" "2")
+`).Value()
+		assert.Equal(t, base.NewNamedObject("g", []base.Node{base.NewNamedObject("h", []base.Node{base.NewString("1"), base.NewString("2")}).ConfirmTermination()}), execute(program))
+	})
 }
 
 func execute(program Program) base.Node {

@@ -3,7 +3,6 @@ package builder
 import (
 	"muto/common/fn"
 	"muto/common/optional"
-	"muto/common/slc"
 	"muto/core/base"
 	"muto/core/mutation/rule/data"
 	st "muto/syntaxtree"
@@ -20,20 +19,19 @@ func buildNamedObject(obj st.RuleResultNamedObject) func(*data.Mutation) optiona
 
 func buildAnonymousObject(obj st.RuleResultAnonymousObject) func(*data.Mutation) optional.Of[base.Node] {
 	buildHead := New(obj.Head())
-	buildParams := slc.Map(buildObjectParam)(obj.Params())
+	buildChildren := buildChildren(obj.ParamPart())
 
 	return func(mapping *data.Mutation) optional.Of[base.Node] {
+		children, ok := buildChildren(mapping).Return()
+		if !ok {
+			return optional.Empty[base.Node]()
+		}
 		head, hasHead := buildHead(mapping).Return()
 		if !hasHead {
 			return optional.Empty[base.Node]()
 		}
 
-		newObj := base.NewAnonymousObject(head, nil)
-		return fn.Compose3(
-			optional.Map(base.AnonymousObjectToNode),
-			slc.Fold(aggregateAnonymousObjectParams)(optional.Value[base.AnonymousObject](newObj)),
-			slc.Map(fn.CallWith[optional.Of[base.Node]](mapping)),
-		)(buildParams)
+		return optional.Value[base.Node](base.NewAnonymousObject(head, children))
 	}
 }
 

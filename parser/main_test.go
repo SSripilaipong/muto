@@ -32,7 +32,7 @@ func TestParseAnonymousObject(t *testing.T) {
 				st.NewNamedRulePattern("main", st.RulePatternFixedParamPart([]st.RuleParamPattern{st.NewVariable("A")})),
 				st.NewRuleResultAnonymousObject(
 					st.NewRuleResultNamedObject("+", st.ObjectFixedParamPart([]st.ObjectParam{st.NewNumber("1"), st.NewNumber("2")})),
-					[]st.ObjectParam{st.NewNumber("3"), st.NewNumber("4")},
+					st.ObjectParamsToObjectFixedParamPart([]st.ObjectParam{st.NewNumber("3"), st.NewNumber("4")}),
 				),
 			),
 		})})
@@ -48,8 +48,8 @@ func TestParseAnonymousObject(t *testing.T) {
 			st.NewRule(
 				st.NewNamedRulePattern("main", st.RulePatternFixedParamPart([]st.RuleParamPattern{st.NewVariable("A")})),
 				st.NewRuleResultAnonymousObject(
-					st.NewRuleResultAnonymousObject(st.NewRuleResultNamedObject("+", st.ObjectFixedParamPart([]st.ObjectParam{st.NewNumber("1"), st.NewNumber("2")})), []st.ObjectParam{st.NewNumber("3"), st.NewNumber("4")}),
-					[]st.ObjectParam{st.NewNumber("5"), st.NewNumber("6")},
+					st.NewRuleResultAnonymousObject(st.NewRuleResultNamedObject("+", st.ObjectFixedParamPart([]st.ObjectParam{st.NewNumber("1"), st.NewNumber("2")})), st.ObjectParamsToObjectFixedParamPart([]st.ObjectParam{st.NewNumber("3"), st.NewNumber("4")})),
+					st.ObjectParamsToObjectFixedParamPart([]st.ObjectParam{st.NewNumber("5"), st.NewNumber("6")}),
 				),
 			),
 		})})

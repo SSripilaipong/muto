@@ -1,12 +1,12 @@
 package syntaxtree
 
 type RuleResultAnonymousObject struct {
-	head   RuleResult
-	params []ObjectParam
+	head      RuleResult
+	paramPart ObjectParamPart
 }
 
-func NewRuleResultAnonymousObject(head RuleResult, params []ObjectParam) RuleResultAnonymousObject {
-	return RuleResultAnonymousObject{head: head, params: params}
+func NewRuleResultAnonymousObject(head RuleResult, paramPart ObjectParamPart) RuleResultAnonymousObject {
+	return RuleResultAnonymousObject{head: head, paramPart: paramPart}
 }
 
 func (RuleResultAnonymousObject) RuleResultType() RuleResultType {
@@ -17,8 +17,8 @@ func (obj RuleResultAnonymousObject) Head() RuleResult {
 	return obj.head
 }
 
-func (obj RuleResultAnonymousObject) Params() []ObjectParam {
-	return obj.params
+func (obj RuleResultAnonymousObject) ParamPart() ObjectParamPart {
+	return obj.paramPart
 }
 
 type AnonymousObjectHeadType string

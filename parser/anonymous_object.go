@@ -4,18 +4,18 @@ import (
 	ps "muto/common/parsing"
 	"muto/common/tuple"
 	"muto/parser/tokenizer"
-	"muto/syntaxtree"
+	st "muto/syntaxtree"
 )
 
 func anonymousObject(xs []tokenizer.Token) []tuple.Of2[anonymousObjectNode, []tokenizer.Token] {
-	return ps.Map(mergeAnonymousObject, ps.Sequence2(anonymousObjectHead, ps.OptionalGreedyRepeat(objectParam)))(xs)
+	return ps.Map(mergeAnonymousObject, ps.Sequence2(anonymousObjectHead, objectParamPart))(xs)
 }
 
-var mergeAnonymousObject = tuple.Fn2(func(head syntaxtree.RuleResult, params []syntaxtree.ObjectParam) anonymousObjectNode {
-	return anonymousObjectNode{head: head, params: params}
+var mergeAnonymousObject = tuple.Fn2(func(head st.RuleResult, params st.ObjectParamPart) anonymousObjectNode {
+	return anonymousObjectNode{head: head, paramPart: params}
 })
 
-func anonymousObjectHead(xs []tokenizer.Token) []tuple.Of2[syntaxtree.RuleResult, []tokenizer.Token] {
+func anonymousObjectHead(xs []tokenizer.Token) []tuple.Of2[st.RuleResult, []tokenizer.Token] {
 	return ps.Or(
 		ps.Map(mergeAnonymousObjectHeadForVariable, variable),
 		ps.Map(mergeAnonymousObjectHeadForNamedObject, ps.Sequence3(openParenthesis, namedObject, closeParenthesis)),
@@ -23,27 +23,27 @@ func anonymousObjectHead(xs []tokenizer.Token) []tuple.Of2[syntaxtree.RuleResult
 	)(xs)
 }
 
-func mergeAnonymousObjectHeadForVariable(v tokenizer.Token) syntaxtree.RuleResult {
-	return syntaxtree.NewVariable(v.Value())
+func mergeAnonymousObjectHeadForVariable(v tokenizer.Token) st.RuleResult {
+	return st.NewVariable(v.Value())
 }
 
-var mergeAnonymousObjectHeadForNamedObject = tuple.Fn3(func(_ tokenizer.Token, x namedObjectNode, _ tokenizer.Token) syntaxtree.RuleResult {
-	return syntaxtree.NewRuleResultNamedObject(x.Name(), x.Params())
+var mergeAnonymousObjectHeadForNamedObject = tuple.Fn3(func(_ tokenizer.Token, x namedObjectNode, _ tokenizer.Token) st.RuleResult {
+	return st.NewRuleResultNamedObject(x.Name(), x.Params())
 })
 
-var mergeAnonymousObjectHeadForAnonymousObject = tuple.Fn3(func(_ tokenizer.Token, x anonymousObjectNode, _ tokenizer.Token) syntaxtree.RuleResult {
-	return syntaxtree.NewRuleResultAnonymousObject(x.Head(), x.Params())
+var mergeAnonymousObjectHeadForAnonymousObject = tuple.Fn3(func(_ tokenizer.Token, x anonymousObjectNode, _ tokenizer.Token) st.RuleResult {
+	return st.NewRuleResultAnonymousObject(x.Head(), x.ParamPart())
 })
 
 type anonymousObjectNode struct {
-	head   syntaxtree.RuleResult
-	params []syntaxtree.ObjectParam
+	head      st.RuleResult
+	paramPart st.ObjectParamPart
 }
 
-func (n anonymousObjectNode) Params() []syntaxtree.ObjectParam {
-	return n.params
+func (n anonymousObjectNode) ParamPart() st.ObjectParamPart {
+	return n.paramPart
 }
 
-func (n anonymousObjectNode) Head() syntaxtree.RuleResult {
+func (n anonymousObjectNode) Head() st.RuleResult {
 	return n.head
 }

@@ -11,14 +11,6 @@ func namedObject(xs []tokenizer.Token) []tuple.Of2[namedObjectNode, []tokenizer.
 	return ps.Map(mergeNamedObjectNode, ps.Sequence2(objectName, objectParamPart))(xs)
 }
 
-func objectParamPart(xs []tokenizer.Token) []tuple.Of2[st.ObjectParamPart, []tokenizer.Token] {
-	return ps.Or(
-		ps.Map(mergeLeftVariadicParamPart, ps.Sequence2(variadicVar, ps.OptionalGreedyRepeat(objectParam))),
-		ps.Map(mergeRightVariadicParamPart, ps.Sequence2(ps.GreedyRepeatAtLeastOnce(objectParam), variadicVar)),
-		ps.Map(st.ObjectParamsToObjectParamPart, ps.OptionalGreedyRepeat(objectParam)),
-	)(xs)
-}
-
 var mergeLeftVariadicParamPart = tuple.Fn2(func(v variadicVarNode, params []st.ObjectParam) st.ObjectParamPart {
 	return st.NewObjectLeftVariadicParamPart(v.Name(), params)
 })
