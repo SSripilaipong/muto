@@ -101,6 +101,20 @@ main = f 1 2
 `).Value()
 		assert.Equal(t, base.NewDataObject([]base.Node{base.NewNumberFromString("999"), base.NewNumberFromString("2")}), execute(program))
 	})
+
+	t.Run("should resolve to data object when there are children left", func(t *testing.T) {
+		program := BuildFromString(`f X = 999
+main = f 1 2
+`).Value()
+		assert.Equal(t, base.NewDataObject([]base.Node{base.NewNumberFromString("999"), base.NewNumberFromString("2")}), execute(program))
+	})
+
+	t.Run("should extract nested object with variable object name pattern", func(t *testing.T) {
+		program := BuildFromString(`f (G X) = h (G X)
+main = f (hello "world")
+`).Value()
+		assert.Equal(t, base.NewNamedObject("h", []base.Node{base.NewNamedObject("hello", []base.Node{base.NewString("world")}).ConfirmTermination()}), execute(program))
+	})
 }
 
 func execute(program Program) base.Node {

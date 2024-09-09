@@ -21,6 +21,8 @@ func newParamExtractor(p st.RuleParamPattern) func(base.Node) optional.Of[*data.
 		return newNumberParamExtractor(st.UnsafeRuleParamPatternToNumber(p))
 	} else if st.IsRuleParamPatternNestedNamedRulePattern(p) {
 		return newNestedNamedRuleExtractor(st.UnsafeRuleParamPatternToNamedRulePattern(p))
+	} else if st.IsRuleParamPatternNestedVariableRulePattern(p) {
+		return newNestedVariableRuleExtractor(st.UnsafeRuleParamPatternToVariableRulePattern(p))
 	}
 	panic("not implemented")
 }
@@ -46,17 +48,6 @@ func newNumberParamExtractor(v st.Number) func(base.Node) optional.Of[*data.Muta
 	return func(x base.Node) optional.Of[*data.Mutation] {
 		if base.IsNumberNode(x) && base.UnsafeNodeToNumber(x).Value() == value {
 			return optional.Value(data.NewMutation())
-		}
-		return optional.Empty[*data.Mutation]()
-	}
-}
-
-func newNestedNamedRuleExtractor(p st.NamedRulePattern) func(base.Node) optional.Of[*data.Mutation] {
-	extract := newWithStrictlyChildrenMatch(p)
-
-	return func(x base.Node) optional.Of[*data.Mutation] {
-		if base.IsNamedObjectNode(x) {
-			return extract(base.UnsafeNodeToObject(x))
 		}
 		return optional.Empty[*data.Mutation]()
 	}

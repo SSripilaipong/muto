@@ -50,6 +50,10 @@ func NewVariableRulePattern(variableName string, params RulePatternParamPart) Va
 	return VariableRulePattern{variableName: variableName, params: params}
 }
 
+func UnsafeRuleParamPatternToVariableRulePattern(p RuleParamPattern) VariableRulePattern {
+	return p.(VariableRulePattern)
+}
+
 func VariableRulePatternToRulePatternParam(x VariableRulePattern) RuleParamPattern {
 	return x
 }

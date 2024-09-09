@@ -12,10 +12,6 @@ func New(rule st.NamedRulePattern) func(obj base.Object) optional.Of[*data.Mutat
 	return newForParamPart(rule.ParamPart(), nonStrictlyMatchChildren)
 }
 
-func newWithStrictlyChildrenMatch(rule st.NamedRulePattern) func(obj base.Object) optional.Of[*data.Mutation] {
-	return newForParamPart(rule.ParamPart(), strictlyMatchChildren)
-}
-
 func newForParamPart(paramPart st.RulePatternParamPart, nChildrenMatch func(nP int, nC int) bool) func(obj base.Object) optional.Of[*data.Mutation] {
 	switch {
 	case st.IsRulePatternParamPartTypeFixed(paramPart):

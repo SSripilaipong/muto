@@ -51,6 +51,16 @@ func (m *Mutation) mergeVariableMappings(mapping map[string]VariableMapping) opt
 	return optional.Value(newM)
 }
 
+func (m *Mutation) WithVariableMappings(x VariableMapping) optional.Of[*Mutation] {
+	newM := m.Clone()
+	k := x.name
+	if y, exists := newM.variableMapping[k]; !exists || y == x {
+		newM.variableMapping[k] = x
+		return optional.Value(newM)
+	}
+	return optional.Empty[*Mutation]()
+}
+
 func (m *Mutation) mergeVariadicVarMappings(mapping map[string]VariadicVarMapping) optional.Of[*Mutation] {
 	newM := m.Clone()
 	for k, x := range mapping {
@@ -66,12 +76,11 @@ func (m *Mutation) mergeVariadicVarMappings(mapping map[string]VariadicVarMappin
 func (m *Mutation) WithVariadicVarMappings(x VariadicVarMapping) optional.Of[*Mutation] {
 	newM := m.Clone()
 	k := x.name
-	if y, ok := newM.variadicVarMapping[k]; !ok {
+	if y, exists := newM.variadicVarMapping[k]; !exists || x.Equal(y) {
 		newM.variadicVarMapping[k] = x
-	} else if !x.Equal(y) {
-		return optional.Empty[*Mutation]()
+		return optional.Value(newM)
 	}
-	return optional.Value(newM)
+	return optional.Empty[*Mutation]()
 }
 
 func (m *Mutation) Clone() *Mutation {
