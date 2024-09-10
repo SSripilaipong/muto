@@ -14,6 +14,9 @@ func newForRightVariadicParamPart(pp st.RulePatternRightVariadicParamPart, nChil
 
 	return func(obj base.Object) optional.Of[*data.Mutation] {
 		children := obj.Children()
+		if nFixed < 0 || nFixed > len(children) {
+			return optional.Empty[*data.Mutation]()
+		}
 		return extract(children[:nFixed], children[nFixed:])
 	}
 }

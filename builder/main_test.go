@@ -129,6 +129,13 @@ main = f $
 `).Value()
 		assert.Equal(t, base.NewNamedObject("f", []base.Node{base.NewNamedObject("$", nil).ConfirmTermination()}), execute(program))
 	})
+
+	t.Run("should not fail when variadic right param part tries to match with no children", func(t *testing.T) {
+		program := BuildFromString(`f 0 S... = 0
+main = f
+`).Value()
+		assert.Equal(t, base.NewNamedObject("f", nil), execute(program))
+	})
 }
 
 func execute(program Program) base.Node {
