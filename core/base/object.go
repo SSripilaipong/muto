@@ -14,6 +14,7 @@ type Object interface {
 	ConfirmTermination() Object
 	LiftTermination() Object
 	ReplaceChild(i int, n Node) Object
+	ActivelyMutateWithObjMutateFunc(objMutate func(string, NamedObject) optional.Of[Node]) optional.Of[Node]
 	MutateWithObjMutateFunc(objMutate func(string, NamedObject) optional.Of[Node]) optional.Of[Node]
 	AppendChildren(children []Node) Object
 }

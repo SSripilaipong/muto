@@ -19,6 +19,10 @@ func (obj NamedObject) ReplaceChild(i int, n Node) Object {
 	return obj
 }
 
+func (obj NamedObject) ActivelyMutateWithObjMutateFunc(objMutate func(string, NamedObject) optional.Of[Node]) optional.Of[Node] {
+	return objMutate(obj.Name(), obj)
+}
+
 func (obj NamedObject) MutateWithObjMutateFunc(objMutate func(string, NamedObject) optional.Of[Node]) optional.Of[Node] {
 	if obj.IsTerminationConfirmed() {
 		return optional.Empty[Node]()

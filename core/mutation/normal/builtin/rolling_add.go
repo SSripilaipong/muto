@@ -4,7 +4,7 @@ import (
 	"muto/common/optional"
 	"muto/core/base"
 	"muto/core/base/datatype"
-	"muto/core/mutation/object"
+	"muto/core/mutation/normal/object"
 )
 
 const rollingAddSymbol = "+~"

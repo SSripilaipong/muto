@@ -4,7 +4,7 @@ import (
 	"muto/common/optional"
 	"muto/common/slc"
 	"muto/core/base"
-	"muto/core/mutation/object"
+	"muto/core/mutation/normal/object"
 )
 
 var isNumberMutator = object.NewMutator("number?", slc.Pure(unaryOp(func(x base.Node) optional.Of[base.Node] {

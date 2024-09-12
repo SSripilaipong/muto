@@ -1,28 +1,20 @@
 package mutation
 
 import (
-	"muto/common/fn"
 	"muto/common/optional"
-	"muto/common/slc"
 	"muto/core/base"
-	"muto/core/mutation/builtin"
-	"muto/core/mutation/object"
+	activeMutation "muto/core/mutation/active"
+	normalMutation "muto/core/mutation/normal"
+	st "muto/syntaxtree"
 )
 
-var NewFromStatements = fn.Compose(globalMutationFromObjectMutators, object.NewMutatorsFromStatements)
-
-func globalMutationFromObjectMutators(ts []object.Mutator) (recursiveMutate func(base.Object) optional.Of[base.Node]) {
-	mutate := selectiveMutator(append(ts, builtin.NewMutators()...))
-
+func NewFromStatements(ss []st.Statement) func(base.Object) optional.Of[base.Node] {
+	active := activeMutation.NewFromStatements(ss)
+	normal := normalMutation.NewFromStatements(ss)
 	return func(obj base.Object) optional.Of[base.Node] {
-		return obj.MutateWithObjMutateFunc(mutate)
-	}
-}
-
-func selectiveMutator(ms []object.Mutator) func(string, base.NamedObject) optional.Of[base.Node] {
-	mutator := slc.ToMapValue(object.MutatorName)(ms)
-
-	return func(name string, obj base.NamedObject) optional.Of[base.Node] {
-		return mutator[name].Mutate(obj)
+		if result, ok := active(obj).Return(); ok {
+			return optional.Value(result)
+		}
+		return normal(obj)
 	}
 }

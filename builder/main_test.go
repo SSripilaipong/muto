@@ -136,6 +136,13 @@ main = f
 `).Value()
 		assert.Equal(t, base.NewNamedObject("f", nil), execute(program))
 	})
+
+	t.Run("should apply active mutation before normal mutation", func(t *testing.T) {
+		program := BuildFromString(`@ f (+ 1 X) = X
+main = f (+ 1 999)
+`).Value()
+		assert.Equal(t, base.NewNumberFromString("999"), execute(program))
+	})
 }
 
 func execute(program Program) base.Node {

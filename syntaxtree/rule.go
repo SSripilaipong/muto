@@ -40,3 +40,7 @@ func NewActiveRule(p NamedRulePattern, r RuleResult) ActiveRule {
 func ActiveRuleToStatement(r ActiveRule) Statement {
 	return r
 }
+
+func UnsafeStatementToActiveRule(s Statement) ActiveRule {
+	return s.(ActiveRule)
+}

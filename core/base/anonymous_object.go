@@ -37,6 +37,10 @@ func (obj AnonymousObject) LiftTermination() Object {
 	return obj
 }
 
+func (obj AnonymousObject) ActivelyMutateWithObjMutateFunc(func(string, NamedObject) optional.Of[Node]) optional.Of[Node] {
+	return optional.Empty[Node]()
+}
+
 func (obj AnonymousObject) MutateWithObjMutateFunc(objMutate func(string, NamedObject) optional.Of[Node]) optional.Of[Node] {
 	head := obj.Head()
 	switch {

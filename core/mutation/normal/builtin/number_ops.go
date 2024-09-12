@@ -5,7 +5,7 @@ import (
 	"muto/common/slc"
 	"muto/core/base"
 	"muto/core/base/datatype"
-	"muto/core/mutation/object"
+	"muto/core/mutation/normal/object"
 )
 
 var addMutator = object.NewMutator("+", slc.Pure(binaryOp(func(x, y base.Node) optional.Of[base.Node] {

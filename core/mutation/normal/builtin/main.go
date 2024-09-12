@@ -1,6 +1,8 @@
 package builtin
 
-import "muto/core/mutation/object"
+import (
+	"muto/core/mutation/normal/object"
+)
 
 func NewMutators() []object.Mutator {
 	return []object.Mutator{

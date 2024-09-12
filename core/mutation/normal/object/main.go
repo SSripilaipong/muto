@@ -3,13 +3,13 @@ package object
 import (
 	"muto/common/fn"
 	"muto/common/slc"
-	ruleMutation "muto/core/mutation/rule"
+	ruleMutation "muto/core/mutation/normal/rule"
 	st "muto/syntaxtree"
 )
 
-var NewMutatorsFromStatements = fn.Compose(reduceMutatorFromRules, mapFilterRuleFromStatement)
+var NewMutatorsFromStatements = fn.Compose(ReduceMutatorFromRules, mapFilterRuleFromStatement)
 
-var reduceMutatorFromRules = slc.FoldGroup(mergeMutatorWithRule, st.RuleToPatternName)(NewMutator("", nil))
+var ReduceMutatorFromRules = slc.FoldGroup(mergeMutatorWithRule, st.RuleToPatternName)(NewMutator("", nil))
 
 func mergeMutatorWithRule(t Mutator, rule st.Rule) Mutator {
 	if t.name == "" {

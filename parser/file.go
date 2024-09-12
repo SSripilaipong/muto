@@ -11,8 +11,8 @@ var file = ps.Map(st.NewFile, ignoreLeadingLineBreak(statements))
 
 var statements = ps.OptionalGreedyRepeat(ignoreTrailingLineBreak(statement))
 var statement = ps.Or(
-	ps.Map(st.RuleToStatement, rule),
 	ps.Map(mergeActiveRule, ps.Sequence2(atSign, rule)),
+	ps.Map(st.RuleToStatement, rule),
 )
 
 var mergeActiveRule = tuple.Fn2(func(_ tokenizer.Token, r st.Rule) st.Statement {

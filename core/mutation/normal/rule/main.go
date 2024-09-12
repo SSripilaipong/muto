@@ -3,10 +3,10 @@ package mutation
 import (
 	"muto/common/optional"
 	"muto/core/base"
-	"muto/core/mutation/rule/builder"
-	"muto/core/mutation/rule/data"
-	"muto/core/mutation/rule/extractor"
-	"muto/core/mutation/rule/mutator"
+	"muto/core/mutation/normal/rule/builder"
+	"muto/core/mutation/normal/rule/data"
+	"muto/core/mutation/normal/rule/extractor"
+	"muto/core/mutation/normal/rule/mutator"
 	st "muto/syntaxtree"
 )
 

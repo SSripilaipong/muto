@@ -3,7 +3,7 @@ package builtin
 import (
 	"muto/common/optional"
 	"muto/core/base"
-	"muto/core/mutation/object"
+	"muto/core/mutation/normal/object"
 )
 
 const rollingConcatSymbol = "++~"

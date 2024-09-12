@@ -4,7 +4,7 @@ import (
 	"muto/common/optional"
 	"muto/common/slc"
 	"muto/core/base"
-	"muto/core/mutation/object"
+	"muto/core/mutation/normal/object"
 )
 
 var concatMutator = object.NewMutator("++", slc.Pure(binaryOp(func(x, y base.Node) optional.Of[base.Node] {

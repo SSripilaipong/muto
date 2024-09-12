@@ -6,7 +6,7 @@ import (
 	"muto/common/slc"
 	"muto/common/tuple"
 	"muto/core/base"
-	"muto/core/mutation/rule/data"
+	"muto/core/mutation/normal/rule/data"
 	st "muto/syntaxtree"
 )
 
