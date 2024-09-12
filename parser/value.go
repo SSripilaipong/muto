@@ -8,6 +8,7 @@ import (
 var string_ = ps.ConsumeIf(tokenizer.IsString)
 var number = ps.ConsumeIf(tokenizer.IsNumber)
 var equalSign = ps.ConsumeIf(isEqualSign)
+var atSign = ps.ConsumeIf(isAtSign)
 var openParenthesis = ps.ConsumeIf(isOpenParenthesis)
 var closeParenthesis = ps.ConsumeIf(isCloseParenthesis)
 var symbol = ps.ConsumeIf(tokenizer.IsSymbol)

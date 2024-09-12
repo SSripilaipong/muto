@@ -21,6 +21,10 @@ func hasSuffix3Dots(s string) bool {
 	return strings.HasSuffix(s, "...") && strings.Count(s, ".") == 3
 }
 
+func isAtSign(x tokenizer.Token) bool {
+	return strings.TrimSpace(x.Value()) == "@"
+}
+
 func isEqualSign(x tokenizer.Token) bool {
 	return strings.TrimSpace(x.Value()) == "="
 }

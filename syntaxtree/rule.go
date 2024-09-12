@@ -26,3 +26,17 @@ func RuleToPatternName(r Rule) string {
 func UnsafeStatementToRule(s Statement) Rule {
 	return s.(Rule)
 }
+
+type ActiveRule struct {
+	Rule
+}
+
+func (r ActiveRule) StatementType() StatementType { return ActiveRuleStatement }
+
+func NewActiveRule(p NamedRulePattern, r RuleResult) ActiveRule {
+	return ActiveRule{Rule{p, r}}
+}
+
+func ActiveRuleToStatement(r ActiveRule) Statement {
+	return r
+}

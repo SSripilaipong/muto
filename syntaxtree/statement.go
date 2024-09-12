@@ -6,8 +6,15 @@ type Statement interface {
 
 type StatementType string
 
-const RuleStatement StatementType = "RULE"
+const (
+	RuleStatement       StatementType = "RULE"
+	ActiveRuleStatement StatementType = "ACTIVE_RULE"
+)
 
 func IsRuleStatement(s Statement) bool {
 	return s.StatementType() == RuleStatement
+}
+
+func IsActiveRuleStatement(s Statement) bool {
+	return s.StatementType() == ActiveRuleStatement
 }
