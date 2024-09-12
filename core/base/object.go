@@ -40,3 +40,7 @@ func ObjectToChildren(obj Object) []Node {
 func UnsafeNodeToObject(x Node) Object {
 	return x.(Object)
 }
+
+func EqualObject(x, y Object) bool {
+	return x == y
+}

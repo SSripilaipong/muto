@@ -7,12 +7,24 @@ import (
 	"muto/core/mutation/normal/object"
 )
 
-var concatMutator = object.NewMutator("++", slc.Pure(binaryOp(func(x, y base.Node) optional.Of[base.Node] {
-	if !base.IsStringNode(x) || !base.IsStringNode(y) {
-		return optional.Empty[base.Node]()
-	}
-	a, b := base.UnsafeNodeToString(x), base.UnsafeNodeToString(y)
-	return optional.Value[base.Node](base.NewString(a.Value() + b.Value()))
+var concatMutator = object.NewMutator("++", slc.Pure(stringBinaryOp(func(x, y string) optional.Of[base.Node] {
+	return optional.Value[base.Node](base.NewString(x + y))
+})))
+
+var stringGreaterThanMutator = object.NewMutator(">", slc.Pure(stringBinaryOp(func(x, y string) optional.Of[base.Node] {
+	return optional.Value[base.Node](base.NewBoolean(x > y))
+})))
+
+var stringGreaterThanOrEqualMutator = object.NewMutator(">=", slc.Pure(stringBinaryOp(func(x, y string) optional.Of[base.Node] {
+	return optional.Value[base.Node](base.NewBoolean(x >= y))
+})))
+
+var stringLessThanMutator = object.NewMutator("<", slc.Pure(stringBinaryOp(func(x, y string) optional.Of[base.Node] {
+	return optional.Value[base.Node](base.NewBoolean(x < y))
+})))
+
+var stringLessThanOrEqualMutator = object.NewMutator("<=", slc.Pure(stringBinaryOp(func(x, y string) optional.Of[base.Node] {
+	return optional.Value[base.Node](base.NewBoolean(x <= y))
 })))
 
 var stringMutator = object.NewMutator("string", slc.Pure(unaryOp(func(x base.Node) optional.Of[base.Node] {
@@ -22,3 +34,12 @@ var stringMutator = object.NewMutator("string", slc.Pure(unaryOp(func(x base.Nod
 	}
 	return optional.Value[base.Node](base.NewString(s.MutoString()))
 })))
+
+func stringBinaryOp(f func(x, y string) optional.Of[base.Node]) func(t base.Object) optional.Of[base.Node] {
+	return binaryOp(func(x, y base.Node) optional.Of[base.Node] {
+		if !base.IsStringNode(x) || !base.IsStringNode(y) {
+			return optional.Empty[base.Node]()
+		}
+		return f(base.UnsafeNodeToString(x).Value(), base.UnsafeNodeToString(y).Value())
+	})
+}

@@ -15,5 +15,12 @@ func NewMutators() []object.Mutator {
 		isStringMutator,
 		isNumberMutator,
 		isBooleanMutator,
+		multiplyMutator,
+		divideMutator,
+		equalMutator,
+		greaterThanMutator,
+		greaterThanOrEqualMutator,
+		lessThanMutator,
+		lessThanOrEqualMutator,
 	}
 }

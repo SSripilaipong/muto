@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	"muto/common/optional"
 )
 
 type Number struct {
@@ -43,6 +45,13 @@ func (n Number) ToFloat() float32 {
 	return float32(n.intValue)
 }
 
+func (n Number) IsZero() bool {
+	if n.IsFloat() {
+		return n.floatValue == 0
+	}
+	return n.intValue == 0
+}
+
 func (n Number) ToInt() int32 {
 	if n.IsFloat() {
 		return int32(n.floatValue)
@@ -64,16 +73,67 @@ func newNumberInt(x int32) Number {
 	}
 }
 
-func AddNumber(a Number, b Number) Number {
-	if a.IsInt() && b.IsInt() {
-		return newNumberInt(a.ToInt() + b.ToInt())
+var AddNumber = numberBinaryOp(
+	func(a, b float32) Number { return newNumberFloat(a + b) },
+	func(a, b int32) Number { return newNumberInt(a + b) },
+)
+
+var SubtractNumber = numberBinaryOp(
+	func(a, b float32) Number { return newNumberFloat(a - b) },
+	func(a, b int32) Number { return newNumberInt(a - b) },
+)
+
+var MultiplyNumber = numberBinaryOp(
+	func(a, b float32) Number { return newNumberFloat(a * b) },
+	func(a, b int32) Number { return newNumberInt(a * b) },
+)
+
+func DivideNumber(a Number, b Number) optional.Of[Number] {
+	if b.IsZero() {
+		return optional.Empty[Number]()
 	}
-	return newNumberFloat(a.ToFloat() + b.ToFloat())
+
+	if a.IsInt() && b.IsInt() {
+		fResult := a.ToFloat() / b.ToFloat()
+		iResult := a.ToInt() / b.ToInt()
+		if fResult == float32(iResult) {
+			return optional.Value(newNumberInt(iResult))
+		}
+		return optional.Value(newNumberFloat(fResult))
+	}
+	return optional.Value(newNumberFloat(a.ToFloat() / b.ToFloat()))
 }
 
-func SubtractNumber(a Number, b Number) Number {
-	if a.IsInt() && b.IsInt() {
-		return newNumberInt(a.ToInt() - b.ToInt())
+var EqualNumber = numberBinaryOp(
+	func(a, b float32) bool { return a == b },
+	func(a, b int32) bool { return a == b },
+)
+
+var GreaterThanNumber = numberBinaryOp(
+	func(a, b float32) bool { return a > b },
+	func(a, b int32) bool { return a > b },
+)
+
+var GreaterThanOrEqualNumber = numberBinaryOp(
+	func(a, b float32) bool { return a >= b },
+	func(a, b int32) bool { return a >= b },
+)
+
+var LessThanNumber = numberBinaryOp(
+	func(a, b float32) bool { return a < b },
+	func(a, b int32) bool { return a < b },
+)
+
+var LessThanOrEqualNumber = numberBinaryOp(
+	func(a, b float32) bool { return a <= b },
+	func(a, b int32) bool { return a <= b },
+)
+
+func numberBinaryOp[T any](ff func(a, b float32) T, fi func(a, b int32) T) func(Number, Number) T {
+	return func(a Number, b Number) T {
+		if a.IsInt() && b.IsInt() {
+			return fi(a.ToInt(), b.ToInt())
+		}
+		return ff(a.ToFloat(), b.ToFloat())
 	}
-	return newNumberFloat(a.ToFloat() - b.ToFloat())
 }

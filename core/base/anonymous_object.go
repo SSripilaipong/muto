@@ -103,4 +103,8 @@ func UnsafeObjectToAnonymousObject(obj Object) AnonymousObject {
 	return obj.(AnonymousObject)
 }
 
+func UnsafeNodeToAnonymousObject(obj Node) AnonymousObject {
+	return obj.(AnonymousObject)
+}
+
 var _ Object = AnonymousObject{}
