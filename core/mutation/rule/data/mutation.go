@@ -44,7 +44,7 @@ func (m *Mutation) mergeVariableMappings(mapping map[string]VariableMapping) opt
 	for k, x := range mapping {
 		if y, ok := newM.variableMapping[k]; !ok {
 			newM.variableMapping[k] = x
-		} else if x != y {
+		} else if !x.Equals(y) {
 			return optional.Empty[*Mutation]()
 		}
 	}
@@ -116,6 +116,10 @@ type VariableMapping struct {
 	node base.Node
 }
 
+func (m VariableMapping) Equals(n VariableMapping) bool {
+	return m.name == n.name && base.NodeEqual(m.node, n.node)
+}
+
 func NewVariableMapping(name string, node base.Node) VariableMapping {
 	return VariableMapping{
 		name: name,
@@ -143,7 +147,7 @@ func (x VariadicVarMapping) Equal(y VariadicVarMapping) bool {
 		return false
 	}
 	for i := range x.nodes {
-		if x.nodes[i] != y.nodes[i] {
+		if !base.NodeEqual(x.nodes[i], y.nodes[i]) {
 			return false
 		}
 	}

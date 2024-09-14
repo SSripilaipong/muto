@@ -177,6 +177,13 @@ main = f (g 123)
 `).Value()
 		assert.Equal(t, base.NewNumberFromString("123"), execute(program))
 	})
+
+	t.Run("should be able to check equality of nodes when extracting mutation in pattern", func(t *testing.T) {
+		program := BuildFromString(`f X X = 1
+main = f f f
+`).Value()
+		assert.Equal(t, base.NewNumberFromString("1"), execute(program))
+	})
 }
 
 func execute(program Program) base.Node {
