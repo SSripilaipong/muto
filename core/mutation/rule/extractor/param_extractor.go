@@ -23,6 +23,8 @@ func newParamExtractor(p st.RuleParamPattern) func(base.Node) optional.Of[*data.
 		return newNestedNamedRuleExtractor(st.UnsafeRuleParamPatternToNamedRulePattern(p))
 	} else if st.IsRuleParamPatternNestedVariableRulePattern(p) {
 		return newNestedVariableRuleExtractor(st.UnsafeRuleParamPatternToVariableRulePattern(p))
+	} else if st.IsRuleParamPatternNestedAnonymousRulePattern(p) {
+		return newNestedAnonymousRuleExtractor(st.UnsafeRuleParamPatternToAnonymousRulePattern(p))
 	}
 	panic("not implemented")
 }

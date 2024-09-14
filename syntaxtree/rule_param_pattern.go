@@ -30,3 +30,7 @@ func IsRuleParamPatternNestedNamedRulePattern(p RuleParamPattern) bool {
 func IsRuleParamPatternNestedVariableRulePattern(p RuleParamPattern) bool {
 	return p.RuleParamPatternType() == RuleParamPatternTypeNestedVariableRulePattern
 }
+
+func IsRuleParamPatternNestedAnonymousRulePattern(p RuleParamPattern) bool {
+	return p.RuleParamPatternType() == RuleParamPatternTypeNestedAnonymousRulePattern
+}
