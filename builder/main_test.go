@@ -184,6 +184,14 @@ main = f f f
 `).Value()
 		assert.Equal(t, base.NewNumberFromString("1"), execute(program))
 	})
+
+	t.Run("should lift termination when auto bubbled up", func(t *testing.T) {
+		program := BuildFromString(`g X = X
+f G = G 123
+main = f g
+`).Value()
+		assert.Equal(t, base.NewNumberFromString("123"), execute(program))
+	})
 }
 
 func execute(program Program) base.Node {

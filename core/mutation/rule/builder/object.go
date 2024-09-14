@@ -43,7 +43,7 @@ func autoBubbleUp(head base.Node, children []base.Node) optional.Of[base.Node] {
 	if base.IsObjectNode(head) {
 		obj := base.UnsafeNodeToObject(head)
 		if len(obj.Children()) == 0 {
-			return optional.Value[base.Node](obj.AppendChildren(children))
+			return optional.Value[base.Node](obj.AppendChildren(children).LiftTermination())
 		}
 	}
 	return optional.Empty[base.Node]()
