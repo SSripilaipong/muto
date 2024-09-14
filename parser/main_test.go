@@ -21,6 +21,19 @@ func TestParseString(t *testing.T) {
 	assert.Equal(t, expected, FilterSuccess(ParseString(s)))
 }
 
+func TestParseVariable(t *testing.T) {
+	t.Run("should parse rule with variables with same name", func(t *testing.T) {
+		s := `f X X = 1`
+		expected := expectedStatements([]st.Statement{
+			st.NewRule(
+				st.NewNamedRulePattern("f", st.RulePatternFixedParamPart([]st.RuleParamPattern{st.NewVariable("X"), st.NewVariable("X")})),
+				st.NewNumber("1"),
+			),
+		})
+		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+	})
+}
+
 func TestParseAnonymousObject(t *testing.T) {
 	t.Run("should parse anonymous object", func(t *testing.T) {
 		s := `main A = (+ 1 2) 3 4`
