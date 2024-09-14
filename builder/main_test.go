@@ -168,6 +168,15 @@ main = f 1 2 3
 			base.NewNumberFromString("1"), base.NewNumberFromString("2"), base.NewNumberFromString("3"),
 		}), execute(program))
 	})
+
+	//	t.Run("should auto bubble up when resolving to anonymous object with 0-children head", func(t *testing.T) {
+	//		program := BuildFromString(`f (G X) = h (G X)
+	//@ h ((g) X) = 999
+	//h (g X) = X
+	//main = f (g 123)
+	//`).Value()
+	//		assert.Equal(t, base.NewNumberFromString("123"), execute(program))
+	//	})
 }
 
 func execute(program Program) base.Node {

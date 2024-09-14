@@ -7,11 +7,12 @@ type RuleParamPattern interface {
 type RuleParamPatternType string
 
 const (
-	RuleParamPatternTypeVariable                  RuleParamPatternType = "VARIABLE"
-	RuleParamPatternTypeString                    RuleParamPatternType = "STRING"
-	RuleParamPatternTypeNumber                    RuleParamPatternType = "NUMBER"
-	RuleParamPatternTypeNestedNamedRulePattern    RuleParamPatternType = "NESTED_NAMED_RULE_PATTERN"
-	RuleParamPatternTypeNestedVariableRulePattern RuleParamPatternType = "NESTED_VARIABLE_RULE_PATTERN"
+	RuleParamPatternTypeVariable                   RuleParamPatternType = "VARIABLE"
+	RuleParamPatternTypeString                     RuleParamPatternType = "STRING"
+	RuleParamPatternTypeNumber                     RuleParamPatternType = "NUMBER"
+	RuleParamPatternTypeNestedNamedRulePattern     RuleParamPatternType = "NESTED_NAMED_RULE_PATTERN"
+	RuleParamPatternTypeNestedVariableRulePattern  RuleParamPatternType = "NESTED_VARIABLE_RULE_PATTERN"
+	RuleParamPatternTypeNestedAnonymousRulePattern RuleParamPatternType = "NESTED_ANONYMOUS_RULE_PATTERN"
 )
 
 func IsRuleParamPatternVariable(p RuleParamPattern) bool {

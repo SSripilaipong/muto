@@ -76,3 +76,32 @@ func IsRulePatternParamPartTypeFixed(p RulePatternParamPart) bool {
 func IsRulePatternParamPartTypeVariadic(p RulePatternParamPart) bool {
 	return p.RulePatternParamPartType() == RulePatternParamPartTypeVariadic
 }
+
+type AnonymousRulePattern struct {
+	head   RuleParamPattern
+	params RulePatternParamPart
+}
+
+func (AnonymousRulePattern) RuleParamPatternType() RuleParamPatternType {
+	return RuleParamPatternTypeNestedAnonymousRulePattern
+}
+
+func (p AnonymousRulePattern) Head() RuleParamPattern {
+	return p.head
+}
+
+func (p AnonymousRulePattern) ParamPart() RulePatternParamPart {
+	return p.params
+}
+
+func NewAnonymousRulePattern(head RuleParamPattern, params RulePatternParamPart) AnonymousRulePattern {
+	return AnonymousRulePattern{head: head, params: params}
+}
+
+func UnsafeRuleParamPatternToAnonymousRulePattern(p RuleParamPattern) AnonymousRulePattern {
+	return p.(AnonymousRulePattern)
+}
+
+func AnonymousRulePatternToRulePatternParam(x AnonymousRulePattern) RuleParamPattern {
+	return x
+}

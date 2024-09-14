@@ -32,8 +32,21 @@ func buildAnonymousObject(obj st.RuleResultAnonymousObject) func(*data.Mutation)
 			return optional.Empty[base.Node]()
 		}
 
+		if result, ok := autoBubbleUp(head, children).Return(); ok {
+			return optional.Value[base.Node](result)
+		}
 		return optional.Value[base.Node](base.NewAnonymousObject(head, children))
 	}
+}
+
+func autoBubbleUp(head base.Node, children []base.Node) optional.Of[base.Node] {
+	if base.IsObjectNode(head) {
+		obj := base.UnsafeNodeToObject(head)
+		if len(obj.Children()) == 0 {
+			return optional.Value[base.Node](obj.AppendChildren(children))
+		}
+	}
+	return optional.Empty[base.Node]()
 }
 
 func buildObjectParam(p st.ObjectParam) func(mapping *data.Mutation) optional.Of[[]base.Node] {

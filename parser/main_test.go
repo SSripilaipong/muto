@@ -65,6 +65,22 @@ func TestParseObject(t *testing.T) {
 		})
 		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
 	})
+
+	t.Run("should parse nested anonymous object", func(t *testing.T) {
+		s := `h ((g 1) X) = 999`
+		expected := expectedStatements([]st.Statement{
+			st.NewRule(
+				st.NewNamedRulePattern("h", st.RulePatternFixedParamPart([]st.RuleParamPattern{
+					st.NewAnonymousRulePattern(
+						st.NewNamedRulePattern("g", st.RulePatternFixedParamPart([]st.RuleParamPattern{st.NewNumber("1")})),
+						st.RulePatternFixedParamPart([]st.RuleParamPattern{st.NewVariable("X")}),
+					),
+				})),
+				st.NewNumber("999"),
+			),
+		})
+		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+	})
 }
 
 func TestParseVariadicVarPattern(t *testing.T) {
