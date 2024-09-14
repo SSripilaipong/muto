@@ -3,7 +3,7 @@ package extractor
 import (
 	"muto/common/optional"
 	"muto/core/base"
-	"muto/core/mutation/normal/rule/data"
+	"muto/core/mutation/rule/data"
 	st "muto/syntaxtree"
 )
 
@@ -23,10 +23,16 @@ func newNestedVariableRuleExtractor(p st.VariableRulePattern) func(base.Node) op
 	name := p.VariableName()
 
 	return func(x base.Node) optional.Of[*data.Mutation] {
-		if base.IsNamedObjectNode(x) {
+		switch {
+		case base.IsNamedObjectNode(x):
 			obj := base.UnsafeNodeToNamedObject(x)
 			if mutation, ok := extractFromChildren(obj).Return(); ok {
 				return mutation.WithVariableMappings(data.NewVariableMapping(name, base.NewNamedObject(obj.Name(), nil)))
+			}
+		case base.IsAnonymousObjectNode(x):
+			obj := base.UnsafeNodeToAnonymousObject(x)
+			if mutation, ok := extractFromChildren(obj).Return(); ok {
+				return mutation.WithVariableMappings(data.NewVariableMapping(name, obj.Head()))
 			}
 		}
 		return optional.Empty[*data.Mutation]()

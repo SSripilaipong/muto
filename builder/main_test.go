@@ -151,6 +151,13 @@ main = f h
 `).Value()
 		assert.Equal(t, base.NewNumberFromString("123"), execute(program))
 	})
+
+	t.Run("should match variable rule pattern with anonymous object (when using active mutation)", func(t *testing.T) {
+		program := BuildFromString(`@ f (G X) = X
+main = f ((g 456) 123)
+`).Value()
+		assert.Equal(t, base.NewNumberFromString("123"), execute(program))
+	})
 }
 
 func execute(program Program) base.Node {

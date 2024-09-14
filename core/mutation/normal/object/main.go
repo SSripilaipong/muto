@@ -3,7 +3,7 @@ package object
 import (
 	"muto/common/fn"
 	"muto/common/slc"
-	ruleMutation "muto/core/mutation/normal/rule"
+	ruleMutation "muto/core/mutation/rule"
 	st "muto/syntaxtree"
 )
 

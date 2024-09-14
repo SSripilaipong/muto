@@ -4,7 +4,7 @@ import (
 	"muto/common/optional"
 	"muto/core/base"
 	"muto/core/base/datatype"
-	"muto/core/mutation/normal/rule/data"
+	"muto/core/mutation/rule/data"
 	st "muto/syntaxtree"
 )
 
