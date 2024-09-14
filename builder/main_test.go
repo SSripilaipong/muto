@@ -143,6 +143,14 @@ main = f (+ 1 999)
 `).Value()
 		assert.Equal(t, base.NewNumberFromString("999"), execute(program))
 	})
+
+	t.Run("should be able to actively mutate children while mutating parent", func(t *testing.T) {
+		program := BuildFromString(`@ f (g X) = X
+@ h = g 123
+main = f h
+`).Value()
+		assert.Equal(t, base.NewNumberFromString("123"), execute(program))
+	})
 }
 
 func execute(program Program) base.Node {

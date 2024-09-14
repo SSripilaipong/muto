@@ -19,11 +19,18 @@ func (obj NamedObject) ReplaceChild(i int, n Node) Object {
 	return obj
 }
 
-func (obj NamedObject) ActivelyMutateWithObjMutateFunc(objMutate func(string, NamedObject) optional.Of[Node]) optional.Of[Node] {
-	return objMutate(obj.Name(), obj)
+func (obj NamedObject) Mutate(mutation Mutation) optional.Of[Node] {
+	if result, ok := obj.ActivelyMutateWithObjMutateFunc(mutation).Return(); ok {
+		return optional.Value(result)
+	}
+	return obj.MutateWithObjMutateFunc(mutation)
 }
 
-func (obj NamedObject) MutateWithObjMutateFunc(objMutate func(string, NamedObject) optional.Of[Node]) optional.Of[Node] {
+func (obj NamedObject) ActivelyMutateWithObjMutateFunc(mutation Mutation) optional.Of[Node] {
+	return mutation.Active(obj.Name(), obj)
+}
+
+func (obj NamedObject) MutateWithObjMutateFunc(mutation Mutation) optional.Of[Node] {
 	if obj.IsTerminationConfirmed() {
 		return optional.Empty[Node]()
 	}
@@ -32,7 +39,7 @@ func (obj NamedObject) MutateWithObjMutateFunc(objMutate func(string, NamedObjec
 	for i, child := range x.Children() {
 		if !child.IsTerminationConfirmed() {
 			childObj := UnsafeNodeToObject(child)
-			if newChild := childObj.MutateWithObjMutateFunc(objMutate); newChild.IsNotEmpty() {
+			if newChild := childObj.Mutate(mutation); newChild.IsNotEmpty() {
 				return optional.Value[Node](obj.ReplaceChild(i, newChild.Value()))
 			}
 			x = x.ReplaceChild(i, childObj.ConfirmTermination())
@@ -41,7 +48,7 @@ func (obj NamedObject) MutateWithObjMutateFunc(objMutate func(string, NamedObjec
 
 	if IsNamedObjectNode(x) {
 		namedObj := UnsafeNodeToNamedObject(x)
-		r := objMutate(namedObj.Name(), namedObj)
+		r := mutation.Normal(namedObj.Name(), namedObj)
 		return r
 	}
 	return optional.Value[Node](x)

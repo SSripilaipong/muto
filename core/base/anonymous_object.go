@@ -37,20 +37,24 @@ func (obj AnonymousObject) LiftTermination() Object {
 	return obj
 }
 
-func (obj AnonymousObject) ActivelyMutateWithObjMutateFunc(func(string, NamedObject) optional.Of[Node]) optional.Of[Node] {
+func (obj AnonymousObject) Mutate(mutation Mutation) optional.Of[Node] {
+	return obj.MutateWithObjMutateFunc(mutation)
+}
+
+func (obj AnonymousObject) ActivelyMutateWithObjMutateFunc(mutation Mutation) optional.Of[Node] {
 	return optional.Empty[Node]()
 }
 
-func (obj AnonymousObject) MutateWithObjMutateFunc(objMutate func(string, NamedObject) optional.Of[Node]) optional.Of[Node] {
+func (obj AnonymousObject) MutateWithObjMutateFunc(mutation Mutation) optional.Of[Node] {
 	head := obj.Head()
 	switch {
 	case head.IsTerminationConfirmed():
 		return optional.Value(obj.bubbleUp())
 	case IsObjectNode(head):
 		headObj := UnsafeNodeToObject(head)
-		newHead, ok := headObj.MutateWithObjMutateFunc(objMutate).Return()
+		newHead, ok := headObj.Mutate(mutation).Return()
 		if !ok {
-			return obj.ReplaceHead(headObj.ConfirmTermination()).MutateWithObjMutateFunc(objMutate)
+			return obj.ReplaceHead(headObj.ConfirmTermination()).Mutate(mutation)
 		}
 		return optional.Value[Node](obj.ReplaceHead(newHead))
 	}
