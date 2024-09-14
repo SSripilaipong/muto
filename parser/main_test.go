@@ -108,7 +108,7 @@ func TestParseVariadicParamPart(t *testing.T) {
 		expected := expectedStatements([]st.Statement{
 			st.NewRule(
 				st.NewNamedRulePattern("f", st.NewRulePatternLeftVariadicParamPart("Xs", st.RulePatternFixedParamPart{})),
-				st.NewRuleResultNamedObject("g", st.NewObjectLeftVariadicParamPart("Xs", st.ObjectParamsToObjectFixedParamPart([]st.ObjectParam{st.NewVariable("X")}))),
+				st.NewRuleResultNamedObject("g", st.ObjectParamsToObjectFixedParamPart([]st.ObjectParam{st.NewVariadicVariable("Xs"), st.NewVariable("X")})),
 			),
 		})
 		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
@@ -119,7 +119,18 @@ func TestParseVariadicParamPart(t *testing.T) {
 		expected := expectedStatements([]st.Statement{
 			st.NewRule(
 				st.NewNamedRulePattern("f", st.NewRulePatternLeftVariadicParamPart("Xs", []st.RuleParamPattern{st.NewVariable("X")})),
-				st.NewRuleResultNamedObject("g", st.NewObjectRightVariadicParamPart("Xs", st.ObjectParamsToObjectFixedParamPart([]st.ObjectParam{st.NewVariable("X")}))),
+				st.NewRuleResultNamedObject("g", st.ObjectParamsToObjectFixedParamPart([]st.ObjectParam{st.NewVariable("X"), st.NewVariadicVariable("Xs")})),
+			),
+		})
+		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+	})
+
+	t.Run("should parse result with multiple variadic variables in param part", func(t *testing.T) {
+		s := `f Xs... X = g Xs... X Xs...`
+		expected := expectedStatements([]st.Statement{
+			st.NewRule(
+				st.NewNamedRulePattern("f", st.NewRulePatternLeftVariadicParamPart("Xs", []st.RuleParamPattern{st.NewVariable("X")})),
+				st.NewRuleResultNamedObject("g", st.ObjectParamsToObjectFixedParamPart([]st.ObjectParam{st.NewVariadicVariable("Xs"), st.NewVariable("X"), st.NewVariadicVariable("Xs")})),
 			),
 		})
 		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
@@ -152,7 +163,7 @@ func TestActiveRule(t *testing.T) {
 		expected := expectedStatements([]st.Statement{
 			st.NewActiveRule(
 				st.NewNamedRulePattern("f", st.NewRulePatternLeftVariadicParamPart("Xs", []st.RuleParamPattern{st.NewVariable("X")})),
-				st.NewRuleResultNamedObject("g", st.NewObjectRightVariadicParamPart("Xs", st.ObjectParamsToObjectFixedParamPart([]st.ObjectParam{st.NewVariable("X")}))),
+				st.NewRuleResultNamedObject("g", st.ObjectParamsToObjectFixedParamPart([]st.ObjectParam{st.NewVariable("X"), st.NewVariadicVariable("Xs")})),
 			),
 		})
 		assert.Equal(t, expected, FilterSuccess(ParseString(s)))

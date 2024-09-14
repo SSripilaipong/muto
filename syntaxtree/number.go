@@ -6,9 +6,9 @@ type Number struct {
 	value string
 }
 
-func (Number) RuleResultType() RuleResultType {
-	return RuleResultTypeNumber
-}
+func (Number) RuleResultType() RuleResultType { return RuleResultTypeNumber }
+
+func (Number) ObjectParamType() ObjectParamType { return ObjectParamTypeSingle }
 
 func (Number) RuleParamPatternType() RuleParamPatternType { return RuleParamPatternTypeNumber }
 

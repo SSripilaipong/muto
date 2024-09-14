@@ -3,6 +3,7 @@ package builder
 import (
 	"muto/common/fn"
 	"muto/common/optional"
+	"muto/common/slc"
 	"muto/core/base"
 	"muto/core/mutation/rule/data"
 	st "muto/syntaxtree"
@@ -35,10 +36,26 @@ func buildAnonymousObject(obj st.RuleResultAnonymousObject) func(*data.Mutation)
 	}
 }
 
-var aggregateAnonymousObjectParams = optional.MergeFn(func(obj base.AnonymousObject, n base.Node) optional.Of[base.AnonymousObject] {
-	return optional.Value(base.NewAnonymousObject(obj.Head(), append(obj.Children(), n)))
-})
+func buildObjectParam(p st.ObjectParam) func(mapping *data.Mutation) optional.Of[[]base.Node] {
+	switch {
+	case st.IsObjectParamTypeSingle(p):
+		return buildObjectParamTypeSingle(p)
+	case st.IsObjectParamTypeVariadic(p):
+		return buildObjectParamTypeVariadic(p)
+	}
+	panic("not implemented")
+}
 
-func buildObjectParam(p st.ObjectParam) func(mapping *data.Mutation) optional.Of[base.Node] {
-	return New(st.ObjectParamToRuleResult(p))
+func buildObjectParamTypeSingle(p st.ObjectParam) func(mapping *data.Mutation) optional.Of[[]base.Node] {
+	return fn.Compose(
+		optional.Map(slc.Pure[base.Node]), New(st.ObjectParamToRuleResult(p)),
+	)
+}
+
+func buildObjectParamTypeVariadic(p st.ObjectParam) func(mapping *data.Mutation) optional.Of[[]base.Node] {
+	name := st.UnsafeObjectParamToVariadicVariable(p).Name()
+
+	return func(mapping *data.Mutation) optional.Of[[]base.Node] {
+		return mapping.VariadicVarValue(name)
+	}
 }

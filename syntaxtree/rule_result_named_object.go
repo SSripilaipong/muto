@@ -11,6 +11,8 @@ func NewRuleResultNamedObject(objectName string, paramPart ObjectParamPart) Rule
 
 func (RuleResultNamedObject) RuleResultType() RuleResultType { return RuleResultTypeNamedObject }
 
+func (RuleResultNamedObject) ObjectParamType() ObjectParamType { return ObjectParamTypeSingle }
+
 func (obj RuleResultNamedObject) ObjectName() string {
 	return obj.objectName
 }

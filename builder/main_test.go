@@ -158,6 +158,16 @@ main = f ((g 456) 123)
 `).Value()
 		assert.Equal(t, base.NewNumberFromString("123"), execute(program))
 	})
+
+	t.Run("should resolve result with multiple variadic variables in param part", func(t *testing.T) {
+		program := BuildFromString(`f Xs... = $ Xs... Xs...
+main = f 1 2 3
+`).Value()
+		assert.Equal(t, base.NewNamedObject("$", []base.Node{
+			base.NewNumberFromString("1"), base.NewNumberFromString("2"), base.NewNumberFromString("3"),
+			base.NewNumberFromString("1"), base.NewNumberFromString("2"), base.NewNumberFromString("3"),
+		}), execute(program))
+	})
 }
 
 func execute(program Program) base.Node {

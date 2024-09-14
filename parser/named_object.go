@@ -11,14 +11,6 @@ func namedObject(xs []tokenizer.Token) []tuple.Of2[namedObjectNode, []tokenizer.
 	return ps.Map(mergeNamedObjectNode, ps.Sequence2(objectName, objectParamPart))(xs)
 }
 
-var mergeLeftVariadicParamPart = tuple.Fn2(func(v variadicVarNode, params []st.ObjectParam) st.ObjectParamPart {
-	return st.NewObjectLeftVariadicParamPart(v.Name(), params)
-})
-
-var mergeRightVariadicParamPart = tuple.Fn2(func(params []st.ObjectParam, v variadicVarNode) st.ObjectParamPart {
-	return st.NewObjectRightVariadicParamPart(v.Name(), params)
-})
-
 var mergeNamedObjectNode = tuple.Fn2(func(t tokenizer.Token, paramPart st.ObjectParamPart) namedObjectNode {
 	return namedObjectNode{name: t.Value(), paramPart: paramPart}
 })

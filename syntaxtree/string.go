@@ -13,9 +13,9 @@ func NewString(value string) String {
 	return String{value: value}
 }
 
-func (String) RuleResultType() RuleResultType {
-	return RuleResultTypeString
-}
+func (String) RuleResultType() RuleResultType { return RuleResultTypeString }
+
+func (String) ObjectParamType() ObjectParamType { return ObjectParamTypeSingle }
 
 func (String) RuleParamPatternType() RuleParamPatternType {
 	return RuleParamPatternTypeString

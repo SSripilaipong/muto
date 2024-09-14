@@ -13,6 +13,8 @@ func (RuleResultAnonymousObject) RuleResultType() RuleResultType {
 	return RuleResultTypeAnonymousObject
 }
 
+func (RuleResultAnonymousObject) ObjectParamType() ObjectParamType { return ObjectParamTypeSingle }
+
 func (obj RuleResultAnonymousObject) Head() RuleResult {
 	return obj.head
 }

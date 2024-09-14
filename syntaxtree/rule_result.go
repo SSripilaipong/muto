@@ -7,11 +7,12 @@ type RuleResult interface {
 type RuleResultType string
 
 const (
-	RuleResultTypeString          RuleResultType = "STRING"
-	RuleResultTypeNumber          RuleResultType = "NUMBER"
-	RuleResultTypeNamedObject     RuleResultType = "NAMED_OBJECT"
-	RuleResultTypeAnonymousObject RuleResultType = "ANONYMOUS_OBJECT"
-	RuleResultTypeVariable        RuleResultType = "VARIABLE"
+	RuleResultTypeString           RuleResultType = "STRING"
+	RuleResultTypeNumber           RuleResultType = "NUMBER"
+	RuleResultTypeNamedObject      RuleResultType = "NAMED_OBJECT"
+	RuleResultTypeAnonymousObject  RuleResultType = "ANONYMOUS_OBJECT"
+	RuleResultTypeVariable         RuleResultType = "VARIABLE"
+	RuleResultTypeVariadicVariable RuleResultType = "VARIADIC_VARIABLE"
 )
 
 func IsRuleResultTypeString(r RuleResult) bool {
@@ -36,8 +37,24 @@ func IsRuleResultTypeVariable(r RuleResult) bool {
 
 type ObjectParam interface {
 	RuleResultType() RuleResultType
+	ObjectParamType() ObjectParamType
 }
 
 func ObjectParamToRuleResult(x ObjectParam) RuleResult {
 	return x
+}
+
+type ObjectParamType string
+
+const (
+	ObjectParamTypeSingle   ObjectParamType = "SINGLE"
+	ObjectParamTypeVariadic ObjectParamType = "VARIADIC"
+)
+
+func IsObjectParamTypeSingle(x ObjectParam) bool {
+	return x.ObjectParamType() == ObjectParamTypeSingle
+}
+
+func IsObjectParamTypeVariadic(x ObjectParam) bool {
+	return x.ObjectParamType() == ObjectParamTypeVariadic
 }

@@ -12,6 +12,8 @@ func (Variable) RuleResultType() RuleResultType {
 	return RuleResultTypeVariable
 }
 
+func (Variable) ObjectParamType() ObjectParamType { return ObjectParamTypeSingle }
+
 func (Variable) RuleParamPatternType() RuleParamPatternType {
 	return RuleParamPatternTypeVariable
 }

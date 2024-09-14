@@ -7,19 +7,9 @@ type ObjectParamPart interface {
 type ObjectParamPartType string
 
 const (
-	ObjectParamPartTypeFixed         ObjectParamPartType = "FIXED"
-	ObjectParamPartTypeLeftVariadic  ObjectParamPartType = "LEFT_VARIADIC"
-	ObjectParamPartTypeRightVariadic ObjectParamPartType = "RIGHT_VARIADIC"
+	ObjectParamPartTypeFixed ObjectParamPartType = "FIXED"
 )
 
 func IsObjectParamPartTypeFixed(x ObjectParamPart) bool {
 	return x.ObjectParamPartType() == ObjectParamPartTypeFixed
-}
-
-func IsObjectParamPartTypeLeftVariadic(x ObjectParamPart) bool {
-	return x.ObjectParamPartType() == ObjectParamPartTypeLeftVariadic
-}
-
-func IsObjectParamPartTypeRightVariadic(x ObjectParamPart) bool {
-	return x.ObjectParamPartType() == ObjectParamPartTypeRightVariadic
 }

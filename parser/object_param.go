@@ -8,16 +8,13 @@ import (
 )
 
 func objectParamPart(xs []tokenizer.Token) []tuple.Of2[st.ObjectParamPart, []tokenizer.Token] {
-	return ps.Or(
-		ps.Map(mergeLeftVariadicParamPart, ps.Sequence2(variadicVar, ps.OptionalGreedyRepeat(objectParam))),
-		ps.Map(mergeRightVariadicParamPart, ps.Sequence2(ps.GreedyRepeatAtLeastOnce(objectParam), variadicVar)),
-		ps.Map(st.ObjectParamsToObjectParamPart, ps.OptionalGreedyRepeat(objectParam)),
-	)(xs)
+	return ps.Map(st.ObjectParamsToObjectParamPart, ps.OptionalGreedyRepeat(objectParam))(xs)
 }
 
 func objectParam(xs []tokenizer.Token) []tuple.Of2[st.ObjectParam, []tokenizer.Token] {
 	return ps.Or(
 		objectParamValue,
+		ps.Map(variadicVariableToObjectParam, variadicVar),
 		ps.Map(variableToObjectParam, variable),
 		ps.Map(namedObjectWithoutChildToObjectParam, objectName),
 		ps.Map(namedObjectToObjectParam, ps.Sequence3(openParenthesis, namedObject, closeParenthesis)),
@@ -53,4 +50,8 @@ func stringToObjectParam(x tokenizer.Token) st.ObjectParam {
 
 func variableToObjectParam(x tokenizer.Token) st.ObjectParam {
 	return st.NewVariable(x.Value())
+}
+
+func variadicVariableToObjectParam(x variadicVarNode) st.ObjectParam {
+	return st.NewVariadicVariable(x.Name())
 }
