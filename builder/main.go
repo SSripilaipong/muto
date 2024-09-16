@@ -13,7 +13,7 @@ import (
 )
 
 var BuildFromString = fn.Compose3(
-	rslt.JoinFmap(BuildFromSyntaxTree), parser.ParseResult, parser.ParseString,
+	rslt.JoinFmap(BuildFromSyntaxTree), parser.FilterResult, parser.ParseString,
 )
 
 func BuildFromSyntaxTree(p st.Package) rslt.Of[Program] {
