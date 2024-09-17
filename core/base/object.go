@@ -15,8 +15,6 @@ type Object interface {
 	LiftTermination() Object
 	ReplaceChild(i int, n Node) Object
 	Mutate(mutation Mutation) optional.Of[Node]
-	ActivelyMutateWithObjMutateFunc(mutation Mutation) optional.Of[Node]
-	MutateWithObjMutateFunc(mutation Mutation) optional.Of[Node]
 	AppendChildren(children []Node) Object
 }
 
@@ -46,8 +44,4 @@ func ObjectToChildren(obj Object) []Node {
 
 func UnsafeNodeToObject(x Node) Object {
 	return x.(Object)
-}
-
-func EqualObject(x, y Object) bool {
-	return x == y
 }

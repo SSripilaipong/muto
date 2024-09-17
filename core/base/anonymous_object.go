@@ -38,14 +38,6 @@ func (obj AnonymousObject) LiftTermination() Object {
 }
 
 func (obj AnonymousObject) Mutate(mutation Mutation) optional.Of[Node] {
-	return obj.MutateWithObjMutateFunc(mutation)
-}
-
-func (obj AnonymousObject) ActivelyMutateWithObjMutateFunc(mutation Mutation) optional.Of[Node] {
-	return optional.Empty[Node]()
-}
-
-func (obj AnonymousObject) MutateWithObjMutateFunc(mutation Mutation) optional.Of[Node] {
 	head := obj.Head()
 	switch {
 	case head.IsTerminationConfirmed():
