@@ -11,8 +11,8 @@ type Object interface {
 	Children() []Node
 	NodeType() NodeType
 	IsTerminationConfirmed() bool
-	ConfirmTermination() Object
-	LiftTermination() Object
+	ConfirmTermination() MutableNode
+	LiftTermination() MutableNode
 	ReplaceChild(i int, n Node) Object
 	Mutate(mutation Mutation) optional.Of[Node]
 	AppendChildren(children []Node) Object
@@ -45,3 +45,5 @@ func ObjectToChildren(obj Object) []Node {
 func UnsafeNodeToObject(x Node) Object {
 	return x.(Object)
 }
+
+var _ MutableNode = Object(nil)

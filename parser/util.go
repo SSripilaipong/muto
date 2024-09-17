@@ -37,6 +37,20 @@ func isCloseParenthesis(x tokenizer.Token) bool {
 	return strings.TrimSpace(x.Value()) == ")"
 }
 
+func withTrailingLineBreak[R any](p func([]tokenizer.Token) []tuple.Of2[R, []tokenizer.Token]) func([]tokenizer.Token) []tuple.Of2[R, []tokenizer.Token] {
+	return ps.Map(
+		tuple.Fn2(func(r R, _ tokenizer.Token) R { return r }),
+		ps.Sequence2(p, ps.ConsumeIf(tokenizer.IsLineBreak)),
+	)
+}
+
+func withLeadingLineBreak[R any](p func([]tokenizer.Token) []tuple.Of2[R, []tokenizer.Token]) func([]tokenizer.Token) []tuple.Of2[R, []tokenizer.Token] {
+	return ps.Map(
+		tuple.Fn2(func(_ tokenizer.Token, r R) R { return r }),
+		ps.Sequence2(ps.ConsumeIf(tokenizer.IsLineBreak), p),
+	)
+}
+
 func ignoreTrailingLineBreak[R any](p func([]tokenizer.Token) []tuple.Of2[R, []tokenizer.Token]) func([]tokenizer.Token) []tuple.Of2[R, []tokenizer.Token] {
 	return ps.DrainTrailing(tokenizer.IsLineBreak, p)
 }

@@ -85,7 +85,7 @@ main = f 1 2 3
 		program := BuildFromString(`g (f Xs...) = h Xs...
 main = g f
 `).Value()
-		assert.Equal(t, base.NewNamedObject("h", nil), execute(program))
+		assert.Equal(t, base.NewNamedClass("h"), execute(program))
 	})
 
 	t.Run("should match children strictly for nested pattern", func(t *testing.T) {
@@ -127,14 +127,14 @@ main = f (h "1" "2")
 		program := BuildFromString(`f (G S... 0) = 0
 main = f $
 `).Value()
-		assert.Equal(t, base.NewNamedObject("f", []base.Node{base.NewNamedObject("$", nil).ConfirmTermination()}), execute(program))
+		assert.Equal(t, base.NewNamedObject("f", []base.Node{base.NewNamedClass("$").ConfirmTermination()}), execute(program))
 	})
 
 	t.Run("should not fail when variadic right param part tries to match with no children", func(t *testing.T) {
 		program := BuildFromString(`f 0 S... = 0
 main = f
 `).Value()
-		assert.Equal(t, base.NewNamedObject("f", nil), execute(program))
+		assert.Equal(t, base.NewNamedClass("f"), execute(program))
 	})
 
 	t.Run("should apply active mutation before normal mutation", func(t *testing.T) {
@@ -178,6 +178,15 @@ main = f (g 123)
 		assert.Equal(t, base.NewNumberFromString("123"), execute(program))
 	})
 
+	t.Run("should match nested anonymous object when forcing named class to be anonymous object", func(t *testing.T) {
+		program := BuildFromString(`f (G X) = h ((G) X)
+@ h ((g) X) = 999
+h (g X) = X
+main = f (g 123)
+`).Value()
+		assert.Equal(t, base.NewNumberFromString("999"), execute(program))
+	})
+
 	t.Run("should be able to check equality of nodes when extracting mutation in pattern", func(t *testing.T) {
 		program := BuildFromString(`f X X = 1
 main = f f f
@@ -192,6 +201,17 @@ main = f g
 `).Value()
 		assert.Equal(t, base.NewNumberFromString("123"), execute(program))
 	})
+
+	t.Run("should auto bubble up when building object from variable", func(t *testing.T) {
+		program := BuildFromString(`f X = X
+main = f (g 1)
+`).Value()
+		assert.Equal(t, base.NewNamedObject("f", []base.Node{base.NewNamedObject("g", []base.Node{base.NewNumberFromString("1")})}), mutateOnce(program))
+	})
+}
+
+func mutateOnce(program Program) base.Node {
+	return program.MutateOnce(program.InitialObject())
 }
 
 func execute(program Program) base.Node {

@@ -31,9 +31,17 @@ func processResult(r optional.Of[base.Node], otherChildren []base.Node) optional
 		return optional.Empty[base.Node]()
 	}
 
-	if base.IsObjectNode(result) {
+	switch {
+	case !base.IsMutableNode(result):
+		return valueWithRemainingChildren(result, otherChildren)
+	case base.IsNamedClassNode(result):
+		if len(otherChildren) == 0 {
+			return optional.Value(result)
+		}
+		return optional.Value[base.Node](base.NewObject(base.UnsafeNodeToNamedClass(result), otherChildren))
+	case base.IsObjectNode(result):
 		obj := base.UnsafeNodeToObject(result)
 		return optional.Value[base.Node](obj.AppendChildren(otherChildren))
 	}
-	return valueWithRemainingChildren(result, otherChildren)
+	panic("not implemented")
 }

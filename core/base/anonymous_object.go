@@ -27,12 +27,12 @@ func (obj AnonymousObject) IsTerminationConfirmed() bool {
 	return obj.isTerminated
 }
 
-func (obj AnonymousObject) ConfirmTermination() Object {
+func (obj AnonymousObject) ConfirmTermination() MutableNode {
 	obj.isTerminated = true
 	return obj
 }
 
-func (obj AnonymousObject) LiftTermination() Object {
+func (obj AnonymousObject) LiftTermination() MutableNode {
 	obj.isTerminated = false
 	return obj
 }
@@ -42,8 +42,8 @@ func (obj AnonymousObject) Mutate(mutation Mutation) optional.Of[Node] {
 	switch {
 	case head.IsTerminationConfirmed():
 		return optional.Value(obj.bubbleUp())
-	case IsObjectNode(head):
-		headObj := UnsafeNodeToObject(head)
+	case IsMutableNode(head):
+		headObj := UnsafeNodeToMutable(head)
 		newHead, ok := headObj.Mutate(mutation).Return()
 		if !ok {
 			return obj.ReplaceHead(headObj.ConfirmTermination()).Mutate(mutation)
@@ -55,15 +55,24 @@ func (obj AnonymousObject) Mutate(mutation Mutation) optional.Of[Node] {
 
 func (obj AnonymousObject) bubbleUp() Node {
 	head := obj.Head()
-	if !IsObjectNode(head) {
+	switch {
+	case !IsMutableNode(head):
 		if len(obj.Children()) > 0 {
 			return NewDataObject(append([]Node{head}, obj.Children()...))
 		}
 		return head
+	case IsObjectNode(head):
+		return UnsafeNodeToObject(head).
+			AppendChildren(obj.Children()).
+			LiftTermination()
+	case IsNamedClassNode(head):
+		class := UnsafeNodeToNamedClass(head)
+		if len(obj.Children()) > 0 {
+			return NewObject(class, obj.Children())
+		}
+		return head
 	}
-	return UnsafeNodeToObject(obj.Head()).
-		AppendChildren(obj.Children()).
-		LiftTermination()
+	panic("not implemented")
 }
 
 func (obj AnonymousObject) AppendChildren(children []Node) Object {

@@ -18,6 +18,6 @@ func IsBooleanNode(x Node) bool {
 	if !IsNamedObjectNode(x) {
 		return false
 	}
-	name := UnsafeNodeToNamedObject(x).Name()
-	return name == "true" || name == "false"
+	obj := UnsafeNodeToNamedObject(x)
+	return obj.Equals(NewNamedObject("true", nil)) || obj.Equals(NewNamedObject("false", nil))
 }

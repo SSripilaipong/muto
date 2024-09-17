@@ -8,13 +8,13 @@ import (
 	st "muto/syntaxtree"
 )
 
-func NewFromStatements(ss []st.Statement) func(base.Object) optional.Of[base.Node] {
+func NewFromStatements(ss []st.Statement) func(base.MutableNode) optional.Of[base.Node] {
 	mutate := mutation{
 		active: activeMutation.NewFromStatements(ss),
 		normal: normalMutation.NewFromStatements(ss),
 	}
-	return func(obj base.Object) optional.Of[base.Node] {
-		return obj.Mutate(mutate)
+	return func(x base.MutableNode) optional.Of[base.Node] {
+		return x.Mutate(mutate)
 	}
 }
 

@@ -38,7 +38,7 @@ func (obj NamedObject) MutateWithObjMutateFunc(mutation Mutation) optional.Of[No
 	var x Object = obj
 	for i, child := range x.Children() {
 		if !child.IsTerminationConfirmed() {
-			childObj := UnsafeNodeToObject(child)
+			childObj := UnsafeNodeToMutable(child)
 			if newChild := childObj.Mutate(mutation); newChild.IsNotEmpty() {
 				return optional.Value[Node](obj.ReplaceChild(i, newChild.Value()))
 			}
@@ -67,12 +67,12 @@ func (obj NamedObject) IsTerminationConfirmed() bool {
 	return obj.isTerminated
 }
 
-func (obj NamedObject) ConfirmTermination() Object {
+func (obj NamedObject) ConfirmTermination() MutableNode {
 	obj.isTerminated = true
 	return obj
 }
 
-func (obj NamedObject) LiftTermination() Object {
+func (obj NamedObject) LiftTermination() MutableNode {
 	obj.isTerminated = false
 	return obj
 }
@@ -81,11 +81,25 @@ func (obj NamedObject) Name() string {
 	return obj.class.Name()
 }
 
+func (obj NamedObject) Equals(x NamedObject) bool {
+	if obj.Name() != x.Name() {
+		return false
+	}
+	if len(obj.Children())+len(x.Children()) == 0 {
+		return true
+	}
+	return objectChildrenEqual(obj.Children(), x.Children())
+}
+
 func (obj NamedObject) String() string {
 	if len(obj.Children()) == 0 {
 		return fmt.Sprintf(`%s`, obj.Name())
 	}
 	return fmt.Sprintf(`%s %s`, obj.Name(), objectChildrenToString(obj))
+}
+
+func NewObject(class Class, children []Node) NamedObject {
+	return NamedObject{class: class, children: children}
 }
 
 func NewNamedObject(name string, children []Node) NamedObject {

@@ -1,6 +1,8 @@
 package parsing
 
-import "muto/common/tuple"
+import (
+	"muto/common/tuple"
+)
 
 func Or[S, R any](ps ...func([]S) []tuple.Of2[R, []S]) func([]S) []tuple.Of2[R, []S] {
 	if len(ps) == 0 {

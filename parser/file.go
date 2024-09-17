@@ -7,9 +7,9 @@ import (
 	st "muto/syntaxtree"
 )
 
-var file = ps.Map(st.NewFile, ignoreLeadingLineBreak(statements))
+var file = ps.Map(st.NewFile, ignoreLeadingLineBreak(ignoreTrailingLineBreak(statements)))
 
-var statements = ps.OptionalGreedyRepeat(ignoreTrailingLineBreak(statement))
+var statements = ps.Map(aggregateStatements, ps.Sequence2(statement, ps.OptionalGreedyRepeat(withLeadingLineBreak(statement))))
 var statement = ps.Or(
 	ps.Map(mergeActiveRule, ps.Sequence2(atSign, rule)),
 	ps.Map(st.RuleToStatement, rule),
@@ -23,4 +23,8 @@ var rule = ps.Map(mergeRule, ps.Sequence3(namedRulePattern(), equalSign, ruleRes
 
 var mergeRule = tuple.Fn3(func(p st.NamedRulePattern, _ tokenizer.Token, r st.RuleResult) st.Rule {
 	return st.NewRule(p, r)
+})
+
+var aggregateStatements = tuple.Fn2(func(s st.Statement, ss []st.Statement) []st.Statement {
+	return append(ss, s)
 })

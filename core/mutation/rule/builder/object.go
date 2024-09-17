@@ -12,6 +12,9 @@ import (
 func buildNamedObject(obj st.RuleResultNamedObject) func(*data.Mutation) optional.Of[base.Node] {
 	name := obj.ObjectName()
 	buildObject := func(children []base.Node) base.Node {
+		if len(children) == 0 {
+			return base.NewNamedClass(name)
+		}
 		return base.NewNamedObject(name, children)
 	}
 
@@ -40,11 +43,8 @@ func buildAnonymousObject(obj st.RuleResultAnonymousObject) func(*data.Mutation)
 }
 
 func autoBubbleUp(head base.Node, children []base.Node) optional.Of[base.Node] {
-	if base.IsObjectNode(head) {
-		obj := base.UnsafeNodeToObject(head)
-		if len(obj.Children()) == 0 {
-			return optional.Value[base.Node](obj.AppendChildren(children).LiftTermination())
-		}
+	if base.IsNamedClassNode(head) {
+		return optional.Value[base.Node](base.NewObject(base.UnsafeNodeToNamedClass(head), children))
 	}
 	return optional.Empty[base.Node]()
 }

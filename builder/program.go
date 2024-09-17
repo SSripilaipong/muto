@@ -6,7 +6,7 @@ import (
 )
 
 type Program struct {
-	mutate            func(object base.Object) optional.Of[base.Node]
+	mutate            func(x base.MutableNode) optional.Of[base.Node]
 	afterMutationHook func(node base.Node)
 }
 
@@ -15,8 +15,8 @@ func (p Program) InitialObject() base.Object {
 }
 
 func (p Program) MutateUntilTerminated(node base.Node) base.Node {
-	for base.IsObjectNode(node) {
-		newNode := p.mutate(base.UnsafeNodeToObject(node))
+	for base.IsMutableNode(node) {
+		newNode := p.mutate(base.UnsafeNodeToMutable(node))
 		if newNode.IsEmpty() {
 			break
 		}
@@ -24,6 +24,18 @@ func (p Program) MutateUntilTerminated(node base.Node) base.Node {
 		node = newNode.Value()
 	}
 	return node
+}
+
+func (p Program) MutateOnce(node base.Node) base.Node {
+	if !base.IsMutableNode(node) {
+		return node
+	}
+	newNode := p.mutate(base.UnsafeNodeToMutable(node))
+	if newNode.IsEmpty() {
+		return node
+	}
+	p.callAfterMutationHook(newNode.Value())
+	return newNode.Value()
 }
 
 func (p Program) callAfterMutationHook(node base.Node) {

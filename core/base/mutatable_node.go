@@ -2,14 +2,14 @@ package base
 
 import "muto/common/optional"
 
-type Class interface {
-	Children() []Node
+type MutableNode interface {
 	NodeType() NodeType
 	IsTerminationConfirmed() bool
 	ConfirmTermination() MutableNode
 	LiftTermination() MutableNode
 	Mutate(mutation Mutation) optional.Of[Node]
-	Name() string
 }
 
-var _ MutableNode = Class(nil)
+func UnsafeNodeToMutable(x Node) MutableNode {
+	return x.(MutableNode)
+}
