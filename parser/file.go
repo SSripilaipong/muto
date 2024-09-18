@@ -26,5 +26,5 @@ var mergeRule = tuple.Fn3(func(p st.NamedRulePattern, _ tokenizer.Token, r st.Ru
 })
 
 var aggregateStatements = tuple.Fn2(func(s st.Statement, ss []st.Statement) []st.Statement {
-	return append(ss, s)
+	return append([]st.Statement{s}, ss...)
 })
