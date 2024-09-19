@@ -1,5 +1,5 @@
 package base
 
 func NewDataObject(children []Node) NamedObject {
-	return UnsafeNodeToNamedObject(NewNamedObject("$", children).ConfirmTermination())
+	return UnsafeNodeToNamedObject(NewNamedObject("$", children))
 }

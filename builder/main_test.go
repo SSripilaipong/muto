@@ -208,6 +208,14 @@ main = f (g 1)
 `).Value()
 		assert.Equal(t, base.NewNamedObject("f", []base.Node{base.NewNamedObject("g", []base.Node{base.NewNumberFromString("1")})}), mutateOnce(program))
 	})
+
+	t.Run("should mutate children after bubbling up to data object", func(t *testing.T) {
+		program := BuildFromString(`main = (f 1) g
+f X = X
+g = 2
+`).Value()
+		assert.Equal(t, base.NewDataObject([]base.Node{base.NewNumberFromString("1"), base.NewNumberFromString("2")}), execute(program))
+	})
 }
 
 func mutateOnce(program Program) base.Node {
