@@ -1,4 +1,4 @@
-module muto
+module github.com/SSripilaipong/muto
 
 go 1.22.7
 

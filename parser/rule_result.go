@@ -1,9 +1,9 @@
 package parser
 
 import (
-	ps "muto/common/parsing"
-	"muto/parser/tokenizer"
-	"muto/syntaxtree"
+	ps "github.com/SSripilaipong/muto/common/parsing"
+	"github.com/SSripilaipong/muto/parser/tokenizer"
+	"github.com/SSripilaipong/muto/syntaxtree"
 )
 
 var ruleResult = ps.Or(

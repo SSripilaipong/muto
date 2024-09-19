@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"muto/core/base"
+	"github.com/SSripilaipong/muto/core/base"
 )
 
 func TestStringOps(t *testing.T) {

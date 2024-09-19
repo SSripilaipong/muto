@@ -1,10 +1,10 @@
 package builder
 
 import (
-	"muto/common/optional"
-	"muto/core/base"
-	"muto/core/mutation/rule/data"
-	st "muto/syntaxtree"
+	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/muto/core/base"
+	"github.com/SSripilaipong/muto/core/mutation/rule/data"
+	st "github.com/SSripilaipong/muto/syntaxtree"
 )
 
 func buildVariable(variable st.Variable) func(*data.Mutation) optional.Of[base.Node] {

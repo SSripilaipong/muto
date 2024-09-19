@@ -1,8 +1,8 @@
 package parser
 
 import (
-	ps "muto/common/parsing"
-	"muto/parser/tokenizer"
+	ps "github.com/SSripilaipong/muto/common/parsing"
+	"github.com/SSripilaipong/muto/parser/tokenizer"
 )
 
 var string_ = ps.ConsumeIf(tokenizer.IsString)

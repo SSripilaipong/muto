@@ -1,10 +1,10 @@
 package active
 
 import (
-	"muto/common/fn"
-	"muto/common/slc"
-	"muto/core/mutation/normal/object"
-	st "muto/syntaxtree"
+	"github.com/SSripilaipong/muto/common/fn"
+	"github.com/SSripilaipong/muto/common/slc"
+	"github.com/SSripilaipong/muto/core/mutation/normal/object"
+	st "github.com/SSripilaipong/muto/syntaxtree"
 )
 
 var newMutatorsFromStatements = fn.Compose3(object.ReduceMutatorFromRules, slc.Map(activeRuleToRule), mapFilterActiveRuleFromStatement)

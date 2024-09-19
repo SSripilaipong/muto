@@ -1,7 +1,7 @@
 package parsing
 
 import (
-	"muto/common/tuple"
+	"github.com/SSripilaipong/muto/common/tuple"
 )
 
 func Sequence2[S, R1, R2 any](

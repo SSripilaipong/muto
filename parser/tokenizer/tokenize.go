@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"muto/common/rslt"
+	"github.com/SSripilaipong/muto/common/rslt"
 )
 
 func Tokenize(reader io.RuneReader) func() rslt.Of[Token] {

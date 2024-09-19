@@ -1,7 +1,7 @@
 package parsing
 
 import (
-	"muto/common/tuple"
+	"github.com/SSripilaipong/muto/common/tuple"
 )
 
 func DrainLeading[S, R any](f func(S) bool, p func([]S) []tuple.Of2[R, []S]) func([]S) []tuple.Of2[R, []S] {

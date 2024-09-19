@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"muto/common/optional"
+	"github.com/SSripilaipong/muto/common/optional"
 )
 
 type Number struct {

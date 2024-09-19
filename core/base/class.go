@@ -1,6 +1,6 @@
 package base
 
-import "muto/common/optional"
+import "github.com/SSripilaipong/muto/common/optional"
 
 type Class interface {
 	Children() []Node

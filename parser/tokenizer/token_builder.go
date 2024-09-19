@@ -1,8 +1,8 @@
 package tokenizer
 
 import (
-	"muto/common/tuple"
-	"muto/parser/tokenizer/automaton"
+	"github.com/SSripilaipong/muto/common/tuple"
+	"github.com/SSripilaipong/muto/parser/tokenizer/automaton"
 )
 
 type tokenBuilder struct {

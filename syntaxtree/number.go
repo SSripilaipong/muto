@@ -1,6 +1,6 @@
 package syntaxtree
 
-import "muto/core/base/datatype"
+import "github.com/SSripilaipong/muto/core/base/datatype"
 
 type Number struct {
 	value string

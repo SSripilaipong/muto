@@ -1,11 +1,11 @@
 package extractor
 
 import (
-	"muto/common/optional"
-	"muto/common/slc"
-	"muto/core/base"
-	"muto/core/mutation/rule/data"
-	st "muto/syntaxtree"
+	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/muto/common/slc"
+	"github.com/SSripilaipong/muto/core/base"
+	"github.com/SSripilaipong/muto/core/mutation/rule/data"
+	st "github.com/SSripilaipong/muto/syntaxtree"
 )
 
 func newParamExtractors(params []st.RuleParamPattern) []func(base.Node) optional.Of[*data.Mutation] {

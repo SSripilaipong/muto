@@ -4,8 +4,8 @@ import (
 	"maps"
 	"slices"
 
-	"muto/common/optional"
-	"muto/core/base"
+	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/muto/core/base"
 )
 
 type Mutation struct {

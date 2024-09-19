@@ -4,9 +4,9 @@ import (
 	"errors"
 	"strings"
 
-	ps "muto/common/parsing"
-	"muto/common/rslt"
-	"muto/parser/tokenizer"
+	ps "github.com/SSripilaipong/muto/common/parsing"
+	"github.com/SSripilaipong/muto/common/rslt"
+	"github.com/SSripilaipong/muto/parser/tokenizer"
 )
 
 var variadicVar = ps.ConsumeOne(func(x tokenizer.Token) rslt.Of[variadicVarNode] {

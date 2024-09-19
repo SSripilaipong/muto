@@ -1,7 +1,7 @@
 package base
 
 import (
-	"muto/common/optional"
+	"github.com/SSripilaipong/muto/common/optional"
 )
 
 type NamedClass struct {

@@ -3,13 +3,13 @@ package builder
 import (
 	"errors"
 
-	"muto/common/fn"
-	"muto/common/optional"
-	"muto/common/rslt"
-	"muto/core/base"
-	"muto/core/mutation"
-	"muto/parser"
-	st "muto/syntaxtree"
+	"github.com/SSripilaipong/muto/common/fn"
+	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/muto/common/rslt"
+	"github.com/SSripilaipong/muto/core/base"
+	"github.com/SSripilaipong/muto/core/mutation"
+	"github.com/SSripilaipong/muto/parser"
+	st "github.com/SSripilaipong/muto/syntaxtree"
 )
 
 var BuildFromString = fn.Compose3(

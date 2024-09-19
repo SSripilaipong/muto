@@ -1,7 +1,7 @@
 package base
 
 import (
-	"muto/core/base/datatype"
+	"github.com/SSripilaipong/muto/core/base/datatype"
 )
 
 func NodeEqual(x, y Node) bool {

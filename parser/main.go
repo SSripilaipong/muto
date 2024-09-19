@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"strings"
 
-	"muto/common/parsing"
-	"muto/common/rslt"
-	"muto/common/tuple"
-	"muto/parser/tokenizer"
-	"muto/syntaxtree"
+	"github.com/SSripilaipong/muto/common/parsing"
+	"github.com/SSripilaipong/muto/common/rslt"
+	"github.com/SSripilaipong/muto/common/tuple"
+	"github.com/SSripilaipong/muto/parser/tokenizer"
+	"github.com/SSripilaipong/muto/syntaxtree"
 )
 
 var ParseToken = parsing.Map(newPackage, file)

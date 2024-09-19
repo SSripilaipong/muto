@@ -1,8 +1,8 @@
 package mutator
 
 import (
-	"muto/common/optional"
-	"muto/core/base"
+	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/muto/core/base"
 )
 
 type Builder[M any] interface {

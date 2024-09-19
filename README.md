@@ -79,20 +79,11 @@ First, install Golang v1.22.7.
 
 Then, build using `Makefile`
 ```shell
-make build
+go install github.com/SSripilaipong/muto@v0.0.1
 ```
-Now, build result will be at `./build/muto`. So you can play with it like:
+Make sure your PATH includes GOPATH in rc files such as `~/.bashrc` or `~/.zshrc`:
 ```shell
-./build/muto run main.mu
-```
-Or, you can move it a bin path on your system, for example:
-```shell
-mkdir -p ~/muto/bin
-mv ./build/muto ~/muto/bin
-```
-And don't forget to add the path to your rc file, such as `~/.bashrc` or `~/.zshrc`:
-```shell
-echo 'export PATH="~/muto/bin:$PATH"' >> ~/.bashrc
+echo 'export PATH=$PATH:$(go env GOPATH)/bin' >> ~/.bashrc
 ```
 
 <a name="section-3"></a>

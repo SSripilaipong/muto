@@ -1,10 +1,10 @@
 package extractor
 
 import (
-	"muto/common/optional"
-	"muto/core/base"
-	"muto/core/mutation/rule/data"
-	st "muto/syntaxtree"
+	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/muto/core/base"
+	"github.com/SSripilaipong/muto/core/mutation/rule/data"
+	st "github.com/SSripilaipong/muto/syntaxtree"
 )
 
 func extractChildrenNodes(params []st.RuleParamPattern, nChildrenMatch func(int, int) bool) func(children []base.Node) optional.Of[*data.Mutation] {

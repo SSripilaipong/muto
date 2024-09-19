@@ -1,8 +1,8 @@
 package builtin
 
 import (
-	"muto/common/optional"
-	"muto/core/base"
+	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/muto/core/base"
 )
 
 func unaryOp(f func(x base.Node) optional.Of[base.Node]) func(t base.Object) optional.Of[base.Node] {

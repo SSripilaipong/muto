@@ -1,12 +1,12 @@
 package normal
 
 import (
-	"muto/common/fn"
-	"muto/common/optional"
-	"muto/common/slc"
-	"muto/core/base"
-	"muto/core/mutation/normal/builtin"
-	"muto/core/mutation/normal/object"
+	"github.com/SSripilaipong/muto/common/fn"
+	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/muto/common/slc"
+	"github.com/SSripilaipong/muto/core/base"
+	"github.com/SSripilaipong/muto/core/mutation/normal/builtin"
+	"github.com/SSripilaipong/muto/core/mutation/normal/object"
 )
 
 var NewFromStatements = fn.Compose(newSelectiveMutator, object.NewMutatorsFromStatements)

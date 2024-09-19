@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"muto/common/optional"
+	"github.com/SSripilaipong/muto/common/optional"
 )
 
 type Object interface {

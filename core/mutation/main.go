@@ -1,11 +1,11 @@
 package mutation
 
 import (
-	"muto/common/optional"
-	"muto/core/base"
-	activeMutation "muto/core/mutation/active"
-	normalMutation "muto/core/mutation/normal"
-	st "muto/syntaxtree"
+	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/muto/core/base"
+	activeMutation "github.com/SSripilaipong/muto/core/mutation/active"
+	normalMutation "github.com/SSripilaipong/muto/core/mutation/normal"
+	st "github.com/SSripilaipong/muto/syntaxtree"
 )
 
 func NewFromStatements(ss []st.Statement) func(base.MutableNode) optional.Of[base.Node] {

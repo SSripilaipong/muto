@@ -4,9 +4,9 @@ import (
 	"strings"
 	"unicode"
 
-	ps "muto/common/parsing"
-	"muto/common/tuple"
-	"muto/parser/tokenizer"
+	ps "github.com/SSripilaipong/muto/common/parsing"
+	"github.com/SSripilaipong/muto/common/tuple"
+	"github.com/SSripilaipong/muto/parser/tokenizer"
 )
 
 func isFirstLetterCapital(s string) bool {

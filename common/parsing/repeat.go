@@ -1,7 +1,7 @@
 package parsing
 
 import (
-	"muto/common/tuple"
+	"github.com/SSripilaipong/muto/common/tuple"
 )
 
 func OptionalGreedyRepeat[S, R any](p func([]S) []tuple.Of2[R, []S]) func([]S) []tuple.Of2[[]R, []S] {

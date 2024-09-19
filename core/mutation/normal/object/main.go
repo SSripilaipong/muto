@@ -1,10 +1,10 @@
 package object
 
 import (
-	"muto/common/fn"
-	"muto/common/slc"
-	ruleMutation "muto/core/mutation/rule"
-	st "muto/syntaxtree"
+	"github.com/SSripilaipong/muto/common/fn"
+	"github.com/SSripilaipong/muto/common/slc"
+	ruleMutation "github.com/SSripilaipong/muto/core/mutation/rule"
+	st "github.com/SSripilaipong/muto/syntaxtree"
 )
 
 var NewMutatorsFromStatements = fn.Compose(ReduceMutatorFromRules, mapFilterRuleFromStatement)

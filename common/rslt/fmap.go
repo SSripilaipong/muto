@@ -1,6 +1,6 @@
 package rslt
 
-import "muto/common/fn"
+import "github.com/SSripilaipong/muto/common/fn"
 
 func Fmap[A, B any](f func(A) B) func(Of[A]) Of[B] {
 	return func(x Of[A]) Of[B] {

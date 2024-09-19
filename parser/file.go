@@ -1,10 +1,10 @@
 package parser
 
 import (
-	ps "muto/common/parsing"
-	"muto/common/tuple"
-	"muto/parser/tokenizer"
-	st "muto/syntaxtree"
+	ps "github.com/SSripilaipong/muto/common/parsing"
+	"github.com/SSripilaipong/muto/common/tuple"
+	"github.com/SSripilaipong/muto/parser/tokenizer"
+	st "github.com/SSripilaipong/muto/syntaxtree"
 )
 
 var file = ps.Map(st.NewFile, ignoreLeadingLineBreak(ignoreTrailingLineBreak(statements)))

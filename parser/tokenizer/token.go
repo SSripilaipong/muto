@@ -3,7 +3,7 @@ package tokenizer
 import (
 	"fmt"
 
-	"muto/parser/tokenizer/automaton"
+	"github.com/SSripilaipong/muto/parser/tokenizer/automaton"
 )
 
 type Token struct {

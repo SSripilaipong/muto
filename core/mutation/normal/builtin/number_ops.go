@@ -1,11 +1,11 @@
 package builtin
 
 import (
-	"muto/common/optional"
-	"muto/common/slc"
-	"muto/core/base"
-	"muto/core/base/datatype"
-	"muto/core/mutation/normal/object"
+	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/muto/common/slc"
+	"github.com/SSripilaipong/muto/core/base"
+	"github.com/SSripilaipong/muto/core/base/datatype"
+	"github.com/SSripilaipong/muto/core/mutation/normal/object"
 )
 
 var addMutator = object.NewMutator("+", slc.Pure(numberBinaryOp(func(x, y base.Number) optional.Of[base.Node] {

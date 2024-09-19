@@ -1,6 +1,6 @@
 package mutator
 
-import "muto/common/optional"
+import "github.com/SSripilaipong/muto/common/optional"
 
 type Extractor[T, M any] interface {
 	Extract(T) optional.Of[M]

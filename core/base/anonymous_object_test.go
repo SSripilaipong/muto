@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"muto/common/optional"
+	"github.com/SSripilaipong/muto/common/optional"
 )
 
 func TestAnonymousObject_NormalMutation(t *testing.T) {

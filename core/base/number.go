@@ -3,7 +3,7 @@ package base
 import (
 	"fmt"
 
-	"muto/core/base/datatype"
+	"github.com/SSripilaipong/muto/core/base/datatype"
 )
 
 type Number struct {

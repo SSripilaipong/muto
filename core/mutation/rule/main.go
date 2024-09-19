@@ -1,13 +1,13 @@
 package mutation
 
 import (
-	"muto/common/optional"
-	"muto/core/base"
-	"muto/core/mutation/rule/builder"
-	"muto/core/mutation/rule/data"
-	"muto/core/mutation/rule/extractor"
-	"muto/core/mutation/rule/mutator"
-	st "muto/syntaxtree"
+	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/muto/core/base"
+	"github.com/SSripilaipong/muto/core/mutation/rule/builder"
+	"github.com/SSripilaipong/muto/core/mutation/rule/data"
+	"github.com/SSripilaipong/muto/core/mutation/rule/extractor"
+	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
+	st "github.com/SSripilaipong/muto/syntaxtree"
 )
 
 func New(rule st.Rule) func(t base.Object) optional.Of[base.Node] {

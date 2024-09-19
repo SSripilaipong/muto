@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"muto/common/tuple"
-	tk "muto/parser/tokenizer"
-	st "muto/syntaxtree"
+	"github.com/SSripilaipong/muto/common/tuple"
+	tk "github.com/SSripilaipong/muto/parser/tokenizer"
+	st "github.com/SSripilaipong/muto/syntaxtree"
 )
 
 func TestParseString(t *testing.T) {

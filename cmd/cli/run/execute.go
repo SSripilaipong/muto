@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"muto/builder"
-	"muto/core/base"
+	"github.com/SSripilaipong/muto/builder"
+	"github.com/SSripilaipong/muto/core/base"
 )
 
 func ExecuteByFileName(fileName string, options ...func(executeOptions) executeOptions) error {

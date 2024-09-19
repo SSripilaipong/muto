@@ -1,8 +1,8 @@
 package parsing
 
 import (
-	"muto/common/rslt"
-	"muto/common/tuple"
+	"github.com/SSripilaipong/muto/common/rslt"
+	"github.com/SSripilaipong/muto/common/tuple"
 )
 
 func ConsumeOne[S, R any](f func(x S) rslt.Of[R]) func([]S) []tuple.Of2[R, []S] {
