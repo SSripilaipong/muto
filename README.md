@@ -75,11 +75,11 @@ Active Mutation is a powerful yet dangerous mechanism. It should be used as litt
 <a name="section-2"></a>
 ## 2. Install
 
-First, install Golang v1.22.7.
+First, install Golang version at least 1.22.7
 
-Then, build using `Makefile`
+Then, install using command:
 ```shell
-go install github.com/SSripilaipong/muto@v0.0.1
+go install github.com/SSripilaipong/muto@latest
 ```
 Make sure your PATH includes GOPATH in rc files such as `~/.bashrc` or `~/.zshrc`:
 ```shell
