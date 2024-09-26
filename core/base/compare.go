@@ -29,29 +29,13 @@ func stringEqual(x String, y Node) bool {
 }
 
 func objectEqual(x Object, y Node) bool {
-	return (IsAnonymousObjectNode(x) && anonymousObjectEqual(UnsafeObjectToAnonymousObject(x), y)) ||
-		(IsNamedObjectNode(x) && namedObjectEqual(UnsafeObjectToNamedObject(x), y))
-}
-
-func anonymousObjectEqual(x AnonymousObject, y Node) bool {
-	if !IsAnonymousObjectNode(y) {
+	if !IsObjectNode(y) {
 		return false
 	}
-	yObj := UnsafeNodeToAnonymousObject(y)
-	if !NodeEqual(x.Head(), yObj.Head()) {
-		return false
-	}
-	return objectChildrenEqual(x.Children(), yObj.Children())
+	return x.Equals(UnsafeNodeToObject(y))
 }
 
-func namedObjectEqual(x NamedObject, y Node) bool {
-	if !IsNamedObjectNode(y) {
-		return false
-	}
-	return x.Equals(UnsafeNodeToNamedObject(y))
-}
-
-func namedClassEqual(x NamedClass, y Node) bool {
+func namedClassEqual(x Class, y Node) bool {
 	if !IsNamedClassNode(y) {
 		return false
 	}

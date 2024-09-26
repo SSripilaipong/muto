@@ -28,7 +28,7 @@ func rollingConcatTwo(t base.Object) optional.Of[base.Node] {
 	c := a.Value() + b.Value()
 
 	newChildren := append([]base.Node{base.NewString(c)}, children[2:]...)
-	return optional.Value(base.NamedObjectToNode(base.NewNamedObject(rollingConcatSymbol, newChildren)))
+	return optional.Value(base.ObjectToNode(base.NewNamedObject(rollingConcatSymbol, newChildren)))
 }
 
 func rollingConcatTwoTerminate(t base.Object) optional.Of[base.Node] {
@@ -36,7 +36,7 @@ func rollingConcatTwoTerminate(t base.Object) optional.Of[base.Node] {
 	if len(children) < 2 {
 		return optional.Empty[base.Node]()
 	}
-	return optional.Value[base.Node](t.ConfirmTermination())
+	return optional.Value[base.Node](t)
 }
 
 func rollingConcatOne(t base.Object) optional.Of[base.Node] {

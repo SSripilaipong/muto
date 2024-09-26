@@ -38,7 +38,7 @@ func buildAnonymousObject(obj st.RuleResultAnonymousObject) func(*data.Mutation)
 		if result, ok := autoBubbleUp(head, children).Return(); ok {
 			return optional.Value[base.Node](result)
 		}
-		return optional.Value[base.Node](base.NewAnonymousObject(head, children))
+		return optional.Value[base.Node](base.NewObject(head, children))
 	}
 }
 

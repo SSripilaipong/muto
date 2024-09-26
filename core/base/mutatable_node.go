@@ -3,10 +3,7 @@ package base
 import "github.com/SSripilaipong/muto/common/optional"
 
 type MutableNode interface {
-	NodeType() NodeType
-	IsTerminationConfirmed() bool
-	ConfirmTermination() MutableNode
-	LiftTermination() MutableNode
+	Node
 	Mutate(mutation Mutation) optional.Of[Node]
 }
 

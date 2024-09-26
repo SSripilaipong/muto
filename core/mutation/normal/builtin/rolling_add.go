@@ -29,7 +29,7 @@ func rollingAddTwo(t base.Object) optional.Of[base.Node] {
 	c := datatype.AddNumber(a.Value(), b.Value())
 
 	newChildren := append([]base.Node{base.NewNumber(c)}, children[2:]...)
-	return optional.Value(base.NamedObjectToNode(base.NewNamedObject(rollingAddSymbol, newChildren)))
+	return optional.Value(base.ObjectToNode(base.NewNamedObject(rollingAddSymbol, newChildren)))
 }
 
 func rollingAddTwoTerminate(t base.Object) optional.Of[base.Node] {
@@ -37,7 +37,7 @@ func rollingAddTwoTerminate(t base.Object) optional.Of[base.Node] {
 	if len(children) < 2 {
 		return optional.Empty[base.Node]()
 	}
-	return optional.Value[base.Node](t.ConfirmTermination())
+	return optional.Value[base.Node](t)
 }
 
 func rollingAddOne(t base.Object) optional.Of[base.Node] {

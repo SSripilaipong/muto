@@ -29,8 +29,8 @@ func MergeMutators(mutators ...Mutator) Mutator {
 	return NewMutator(name, rules)
 }
 
-func (t Mutator) Mutate(obj base.NamedObject) optional.Of[base.Node] {
-	if t.name != obj.Name() {
+func (t Mutator) Mutate(name string, obj base.Object) optional.Of[base.Node] {
+	if name != t.name {
 		return optional.Empty[base.Node]()
 	}
 	for _, mutate := range t.mutationRules {

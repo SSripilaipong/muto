@@ -1,38 +1,31 @@
 package base
 
+import "github.com/SSripilaipong/muto/common/optional"
+
 type Node interface {
 	NodeType() NodeType
-	IsTerminationConfirmed() bool
+	MutateAsHead(children []Node, mutation Mutation) optional.Of[Node]
 }
 
 type NodeType string
 
 const (
-	NodeTypeString          NodeType = "STRING"
-	NodeTypeNumber          NodeType = "NUMBER"
-	NodeTypeNamedObject     NodeType = "NAMED_OBJECT"
-	NodeTypeAnonymousObject NodeType = "ANONYMOUS_OBJECT"
-	NodeTypeNamedClass      NodeType = "NAMED_CLASS"
+	NodeTypeString NodeType = "STRING"
+	NodeTypeNumber NodeType = "NUMBER"
+	NodeTypeObject NodeType = "OBJECT"
+	NodeTypeClass  NodeType = "CLASS"
 )
 
 func IsObjectNode(node Node) bool {
-	return IsNamedObjectNode(node) || IsAnonymousObjectNode(node)
+	return node.NodeType() == NodeTypeObject
 }
 
 func IsMutableNode(node Node) bool {
-	return IsNamedObjectNode(node) || IsAnonymousObjectNode(node) || IsNamedClassNode(node)
+	return IsObjectNode(node) || IsNamedClassNode(node)
 }
 
 func IsNamedClassNode(node Node) bool {
-	return node.NodeType() == NodeTypeNamedClass
-}
-
-func IsNamedObjectNode(node Node) bool {
-	return node.NodeType() == NodeTypeNamedObject
-}
-
-func IsAnonymousObjectNode(node Node) bool {
-	return node.NodeType() == NodeTypeAnonymousObject
+	return node.NodeType() == NodeTypeClass
 }
 
 func IsNumberNode(node Node) bool {

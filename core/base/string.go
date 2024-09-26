@@ -1,6 +1,10 @@
 package base
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/SSripilaipong/muto/common/optional"
+)
 
 type String struct {
 	value string
@@ -12,7 +16,16 @@ func NewString(value string) String {
 
 func (String) NodeType() NodeType { return NodeTypeString }
 
-func (String) IsTerminationConfirmed() bool { return true }
+func (s String) MutateAsHead(children []Node, mutation Mutation) optional.Of[Node] {
+	if len(children) > 0 {
+		newChildren := mutateChildren(children, mutation)
+		if newChildren.IsEmpty() {
+			return optional.Empty[Node]()
+		}
+		return optional.Value[Node](NewObject(s, newChildren.Value()))
+	}
+	return optional.Value[Node](s)
+}
 
 func (s String) Value() string {
 	return s.value

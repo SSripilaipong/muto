@@ -6,13 +6,13 @@ import (
 )
 
 func terminate(t base.Object) optional.Of[base.Node] {
-	return optional.Value[base.Node](t.ConfirmTermination())
+	return optional.Value[base.Node](t)
 }
 
 func valueWithRemainingChildren(value base.Node, remainingChildren []base.Node) optional.Of[base.Node] {
 	if len(remainingChildren) > 0 {
 		newChildren := append([]base.Node{value}, remainingChildren...)
-		return optional.Value(base.NamedObjectToNode(base.NewDataObject(newChildren)))
+		return optional.Value(base.ObjectToNode(base.NewDataObject(newChildren)))
 	}
 	return optional.Value(value)
 }

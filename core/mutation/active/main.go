@@ -10,10 +10,10 @@ import (
 
 var NewFromStatements = fn.Compose(newSelectiveMutator, newMutatorsFromStatements)
 
-func newSelectiveMutator(ms []object.Mutator) func(string, base.NamedObject) optional.Of[base.Node] {
+func newSelectiveMutator(ms []object.Mutator) func(string, base.Object) optional.Of[base.Node] {
 	mutator := slc.ToMapValue(object.MutatorName)(ms)
 
-	return func(name string, obj base.NamedObject) optional.Of[base.Node] {
-		return mutator[name].Mutate(obj)
+	return func(name string, obj base.Object) optional.Of[base.Node] {
+		return mutator[name].Mutate(name, obj)
 	}
 }

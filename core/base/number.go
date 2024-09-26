@@ -3,6 +3,7 @@ package base
 import (
 	"fmt"
 
+	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base/datatype"
 )
 
@@ -20,7 +21,16 @@ func NewNumberFromString(s string) Node {
 
 func (Number) NodeType() NodeType { return NodeTypeNumber }
 
-func (Number) IsTerminationConfirmed() bool { return true }
+func (n Number) MutateAsHead(children []Node, mutation Mutation) optional.Of[Node] {
+	if len(children) > 0 {
+		newChildren := mutateChildren(children, mutation)
+		if newChildren.IsEmpty() {
+			return optional.Empty[Node]()
+		}
+		return optional.Value[Node](NewObject(n, newChildren.Value()))
+	}
+	return optional.Value[Node](n)
+}
 
 func (n Number) Value() datatype.Number {
 	return n.value

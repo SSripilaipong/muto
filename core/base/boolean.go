@@ -1,7 +1,7 @@
 package base
 
 type Boolean struct {
-	NamedObject
+	Object
 }
 
 func NewBoolean(x bool) Boolean {
@@ -15,9 +15,9 @@ func NewBoolean(x bool) Boolean {
 }
 
 func IsBooleanNode(x Node) bool {
-	if !IsNamedObjectNode(x) {
+	if !IsObjectNode(x) {
 		return false
 	}
-	obj := UnsafeNodeToNamedObject(x)
+	obj := UnsafeNodeToObject(x)
 	return obj.Equals(NewNamedObject("true", nil)) || obj.Equals(NewNamedObject("false", nil))
 }

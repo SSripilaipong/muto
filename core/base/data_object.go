@@ -1,5 +1,5 @@
 package base
 
-func NewDataObject(children []Node) NamedObject {
-	return UnsafeNodeToNamedObject(NewNamedObject("$", children))
+func NewDataObject(children []Node) Object {
+	return UnsafeNodeToObject(NewNamedObject("$", children))
 }

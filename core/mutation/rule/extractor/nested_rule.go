@@ -12,8 +12,8 @@ func newNestedNamedRuleExtractor(p st.NamedRulePattern) func(base.Node) optional
 
 	return func(x base.Node) optional.Of[*data.Mutation] {
 		switch {
-		case base.IsNamedObjectNode(x):
-			return extractNestedNamedRuleExtractorForNamedObject(p.ObjectName(), extractFromChildren, base.UnsafeNodeToNamedObject(x))
+		case base.IsObjectNode(x):
+			return extractNestedNamedRuleExtractorForNamedObject(p.ObjectName(), extractFromChildren, base.UnsafeNodeToObject(x))
 		case base.IsNamedClassNode(x):
 			return extractNestedNamedRuleExtractorForNamedClass(p.ObjectName(), extractFromChildren, base.UnsafeNodeToNamedClass(x))
 		}
@@ -21,15 +21,18 @@ func newNestedNamedRuleExtractor(p st.NamedRulePattern) func(base.Node) optional
 	}
 }
 
-func extractNestedNamedRuleExtractorForNamedClass(name string, extractFromChildren func(obj base.Object) optional.Of[*data.Mutation], class base.NamedClass) optional.Of[*data.Mutation] {
+func extractNestedNamedRuleExtractorForNamedClass(name string, extractFromChildren func(obj base.Object) optional.Of[*data.Mutation], class base.Class) optional.Of[*data.Mutation] {
 	if class.Name() != name {
 		return optional.Empty[*data.Mutation]()
 	}
 	return extractFromChildren(base.NewObject(class, nil))
 }
 
-func extractNestedNamedRuleExtractorForNamedObject(name string, extractFromChildren func(obj base.Object) optional.Of[*data.Mutation], obj base.NamedObject) optional.Of[*data.Mutation] {
-	if obj.Name() != name {
+func extractNestedNamedRuleExtractorForNamedObject(name string, extractFromChildren func(obj base.Object) optional.Of[*data.Mutation], obj base.Object) optional.Of[*data.Mutation] {
+	if !base.IsNamedClassNode(obj.Head()) {
+		return optional.Empty[*data.Mutation]()
+	}
+	if base.UnsafeNodeToNamedClass(obj.Head()).Name() != name {
 		return optional.Empty[*data.Mutation]()
 	}
 	return extractFromChildren(obj)
@@ -41,13 +44,8 @@ func newNestedVariableRuleExtractor(p st.VariableRulePattern) func(base.Node) op
 
 	return func(x base.Node) optional.Of[*data.Mutation] {
 		switch {
-		case base.IsNamedObjectNode(x):
-			obj := base.UnsafeNodeToNamedObject(x)
-			if mutation, ok := extractFromChildren(obj).Return(); ok {
-				return mutation.WithVariableMappings(data.NewVariableMapping(name, base.NewNamedClass(obj.Name())))
-			}
-		case base.IsAnonymousObjectNode(x):
-			obj := base.UnsafeNodeToAnonymousObject(x)
+		case base.IsObjectNode(x):
+			obj := base.UnsafeNodeToObject(x)
 			if mutation, ok := extractFromChildren(obj).Return(); ok {
 				return mutation.WithVariableMappings(data.NewVariableMapping(name, obj.Head()))
 			}
@@ -61,10 +59,14 @@ func newNestedAnonymousRuleExtractor(p st.AnonymousRulePattern) func(base.Node) 
 	extractHead := newParamExtractor(p.Head())
 
 	return func(x base.Node) optional.Of[*data.Mutation] {
-		if !base.IsAnonymousObjectNode(x) {
+		if !base.IsObjectNode(x) {
 			return optional.Empty[*data.Mutation]()
 		}
-		obj := base.UnsafeNodeToAnonymousObject(x)
+
+		obj := base.UnsafeNodeToObject(x)
+		if !base.IsObjectNode(obj.Head()) {
+			return optional.Empty[*data.Mutation]()
+		}
 
 		mutation, ok := extractFromChildren(obj).Return()
 		if !ok {

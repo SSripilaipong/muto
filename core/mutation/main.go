@@ -19,14 +19,14 @@ func NewFromStatements(ss []st.Statement) func(base.MutableNode) optional.Of[bas
 }
 
 type mutation struct {
-	active func(name string, obj base.NamedObject) optional.Of[base.Node]
-	normal func(name string, obj base.NamedObject) optional.Of[base.Node]
+	active func(name string, obj base.Object) optional.Of[base.Node]
+	normal func(name string, obj base.Object) optional.Of[base.Node]
 }
 
-func (m mutation) Active(name string, obj base.NamedObject) optional.Of[base.Node] {
+func (m mutation) Active(name string, obj base.Object) optional.Of[base.Node] {
 	return m.active(name, obj)
 }
 
-func (m mutation) Normal(name string, obj base.NamedObject) optional.Of[base.Node] {
+func (m mutation) Normal(name string, obj base.Object) optional.Of[base.Node] {
 	return m.normal(name, obj)
 }

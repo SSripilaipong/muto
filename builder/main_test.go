@@ -92,7 +92,7 @@ main = g f
 		program := BuildFromString(`g (f 1) = 555
 main = g (f 1 2)
 `).Value()
-		assert.Equal(t, base.NewNamedObject("g", []base.Node{base.NewNamedObject("f", []base.Node{base.NewNumberFromString("1"), base.NewNumberFromString("2")}).ConfirmTermination()}), execute(program))
+		assert.Equal(t, base.NewNamedObject("g", []base.Node{base.NewNamedObject("f", []base.Node{base.NewNumberFromString("1"), base.NewNumberFromString("2")})}), execute(program))
 	})
 
 	t.Run("should resolve to data object when there are children left", func(t *testing.T) {
@@ -113,21 +113,21 @@ main = f 1 2
 		program := BuildFromString(`f (G X) = h (G X)
 main = f (hello "world")
 `).Value()
-		assert.Equal(t, base.NewNamedObject("h", []base.Node{base.NewNamedObject("hello", []base.Node{base.NewString("world")}).ConfirmTermination()}), execute(program))
+		assert.Equal(t, base.NewNamedObject("h", []base.Node{base.NewNamedObject("hello", []base.Node{base.NewString("world")})}), execute(program))
 	})
 
 	t.Run("should build nested variable object with variadic params", func(t *testing.T) {
 		program := BuildFromString(`f (H X...) = g (H X...)
 main = f (h "1" "2")
 `).Value()
-		assert.Equal(t, base.NewNamedObject("g", []base.Node{base.NewNamedObject("h", []base.Node{base.NewString("1"), base.NewString("2")}).ConfirmTermination()}), execute(program))
+		assert.Equal(t, base.NewNamedObject("g", []base.Node{base.NewNamedObject("h", []base.Node{base.NewString("1"), base.NewString("2")})}), execute(program))
 	})
 
 	t.Run("should not fail when variadic param part tries to match with no children", func(t *testing.T) {
 		program := BuildFromString(`f (G S... 0) = 0
 main = f $
 `).Value()
-		assert.Equal(t, base.NewNamedObject("f", []base.Node{base.NewNamedClass("$").ConfirmTermination()}), execute(program))
+		assert.Equal(t, base.NewNamedObject("f", []base.Node{base.NewNamedClass("$")}), execute(program))
 	})
 
 	t.Run("should not fail when variadic right param part tries to match with no children", func(t *testing.T) {
@@ -214,7 +214,7 @@ main = f (g 1)
 f X = X
 g = 2
 `).Value()
-		assert.Equal(t, base.NewDataObject([]base.Node{base.NewNumberFromString("1"), base.NewNumberFromString("2")}), execute(program))
+		assert.Equal(t, base.NewObject(base.NewNumberFromString("1"), []base.Node{base.NewNumberFromString("2")}), execute(program))
 	})
 }
 

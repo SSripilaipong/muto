@@ -22,10 +22,3 @@ func (obj RuleResultAnonymousObject) Head() RuleResult {
 func (obj RuleResultAnonymousObject) ParamPart() ObjectParamPart {
 	return obj.paramPart
 }
-
-type AnonymousObjectHeadType string
-
-const (
-	AnonymousObjectHeadTypeNamedObject     AnonymousObjectHeadType = "NAMED_OBJECT"
-	AnonymousObjectHeadTypeAnonymousObject AnonymousObjectHeadType = "ANONYMOUS_OBJECT"
-)
