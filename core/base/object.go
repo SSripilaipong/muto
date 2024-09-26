@@ -56,7 +56,7 @@ func (obj Object) Equals(x Object) bool {
 
 func (obj Object) String() string {
 	head := obj.Head()
-	if IsNamedClassNode(head) || IsNumberNode(head) || IsStringNode(head) || IsBooleanNode(head) {
+	if IsClassNode(head) || IsNumberNode(head) || IsStringNode(head) || IsBooleanNode(head) {
 		if len(obj.Children()) == 0 {
 			return fmt.Sprintf(`%s`, head)
 		}
@@ -73,7 +73,7 @@ func NewObject(class Node, children []Node) Object {
 }
 
 func NewNamedObject(name string, children []Node) Object {
-	return Object{class: NewNamedClass(name), children: children}
+	return Object{class: NewClass(name), children: children}
 }
 
 func ObjectToNode(x Object) Node {

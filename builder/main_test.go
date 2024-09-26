@@ -85,7 +85,7 @@ main = f 1 2 3
 		program := BuildFromString(`g (f Xs...) = h Xs...
 main = g f
 `).Value()
-		assert.Equal(t, base.NewNamedClass("h"), execute(program))
+		assert.Equal(t, base.NewClass("h"), execute(program))
 	})
 
 	t.Run("should match children strictly for nested pattern", func(t *testing.T) {
@@ -127,14 +127,14 @@ main = f (h "1" "2")
 		program := BuildFromString(`f (G S... 0) = 0
 main = f $
 `).Value()
-		assert.Equal(t, base.NewNamedObject("f", []base.Node{base.NewNamedClass("$")}), execute(program))
+		assert.Equal(t, base.NewNamedObject("f", []base.Node{base.NewClass("$")}), execute(program))
 	})
 
 	t.Run("should not fail when variadic right param part tries to match with no children", func(t *testing.T) {
 		program := BuildFromString(`f 0 S... = 0
 main = f
 `).Value()
-		assert.Equal(t, base.NewNamedClass("f"), execute(program))
+		assert.Equal(t, base.NewClass("f"), execute(program))
 	})
 
 	t.Run("should apply active mutation before normal mutation", func(t *testing.T) {

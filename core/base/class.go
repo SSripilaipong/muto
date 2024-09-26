@@ -52,11 +52,11 @@ func (c Class) String() string {
 	return c.Name()
 }
 
-func NewNamedClass(name string) Class {
+func NewClass(name string) Class {
 	return Class{name: name}
 }
 
-func UnsafeNodeToNamedClass(obj Node) Class {
+func UnsafeNodeToClass(obj Node) Class {
 	return obj.(Class)
 }
 

@@ -14,14 +14,14 @@ func newNestedNamedRuleExtractor(p st.NamedRulePattern) func(base.Node) optional
 		switch {
 		case base.IsObjectNode(x):
 			return extractNestedNamedRuleExtractorForNamedObject(p.ObjectName(), extractFromChildren, base.UnsafeNodeToObject(x))
-		case base.IsNamedClassNode(x):
-			return extractNestedNamedRuleExtractorForNamedClass(p.ObjectName(), extractFromChildren, base.UnsafeNodeToNamedClass(x))
+		case base.IsClassNode(x):
+			return extractNestedNamedRuleExtractorForClass(p.ObjectName(), extractFromChildren, base.UnsafeNodeToClass(x))
 		}
 		return optional.Empty[*data.Mutation]()
 	}
 }
 
-func extractNestedNamedRuleExtractorForNamedClass(name string, extractFromChildren func(obj base.Object) optional.Of[*data.Mutation], class base.Class) optional.Of[*data.Mutation] {
+func extractNestedNamedRuleExtractorForClass(name string, extractFromChildren func(obj base.Object) optional.Of[*data.Mutation], class base.Class) optional.Of[*data.Mutation] {
 	if class.Name() != name {
 		return optional.Empty[*data.Mutation]()
 	}
@@ -29,10 +29,10 @@ func extractNestedNamedRuleExtractorForNamedClass(name string, extractFromChildr
 }
 
 func extractNestedNamedRuleExtractorForNamedObject(name string, extractFromChildren func(obj base.Object) optional.Of[*data.Mutation], obj base.Object) optional.Of[*data.Mutation] {
-	if !base.IsNamedClassNode(obj.Head()) {
+	if !base.IsClassNode(obj.Head()) {
 		return optional.Empty[*data.Mutation]()
 	}
-	if base.UnsafeNodeToNamedClass(obj.Head()).Name() != name {
+	if base.UnsafeNodeToClass(obj.Head()).Name() != name {
 		return optional.Empty[*data.Mutation]()
 	}
 	return extractFromChildren(obj)

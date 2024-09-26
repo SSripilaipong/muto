@@ -34,11 +34,11 @@ func processResult(r optional.Of[base.Node], otherChildren []base.Node) optional
 	switch {
 	case !base.IsMutableNode(result):
 		return valueWithRemainingChildren(result, otherChildren)
-	case base.IsNamedClassNode(result):
+	case base.IsClassNode(result):
 		if len(otherChildren) == 0 {
 			return optional.Value(result)
 		}
-		return optional.Value[base.Node](base.NewObject(base.UnsafeNodeToNamedClass(result), otherChildren))
+		return optional.Value[base.Node](base.NewObject(base.UnsafeNodeToClass(result), otherChildren))
 	case base.IsObjectNode(result):
 		obj := base.UnsafeNodeToObject(result)
 		return optional.Value[base.Node](obj.AppendChildren(otherChildren))

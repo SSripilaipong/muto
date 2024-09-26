@@ -26,8 +26,8 @@ func withRemainingChildren(f func(*data.Mutation) optional.Of[base.Node]) func(*
 		if len(mutation.RemainingChildren()) == 0 {
 			return optional.Value(node)
 		}
-		if base.IsNamedClassNode(node) {
-			return optional.Value[base.Node](base.NewObject(base.UnsafeNodeToNamedClass(node), mutation.RemainingChildren()))
+		if base.IsClassNode(node) {
+			return optional.Value[base.Node](base.NewObject(base.UnsafeNodeToClass(node), mutation.RemainingChildren()))
 		}
 		if base.IsObjectNode(node) {
 			return optional.Value[base.Node](base.UnsafeNodeToObject(node).AppendChildren(mutation.RemainingChildren()))

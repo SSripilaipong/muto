@@ -21,10 +21,10 @@ func IsObjectNode(node Node) bool {
 }
 
 func IsMutableNode(node Node) bool {
-	return IsObjectNode(node) || IsNamedClassNode(node)
+	return IsObjectNode(node) || IsClassNode(node)
 }
 
-func IsNamedClassNode(node Node) bool {
+func IsClassNode(node Node) bool {
 	return node.NodeType() == NodeTypeClass
 }
 

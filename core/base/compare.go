@@ -10,8 +10,8 @@ func NodeEqual(x, y Node) bool {
 		return numberEqual(UnsafeNodeToNumber(x), y)
 	case IsStringNode(x):
 		return stringEqual(UnsafeNodeToString(x), y)
-	case IsNamedClassNode(x):
-		return namedClassEqual(UnsafeNodeToNamedClass(x), y)
+	case IsClassNode(x):
+		return classEqual(UnsafeNodeToClass(x), y)
 	case IsObjectNode(x):
 		return objectEqual(UnsafeNodeToObject(x), y)
 	case IsBooleanNode(x): // will not be reached for now
@@ -35,11 +35,11 @@ func objectEqual(x Object, y Node) bool {
 	return x.Equals(UnsafeNodeToObject(y))
 }
 
-func namedClassEqual(x Class, y Node) bool {
-	if !IsNamedClassNode(y) {
+func classEqual(x Class, y Node) bool {
+	if !IsClassNode(y) {
 		return false
 	}
-	return x.Name() == UnsafeNodeToNamedClass(y).Name()
+	return x.Name() == UnsafeNodeToClass(y).Name()
 }
 
 func objectChildrenEqual(xs []Node, ys []Node) bool {
