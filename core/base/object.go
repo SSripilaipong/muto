@@ -55,17 +55,17 @@ func (obj Object) Equals(x Object) bool {
 }
 
 func (obj Object) String() string {
-	if IsNamedClassNode(obj.Head()) {
-		head := UnsafeNodeToNamedClass(obj.Head())
+	head := obj.Head()
+	if IsNamedClassNode(head) || IsNumberNode(head) || IsStringNode(head) || IsBooleanNode(head) {
 		if len(obj.Children()) == 0 {
-			return fmt.Sprintf(`%s`, head.Name())
+			return fmt.Sprintf(`%s`, head)
 		}
-		return fmt.Sprintf(`%s %s`, head.Name(), objectChildrenToString(obj))
+		return fmt.Sprintf(`%s %s`, head, objectChildrenToString(obj))
 	}
 	if len(obj.Children()) == 0 {
-		return fmt.Sprintf(`(%s)`, obj.Head())
+		return fmt.Sprintf(`(%s)`, head)
 	}
-	return fmt.Sprintf(`(%s) %s`, obj.Head(), objectChildrenToString(obj))
+	return fmt.Sprintf(`(%s) %s`, head, objectChildrenToString(obj))
 }
 
 func NewObject(class Node, children []Node) Object {
