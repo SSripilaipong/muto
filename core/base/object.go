@@ -63,17 +63,10 @@ func (obj Object) String() string {
 }
 
 func (obj Object) TopLevelString() string {
-	head := obj.Head()
-	if IsObjectNode(head) {
-		if len(obj.Children()) == 0 {
-			return fmt.Sprintf(`(%s)`, head)
-		}
-		return fmt.Sprintf(`(%s) %s`, head, objectChildrenToString(obj))
-	}
 	if len(obj.Children()) == 0 {
-		return fmt.Sprintf(`%s`, head)
+		return fmt.Sprintf(`%s`, obj.Head())
 	}
-	return fmt.Sprintf(`%s %s`, head, objectChildrenToString(obj))
+	return fmt.Sprintf(`%s %s`, obj.Head(), objectChildrenToString(obj))
 }
 
 func (obj Object) tryBubbleUp() optional.Of[Node] {
