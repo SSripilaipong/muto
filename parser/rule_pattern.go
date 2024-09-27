@@ -27,18 +27,18 @@ func variableRulePattern() func(xs []tokenizer.Token) []tuple.Of2[stPattern.Vari
 
 func rulePatternParamPart() func([]tokenizer.Token) []tuple.Of2[stPattern.ParamPart, []tokenizer.Token] {
 
-	castLeftVariadic := tuple.Fn2(func(v variadicVarNode, p []stPattern.Param) stPattern.ParamPart {
+	castLeftVariadic := tuple.Fn2(func(v psBase.VariadicVarNode, p []stPattern.Param) stPattern.ParamPart {
 		return stPattern.NewLeftVariadicParamPart(v.Name(), p)
 	})
-	castRightVariadic := tuple.Fn2(func(p []stPattern.Param, v variadicVarNode) stPattern.ParamPart {
+	castRightVariadic := tuple.Fn2(func(p []stPattern.Param, v psBase.VariadicVarNode) stPattern.ParamPart {
 		return stPattern.NewRightVariadicParamPart(v.Name(), p)
 	})
 
 	fixedParam := fixedRuleParamPattern()
 	return ps.Or(
 		ps.Map(stPattern.ParamsToParamPart, ps.OptionalGreedyRepeat(fixedParam)),
-		ps.Map(castLeftVariadic, ps.Sequence2(variadicVar, ps.OptionalGreedyRepeat(fixedParam))),
-		ps.Map(castRightVariadic, ps.Sequence2(ps.GreedyRepeatAtLeastOnce(fixedParam), variadicVar)),
+		ps.Map(castLeftVariadic, ps.Sequence2(psBase.VariadicVar, ps.OptionalGreedyRepeat(fixedParam))),
+		ps.Map(castRightVariadic, ps.Sequence2(ps.GreedyRepeatAtLeastOnce(fixedParam), psBase.VariadicVar)),
 	)
 }
 

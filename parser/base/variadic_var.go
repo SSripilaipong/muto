@@ -1,4 +1,4 @@
-package parser
+package base
 
 import (
 	"errors"
@@ -15,17 +15,17 @@ var VariadicVar = ps.Transform(func(x tokenizer.Token) rslt.Of[VariadicVarNode] 
 	if tokenizer.IsIdentifier(x) && psPred.IsVariadicVariable(name) {
 		return rslt.Value(newVariadicVar(strings.Trim(name, ".")))
 	}
-	return rslt.Error[variadicVarNode](errors.New("not a variadic variable"))
+	return rslt.Error[VariadicVarNode](errors.New("not a variadic variable"))
 })
 
-type variadicVarNode struct {
+type VariadicVarNode struct {
 	name string
 }
 
-func (v variadicVarNode) Name() string {
+func (v VariadicVarNode) Name() string {
 	return v.name
 }
 
-func newVariadicVar(name string) variadicVarNode {
-	return variadicVarNode{name: name}
+func newVariadicVar(name string) VariadicVarNode {
+	return VariadicVarNode{name: name}
 }

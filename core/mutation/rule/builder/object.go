@@ -39,7 +39,7 @@ func buildObjectParam(p stResult.Param) func(mapping *data.Mutation) optional.Of
 
 func buildObjectParamTypeSingle(p stResult.Param) func(mapping *data.Mutation) optional.Of[[]base.Node] {
 	return fn.Compose(
-		optional.Map(slc.Pure[base.Node]), New(stResult.ParamToNode(p)),
+		optional.Map(slc.Pure[base.Node]), New(stResult.UnsafeParamToNode(p)),
 	)
 }
 

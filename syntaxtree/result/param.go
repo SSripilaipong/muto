@@ -1,12 +1,11 @@
 package result
 
 type Param interface {
-	RuleResultNodeType() NodeType
 	ObjectParamType() ParamType
 }
 
-func ParamToNode(x Param) Node {
-	return x
+func UnsafeParamToNode(x Param) Node {
+	return x.(Node)
 }
 
 type ParamType string
