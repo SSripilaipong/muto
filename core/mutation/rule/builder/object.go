@@ -6,10 +6,10 @@ import (
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/core/base"
 	"github.com/SSripilaipong/muto/core/mutation/rule/data"
-	st "github.com/SSripilaipong/muto/syntaxtree"
+	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-func buildNamedObject(obj st.RuleResultNamedObject) func(*data.Mutation) optional.Of[base.Node] {
+func buildNamedObject(obj stResult.NamedObject) func(*data.Mutation) optional.Of[base.Node] {
 	name := obj.ObjectName()
 	buildObject := func(children []base.Node) base.Node {
 		if len(children) == 0 {
@@ -21,7 +21,7 @@ func buildNamedObject(obj st.RuleResultNamedObject) func(*data.Mutation) optiona
 	return fn.Compose(optional.Map(buildObject), buildChildren(obj.ParamPart()))
 }
 
-func buildAnonymousObject(obj st.RuleResultAnonymousObject) func(*data.Mutation) optional.Of[base.Node] {
+func buildAnonymousObject(obj stResult.Object) func(*data.Mutation) optional.Of[base.Node] {
 	buildHead := New(obj.Head())
 	buildChildren := buildChildren(obj.ParamPart())
 
@@ -49,24 +49,24 @@ func autoBubbleUp(head base.Node, children []base.Node) optional.Of[base.Node] {
 	return optional.Empty[base.Node]()
 }
 
-func buildObjectParam(p st.ObjectParam) func(mapping *data.Mutation) optional.Of[[]base.Node] {
+func buildObjectParam(p stResult.Param) func(mapping *data.Mutation) optional.Of[[]base.Node] {
 	switch {
-	case st.IsObjectParamTypeSingle(p):
+	case stResult.IsParamTypeSingle(p):
 		return buildObjectParamTypeSingle(p)
-	case st.IsObjectParamTypeVariadic(p):
+	case stResult.IsParamTypeVariadic(p):
 		return buildObjectParamTypeVariadic(p)
 	}
 	panic("not implemented")
 }
 
-func buildObjectParamTypeSingle(p st.ObjectParam) func(mapping *data.Mutation) optional.Of[[]base.Node] {
+func buildObjectParamTypeSingle(p stResult.Param) func(mapping *data.Mutation) optional.Of[[]base.Node] {
 	return fn.Compose(
-		optional.Map(slc.Pure[base.Node]), New(st.ObjectParamToRuleResult(p)),
+		optional.Map(slc.Pure[base.Node]), New(stResult.ParamToNode(p)),
 	)
 }
 
-func buildObjectParamTypeVariadic(p st.ObjectParam) func(mapping *data.Mutation) optional.Of[[]base.Node] {
-	name := st.UnsafeObjectParamToVariadicVariable(p).Name()
+func buildObjectParamTypeVariadic(p stResult.Param) func(mapping *data.Mutation) optional.Of[[]base.Node] {
+	name := stResult.UnsafeParamToVariadicVariable(p).Name()
 
 	return func(mapping *data.Mutation) optional.Of[[]base.Node] {
 		return mapping.VariadicVarValue(name)

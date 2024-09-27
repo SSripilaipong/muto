@@ -21,7 +21,7 @@ func newParamExtractor(p stPattern.Param) func(base.Node) optional.Of[*data.Muta
 		return newBooleanParamExtractor(st.UnsafeRuleParamPatternToBoolean(p))
 	case stPattern.IsParamTypeString(p):
 		return newStringParamExtractor(st.UnsafeRuleParamPatternToString(p))
-	case st.IsRuleParamPatternNumber(p):
+	case stPattern.IsParamTypeNumber(p):
 		return newNumberParamExtractor(st.UnsafeRuleParamPatternToNumber(p))
 	case stPattern.IsParamTypeNestedNamedRule(p):
 		return newNestedNamedRuleExtractor(stPattern.UnsafeParamToNamedRule(p))

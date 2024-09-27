@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
+	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
 type String struct {
@@ -15,9 +16,9 @@ func NewString(value string) String {
 	return String{value: value}
 }
 
-func (String) RuleResultType() RuleResultType { return RuleResultTypeString }
+func (String) RuleResultNodeType() stResult.NodeType { return stResult.NodeTypeString }
 
-func (String) ObjectParamType() ObjectParamType { return ObjectParamTypeSingle }
+func (String) ObjectParamType() stResult.ParamType { return stResult.ParamTypeSingle }
 
 func (String) RulePatternParamType() stPattern.ParamType {
 	return stPattern.ParamTypeString
@@ -35,7 +36,7 @@ func (s String) StringValue() string {
 	return y
 }
 
-func UnsafeRuleResultToString(r RuleResult) String {
+func UnsafeRuleResultToString(r stResult.Node) String {
 	return r.(String)
 }
 

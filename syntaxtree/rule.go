@@ -1,19 +1,22 @@
 package syntaxtree
 
-import stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
+import (
+	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
+	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
+)
 
 type Rule struct {
 	pattern stPattern.NamedRule
-	result  RuleResult
+	result  stResult.Node
 }
 
-func NewRule(p stPattern.NamedRule, r RuleResult) Rule {
+func NewRule(p stPattern.NamedRule, r stResult.Node) Rule {
 	return Rule{pattern: p, result: r}
 }
 
 func (r Rule) StatementType() StatementType { return RuleStatement }
 
-func (r Rule) Result() RuleResult { return r.result }
+func (r Rule) Result() stResult.Node { return r.result }
 
 func (r Rule) Pattern() stPattern.NamedRule { return r.pattern }
 
@@ -35,7 +38,7 @@ type ActiveRule struct {
 
 func (r ActiveRule) StatementType() StatementType { return ActiveRuleStatement }
 
-func NewActiveRule(p stPattern.NamedRule, r RuleResult) ActiveRule {
+func NewActiveRule(p stPattern.NamedRule, r stResult.Node) ActiveRule {
 	return ActiveRule{Rule{p, r}}
 }
 

@@ -11,6 +11,7 @@ const (
 	ParamTypeBoolean             ParamType = "BOOLEAN"
 	ParamTypeString              ParamType = "STRING"
 	ParamTypeNumber              ParamType = "NUMBER"
+	ParamTypeClass               ParamType = "CLASS"
 	ParamTypeNestedNamedRule     ParamType = "NESTED_NAMED_RULE"
 	ParamTypeNestedVariableRule  ParamType = "NESTED_VARIABLE_RULE"
 	ParamTypeNestedAnonymousRule ParamType = "NESTED_ANONYMOUS_RULE"
@@ -26,6 +27,14 @@ func IsParamTypeBoolean(p Param) bool {
 
 func IsParamTypeString(p Param) bool {
 	return p.RulePatternParamType() == ParamTypeString
+}
+
+func IsParamTypeNumber(p Param) bool {
+	return p.RulePatternParamType() == ParamTypeNumber
+}
+
+func IsParamTypeClass(p Param) bool {
+	return p.RulePatternParamType() == ParamTypeClass
 }
 
 func IsParamTypeNestedNamedRule(p Param) bool {

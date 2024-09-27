@@ -3,15 +3,16 @@ package syntaxtree
 import (
 	"github.com/SSripilaipong/muto/core/base/datatype"
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
+	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
 type Number struct {
 	value string
 }
 
-func (Number) RuleResultType() RuleResultType { return RuleResultTypeNumber }
+func (Number) RuleResultNodeType() stResult.NodeType { return stResult.NodeTypeNumber }
 
-func (Number) ObjectParamType() ObjectParamType { return ObjectParamTypeSingle }
+func (Number) ObjectParamType() stResult.ParamType { return stResult.ParamTypeSingle }
 
 func (Number) RulePatternParamType() stPattern.ParamType {
 	return stPattern.ParamTypeNumber
@@ -29,11 +30,7 @@ func NewNumber(value string) Number {
 	return Number{value: value}
 }
 
-func IsRuleParamPatternNumber(p stPattern.Param) bool {
-	return p.RulePatternParamType() == stPattern.ParamTypeNumber
-}
-
-func UnsafeRuleResultToNumber(p RuleResult) Number {
+func UnsafeRuleResultToNumber(p stResult.Node) Number {
 	return p.(Number)
 }
 
