@@ -48,6 +48,10 @@ func (c Class) Name() string {
 	return c.name
 }
 
+func (c Class) TopLevelString() string {
+	return c.String()
+}
+
 func (c Class) String() string {
 	return c.Name()
 }

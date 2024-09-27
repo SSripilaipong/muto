@@ -22,7 +22,7 @@ func ExecuteByFileName(fileName string, options ...func(executeOptions) executeO
 
 	result := program.MutateUntilTerminated(program.InitialObject())
 	if !execOpt.Explain {
-		fmt.Println(result)
+		fmt.Println(result.TopLevelString())
 	}
 	return nil
 }
@@ -33,7 +33,7 @@ func buildWithOptions(src []byte, opt executeOptions) (builder.Program, error) {
 		return builder.Program{}, err
 	}
 	if opt.Explain {
-		program = program.WithAfterMutationHook(func(node base.Node) { fmt.Println(node) })
+		program = program.WithAfterMutationHook(func(node base.Node) { fmt.Println(node.TopLevelString()) })
 	}
 	return program, nil
 }

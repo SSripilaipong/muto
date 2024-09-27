@@ -59,6 +59,10 @@ func (obj Object) Equals(x Object) bool {
 }
 
 func (obj Object) String() string {
+	return fmt.Sprintf("(%s)", obj.TopLevelString())
+}
+
+func (obj Object) TopLevelString() string {
 	head := obj.Head()
 	if IsObjectNode(head) {
 		if len(obj.Children()) == 0 {
@@ -94,17 +98,7 @@ func ObjectToNode(x Object) Node {
 func objectChildrenToString(obj Object) string {
 	var children []string
 	for _, child := range obj.Children() {
-		var s string
-		if IsObjectNode(child) {
-			if len(UnsafeNodeToObject(child).Children()) > 0 {
-				s = fmt.Sprintf("(%s)", child)
-			} else {
-				s = fmt.Sprintf("%s", child)
-			}
-		} else {
-			s = fmt.Sprint(child)
-		}
-		children = append(children, s)
+		children = append(children, fmt.Sprint(child))
 	}
 	return strings.Join(children, " ")
 }

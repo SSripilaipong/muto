@@ -31,6 +31,10 @@ func (s String) Value() string {
 	return s.value
 }
 
+func (s String) TopLevelString() string {
+	return s.String()
+}
+
 func (s String) String() string {
 	return fmt.Sprintf("%v", s.value)
 }

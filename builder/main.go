@@ -27,5 +27,17 @@ func BuildFromSyntaxTree(p st.Package) rslt.Of[Program] {
 }
 
 func mutationFromFile(f st.File) func(x base.MutableNode) optional.Of[base.Node] {
-	return mutation.NewFromStatements(f.Statements())
+	return fn.Compose(
+		optional.Map(topLevelObjectFlatten), mutation.NewFromStatements(f.Statements()),
+	)
+}
+
+func topLevelObjectFlatten(node base.Node) base.Node {
+	if base.IsObjectNode(node) {
+		obj := base.UnsafeNodeToObject(node)
+		if len(obj.Children()) == 0 {
+			return obj.Head()
+		}
+	}
+	return node
 }

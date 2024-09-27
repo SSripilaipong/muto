@@ -43,6 +43,10 @@ func (n Number) MutoString() string {
 	return fmt.Sprint(n.value.ToInt())
 }
 
+func (n Number) TopLevelString() string {
+	return n.String()
+}
+
 func (n Number) String() string {
 	if n.value.IsInt() {
 		return fmt.Sprintf("%d", n.value.ToInt())

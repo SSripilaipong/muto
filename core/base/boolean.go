@@ -31,6 +31,10 @@ func (b Boolean) Value() bool {
 	return b.value
 }
 
+func (b Boolean) TopLevelString() string {
+	return b.String()
+}
+
 func (b Boolean) String() string {
 	return fmt.Sprintf("%v", b.value)
 }
