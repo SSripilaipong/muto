@@ -27,3 +27,7 @@ func (s Boolean) BooleanValue() bool {
 func UnsafeRuleResultToBoolean(r RuleResult) Boolean {
 	return r.(Boolean)
 }
+
+func UnsafeRuleParamPatternToBoolean(p RuleParamPattern) Boolean {
+	return p.(Boolean)
+}

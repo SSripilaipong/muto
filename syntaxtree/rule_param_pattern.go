@@ -20,6 +20,10 @@ func IsRuleParamPatternVariable(p RuleParamPattern) bool {
 	return p.RuleParamPatternType() == RuleParamPatternTypeVariable
 }
 
+func IsRuleParamPatternBoolean(p RuleParamPattern) bool {
+	return p.RuleParamPatternType() == RuleParamPatternTypeBoolean
+}
+
 func IsRuleParamPatternString(p RuleParamPattern) bool {
 	return p.RuleParamPatternType() == RuleParamPatternTypeString
 }

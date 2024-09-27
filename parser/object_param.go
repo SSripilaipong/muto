@@ -17,8 +17,8 @@ func objectParam(xs []tokenizer.Token) []tuple.Of2[st.ObjectParam, []tokenizer.T
 		ps.Map(variadicVariableToObjectParam, variadicVar),
 		ps.Map(variableToObjectParam, variable),
 		ps.Map(namedObjectWithoutChildToObjectParam, objectName),
-		ps.Map(namedObjectToObjectParam, ps.Sequence3(openParenthesis, namedObject, closeParenthesis)),
-		ps.Map(anonymousObjectToObjectParam, ps.Sequence3(openParenthesis, anonymousObject, closeParenthesis)),
+		ps.Map(namedObjectToObjectParam, inParentheses(namedObject)),
+		ps.Map(anonymousObjectToObjectParam, inParentheses(anonymousObject)),
 	)(xs)
 }
 
@@ -28,17 +28,17 @@ var objectParamValue = ps.Or(
 	ps.Map(numberToObjectParam, number),
 )
 
-var anonymousObjectToObjectParam = tuple.Fn3(func(_ tokenizer.Token, obj anonymousObjectNode, _ tokenizer.Token) st.ObjectParam {
+func anonymousObjectToObjectParam(obj anonymousObjectNode) st.ObjectParam {
 	return st.NewRuleResultAnonymousObject(obj.Head(), obj.ParamPart())
-})
+}
 
 func namedObjectWithoutChildToObjectParam(objName tokenizer.Token) st.ObjectParam {
 	return st.NewRuleResultNamedObject(objName.Value(), nil)
 }
 
-var namedObjectToObjectParam = tuple.Fn3(func(_ tokenizer.Token, obj namedObjectNode, _ tokenizer.Token) st.ObjectParam {
+func namedObjectToObjectParam(obj namedObjectNode) st.ObjectParam {
 	return st.NewRuleResultNamedObject(obj.Name(), obj.Params())
-})
+}
 
 func booleanToObjectParam(x tokenizer.Token) st.ObjectParam {
 	return st.NewBoolean(x.Value())

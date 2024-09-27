@@ -34,6 +34,72 @@ func TestParseVariable(t *testing.T) {
 	})
 }
 
+func TestParseAnonymousObjectPattern(t *testing.T) {
+	t.Run("should parse boolean as anonymous head", func(t *testing.T) {
+		s := `f (true 456) = 789`
+		expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
+			st.NewRule(
+				st.NewNamedRulePattern("f", st.RuleParamPatternsToRulePatternFixedParamPart([]st.RuleParamPattern{
+					st.NewAnonymousRulePattern(st.NewBoolean("true"), st.RuleParamPatternsToRulePatternFixedParamPart([]st.RuleParamPattern{st.NewNumber("456")})),
+				})),
+				st.NewNumber("789"),
+			),
+		})})
+		assert.Equal(t,
+			[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
+			FilterSuccess(ParseString(s)),
+		)
+	})
+
+	t.Run("should parse string as anonymous head", func(t *testing.T) {
+		s := `f ("a" 456) = 789`
+		expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
+			st.NewRule(
+				st.NewNamedRulePattern("f", st.RuleParamPatternsToRulePatternFixedParamPart([]st.RuleParamPattern{
+					st.NewAnonymousRulePattern(st.NewString(`"a"`), st.RuleParamPatternsToRulePatternFixedParamPart([]st.RuleParamPattern{st.NewNumber("456")})),
+				})),
+				st.NewNumber("789"),
+			),
+		})})
+		assert.Equal(t,
+			[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
+			FilterSuccess(ParseString(s)),
+		)
+	})
+
+	t.Run("should parse number as anonymous head", func(t *testing.T) {
+		s := `f (123 456) = 789`
+		expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
+			st.NewRule(
+				st.NewNamedRulePattern("f", st.RuleParamPatternsToRulePatternFixedParamPart([]st.RuleParamPattern{
+					st.NewAnonymousRulePattern(st.NewNumber("123"), st.RuleParamPatternsToRulePatternFixedParamPart([]st.RuleParamPattern{st.NewNumber("456")})),
+				})),
+				st.NewNumber("789"),
+			),
+		})})
+		assert.Equal(t,
+			[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
+			FilterSuccess(ParseString(s)),
+		)
+	})
+
+	t.Run("should parse number as anonymous head without children", func(t *testing.T) {
+		s := `f (123) = 789`
+		expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
+			st.NewRule(
+				st.NewNamedRulePattern("f", st.RuleParamPatternsToRulePatternFixedParamPart([]st.RuleParamPattern{
+					st.NewAnonymousRulePattern(st.NewNumber("123"), st.RuleParamPatternsToRulePatternFixedParamPart([]st.RuleParamPattern{})),
+				})),
+				st.NewNumber("789"),
+			),
+		})})
+		assert.Equal(t,
+			[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
+			FilterSuccess(ParseString(s)),
+		)
+	})
+}
+
 func TestParseAnonymousObject(t *testing.T) {
 	t.Run("should parse anonymous object", func(t *testing.T) {
 		s := `main A = (+ 1 2) 3 4`
@@ -60,6 +126,20 @@ func TestParseAnonymousObject(t *testing.T) {
 				st.NewRuleResultAnonymousObject(
 					st.NewRuleResultAnonymousObject(st.NewRuleResultNamedObject("+", st.ObjectFixedParamPart([]st.ObjectParam{st.NewNumber("1"), st.NewNumber("2")})), st.ObjectParamsToObjectFixedParamPart([]st.ObjectParam{st.NewNumber("3"), st.NewNumber("4")})),
 					st.ObjectParamsToObjectFixedParamPart([]st.ObjectParam{st.NewNumber("5"), st.NewNumber("6")}),
+				),
+			),
+		})
+		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+	})
+
+	t.Run("should parse number as a head", func(t *testing.T) {
+		s := `main = 123 456`
+		expected := expectedStatements([]st.Statement{
+			st.NewRule(
+				st.NewNamedRulePattern("main", st.RulePatternFixedParamPart([]st.RuleParamPattern{})),
+				st.NewRuleResultAnonymousObject(
+					st.NewNumber("123"),
+					st.ObjectParamsToObjectFixedParamPart([]st.ObjectParam{st.NewNumber("456")}),
 				),
 			),
 		})
@@ -228,6 +308,17 @@ func TestBoolean(t *testing.T) {
 			st.NewRule(
 				st.NewNamedRulePattern("f", st.RuleParamPatternsToRulePatternFixedParamPart([]st.RuleParamPattern{st.NewBoolean("true")})),
 				st.NewString("a"),
+			),
+		})
+		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+	})
+
+	t.Run("should parse boolean as an anonymous object head", func(t *testing.T) {
+		s := `main = true "a"`
+		expected := expectedStatements([]st.Statement{
+			st.NewRule(
+				st.NewNamedRulePattern("main", st.RuleParamPatternsToRulePatternFixedParamPart([]st.RuleParamPattern{})),
+				st.NewRuleResultAnonymousObject(st.NewBoolean("true"), st.ObjectParamsToObjectFixedParamPart([]st.ObjectParam{st.NewString("a")})),
 			),
 		})
 		assert.Equal(t, expected, FilterSuccess(ParseString(s)))

@@ -6,6 +6,10 @@ func (ObjectFixedParamPart) ObjectParamPartType() ObjectParamPartType {
 	return ObjectParamPartTypeFixed
 }
 
+func (p ObjectFixedParamPart) Size() int {
+	return len(p)
+}
+
 func UnsafeObjectParamPartToObjectFixedParamPart(part ObjectParamPart) ObjectFixedParamPart {
 	return part.(ObjectFixedParamPart)
 }

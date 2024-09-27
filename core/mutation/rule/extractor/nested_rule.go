@@ -57,6 +57,7 @@ func newNestedVariableRuleExtractor(p st.VariableRulePattern) func(base.Node) op
 func newNestedAnonymousRuleExtractor(p st.AnonymousRulePattern) func(base.Node) optional.Of[*data.Mutation] {
 	extractFromChildren := newWithStrictlyChildrenMatch(p.ParamPart())
 	extractHead := newParamExtractor(p.Head())
+	isWrappedObject := st.IsRuleParamPatternNestedNamedRulePattern(p.Head())
 
 	return func(x base.Node) optional.Of[*data.Mutation] {
 		if !base.IsObjectNode(x) {
@@ -64,15 +65,14 @@ func newNestedAnonymousRuleExtractor(p st.AnonymousRulePattern) func(base.Node) 
 		}
 
 		obj := base.UnsafeNodeToObject(x)
-		if !base.IsObjectNode(obj.Head()) {
-			return optional.Empty[*data.Mutation]()
-		}
-
 		mutation, ok := extractFromChildren(obj).Return()
 		if !ok {
 			return optional.Empty[*data.Mutation]()
 		}
 
+		if isWrappedObject && !base.IsObjectNode(obj.Head()) {
+			return optional.Empty[*data.Mutation]()
+		}
 		return optional.JoinFmap(mutation.Merge)(extractHead(obj.Head()))
 	}
 }

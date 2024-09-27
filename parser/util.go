@@ -6,7 +6,7 @@ import (
 
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/tuple"
-	"github.com/SSripilaipong/muto/parser/tokenizer"
+	tk "github.com/SSripilaipong/muto/parser/tokenizer"
 )
 
 func isFirstLetterCapital(s string) bool {
@@ -29,40 +29,48 @@ func hasSuffix3Dots(s string) bool {
 	return strings.HasSuffix(s, "...") && strings.Count(s, ".") == 3
 }
 
-func isAtSign(x tokenizer.Token) bool {
+func isAtSign(x tk.Token) bool {
 	return strings.TrimSpace(x.Value()) == "@"
 }
 
-func isEqualSign(x tokenizer.Token) bool {
+func isEqualSign(x tk.Token) bool {
 	return strings.TrimSpace(x.Value()) == "="
 }
 
-func isOpenParenthesis(x tokenizer.Token) bool {
+func isOpenParenthesis(x tk.Token) bool {
 	return strings.TrimSpace(x.Value()) == "("
 }
 
-func isCloseParenthesis(x tokenizer.Token) bool {
+func isCloseParenthesis(x tk.Token) bool {
 	return strings.TrimSpace(x.Value()) == ")"
 }
 
-func withTrailingLineBreak[R any](p func([]tokenizer.Token) []tuple.Of2[R, []tokenizer.Token]) func([]tokenizer.Token) []tuple.Of2[R, []tokenizer.Token] {
+func withTrailingLineBreak[R any](p func([]tk.Token) []tuple.Of2[R, []tk.Token]) func([]tk.Token) []tuple.Of2[R, []tk.Token] {
 	return ps.Map(
-		tuple.Fn2(func(r R, _ tokenizer.Token) R { return r }),
-		ps.Sequence2(p, ps.ConsumeIf(tokenizer.IsLineBreak)),
+		tuple.Fn2(func(r R, _ tk.Token) R { return r }),
+		ps.Sequence2(p, ps.ConsumeIf(tk.IsLineBreak)),
 	)
 }
 
-func withLeadingLineBreak[R any](p func([]tokenizer.Token) []tuple.Of2[R, []tokenizer.Token]) func([]tokenizer.Token) []tuple.Of2[R, []tokenizer.Token] {
+func withLeadingLineBreak[R any](p func([]tk.Token) []tuple.Of2[R, []tk.Token]) func([]tk.Token) []tuple.Of2[R, []tk.Token] {
 	return ps.Map(
-		tuple.Fn2(func(_ tokenizer.Token, r R) R { return r }),
-		ps.Sequence2(ps.ConsumeIf(tokenizer.IsLineBreak), p),
+		tuple.Fn2(func(_ tk.Token, r R) R { return r }),
+		ps.Sequence2(ps.ConsumeIf(tk.IsLineBreak), p),
 	)
 }
 
-func ignoreTrailingLineBreak[R any](p func([]tokenizer.Token) []tuple.Of2[R, []tokenizer.Token]) func([]tokenizer.Token) []tuple.Of2[R, []tokenizer.Token] {
-	return ps.DrainTrailing(tokenizer.IsLineBreak, p)
+func ignoreTrailingLineBreak[R any](p func([]tk.Token) []tuple.Of2[R, []tk.Token]) func([]tk.Token) []tuple.Of2[R, []tk.Token] {
+	return ps.DrainTrailing(tk.IsLineBreak, p)
 }
 
-func ignoreLeadingLineBreak[R any](p func([]tokenizer.Token) []tuple.Of2[R, []tokenizer.Token]) func([]tokenizer.Token) []tuple.Of2[R, []tokenizer.Token] {
-	return ps.DrainLeading(tokenizer.IsLineBreak, p)
+func ignoreLeadingLineBreak[R any](p func([]tk.Token) []tuple.Of2[R, []tk.Token]) func([]tk.Token) []tuple.Of2[R, []tk.Token] {
+	return ps.DrainLeading(tk.IsLineBreak, p)
+}
+
+func inParentheses[T any](x func([]tk.Token) []tuple.Of2[T, []tk.Token]) func([]tk.Token) []tuple.Of2[T, []tk.Token] {
+	return ps.Map(withoutParenthesis[T], ps.Sequence3(openParenthesis, x, closeParenthesis))
+}
+
+func withoutParenthesis[T any](x tuple.Of3[tk.Token, T, tk.Token]) T {
+	return x.X2()
 }
