@@ -324,6 +324,22 @@ func TestBoolean(t *testing.T) {
 	})
 }
 
+func TestNestedResult(t *testing.T) {
+	t.Run("should parse nested result with class head", func(t *testing.T) {
+		s := `main = (p) "a"`
+		expected := expectedStatements([]st.Statement{
+			st.NewRule(
+				stPattern.NewNamedRule("main", stPattern.ParamsToFixedParamPart([]stPattern.Param{})),
+				stResult.NewObject(
+					stResult.NewObject(st.NewClass("p"), stResult.ParamsToFixedParamPart([]stResult.Param{})),
+					stResult.ParamsToFixedParamPart([]stResult.Param{st.NewString("a")}),
+				),
+			),
+		})
+		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+	})
+}
+
 func expectedStatements(sts []st.Statement) []tuple.Of2[st.Package, []tk.Token] {
 	pkg := st.NewPackage([]st.File{st.NewFile(sts)})
 	return []tuple.Of2[st.Package, []tk.Token]{tuple.New2(pkg, []tk.Token{})}

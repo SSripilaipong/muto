@@ -10,7 +10,7 @@ import (
 
 var Node = ps.Or(
 	nonNestedNode,
-	ps.Map(castObjectNode, object),
+	ps.Map(castObjectNode, ps.Filter(objectWithChildren, object)),
 )
 
 var nonNestedNode = ps.Or(
@@ -20,6 +20,15 @@ var nonNestedNode = ps.Or(
 	ps.Map(castClassNode, psBase.ClassIncludingSymbols),
 	ps.Map(castVariableNode, psBase.Variable),
 )
+
+func objectWithChildren(obj objectNode) bool {
+	param := obj.ParamPart()
+	switch {
+	case stResult.IsParamPartTypeFixed(param):
+		return stResult.UnsafeParamPartToFixedParamPart(param).Size() > 0
+	}
+	return false
+}
 
 func castClassNode(x tokenizer.Token) stResult.Node {
 	return st.NewClass(x.Value())

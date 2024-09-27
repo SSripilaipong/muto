@@ -15,7 +15,7 @@ var String = ps.ConsumeIf(tk.IsString)
 var Number = ps.ConsumeIf(tk.IsNumber)
 var Boolean = consumeId(psPred.IsBooleanValue)
 var Class = consumeId(psPred.IsClassName)
-var Symbol = consumeSymbol(psPred.IsNotEqualSign)
+var Symbol = consumeSymbol(psPred.IsSymbol)
 var ClassIncludingSymbols = ps.Or(Class, Symbol)
 
 var Variable = consumeId(psPred.IsVariableName)

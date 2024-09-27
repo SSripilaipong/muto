@@ -45,8 +45,8 @@ func IsEqualSign(x string) bool {
 	return strings.TrimSpace(x) == "="
 }
 
-func IsNotEqualSign(x string) bool {
-	return !IsEqualSign(x)
+func IsSymbol(x string) bool {
+	return !IsEqualSign(x) && !IsOpenParenthesis(x) && !IsCloseParenthesis(x)
 }
 
 func IsOpenParenthesis(x string) bool {
