@@ -1,5 +1,7 @@
 package syntaxtree
 
+import stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
+
 type Variable struct {
 	name string
 }
@@ -14,8 +16,8 @@ func (Variable) RuleResultType() RuleResultType {
 
 func (Variable) ObjectParamType() ObjectParamType { return ObjectParamTypeSingle }
 
-func (Variable) RuleParamPatternType() RuleParamPatternType {
-	return RuleParamPatternTypeVariable
+func (Variable) RulePatternParamType() stPattern.ParamType {
+	return stPattern.ParamTypeVariable
 }
 
 func (v Variable) Name() string {
@@ -26,6 +28,6 @@ func UnsafeRuleResultToVariable(p RuleResult) Variable {
 	return p.(Variable)
 }
 
-func UnsafeRuleParamPatternToVariable(p RuleParamPattern) Variable {
+func UnsafeRuleParamPatternToVariable(p stPattern.Param) Variable {
 	return p.(Variable)
 }

@@ -4,10 +4,10 @@ import (
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
 	"github.com/SSripilaipong/muto/core/mutation/rule/data"
-	st "github.com/SSripilaipong/muto/syntaxtree"
+	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
-func newNestedNamedRuleExtractor(p st.NamedRulePattern) func(base.Node) optional.Of[*data.Mutation] {
+func newNestedNamedRuleExtractor(p stPattern.NamedRule) func(base.Node) optional.Of[*data.Mutation] {
 	extractFromChildren := newWithStrictlyChildrenMatch(p.ParamPart())
 
 	return func(x base.Node) optional.Of[*data.Mutation] {
@@ -38,7 +38,7 @@ func extractNestedNamedRuleExtractorForNamedObject(name string, extractFromChild
 	return extractFromChildren(obj)
 }
 
-func newNestedVariableRuleExtractor(p st.VariableRulePattern) func(base.Node) optional.Of[*data.Mutation] {
+func newNestedVariableRuleExtractor(p stPattern.VariableRule) func(base.Node) optional.Of[*data.Mutation] {
 	extractFromChildren := newWithStrictlyChildrenMatch(p.ParamPart())
 	name := p.VariableName()
 
@@ -54,10 +54,10 @@ func newNestedVariableRuleExtractor(p st.VariableRulePattern) func(base.Node) op
 	}
 }
 
-func newNestedAnonymousRuleExtractor(p st.AnonymousRulePattern) func(base.Node) optional.Of[*data.Mutation] {
+func newNestedAnonymousRuleExtractor(p stPattern.AnonymousRule) func(base.Node) optional.Of[*data.Mutation] {
 	extractFromChildren := newWithStrictlyChildrenMatch(p.ParamPart())
 	extractHead := newParamExtractor(p.Head())
-	isWrappedObject := st.IsRuleParamPatternNestedNamedRulePattern(p.Head())
+	isWrappedObject := stPattern.IsParamTypeNestedNamedRule(p.Head())
 
 	return func(x base.Node) optional.Of[*data.Mutation] {
 		if !base.IsObjectNode(x) {
@@ -77,6 +77,6 @@ func newNestedAnonymousRuleExtractor(p st.AnonymousRulePattern) func(base.Node) 
 	}
 }
 
-func newWithStrictlyChildrenMatch(paramPart st.RulePatternParamPart) func(obj base.Object) optional.Of[*data.Mutation] {
+func newWithStrictlyChildrenMatch(paramPart stPattern.ParamPart) func(obj base.Object) optional.Of[*data.Mutation] {
 	return newForParamPart(paramPart, strictlyMatchChildren)
 }

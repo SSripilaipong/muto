@@ -3,6 +3,8 @@ package syntaxtree
 import (
 	"fmt"
 	"strconv"
+
+	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
 type String struct {
@@ -17,8 +19,8 @@ func (String) RuleResultType() RuleResultType { return RuleResultTypeString }
 
 func (String) ObjectParamType() ObjectParamType { return ObjectParamTypeSingle }
 
-func (String) RuleParamPatternType() RuleParamPatternType {
-	return RuleParamPatternTypeString
+func (String) RulePatternParamType() stPattern.ParamType {
+	return stPattern.ParamTypeString
 }
 
 func (s String) Value() string {
@@ -37,6 +39,6 @@ func UnsafeRuleResultToString(r RuleResult) String {
 	return r.(String)
 }
 
-func UnsafeRuleParamPatternToString(r RuleParamPattern) String {
+func UnsafeRuleParamPatternToString(r stPattern.Param) String {
 	return r.(String)
 }

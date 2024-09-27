@@ -5,6 +5,7 @@ import (
 	"github.com/SSripilaipong/muto/common/tuple"
 	"github.com/SSripilaipong/muto/parser/tokenizer"
 	st "github.com/SSripilaipong/muto/syntaxtree"
+	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
 var file = ps.Map(st.NewFile, ignoreLeadingLineBreak(ignoreTrailingLineBreak(statements)))
@@ -21,7 +22,7 @@ var mergeActiveRule = tuple.Fn2(func(_ tokenizer.Token, r st.Rule) st.Statement 
 
 var rule = ps.Map(mergeRule, ps.Sequence3(namedRulePattern(), equalSign, ruleResult))
 
-var mergeRule = tuple.Fn3(func(p st.NamedRulePattern, _ tokenizer.Token, r st.RuleResult) st.Rule {
+var mergeRule = tuple.Fn3(func(p stPattern.NamedRule, _ tokenizer.Token, r st.RuleResult) st.Rule {
 	return st.NewRule(p, r)
 })
 

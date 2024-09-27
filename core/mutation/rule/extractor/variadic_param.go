@@ -4,10 +4,10 @@ import (
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
 	"github.com/SSripilaipong/muto/core/mutation/rule/data"
-	st "github.com/SSripilaipong/muto/syntaxtree"
+	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
-func newForRightVariadicParamPart(pp st.RulePatternRightVariadicParamPart, nChildrenMatch func(nP int, nC int) bool) func(obj base.Object) optional.Of[*data.Mutation] {
+func newForRightVariadicParamPart(pp stPattern.RightVariadicParamPart, nChildrenMatch func(nP int, nC int) bool) func(obj base.Object) optional.Of[*data.Mutation] {
 	fixedPart := pp.OtherPart()
 	nFixed := len(fixedPart)
 	extract := variadicExtractor(pp.Name(), fixedPart, nChildrenMatch)
@@ -21,7 +21,7 @@ func newForRightVariadicParamPart(pp st.RulePatternRightVariadicParamPart, nChil
 	}
 }
 
-func newForLeftVariadicParamPart(pp st.RulePatternLeftVariadicParamPart, nChildrenMatch func(nP int, nC int) bool) func(obj base.Object) optional.Of[*data.Mutation] {
+func newForLeftVariadicParamPart(pp stPattern.LeftVariadicParamPart, nChildrenMatch func(nP int, nC int) bool) func(obj base.Object) optional.Of[*data.Mutation] {
 	fixedPart := pp.OtherPart()
 	nFixed := len(fixedPart)
 	extract := variadicExtractor(pp.Name(), fixedPart, nChildrenMatch)
@@ -36,7 +36,7 @@ func newForLeftVariadicParamPart(pp st.RulePatternLeftVariadicParamPart, nChildr
 	}
 }
 
-func variadicExtractor(name string, fixedParam st.RulePatternFixedParamPart, nChildrenMatch func(nP int, nC int) bool) func(fixedPart []base.Node, variadicPart []base.Node) optional.Of[*data.Mutation] {
+func variadicExtractor(name string, fixedParam stPattern.FixedParamPart, nChildrenMatch func(nP int, nC int) bool) func(fixedPart []base.Node, variadicPart []base.Node) optional.Of[*data.Mutation] {
 	extractChildren := extractChildrenNodes(fixedParam, nChildrenMatch)
 
 	return func(fixed []base.Node, variadic []base.Node) optional.Of[*data.Mutation] {

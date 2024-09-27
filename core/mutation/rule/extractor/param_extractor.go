@@ -6,28 +6,29 @@ import (
 	"github.com/SSripilaipong/muto/core/base"
 	"github.com/SSripilaipong/muto/core/mutation/rule/data"
 	st "github.com/SSripilaipong/muto/syntaxtree"
+	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
-func newParamExtractors(params []st.RuleParamPattern) []func(base.Node) optional.Of[*data.Mutation] {
+func newParamExtractors(params []stPattern.Param) []func(base.Node) optional.Of[*data.Mutation] {
 	return slc.Map(newParamExtractor)(params)
 }
 
-func newParamExtractor(p st.RuleParamPattern) func(base.Node) optional.Of[*data.Mutation] {
+func newParamExtractor(p stPattern.Param) func(base.Node) optional.Of[*data.Mutation] {
 	switch {
-	case st.IsRuleParamPatternVariable(p):
+	case stPattern.IsParamTypeVariable(p):
 		return newVariableParamExtractor(st.UnsafeRuleParamPatternToVariable(p))
-	case st.IsRuleParamPatternBoolean(p):
+	case stPattern.IsParamTypeBoolean(p):
 		return newBooleanParamExtractor(st.UnsafeRuleParamPatternToBoolean(p))
-	case st.IsRuleParamPatternString(p):
+	case stPattern.IsParamTypeString(p):
 		return newStringParamExtractor(st.UnsafeRuleParamPatternToString(p))
 	case st.IsRuleParamPatternNumber(p):
 		return newNumberParamExtractor(st.UnsafeRuleParamPatternToNumber(p))
-	case st.IsRuleParamPatternNestedNamedRulePattern(p):
-		return newNestedNamedRuleExtractor(st.UnsafeRuleParamPatternToNamedRulePattern(p))
-	case st.IsRuleParamPatternNestedVariableRulePattern(p):
-		return newNestedVariableRuleExtractor(st.UnsafeRuleParamPatternToVariableRulePattern(p))
-	case st.IsRuleParamPatternNestedAnonymousRulePattern(p):
-		return newNestedAnonymousRuleExtractor(st.UnsafeRuleParamPatternToAnonymousRulePattern(p))
+	case stPattern.IsParamTypeNestedNamedRule(p):
+		return newNestedNamedRuleExtractor(stPattern.UnsafeParamToNamedRule(p))
+	case stPattern.IsParamTypeNestedVariableRule(p):
+		return newNestedVariableRuleExtractor(stPattern.UnsafeRuleParamPatternToVariableRulePattern(p))
+	case stPattern.IsParamTypeNestedAnonymousRule(p):
+		return newNestedAnonymousRuleExtractor(stPattern.UnsafeParamToAnonymousRule(p))
 	}
 	panic("not implemented")
 }

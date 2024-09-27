@@ -4,10 +4,10 @@ import (
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
 	"github.com/SSripilaipong/muto/core/mutation/rule/data"
-	st "github.com/SSripilaipong/muto/syntaxtree"
+	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
-func extractChildrenNodes(params []st.RuleParamPattern, nChildrenMatch func(int, int) bool) func(children []base.Node) optional.Of[*data.Mutation] {
+func extractChildrenNodes(params []stPattern.Param, nChildrenMatch func(int, int) bool) func(children []base.Node) optional.Of[*data.Mutation] {
 	nParams := len(params)
 	extract := extractWithParamExtractors(params)
 
@@ -24,7 +24,7 @@ func extractChildrenNodes(params []st.RuleParamPattern, nChildrenMatch func(int,
 	}
 }
 
-func extractWithParamExtractors(params []st.RuleParamPattern) func(children []base.Node) optional.Of[*data.Mutation] {
+func extractWithParamExtractors(params []stPattern.Param) func(children []base.Node) optional.Of[*data.Mutation] {
 	paramExtractors := newParamExtractors(params)
 	nConsumed := len(paramExtractors)
 
