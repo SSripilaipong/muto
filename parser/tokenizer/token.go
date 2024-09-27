@@ -85,3 +85,7 @@ func IsString(t Token) bool {
 func IsNumber(t Token) bool {
 	return t.tokenType == Number
 }
+
+func TokenToValue(t Token) string {
+	return t.Value()
+}

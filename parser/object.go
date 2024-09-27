@@ -3,6 +3,7 @@ package parser
 import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/tuple"
+	psBase "github.com/SSripilaipong/muto/parser/base"
 	"github.com/SSripilaipong/muto/parser/tokenizer"
 	st "github.com/SSripilaipong/muto/syntaxtree"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
@@ -23,33 +24,33 @@ var filterObject = tuple.Fn2(func(head stResult.Node, param stResult.ParamPart) 
 
 func objectHead(xs []tokenizer.Token) []tuple.Of2[stResult.Node, []tokenizer.Token] {
 
-	mergeObjectHeadForBoolean := func(x tokenizer.Token) stResult.Node {
+	castBoolean := func(x tokenizer.Token) stResult.Node {
 		return st.NewBoolean(x.Value())
 	}
-	mergeObjectHeadForString := func(x tokenizer.Token) stResult.Node {
+	castString := func(x tokenizer.Token) stResult.Node {
 		s := x.Value()
 		return st.NewString(s[1 : len(s)-1])
 	}
-	mergeObjectHeadForNumber := func(x tokenizer.Token) stResult.Node {
+	castNumber := func(x tokenizer.Token) stResult.Node {
 		return st.NewNumber(x.Value())
 	}
-	mergeObjectHeadForClass := func(x tokenizer.Token) stResult.Node {
+	castClass := func(x tokenizer.Token) stResult.Node {
 		return st.NewClass(x.Value())
 	}
-	mergeObjectHeadForVariable := func(v tokenizer.Token) stResult.Node {
+	castVariable := func(v tokenizer.Token) stResult.Node {
 		return st.NewVariable(v.Value())
 	}
-	mergeObjectHeadForObject := func(x objectNode) stResult.Node {
+	castObject := func(x objectNode) stResult.Node {
 		return stResult.NewObject(x.Head(), x.ParamPart())
 	}
 
 	return ps.Or(
-		ps.Map(mergeObjectHeadForBoolean, boolean),
-		ps.Map(mergeObjectHeadForString, string_),
-		ps.Map(mergeObjectHeadForNumber, number),
-		ps.Map(mergeObjectHeadForClass, classIncludingSymbols),
-		ps.Map(mergeObjectHeadForVariable, variable),
-		ps.Map(mergeObjectHeadForObject, inParentheses(object)),
+		ps.Map(castBoolean, psBase.Boolean),
+		ps.Map(castString, psBase.String),
+		ps.Map(castNumber, psBase.Number),
+		ps.Map(castClass, psBase.ClassIncludingSymbols),
+		ps.Map(castVariable, psBase.Variable),
+		ps.Map(castObject, psBase.InParentheses(object)),
 	)(xs)
 }
 

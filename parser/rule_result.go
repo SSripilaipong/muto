@@ -2,6 +2,7 @@ package parser
 
 import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
+	psBase "github.com/SSripilaipong/muto/parser/base"
 	"github.com/SSripilaipong/muto/parser/tokenizer"
 	st "github.com/SSripilaipong/muto/syntaxtree"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
@@ -9,15 +10,15 @@ import (
 
 var ruleResult = ps.Or(
 	valueRuleResult,
-	ps.Map(variableToRuleResult, variable),
+	ps.Map(variableToRuleResult, psBase.Variable),
 	ps.Map(objectNodeToRuleResult, object),
 )
 
 var valueRuleResult = ps.Or(
-	ps.Map(booleanToRuleResult, boolean),
-	ps.Map(stringToRuleResult, string_),
-	ps.Map(numberToRuleResult, number),
-	ps.Map(classToRuleResult, classIncludingSymbols),
+	ps.Map(booleanToRuleResult, psBase.Boolean),
+	ps.Map(stringToRuleResult, psBase.String),
+	ps.Map(numberToRuleResult, psBase.Number),
+	ps.Map(classToRuleResult, psBase.ClassIncludingSymbols),
 )
 
 func classToRuleResult(x tokenizer.Token) stResult.Node {

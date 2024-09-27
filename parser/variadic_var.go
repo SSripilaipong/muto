@@ -6,12 +6,13 @@ import (
 
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/rslt"
+	psPred "github.com/SSripilaipong/muto/parser/predicate"
 	"github.com/SSripilaipong/muto/parser/tokenizer"
 )
 
-var variadicVar = ps.ConsumeOne(func(x tokenizer.Token) rslt.Of[variadicVarNode] {
+var VariadicVar = ps.Transform(func(x tokenizer.Token) rslt.Of[VariadicVarNode] {
 	name := x.Value()
-	if tokenizer.IsIdentifier(x) && isFirstLetterCapital(name) && hasSuffix3Dots(name) {
+	if tokenizer.IsIdentifier(x) && psPred.IsVariadicVariable(name) {
 		return rslt.Value(newVariadicVar(strings.Trim(name, ".")))
 	}
 	return rslt.Error[variadicVarNode](errors.New("not a variadic variable"))
