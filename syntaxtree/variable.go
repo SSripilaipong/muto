@@ -22,6 +22,10 @@ func (v Variable) Name() string {
 	return v.name
 }
 
+func UnsafeRuleResultToVariable(p RuleResult) Variable {
+	return p.(Variable)
+}
+
 func UnsafeRuleParamPatternToVariable(p RuleParamPattern) Variable {
 	return p.(Variable)
 }

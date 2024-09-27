@@ -10,10 +10,11 @@ type Node interface {
 type NodeType string
 
 const (
-	NodeTypeString NodeType = "STRING"
-	NodeTypeNumber NodeType = "NUMBER"
-	NodeTypeObject NodeType = "OBJECT"
-	NodeTypeClass  NodeType = "CLASS"
+	NodeTypeString  NodeType = "STRING"
+	NodeTypeNumber  NodeType = "NUMBER"
+	NodeTypeBoolean NodeType = "BOOLEAN"
+	NodeTypeObject  NodeType = "OBJECT"
+	NodeTypeClass   NodeType = "CLASS"
 )
 
 func IsObjectNode(node Node) bool {
@@ -26,6 +27,10 @@ func IsMutableNode(node Node) bool {
 
 func IsClassNode(node Node) bool {
 	return node.NodeType() == NodeTypeClass
+}
+
+func IsBooleanNode(node Node) bool {
+	return node.NodeType() == NodeTypeBoolean
 }
 
 func IsNumberNode(node Node) bool {

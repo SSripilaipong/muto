@@ -8,6 +8,7 @@ type RuleParamPatternType string
 
 const (
 	RuleParamPatternTypeVariable                   RuleParamPatternType = "VARIABLE"
+	RuleParamPatternTypeBoolean                    RuleParamPatternType = "BOOLEAN"
 	RuleParamPatternTypeString                     RuleParamPatternType = "STRING"
 	RuleParamPatternTypeNumber                     RuleParamPatternType = "NUMBER"
 	RuleParamPatternTypeNestedNamedRulePattern     RuleParamPatternType = "NESTED_NAMED_RULE_PATTERN"

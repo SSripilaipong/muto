@@ -17,7 +17,7 @@ var mergeNamedObjectNode = tuple.Fn2(func(t tokenizer.Token, paramPart st.Object
 
 func objectName(xs []tokenizer.Token) []tuple.Of2[tokenizer.Token, []tokenizer.Token] {
 	return ps.Or(
-		nonCapitalIdentifier,
+		nonKeywordNonCapitalIdentifier,
 		symbolName,
 	)(xs)
 }

@@ -1,6 +1,8 @@
 package builtin
 
 import (
+	"fmt"
+
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
 )
@@ -40,6 +42,7 @@ func processResult(r optional.Of[base.Node], otherChildren []base.Node) optional
 		}
 		return optional.Value[base.Node](base.NewObject(base.UnsafeNodeToClass(result), otherChildren))
 	case base.IsObjectNode(result):
+		fmt.Println(result)
 		obj := base.UnsafeNodeToObject(result)
 		return optional.Value[base.Node](obj.AppendChildren(otherChildren))
 	}

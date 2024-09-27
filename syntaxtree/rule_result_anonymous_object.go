@@ -22,3 +22,7 @@ func (obj RuleResultAnonymousObject) Head() RuleResult {
 func (obj RuleResultAnonymousObject) ParamPart() ObjectParamPart {
 	return obj.paramPart
 }
+
+func UnsafeRuleResultToAnonymousObject(r RuleResult) RuleResultAnonymousObject {
+	return r.(RuleResultAnonymousObject)
+}

@@ -7,6 +7,7 @@ type RuleResult interface {
 type RuleResultType string
 
 const (
+	RuleResultTypeBoolean          RuleResultType = "BOOLEAN"
 	RuleResultTypeString           RuleResultType = "STRING"
 	RuleResultTypeNumber           RuleResultType = "NUMBER"
 	RuleResultTypeNamedObject      RuleResultType = "NAMED_OBJECT"
@@ -14,6 +15,10 @@ const (
 	RuleResultTypeVariable         RuleResultType = "VARIABLE"
 	RuleResultTypeVariadicVariable RuleResultType = "VARIADIC_VARIABLE"
 )
+
+func IsRuleResultTypeBoolean(r RuleResult) bool {
+	return r.RuleResultType() == RuleResultTypeBoolean
+}
 
 func IsRuleResultTypeString(r RuleResult) bool {
 	return r.RuleResultType() == RuleResultTypeString

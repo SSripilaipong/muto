@@ -20,3 +20,7 @@ func (obj RuleResultNamedObject) ObjectName() string {
 func (obj RuleResultNamedObject) ParamPart() ObjectParamPart {
 	return obj.paramPart
 }
+
+func UnsafeRuleResultToNamedObject(r RuleResult) RuleResultNamedObject {
+	return r.(RuleResultNamedObject)
+}

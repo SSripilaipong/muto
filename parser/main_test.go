@@ -199,6 +199,41 @@ func TestActiveRule(t *testing.T) {
 	})
 }
 
+func TestBoolean(t *testing.T) {
+	t.Run("should parse boolean as a rule result", func(t *testing.T) {
+		s := `main = true`
+		expected := expectedStatements([]st.Statement{
+			st.NewRule(
+				st.NewNamedRulePattern("main", st.RuleParamPatternsToRulePatternFixedParamPart([]st.RuleParamPattern{})),
+				st.NewBoolean("true"),
+			),
+		})
+		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+	})
+
+	t.Run("should parse boolean as a rule param", func(t *testing.T) {
+		s := `main = f true`
+		expected := expectedStatements([]st.Statement{
+			st.NewRule(
+				st.NewNamedRulePattern("main", st.RuleParamPatternsToRulePatternFixedParamPart([]st.RuleParamPattern{})),
+				st.NewRuleResultNamedObject("f", st.ObjectParamsToObjectFixedParamPart([]st.ObjectParam{st.NewBoolean("true")})),
+			),
+		})
+		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+	})
+
+	t.Run("should parse boolean as a rule pattern param", func(t *testing.T) {
+		s := `f true = "a"`
+		expected := expectedStatements([]st.Statement{
+			st.NewRule(
+				st.NewNamedRulePattern("f", st.RuleParamPatternsToRulePatternFixedParamPart([]st.RuleParamPattern{st.NewBoolean("true")})),
+				st.NewString("a"),
+			),
+		})
+		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+	})
+}
+
 func expectedStatements(sts []st.Statement) []tuple.Of2[st.Package, []tk.Token] {
 	pkg := st.NewPackage([]st.File{st.NewFile(sts)})
 	return []tuple.Of2[st.Package, []tk.Token]{tuple.New2(pkg, []tk.Token{})}

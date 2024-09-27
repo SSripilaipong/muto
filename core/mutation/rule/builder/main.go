@@ -9,16 +9,18 @@ import (
 
 func New(r st.RuleResult) func(*data.Mutation) optional.Of[base.Node] {
 	switch {
+	case st.IsRuleResultTypeBoolean(r):
+		return buildBoolean(st.UnsafeRuleResultToBoolean(r))
 	case st.IsRuleResultTypeString(r):
-		return buildString(r.(st.String))
+		return buildString(st.UnsafeRuleResultToString(r))
 	case st.IsRuleResultTypeNumber(r):
-		return buildNumber(r.(st.Number))
+		return buildNumber(st.UnsafeRuleResultToNumber(r))
 	case st.IsRuleResultTypeNamedObject(r):
-		return buildNamedObject(r.(st.RuleResultNamedObject))
+		return buildNamedObject(st.UnsafeRuleResultToNamedObject(r))
 	case st.IsRuleResultTypeAnonymousObject(r):
-		return buildAnonymousObject(r.(st.RuleResultAnonymousObject))
+		return buildAnonymousObject(st.UnsafeRuleResultToAnonymousObject(r))
 	case st.IsRuleResultTypeVariable(r):
-		return buildVariable(r.(st.Variable))
+		return buildVariable(st.UnsafeRuleResultToVariable(r))
 	}
 	panic("not implemented")
 }

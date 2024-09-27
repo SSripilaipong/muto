@@ -28,6 +28,10 @@ func IsRuleParamPatternNumber(p RuleParamPattern) bool {
 	return p.RuleParamPatternType() == RuleParamPatternTypeNumber
 }
 
+func UnsafeRuleResultToNumber(p RuleResult) Number {
+	return p.(Number)
+}
+
 func UnsafeRuleParamPatternToNumber(p RuleParamPattern) Number {
 	return p.(Number)
 }

@@ -33,6 +33,10 @@ func (s String) StringValue() string {
 	return y
 }
 
+func UnsafeRuleResultToString(r RuleResult) String {
+	return r.(String)
+}
+
 func UnsafeRuleParamPatternToString(r RuleParamPattern) String {
 	return r.(String)
 }

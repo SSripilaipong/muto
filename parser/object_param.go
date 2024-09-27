@@ -23,6 +23,7 @@ func objectParam(xs []tokenizer.Token) []tuple.Of2[st.ObjectParam, []tokenizer.T
 }
 
 var objectParamValue = ps.Or(
+	ps.Map(booleanToObjectParam, boolean),
 	ps.Map(stringToObjectParam, string_),
 	ps.Map(numberToObjectParam, number),
 )
@@ -38,6 +39,10 @@ func namedObjectWithoutChildToObjectParam(objName tokenizer.Token) st.ObjectPara
 var namedObjectToObjectParam = tuple.Fn3(func(_ tokenizer.Token, obj namedObjectNode, _ tokenizer.Token) st.ObjectParam {
 	return st.NewRuleResultNamedObject(obj.Name(), obj.Params())
 })
+
+func booleanToObjectParam(x tokenizer.Token) st.ObjectParam {
+	return st.NewBoolean(x.Value())
+}
 
 func numberToObjectParam(x tokenizer.Token) st.ObjectParam {
 	return st.NewNumber(x.Value())

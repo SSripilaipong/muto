@@ -35,6 +35,7 @@ var mergeRightVariadicRulePatternParamPart = tuple.Fn2(func(p []st.RuleParamPatt
 func fixedRuleParamPattern() func(xs []tokenizer.Token) []tuple.Of2[st.RuleParamPattern, []tokenizer.Token] {
 	return ps.Or(
 		ps.Map(variableToRuleParamPattern, variable),
+		ps.Map(booleanToRuleParamPattern, boolean),
 		ps.Map(stringToRuleParamPattern, string_),
 		ps.Map(numberToRuleParamPattern, number),
 		ps.Map(objectNameToRuleParamPattern, objectName),
@@ -52,6 +53,10 @@ var mergeVariableRulePattern = tuple.Fn2(func(name tokenizer.Token, params st.Ru
 
 func variableToRuleParamPattern(x tokenizer.Token) st.RuleParamPattern {
 	return st.NewVariable(x.Value())
+}
+
+func booleanToRuleParamPattern(x tokenizer.Token) st.RuleParamPattern {
+	return st.NewBoolean(x.Value())
 }
 
 func stringToRuleParamPattern(x tokenizer.Token) st.RuleParamPattern {

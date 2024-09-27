@@ -13,6 +13,14 @@ func isFirstLetterCapital(s string) bool {
 	return unicode.IsUpper([]rune(s)[0])
 }
 
+func isKeyword(s string) bool {
+	return isBooleanValue(s)
+}
+
+func isBooleanValue(s string) bool {
+	return s == "true" || s == "false"
+}
+
 func noVarSuffix(name string) bool {
 	return !hasSuffix3Dots(name)
 }

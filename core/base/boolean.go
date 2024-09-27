@@ -1,23 +1,40 @@
 package base
 
+import (
+	"fmt"
+
+	"github.com/SSripilaipong/muto/common/optional"
+)
+
 type Boolean struct {
-	Object
+	value bool
 }
 
 func NewBoolean(x bool) Boolean {
-	var name string
-	if x {
-		name = "true"
-	} else {
-		name = "false"
-	}
-	return Boolean{NewNamedObject(name, nil)}
+	return Boolean{value: x}
 }
 
-func IsBooleanNode(x Node) bool {
-	if !IsObjectNode(x) {
-		return false
+func (Boolean) NodeType() NodeType { return NodeTypeBoolean }
+
+func (b Boolean) MutateAsHead(children []Node, mutation Mutation) optional.Of[Node] {
+	if len(children) > 0 {
+		newChildren := mutateChildren(children, mutation)
+		if newChildren.IsEmpty() {
+			return optional.Empty[Node]()
+		}
+		return optional.Value[Node](NewObject(b, newChildren.Value()))
 	}
-	obj := UnsafeNodeToObject(x)
-	return obj.Equals(NewNamedObject("true", nil)) || obj.Equals(NewNamedObject("false", nil))
+	return optional.Value[Node](b)
+}
+
+func (b Boolean) Value() bool {
+	return b.value
+}
+
+func (b Boolean) String() string {
+	return fmt.Sprintf("%v", b.value)
+}
+
+func UnsafeNodeToBoolean(n Node) Boolean {
+	return n.(Boolean)
 }

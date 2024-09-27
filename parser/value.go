@@ -13,8 +13,8 @@ var openParenthesis = ps.ConsumeIf(isOpenParenthesis)
 var closeParenthesis = ps.ConsumeIf(isCloseParenthesis)
 var symbol = ps.ConsumeIf(tokenizer.IsSymbol)
 var identifier = ps.ConsumeIf(tokenizer.IsIdentifier)
-var nonCapitalIdentifier = ps.ConsumeIf(func(x tokenizer.Token) bool {
-	return tokenizer.IsIdentifier(x) && !isFirstLetterCapital(x.Value())
+var nonKeywordNonCapitalIdentifier = ps.ConsumeIf(func(x tokenizer.Token) bool {
+	return tokenizer.IsIdentifier(x) && !isFirstLetterCapital(x.Value()) && !isKeyword(x.Value())
 })
 var symbolName = ps.ConsumeIf(func(x tokenizer.Token) bool {
 	return tokenizer.IsSymbol(x) && x.Value() != "="
@@ -22,4 +22,7 @@ var symbolName = ps.ConsumeIf(func(x tokenizer.Token) bool {
 var variable = ps.ConsumeIf(func(x tokenizer.Token) bool {
 	name := x.Value()
 	return tokenizer.IsIdentifier(x) && isFirstLetterCapital(name) && noVarSuffix(name)
+})
+var boolean = ps.ConsumeIf(func(x tokenizer.Token) bool {
+	return tokenizer.IsIdentifier(x) && isBooleanValue(x.Value())
 })

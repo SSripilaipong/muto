@@ -14,10 +14,14 @@ func NodeEqual(x, y Node) bool {
 		return classEqual(UnsafeNodeToClass(x), y)
 	case IsObjectNode(x):
 		return objectEqual(UnsafeNodeToObject(x), y)
-	case IsBooleanNode(x): // will not be reached for now
-		return objectEqual(UnsafeNodeToObject(x), y)
+	case IsBooleanNode(x):
+		return booleanEqual(UnsafeNodeToBoolean(x), y)
 	}
 	return false
+}
+
+func booleanEqual(x Boolean, y Node) bool {
+	return IsBooleanNode(y) && x.Value() == UnsafeNodeToBoolean(y).Value()
 }
 
 func numberEqual(x Number, y Node) bool {

@@ -14,12 +14,17 @@ var ruleResult = ps.Or(
 )
 
 var valueRuleResult = ps.Or(
+	ps.Map(booleanToRuleResult, boolean),
 	ps.Map(stringToRuleResult, string_),
 	ps.Map(numberToRuleResult, number),
 )
 
 func numberToRuleResult(x tokenizer.Token) syntaxtree.RuleResult {
 	return syntaxtree.NewNumber(x.Value())
+}
+
+func booleanToRuleResult(x tokenizer.Token) syntaxtree.RuleResult {
+	return syntaxtree.NewBoolean(x.Value())
 }
 
 func stringToRuleResult(x tokenizer.Token) syntaxtree.RuleResult {
