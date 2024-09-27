@@ -16,10 +16,10 @@ func New(r stResult.Node) func(*data.Mutation) optional.Of[base.Node] {
 		return buildString(st.UnsafeRuleResultToString(r))
 	case stResult.IsNodeTypeNumber(r):
 		return buildNumber(st.UnsafeRuleResultToNumber(r))
-	case stResult.IsNodeTypeNamedObject(r):
-		return buildNamedObject(stResult.UnsafeNodeToNamedObject(r))
-	case stResult.IsNodeTypeAnonymousObject(r):
-		return buildAnonymousObject(stResult.UnsafeNodeToObject(r))
+	case stResult.IsNodeTypeClass(r):
+		return buildClass(st.UnsafeRuleResultToClass(r))
+	case stResult.IsNodeTypeObject(r):
+		return buildObject(stResult.UnsafeNodeToObject(r))
 	case stResult.IsNodeTypeVariable(r):
 		return buildVariable(st.UnsafeRuleResultToVariable(r))
 	}

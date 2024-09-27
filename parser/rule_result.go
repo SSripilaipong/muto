@@ -3,44 +3,44 @@ package parser
 import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/parser/tokenizer"
-	"github.com/SSripilaipong/muto/syntaxtree"
+	st "github.com/SSripilaipong/muto/syntaxtree"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
 var ruleResult = ps.Or(
 	valueRuleResult,
 	ps.Map(variableToRuleResult, variable),
-	ps.Map(namedObjectNodeToRuleResult, namedObject),
-	ps.Map(anonymousObjectNodeToRuleResult, anonymousObject),
+	ps.Map(objectNodeToRuleResult, object),
 )
 
 var valueRuleResult = ps.Or(
 	ps.Map(booleanToRuleResult, boolean),
 	ps.Map(stringToRuleResult, string_),
 	ps.Map(numberToRuleResult, number),
+	ps.Map(classToRuleResult, classIncludingSymbols),
 )
 
+func classToRuleResult(x tokenizer.Token) stResult.Node {
+	return st.NewClass(x.Value())
+}
+
 func numberToRuleResult(x tokenizer.Token) stResult.Node {
-	return syntaxtree.NewNumber(x.Value())
+	return st.NewNumber(x.Value())
 }
 
 func booleanToRuleResult(x tokenizer.Token) stResult.Node {
-	return syntaxtree.NewBoolean(x.Value())
+	return st.NewBoolean(x.Value())
 }
 
 func stringToRuleResult(x tokenizer.Token) stResult.Node {
 	s := x.Value()
-	return syntaxtree.NewString(s[1 : len(s)-1])
+	return st.NewString(s[1 : len(s)-1])
 }
 
 func variableToRuleResult(x tokenizer.Token) stResult.Node {
-	return syntaxtree.NewVariable(x.Value())
+	return st.NewVariable(x.Value())
 }
 
-var namedObjectNodeToRuleResult = func(obj namedObjectNode) stResult.Node {
-	return stResult.NewNamedObject(obj.Name(), obj.Params())
-}
-
-var anonymousObjectNodeToRuleResult = func(obj anonymousObjectNode) stResult.Node {
+var objectNodeToRuleResult = func(obj objectNode) stResult.Node {
 	return stResult.NewObject(obj.Head(), obj.ParamPart())
 }

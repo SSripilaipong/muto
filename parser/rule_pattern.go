@@ -9,7 +9,7 @@ import (
 )
 
 func namedRulePattern() func(xs []tokenizer.Token) []tuple.Of2[stPattern.NamedRule, []tokenizer.Token] {
-	return ps.Map(mergeNamedRulePattern, ps.Sequence2(objectName, rulePatternParamPart()))
+	return ps.Map(mergeNamedRulePattern, ps.Sequence2(classIncludingSymbols, rulePatternParamPart()))
 }
 
 func variableRulePattern() func(xs []tokenizer.Token) []tuple.Of2[stPattern.VariableRule, []tokenizer.Token] {
@@ -39,7 +39,7 @@ func fixedRuleParamPattern() func(xs []tokenizer.Token) []tuple.Of2[stPattern.Pa
 		ps.Map(booleanToRuleParamPattern, boolean),
 		ps.Map(stringToRuleParamPattern, string_),
 		ps.Map(numberToRuleParamPattern, number),
-		ps.Map(objectNameToRuleParamPattern, objectName),
+		ps.Map(objectNameToRuleParamPattern, classIncludingSymbols),
 		nestedObjectRuleParamPattern,
 	)
 }

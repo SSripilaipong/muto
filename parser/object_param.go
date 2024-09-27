@@ -17,9 +17,8 @@ func objectParam(xs []tokenizer.Token) []tuple.Of2[stResult.Param, []tokenizer.T
 		objectParamValue,
 		ps.Map(variadicVariableToObjectParam, variadicVar),
 		ps.Map(variableToObjectParam, variable),
-		ps.Map(namedObjectWithoutChildToObjectParam, objectName),
-		ps.Map(namedObjectToObjectParam, inParentheses(namedObject)),
-		ps.Map(anonymousObjectToObjectParam, inParentheses(anonymousObject)),
+		ps.Map(classToObjectParam, classIncludingSymbols),
+		ps.Map(objectToObjectParam, inParentheses(object)),
 	)(xs)
 }
 
@@ -29,16 +28,12 @@ var objectParamValue = ps.Or(
 	ps.Map(numberToObjectParam, number),
 )
 
-func anonymousObjectToObjectParam(obj anonymousObjectNode) stResult.Param {
+func objectToObjectParam(obj objectNode) stResult.Param {
 	return stResult.NewObject(obj.Head(), obj.ParamPart())
 }
 
-func namedObjectWithoutChildToObjectParam(objName tokenizer.Token) stResult.Param {
-	return stResult.NewNamedObject(objName.Value(), nil)
-}
-
-func namedObjectToObjectParam(obj namedObjectNode) stResult.Param {
-	return stResult.NewNamedObject(obj.Name(), obj.Params())
+func classToObjectParam(objName tokenizer.Token) stResult.Param {
+	return st.NewClass(objName.Value())
 }
 
 func booleanToObjectParam(x tokenizer.Token) stResult.Param {

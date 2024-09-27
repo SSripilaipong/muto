@@ -11,14 +11,13 @@ var equalSign = ps.ConsumeIf(isEqualSign)
 var atSign = ps.ConsumeIf(isAtSign)
 var openParenthesis = ps.ConsumeIf(isOpenParenthesis)
 var closeParenthesis = ps.ConsumeIf(isCloseParenthesis)
-var symbol = ps.ConsumeIf(tokenizer.IsSymbol)
-var identifier = ps.ConsumeIf(tokenizer.IsIdentifier)
-var nonKeywordNonCapitalIdentifier = ps.ConsumeIf(func(x tokenizer.Token) bool {
+var class = ps.ConsumeIf(func(x tokenizer.Token) bool {
 	return tokenizer.IsIdentifier(x) && !isFirstLetterCapital(x.Value()) && !isKeyword(x.Value())
 })
-var symbolName = ps.ConsumeIf(func(x tokenizer.Token) bool {
+var symbol = ps.ConsumeIf(func(x tokenizer.Token) bool {
 	return tokenizer.IsSymbol(x) && x.Value() != "="
 })
+var classIncludingSymbols = ps.Or(class, symbol)
 var variable = ps.ConsumeIf(func(x tokenizer.Token) bool {
 	name := x.Value()
 	return tokenizer.IsIdentifier(x) && isFirstLetterCapital(name) && noVarSuffix(name)

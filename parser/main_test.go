@@ -17,7 +17,7 @@ func TestParseString(t *testing.T) {
 	expected := expectedStatements([]st.Statement{
 		st.NewRule(
 			stPattern.NewNamedRule("main", stPattern.FixedParamPart([]stPattern.Param{st.NewVariable("A")})),
-			stResult.NewNamedObject("+", stResult.FixedParamPart([]stResult.Param{st.NewNumber("1"), st.NewString("abc")})),
+			stResult.NewObject(st.NewClass("+"), stResult.FixedParamPart([]stResult.Param{st.NewNumber("1"), st.NewString("abc")})),
 		),
 	})
 	assert.Equal(t, expected, FilterSuccess(ParseString(s)))
@@ -102,14 +102,40 @@ func TestParseAnonymousObjectPattern(t *testing.T) {
 	})
 }
 
-func TestParseAnonymousObject(t *testing.T) {
-	t.Run("should parse anonymous object", func(t *testing.T) {
+func TestParseObject(t *testing.T) {
+	t.Run("should parse object name in object param", func(t *testing.T) {
+		s := `main = a b`
+		expected := expectedStatements([]st.Statement{
+			st.NewRule(
+				stPattern.NewNamedRule("main", stPattern.FixedParamPart([]stPattern.Param{})),
+				stResult.NewObject(st.NewClass("a"), stResult.FixedParamPart([]stResult.Param{st.NewClass("b")})),
+			),
+		})
+		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+	})
+
+	t.Run("should parse nested object", func(t *testing.T) {
+		s := `h ((g 1) X) = 999`
+		expected := expectedStatements([]st.Statement{
+			st.NewRule(
+				stPattern.NewNamedRule("h", stPattern.FixedParamPart([]stPattern.Param{
+					stPattern.NewAnonymousRule(
+						stPattern.NewNamedRule("g", stPattern.FixedParamPart([]stPattern.Param{st.NewNumber("1")})),
+						stPattern.FixedParamPart([]stPattern.Param{st.NewVariable("X")}),
+					),
+				})),
+				st.NewNumber("999"),
+			),
+		})
+		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+	})
+	t.Run("should parse object", func(t *testing.T) {
 		s := `main A = (+ 1 2) 3 4`
 		expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
 			st.NewRule(
 				stPattern.NewNamedRule("main", stPattern.FixedParamPart([]stPattern.Param{st.NewVariable("A")})),
 				stResult.NewObject(
-					stResult.NewNamedObject("+", stResult.FixedParamPart([]stResult.Param{st.NewNumber("1"), st.NewNumber("2")})),
+					stResult.NewObject(st.NewClass("+"), stResult.FixedParamPart([]stResult.Param{st.NewNumber("1"), st.NewNumber("2")})),
 					stResult.ParamsToFixedParamPart([]stResult.Param{st.NewNumber("3"), st.NewNumber("4")}),
 				),
 			),
@@ -126,7 +152,7 @@ func TestParseAnonymousObject(t *testing.T) {
 			st.NewRule(
 				stPattern.NewNamedRule("main", stPattern.FixedParamPart([]stPattern.Param{st.NewVariable("A")})),
 				stResult.NewObject(
-					stResult.NewObject(stResult.NewNamedObject("+", stResult.FixedParamPart([]stResult.Param{st.NewNumber("1"), st.NewNumber("2")})), stResult.ParamsToFixedParamPart([]stResult.Param{st.NewNumber("3"), st.NewNumber("4")})),
+					stResult.NewObject(stResult.NewObject(st.NewClass("+"), stResult.FixedParamPart([]stResult.Param{st.NewNumber("1"), st.NewNumber("2")})), stResult.ParamsToFixedParamPart([]stResult.Param{st.NewNumber("3"), st.NewNumber("4")})),
 					stResult.ParamsToFixedParamPart([]stResult.Param{st.NewNumber("5"), st.NewNumber("6")}),
 				),
 			),
@@ -149,42 +175,13 @@ func TestParseAnonymousObject(t *testing.T) {
 	})
 }
 
-func TestParseObject(t *testing.T) {
-	t.Run("should parse object name in object param", func(t *testing.T) {
-		s := `main = a b`
-		expected := expectedStatements([]st.Statement{
-			st.NewRule(
-				stPattern.NewNamedRule("main", stPattern.FixedParamPart([]stPattern.Param{})),
-				stResult.NewNamedObject("a", stResult.FixedParamPart([]stResult.Param{stResult.NewNamedObject("b", nil)})),
-			),
-		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
-	})
-
-	t.Run("should parse nested anonymous object", func(t *testing.T) {
-		s := `h ((g 1) X) = 999`
-		expected := expectedStatements([]st.Statement{
-			st.NewRule(
-				stPattern.NewNamedRule("h", stPattern.FixedParamPart([]stPattern.Param{
-					stPattern.NewAnonymousRule(
-						stPattern.NewNamedRule("g", stPattern.FixedParamPart([]stPattern.Param{st.NewNumber("1")})),
-						stPattern.FixedParamPart([]stPattern.Param{st.NewVariable("X")}),
-					),
-				})),
-				st.NewNumber("999"),
-			),
-		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
-	})
-}
-
 func TestParseVariadicVarPattern(t *testing.T) {
 	t.Run("should parse left variadic var", func(t *testing.T) {
 		s := `f Xs... X = g X`
 		expected := expectedStatements([]st.Statement{
 			st.NewRule(
 				stPattern.NewNamedRule("f", stPattern.NewLeftVariadicParamPart("Xs", []stPattern.Param{st.NewVariable("X")})),
-				stResult.NewNamedObject("g", stResult.FixedParamPart([]stResult.Param{st.NewVariable("X")})),
+				stResult.NewObject(st.NewClass("g"), stResult.FixedParamPart([]stResult.Param{st.NewVariable("X")})),
 			),
 		})
 		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
@@ -195,7 +192,7 @@ func TestParseVariadicVarPattern(t *testing.T) {
 		expected := expectedStatements([]st.Statement{
 			st.NewRule(
 				stPattern.NewNamedRule("f", stPattern.NewRightVariadicParamPart("Xs", []stPattern.Param{st.NewVariable("X")})),
-				stResult.NewNamedObject("g", stResult.FixedParamPart([]stResult.Param{st.NewVariable("X")})),
+				stResult.NewObject(st.NewClass("g"), stResult.FixedParamPart([]stResult.Param{st.NewVariable("X")})),
 			),
 		})
 		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
@@ -206,7 +203,7 @@ func TestParseVariadicVarPattern(t *testing.T) {
 		expected := expectedStatements([]st.Statement{
 			st.NewRule(
 				stPattern.NewNamedRule("f", stPattern.FixedParamPart([]stPattern.Param{st.NewVariable("X"), stPattern.NewNamedRule("g", stPattern.NewRightVariadicParamPart("Ys", []stPattern.Param{st.NewVariable("Y")}))})),
-				stResult.NewNamedObject("g", stResult.FixedParamPart([]stResult.Param{st.NewVariable("Y")})),
+				stResult.NewObject(st.NewClass("g"), stResult.FixedParamPart([]stResult.Param{st.NewVariable("Y")})),
 			),
 		})
 		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
@@ -219,7 +216,7 @@ func TestParseVariadicParamPart(t *testing.T) {
 		expected := expectedStatements([]st.Statement{
 			st.NewRule(
 				stPattern.NewNamedRule("f", stPattern.NewLeftVariadicParamPart("Xs", stPattern.FixedParamPart{})),
-				stResult.NewNamedObject("g", stResult.ParamsToFixedParamPart([]stResult.Param{stResult.NewVariadicVariable("Xs"), st.NewVariable("X")})),
+				stResult.NewObject(st.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{stResult.NewVariadicVariable("Xs"), st.NewVariable("X")})),
 			),
 		})
 		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
@@ -230,7 +227,7 @@ func TestParseVariadicParamPart(t *testing.T) {
 		expected := expectedStatements([]st.Statement{
 			st.NewRule(
 				stPattern.NewNamedRule("f", stPattern.NewLeftVariadicParamPart("Xs", []stPattern.Param{st.NewVariable("X")})),
-				stResult.NewNamedObject("g", stResult.ParamsToFixedParamPart([]stResult.Param{st.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
+				stResult.NewObject(st.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{st.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
 			),
 		})
 		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
@@ -241,7 +238,7 @@ func TestParseVariadicParamPart(t *testing.T) {
 		expected := expectedStatements([]st.Statement{
 			st.NewRule(
 				stPattern.NewNamedRule("f", stPattern.NewLeftVariadicParamPart("Xs", []stPattern.Param{st.NewVariable("X")})),
-				stResult.NewNamedObject("g", stResult.ParamsToFixedParamPart([]stResult.Param{stResult.NewVariadicVariable("Xs"), st.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
+				stResult.NewObject(st.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{stResult.NewVariadicVariable("Xs"), st.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
 			),
 		})
 		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
@@ -274,7 +271,7 @@ func TestActiveRule(t *testing.T) {
 		expected := expectedStatements([]st.Statement{
 			st.NewActiveRule(
 				stPattern.NewNamedRule("f", stPattern.NewLeftVariadicParamPart("Xs", []stPattern.Param{st.NewVariable("X")})),
-				stResult.NewNamedObject("g", stResult.ParamsToFixedParamPart([]stResult.Param{st.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
+				stResult.NewObject(st.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{st.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
 			),
 		})
 		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
@@ -298,7 +295,7 @@ func TestBoolean(t *testing.T) {
 		expected := expectedStatements([]st.Statement{
 			st.NewRule(
 				stPattern.NewNamedRule("main", stPattern.ParamsToFixedParamPart([]stPattern.Param{})),
-				stResult.NewNamedObject("f", stResult.ParamsToFixedParamPart([]stResult.Param{st.NewBoolean("true")})),
+				stResult.NewObject(st.NewClass("f"), stResult.ParamsToFixedParamPart([]stResult.Param{st.NewBoolean("true")})),
 			),
 		})
 		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
@@ -315,7 +312,7 @@ func TestBoolean(t *testing.T) {
 		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
 	})
 
-	t.Run("should parse boolean as an anonymous object head", func(t *testing.T) {
+	t.Run("should parse boolean as an object head", func(t *testing.T) {
 		s := `main = true "a"`
 		expected := expectedStatements([]st.Statement{
 			st.NewRule(

@@ -9,19 +9,7 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-func buildNamedObject(obj stResult.NamedObject) func(*data.Mutation) optional.Of[base.Node] {
-	name := obj.ObjectName()
-	buildObject := func(children []base.Node) base.Node {
-		if len(children) == 0 {
-			return base.NewClass(name)
-		}
-		return base.NewNamedObject(name, children)
-	}
-
-	return fn.Compose(optional.Map(buildObject), buildChildren(obj.ParamPart()))
-}
-
-func buildAnonymousObject(obj stResult.Object) func(*data.Mutation) optional.Of[base.Node] {
+func buildObject(obj stResult.Object) func(*data.Mutation) optional.Of[base.Node] {
 	buildHead := New(obj.Head())
 	buildChildren := buildChildren(obj.ParamPart())
 
@@ -35,18 +23,8 @@ func buildAnonymousObject(obj stResult.Object) func(*data.Mutation) optional.Of[
 			return optional.Empty[base.Node]()
 		}
 
-		if result, ok := autoBubbleUp(head, children).Return(); ok {
-			return optional.Value[base.Node](result)
-		}
 		return optional.Value[base.Node](base.NewObject(head, children))
 	}
-}
-
-func autoBubbleUp(head base.Node, children []base.Node) optional.Of[base.Node] {
-	if base.IsClassNode(head) {
-		return optional.Value[base.Node](base.NewObject(base.UnsafeNodeToClass(head), children))
-	}
-	return optional.Empty[base.Node]()
 }
 
 func buildObjectParam(p stResult.Param) func(mapping *data.Mutation) optional.Of[[]base.Node] {

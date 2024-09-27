@@ -11,7 +11,6 @@ const (
 	NodeTypeString           NodeType = "STRING"
 	NodeTypeNumber           NodeType = "NUMBER"
 	NodeTypeClass            NodeType = "CLASS"
-	NodeTypeNamedObject      NodeType = "NAMED_OBJECT"
 	NodeTypeObject           NodeType = "OBJECT"
 	NodeTypeVariable         NodeType = "VARIABLE"
 	NodeTypeVariadicVariable NodeType = "VARIADIC_VARIABLE"
@@ -33,12 +32,8 @@ func IsNodeTypeClass(r Node) bool {
 	return r.RuleResultNodeType() == NodeTypeClass
 }
 
-func IsNodeTypeAnonymousObject(r Node) bool {
+func IsNodeTypeObject(r Node) bool {
 	return r.RuleResultNodeType() == NodeTypeObject
-}
-
-func IsNodeTypeNamedObject(r Node) bool {
-	return r.RuleResultNodeType() == NodeTypeNamedObject
 }
 
 func IsNodeTypeVariable(r Node) bool {

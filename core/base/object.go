@@ -20,7 +20,11 @@ func (obj Object) ReplaceChild(i int, n Node) Object {
 }
 
 func (obj Object) Mutate(mutation Mutation) optional.Of[Node] {
-	return obj.Head().MutateAsHead(obj.Children(), mutation)
+	r, ok := obj.Head().MutateAsHead(obj.Children(), mutation).Return()
+	if ok {
+		return optional.New(r, ok)
+	}
+	return obj.tryBubbleUp()
 }
 
 func (obj Object) MutateAsHead(children []Node, mutation Mutation) optional.Of[Node] {
@@ -56,16 +60,23 @@ func (obj Object) Equals(x Object) bool {
 
 func (obj Object) String() string {
 	head := obj.Head()
-	if IsClassNode(head) || IsNumberNode(head) || IsStringNode(head) || IsBooleanNode(head) {
+	if IsObjectNode(head) {
 		if len(obj.Children()) == 0 {
-			return fmt.Sprintf(`%s`, head)
+			return fmt.Sprintf(`(%s)`, head)
 		}
-		return fmt.Sprintf(`%s %s`, head, objectChildrenToString(obj))
+		return fmt.Sprintf(`(%s) %s`, head, objectChildrenToString(obj))
 	}
 	if len(obj.Children()) == 0 {
-		return fmt.Sprintf(`(%s)`, head)
+		return fmt.Sprintf(`%s`, head)
 	}
-	return fmt.Sprintf(`(%s) %s`, head, objectChildrenToString(obj))
+	return fmt.Sprintf(`%s %s`, head, objectChildrenToString(obj))
+}
+
+func (obj Object) tryBubbleUp() optional.Of[Node] {
+	if len(obj.Children()) == 0 {
+		return optional.Value(obj.Head())
+	}
+	return optional.Empty[Node]()
 }
 
 func NewObject(class Node, children []Node) Object {
