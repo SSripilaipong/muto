@@ -24,6 +24,14 @@ var divideMutator = object.NewMutator("/", slc.Pure(numberBinaryOp(func(x, y bas
 	return optional.Map(base.NewNumber)(datatype.DivideNumber(x.Value(), y.Value()))
 })))
 
+var modIntegerMutator = object.NewMutator("mod", slc.Pure(integerBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
+	return optional.Map(base.NewNumber)(datatype.ModInteger(x.Value(), y.Value()))
+})))
+
+var divIntegerMutator = object.NewMutator("div", slc.Pure(integerBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
+	return optional.Map(base.NewNumber)(datatype.DivInteger(x.Value(), y.Value()))
+})))
+
 var numberGreaterThanMutator = object.NewMutator(">", slc.Pure(numberBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewBoolean(datatype.GreaterThanNumber(x.Value(), y.Value())))
 })))
@@ -46,5 +54,14 @@ func numberBinaryOp(f func(x, y base.Number) optional.Of[base.Node]) func(t base
 			return optional.Empty[base.Node]()
 		}
 		return f(base.UnsafeNodeToNumber(x), base.UnsafeNodeToNumber(y))
+	})
+}
+
+func integerBinaryOp(f func(x, y base.Number) optional.Of[base.Node]) func(t base.Object) optional.Of[base.Node] {
+	return numberBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
+		if !x.Value().IsInt() || !y.Value().IsInt() {
+			return optional.Empty[base.Node]()
+		}
+		return f(x, y)
 	})
 }
