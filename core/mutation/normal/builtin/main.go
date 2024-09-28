@@ -6,8 +6,6 @@ import (
 
 func NewMutators() []object.Mutator {
 	return []object.Mutator{
-		rollingAddMutator,
-		rollingConcatMutator,
 		stringMutator,
 		addMutator,
 		subtractMutator,

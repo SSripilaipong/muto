@@ -32,16 +32,6 @@ main = hello "world"
 		assert.Equal(t, base.NewString("world"), execute(program))
 	})
 
-	t.Run("should resolve builtin add object", func(t *testing.T) {
-		program := BuildFromString(`main = +~ 1 2`).Value()
-		assert.Equal(t, base.NewNumberFromString("3"), execute(program))
-	})
-
-	t.Run("should resolve builtin concat object", func(t *testing.T) {
-		program := BuildFromString(`main = ++~ "hello" " world"`).Value()
-		assert.Equal(t, base.NewString("hello world"), execute(program))
-	})
-
 	t.Run("should match rule by string value", func(t *testing.T) {
 		program := BuildFromString(`
 hello "a" = 1
@@ -67,11 +57,6 @@ hello (f X Y) = X
 main = hello (f "abc" 123)
 `).Value()
 		assert.Equal(t, base.NewString("abc"), execute(program))
-	})
-
-	t.Run("should resolve with post-order mutation", func(t *testing.T) {
-		program := BuildFromString(`main = ++~ "hello " (string (+~ 3 1)) (string (+~ 1 1))`).Value()
-		assert.Equal(t, base.NewString("hello 42"), execute(program))
 	})
 
 	t.Run("should resolve variadic variable", func(t *testing.T) {
