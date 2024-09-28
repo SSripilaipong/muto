@@ -36,7 +36,7 @@ func (s String) TopLevelString() string {
 }
 
 func (s String) String() string {
-	return fmt.Sprintf("%v", s.value)
+	return fmt.Sprintf("%#v", s.value)
 }
 
 func UnsafeNodeToString(n Node) String {

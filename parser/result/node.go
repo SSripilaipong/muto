@@ -43,8 +43,7 @@ func castBooleanNode(x tokenizer.Token) stResult.Node {
 }
 
 func castStringNode(x tokenizer.Token) stResult.Node {
-	s := x.Value()
-	return st.NewString(s[1 : len(s)-1])
+	return st.NewString(x.Value())
 }
 
 func castVariableNode(x tokenizer.Token) stResult.Node {

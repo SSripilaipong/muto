@@ -1,6 +1,7 @@
 package builtin
 
 import (
+	"github.com/SSripilaipong/muto/common/cliio"
 	"github.com/SSripilaipong/muto/core/mutation/normal/object"
 )
 
@@ -22,5 +23,7 @@ func NewMutators() []object.Mutator {
 		greaterThanOrEqualMutator,
 		lessThanMutator,
 		lessThanOrEqualMutator,
+		cliInputMutator(cliio.ReadInputOneLine),
+		cliPrintMutator(cliio.PrintStringWithNewLine),
 	}
 }

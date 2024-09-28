@@ -20,10 +20,7 @@ func ExecuteByFileName(fileName string, options ...func(executeOptions) executeO
 		return fmt.Errorf(`cannot build from file "%s": %w`, fileName, err)
 	}
 
-	result := program.MutateUntilTerminated(program.InitialObject())
-	if !execOpt.Explain {
-		fmt.Println(result.TopLevelString())
-	}
+	_ = program.MutateUntilTerminated(program.InitialObject())
 	return nil
 }
 
