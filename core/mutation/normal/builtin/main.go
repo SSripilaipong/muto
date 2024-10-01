@@ -26,5 +26,8 @@ func NewMutators() []object.Mutator {
 		lessThanOrEqualMutator,
 		cliInputMutator(cliio.ReadInputOneLine),
 		cliPrintMutator(cliio.PrintStringWithNewLine),
+		andMutator,
+		orMutator,
+		notMutator,
 	}
 }
