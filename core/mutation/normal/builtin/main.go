@@ -19,6 +19,7 @@ func NewMutators() []object.Mutator {
 		divIntegerMutator,
 		modIntegerMutator,
 		equalMutator,
+		notEqualMutator,
 		greaterThanMutator,
 		greaterThanOrEqualMutator,
 		lessThanMutator,

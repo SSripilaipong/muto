@@ -4,6 +4,10 @@ import (
 	"github.com/SSripilaipong/muto/core/base/datatype"
 )
 
+func NodeNotEqual(x, y Node) bool {
+	return !NodeEqual(x, y)
+}
+
 func NodeEqual(x, y Node) bool {
 	switch {
 	case IsNumberNode(x):
