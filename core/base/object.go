@@ -69,6 +69,10 @@ func (obj Object) TopLevelString() string {
 	return fmt.Sprintf(`%s %s`, obj.Head(), objectChildrenToString(obj))
 }
 
+func (obj Object) MutoString() string {
+	return obj.String()
+}
+
 func (obj Object) tryBubbleUp() optional.Of[Node] {
 	if len(obj.Children()) == 0 {
 		return optional.Value(obj.Head())

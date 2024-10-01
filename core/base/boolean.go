@@ -39,6 +39,10 @@ func (b Boolean) String() string {
 	return fmt.Sprintf("%v", b.value)
 }
 
+func (b Boolean) MutoString() string {
+	return b.String()
+}
+
 func UnsafeNodeToBoolean(n Node) Boolean {
 	return n.(Boolean)
 }

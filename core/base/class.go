@@ -56,6 +56,10 @@ func (c Class) String() string {
 	return c.Name()
 }
 
+func (c Class) MutoString() string {
+	return c.String()
+}
+
 func NewClass(name string) Class {
 	return Class{name: name}
 }

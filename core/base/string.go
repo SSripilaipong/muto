@@ -39,6 +39,10 @@ func (s String) String() string {
 	return fmt.Sprintf("%#v", s.value)
 }
 
+func (s String) MutoString() string {
+	return s.Value()
+}
+
 func UnsafeNodeToString(n Node) String {
 	return n.(String)
 }
