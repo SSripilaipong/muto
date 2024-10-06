@@ -10,6 +10,14 @@ import (
 	tk "github.com/SSripilaipong/muto/parser/tokenizer"
 )
 
+func StringToCharTokens(s string) []tk.Token {
+	r := make([]tk.Token, len(s))
+	for i, x := range []rune(s) {
+		r[i] = tk.NewCharacter(x)
+	}
+	return r
+}
+
 var char = consumeTokenWithValueCondition(tk.IsCharacter)
 
 var consumeValue = consumeTokenWithValueCondition(fn.Not(tk.IsCharacter))
@@ -18,7 +26,7 @@ var consumeId = consumeTokenWithValueCondition(tk.IsIdentifier)
 
 var consumeSymbol = consumeTokenWithValueCondition(tk.IsSymbol)
 
-func fixedChars(s string) func(xs []tk.Token) []tuple.Of2[string, []tk.Token] {
+func fixedChars(s string) Parser[string] {
 	rs := []rune(s)
 	n := len(rs)
 	return func(xs []tk.Token) []tuple.Of2[string, []tk.Token] {
@@ -35,8 +43,8 @@ func fixedChars(s string) func(xs []tk.Token) []tuple.Of2[string, []tk.Token] {
 	}
 }
 
-func consumeTokenWithValueCondition(f func(x tk.Token) bool) func(g func(s string) bool) func([]tk.Token) []tuple.Of2[tk.Token, []tk.Token] {
-	return func(g func(s string) bool) func([]tk.Token) []tuple.Of2[tk.Token, []tk.Token] {
+func consumeTokenWithValueCondition(f func(x tk.Token) bool) func(g func(s string) bool) Parser[tk.Token] {
+	return func(g func(s string) bool) Parser[tk.Token] {
 		return ps.ConsumeIf(func(x tk.Token) bool {
 			return f(x) && g(x.Value())
 		})

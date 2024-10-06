@@ -104,3 +104,7 @@ func IsSymbolLetter(s string) bool {
 func isBracket(s rune) bool {
 	return s == '{' || s == '}' || s == '[' || s == ']' || s == '(' || s == ')'
 }
+
+func IsSpace(x string) bool {
+	return x == " " || x == "\t"
+}

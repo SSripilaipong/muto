@@ -13,9 +13,9 @@ import (
 
 var file = ps.Map(st.NewFile, psBase.IgnoreLeadingLineBreak(psBase.IgnoreTrailingLineBreak(statements)))
 
-var statements = ps.Map(aggregateStatements, ps.Sequence2(statement, ps.OptionalGreedyRepeat(psBase.WithLeadingLineBreak(statement))))
+var statements = ps.Map(aggregateStatements, psBase.IgnoreSpaceBetween2(statement, ps.OptionalGreedyRepeat(psBase.WithLeadingLineBreak(statement))))
 var statement = ps.Or(
-	ps.Map(mergeActiveRule, ps.Sequence2(psBase.AtSign, rule)),
+	ps.Map(mergeActiveRule, psBase.SpaceSeparated2(psBase.AtSign, rule)),
 	ps.Map(st.RuleToStatement, rule),
 )
 
@@ -23,7 +23,7 @@ var mergeActiveRule = tuple.Fn2(func(_ tokenizer.Token, r st.Rule) st.Statement 
 	return st.NewActiveRule(r.Pattern(), r.Result())
 })
 
-var rule = ps.Map(mergeRule, ps.Sequence3(namedRulePattern(), psBase.EqualSign, result.Node))
+var rule = ps.Map(mergeRule, psBase.SpaceSeparated3(namedRulePattern(), psBase.EqualSign, result.Node))
 
 var mergeRule = tuple.Fn3(func(p stPattern.NamedRule, _ tokenizer.Token, r stResult.Node) st.Rule {
 	return st.NewRule(p, r)

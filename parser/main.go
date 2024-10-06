@@ -15,6 +15,7 @@ import (
 var ParseToken = parsing.Map(newPackage, file)
 
 func ParseString(source string) []tuple.Of2[syntaxtree.Package, []tokenizer.Token] {
+	//tokens := psBase.StringToCharTokens(source)
 	tokens := TokensWithoutSpace(tokenizer.Tokenize(strings.NewReader(source)))
 	return ParseToken(tokens)
 }

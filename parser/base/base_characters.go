@@ -14,6 +14,7 @@ var chBackSlash = char(psPred.IsBackSlash)
 var chDigit = char(psPred.IsFirstRuneDigit)
 var chMinusSign = char(psPred.IsMinusSign)
 var chDot = char(psPred.IsDot)
+var chSpace = char(psPred.IsSpace)
 
 func tokenToRunes(x tk.Token) []rune {
 	return []rune(x.Value())

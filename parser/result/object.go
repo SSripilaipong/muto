@@ -9,7 +9,7 @@ import (
 )
 
 func object(xs []tokenizer.Token) []tuple.Of2[objectNode, []tokenizer.Token] {
-	return ps.Map(mergeObject, ps.Sequence2(objectHead, objectParamPart))(xs)
+	return ps.Map(mergeObject, psBase.IgnoreSpaceBetween2(objectHead, objectParamPart))(xs)
 }
 
 var mergeObject = tuple.Fn2(func(head stResult.Node, params stResult.ParamPart) objectNode {

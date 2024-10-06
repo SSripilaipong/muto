@@ -14,7 +14,7 @@ func namedRulePattern() func(xs []tk.Token) []tuple.Of2[stPattern.NamedRule, []t
 		return stPattern.NewNamedRule(name.Value(), params)
 	})
 
-	return ps.Map(cast, ps.Sequence2(psBase.Class, rulePatternParamPart()))
+	return ps.Map(cast, psBase.SpaceSeparated2(psBase.Class, rulePatternParamPart()))
 }
 
 func variableRulePattern() func(xs []tk.Token) []tuple.Of2[stPattern.VariableRule, []tk.Token] {
@@ -22,7 +22,7 @@ func variableRulePattern() func(xs []tk.Token) []tuple.Of2[stPattern.VariableRul
 		return stPattern.NewVariableRulePattern(name.Value(), params)
 	})
 
-	return ps.Map(cast, ps.Sequence2(psBase.FixedVar, rulePatternParamPart()))
+	return ps.Map(cast, psBase.SpaceSeparated2(psBase.FixedVar, rulePatternParamPart()))
 }
 
 func rulePatternParamPart() func([]tk.Token) []tuple.Of2[stPattern.ParamPart, []tk.Token] {
@@ -37,8 +37,8 @@ func rulePatternParamPart() func([]tk.Token) []tuple.Of2[stPattern.ParamPart, []
 	fixedParam := fixedRuleParamPattern()
 	return ps.Or(
 		ps.Map(stPattern.ParamsToParamPart, ps.OptionalGreedyRepeat(fixedParam)),
-		ps.Map(castLeftVariadic, ps.Sequence2(psBase.VariadicVar, ps.OptionalGreedyRepeat(fixedParam))),
-		ps.Map(castRightVariadic, ps.Sequence2(ps.GreedyRepeatAtLeastOnce(fixedParam), psBase.VariadicVar)),
+		ps.Map(castLeftVariadic, psBase.SpaceSeparated2(psBase.VariadicVar, ps.OptionalGreedyRepeat(fixedParam))),
+		ps.Map(castRightVariadic, psBase.SpaceSeparated2(ps.GreedyRepeatAtLeastOnce(fixedParam), psBase.VariadicVar)),
 	)
 }
 
