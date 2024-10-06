@@ -1,22 +1,19 @@
 package base
 
 import (
-	"errors"
 	"strings"
 
+	"github.com/SSripilaipong/muto/common/fn"
 	ps "github.com/SSripilaipong/muto/common/parsing"
-	"github.com/SSripilaipong/muto/common/rslt"
+	"github.com/SSripilaipong/muto/common/tuple"
 	psPred "github.com/SSripilaipong/muto/parser/predicate"
-	"github.com/SSripilaipong/muto/parser/tokenizer"
+	tk "github.com/SSripilaipong/muto/parser/tokenizer"
 )
 
-var VariadicVar = ps.Transform(func(x tokenizer.Token) rslt.Of[VariadicVarNode] {
-	name := x.Value()
-	if tokenizer.IsIdentifier(x) && psPred.IsVariadicVariable(name) {
-		return rslt.Value(newVariadicVar(strings.Trim(name, ".")))
-	}
-	return rslt.Error[VariadicVarNode](errors.New("not a variadic variable"))
-})
+var VariadicVar = ps.Map(newVariadicVar, ps.Or(
+	ps.Map(tk.TokenToValue, ps.Filter(fn.And(tk.IsIdentifier, fn.Compose(psPred.IsVariadicVariable, tk.TokenToValue)), ps.One[tk.Token])),
+	ps.Map(tuple.Fn2(joinTokenString), ps.Sequence2(identifierStartingWithUpperCase, fixedChars("..."))),
+))
 
 type VariadicVarNode struct {
 	name string
@@ -27,5 +24,5 @@ func (v VariadicVarNode) Name() string {
 }
 
 func newVariadicVar(name string) VariadicVarNode {
-	return VariadicVarNode{name: name}
+	return VariadicVarNode{name: strings.Trim(name, ".")}
 }

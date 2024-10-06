@@ -37,6 +37,7 @@ const (
 	String     TokenType = "STRING"
 	Space      TokenType = "SPACE"
 	Symbol     TokenType = "SYMBOL"
+	Character  TokenType = "CHARACTER"
 	Unknown    TokenType = "UNKNOWN"
 )
 
@@ -78,6 +79,10 @@ func IsSymbol(t Token) bool {
 	return t.tokenType == Symbol
 }
 
+func IsCharacter(t Token) bool {
+	return t.tokenType == Character
+}
+
 func IsString(t Token) bool {
 	return t.tokenType == String
 }
@@ -88,4 +93,24 @@ func IsNumber(t Token) bool {
 
 func TokenToValue(t Token) string {
 	return t.Value()
+}
+
+func NewString(x string) Token {
+	return NewToken(x, String)
+}
+
+func NewCharacter(x rune) Token {
+	return NewToken(string(x), Character)
+}
+
+func NewNumber(x string) Token {
+	return NewToken(x, Number)
+}
+
+func NewIdentifier(x string) Token {
+	return NewToken(x, Identifier)
+}
+
+func NewSymbol(x string) Token {
+	return NewToken(x, Symbol)
 }

@@ -17,8 +17,8 @@ var nonNestedNode = ps.Or(
 	ps.Map(castBooleanNode, psBase.Boolean),
 	ps.Map(castStringNode, psBase.String),
 	ps.Map(castNumberNode, psBase.Number),
-	ps.Map(castClassNode, psBase.ClassIncludingSymbols),
-	ps.Map(castVariableNode, psBase.Variable),
+	ps.Map(castClassNode, psBase.Class),
+	ps.Map(castVariableNode, psBase.FixedVar),
 )
 
 func objectWithChildren(obj objectNode) bool {
