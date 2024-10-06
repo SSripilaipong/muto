@@ -5,7 +5,7 @@ import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/tuple"
 	psPred "github.com/SSripilaipong/muto/parser/predicate"
-	tk "github.com/SSripilaipong/muto/parser/tokenizer"
+	tk "github.com/SSripilaipong/muto/parser/tokens"
 )
 
 var identifierStartingWithLowerCase = ps.Map(

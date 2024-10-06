@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	tk "github.com/SSripilaipong/muto/parser/tokenizer"
+	tk "github.com/SSripilaipong/muto/parser/tokens"
 )
 
 func TestString(t *testing.T) {
@@ -71,6 +71,11 @@ func TestFixedVar(t *testing.T) {
 
 	t.Run("should not parse identifier starting with small case", func(t *testing.T) {
 		r := FixedVar(StringToCharTokens(`xy`))
+		assert.Equal(t, EmptyResult[tk.Token](), AsParserResult(r))
+	})
+
+	t.Run("should not parse variadic var", func(t *testing.T) {
+		r := FixedVar(StringToCharTokens(`X...`))
 		assert.Equal(t, EmptyResult[tk.Token](), AsParserResult(r))
 	})
 }

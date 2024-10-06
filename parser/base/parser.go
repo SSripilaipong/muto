@@ -3,7 +3,7 @@ package base
 import (
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/common/tuple"
-	tk "github.com/SSripilaipong/muto/parser/tokenizer"
+	tk "github.com/SSripilaipong/muto/parser/tokens"
 )
 
 type Parser[T any] func([]tk.Token) []tuple.Of2[T, []tk.Token]

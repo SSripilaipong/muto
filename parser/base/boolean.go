@@ -3,7 +3,7 @@ package base
 import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	psPred "github.com/SSripilaipong/muto/parser/predicate"
-	tk "github.com/SSripilaipong/muto/parser/tokenizer"
+	tk "github.com/SSripilaipong/muto/parser/tokens"
 )
 
 var Boolean = ps.Or(

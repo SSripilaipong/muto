@@ -3,7 +3,7 @@ package result
 import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	psBase "github.com/SSripilaipong/muto/parser/base"
-	"github.com/SSripilaipong/muto/parser/tokenizer"
+	tk "github.com/SSripilaipong/muto/parser/tokens"
 	st "github.com/SSripilaipong/muto/syntaxtree"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
@@ -30,23 +30,23 @@ func objectWithChildren(obj objectNode) bool {
 	return false
 }
 
-func castClassNode(x tokenizer.Token) stResult.Node {
+func castClassNode(x tk.Token) stResult.Node {
 	return st.NewClass(x.Value())
 }
 
-func castNumberNode(x tokenizer.Token) stResult.Node {
+func castNumberNode(x tk.Token) stResult.Node {
 	return st.NewNumber(x.Value())
 }
 
-func castBooleanNode(x tokenizer.Token) stResult.Node {
+func castBooleanNode(x tk.Token) stResult.Node {
 	return st.NewBoolean(x.Value())
 }
 
-func castStringNode(x tokenizer.Token) stResult.Node {
+func castStringNode(x tk.Token) stResult.Node {
 	return st.NewString(x.Value())
 }
 
-func castVariableNode(x tokenizer.Token) stResult.Node {
+func castVariableNode(x tk.Token) stResult.Node {
 	return st.NewVariable(x.Value())
 }
 

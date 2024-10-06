@@ -6,21 +6,34 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/SSripilaipong/muto/common/tuple"
-	tk "github.com/SSripilaipong/muto/parser/tokenizer"
+	tk "github.com/SSripilaipong/muto/parser/tokens"
 	st "github.com/SSripilaipong/muto/syntaxtree"
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
 func TestParseString(t *testing.T) {
-	s := `main A = + 1 "abc"`
-	expected := expectedStatements([]st.Statement{
-		st.NewRule(
-			stPattern.NewNamedRule("main", stPattern.FixedParamPart([]stPattern.Param{st.NewVariable("A")})),
-			stResult.NewObject(st.NewClass("+"), stResult.FixedParamPart([]stResult.Param{st.NewNumber("1"), st.NewString("\"abc\"")})),
-		),
+	t.Run("should parse hello world", func(t *testing.T) {
+		s := `main = "hello world"`
+		expected := expectedStatements([]st.Statement{
+			st.NewRule(
+				stPattern.NewNamedRule("main", stPattern.FixedParamPart([]stPattern.Param{})),
+				st.NewString(`"hello world"`),
+			),
+		})
+		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
 	})
-	assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+
+	t.Run("should parse with pattern param", func(t *testing.T) {
+		s := `main A = + 1 "abc"`
+		expected := expectedStatements([]st.Statement{
+			st.NewRule(
+				stPattern.NewNamedRule("main", stPattern.FixedParamPart([]stPattern.Param{st.NewVariable("A")})),
+				stResult.NewObject(st.NewClass("+"), stResult.FixedParamPart([]stResult.Param{st.NewNumber("1"), st.NewString("\"abc\"")})),
+			),
+		})
+		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+	})
 }
 
 func TestParseVariable(t *testing.T) {

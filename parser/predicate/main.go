@@ -108,3 +108,7 @@ func isBracket(s rune) bool {
 func IsSpace(x string) bool {
 	return x == " " || x == "\t"
 }
+
+func IsLineBreak(x string) bool {
+	return x == "\n"
+}

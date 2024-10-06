@@ -2,15 +2,15 @@ package parser
 
 import (
 	"github.com/SSripilaipong/muto/common/rslt"
-	"github.com/SSripilaipong/muto/parser/tokenizer"
+	tk "github.com/SSripilaipong/muto/parser/tokens"
 )
 
-func TokensWithoutSpace(iter func() rslt.Of[tokenizer.Token]) []tokenizer.Token {
-	var tokens []tokenizer.Token
+func TokensWithoutSpace(iter func() rslt.Of[tk.Token]) []tk.Token {
+	var tokens []tk.Token
 	for {
 		if token, err := iter().Return(); err != nil {
 			break
-		} else if !tokenizer.IsSpace(token) {
+		} else if !tk.IsSpace(token) {
 			tokens = append(tokens, token)
 		}
 	}
