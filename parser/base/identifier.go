@@ -3,15 +3,14 @@ package base
 import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/tuple"
-	psPred "github.com/SSripilaipong/muto/parser/predicate"
 )
 
 var identifierStartingWithLowerCase = ps.Map(
-	tuple.Fn2(joinTokenString), ps.Sequence2(char(psPred.IsIdentifierFirstLetterLowerCase), identifierFollowingLetters),
+	tuple.Fn2(joinTokenString), ps.Sequence2(char(IsIdentifierFirstLetterLowerCase), identifierFollowingLetters),
 )
 
 var identifierStartingWithUpperCase = ps.Map(
-	tuple.Fn2(joinTokenString), ps.Sequence2(char(psPred.IsIdentifierFirstLetterUpperCase), identifierFollowingLetters),
+	tuple.Fn2(joinTokenString), ps.Sequence2(char(IsIdentifierFirstLetterUpperCase), identifierFollowingLetters),
 )
 
-var identifierFollowingLetters = ps.Map(tokensToString, ps.OptionalGreedyRepeat(char(psPred.IsIdentifierFollowingLetter)))
+var identifierFollowingLetters = ps.Map(tokensToString, ps.OptionalGreedyRepeat(char(IsIdentifierFollowingLetter)))

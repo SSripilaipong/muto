@@ -1,4 +1,4 @@
-package predicate
+package base
 
 import (
 	"slices"

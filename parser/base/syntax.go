@@ -5,7 +5,6 @@ import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/common/tuple"
-	psPred "github.com/SSripilaipong/muto/parser/predicate"
 )
 
 func WithTrailingLineBreak[R any](p Parser[R]) Parser[R] {
@@ -23,11 +22,11 @@ func WithLeadingLineBreak[R any](p Parser[R]) Parser[R] {
 }
 
 func IgnoreTrailingLineBreak[R any](p Parser[R]) Parser[R] {
-	return ps.DrainTrailing(fn.Compose(psPred.IsLineBreak, CharacterToValue), p)
+	return ps.DrainTrailing(fn.Compose(IsLineBreak, CharacterToValue), p)
 }
 
 func IgnoreLeadingLineBreak[R any](p Parser[R]) Parser[R] {
-	return ps.DrainLeading(fn.Compose(psPred.IsLineBreak, CharacterToValue), p)
+	return ps.DrainLeading(fn.Compose(IsLineBreak, CharacterToValue), p)
 }
 
 func InParentheses[R any](x Parser[R]) Parser[R] {
