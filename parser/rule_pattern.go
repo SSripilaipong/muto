@@ -10,11 +10,11 @@ import (
 )
 
 func namedRulePattern() func(xs []tk.Token) []tuple.Of2[stPattern.NamedRule, []tk.Token] {
-	castWithParamPart := tuple.Fn2(func(name tk.Token, params stPattern.ParamPart) stPattern.NamedRule {
-		return stPattern.NewNamedRule(name.Value(), params)
+	castWithParamPart := tuple.Fn2(func(class st.Class, params stPattern.ParamPart) stPattern.NamedRule {
+		return stPattern.NewNamedRule(class.Name(), params)
 	})
-	castClass := func(name tk.Token) stPattern.NamedRule {
-		return stPattern.NewNamedRule(name.Value(), stPattern.ParamsToFixedParamPart([]stPattern.Param{}))
+	castClass := func(class st.Class) stPattern.NamedRule {
+		return stPattern.NewNamedRule(class.Name(), stPattern.ParamsToFixedParamPart([]stPattern.Param{}))
 	}
 
 	return ps.First(
@@ -24,8 +24,8 @@ func namedRulePattern() func(xs []tk.Token) []tuple.Of2[stPattern.NamedRule, []t
 }
 
 func variableRulePattern() func(xs []tk.Token) []tuple.Of2[stPattern.VariableRule, []tk.Token] {
-	cast := tuple.Fn2(func(name tk.Token, params stPattern.ParamPart) stPattern.VariableRule {
-		return stPattern.NewVariableRulePattern(name.Value(), params)
+	cast := tuple.Fn2(func(name st.Variable, params stPattern.ParamPart) stPattern.VariableRule {
+		return stPattern.NewVariableRulePattern(name.Name(), params)
 	})
 
 	return ps.Map(cast, psBase.SpaceSeparated2(psBase.FixedVar, rulePatternParamPart()))
@@ -53,32 +53,16 @@ func rulePatternParamPart() func([]tk.Token) []tuple.Of2[stPattern.ParamPart, []
 }
 
 func fixedRuleParamPattern() func(xs []tk.Token) []tuple.Of2[stPattern.Param, []tk.Token] {
+	var classToPatternParam = func(x st.Class) stPattern.Param {
+		return stPattern.NewNamedRule(x.Value(), stPattern.FixedParamPart{})
+	}
+
 	return ps.Or(
-		ps.Map(variableToRuleParamPattern, psBase.FixedVar),
-		ps.Map(booleanToRuleParamPattern, psBase.Boolean),
-		ps.Map(stringToRuleParamPattern, psBase.String),
-		ps.Map(numberToRuleParamPattern, psBase.Number),
-		ps.Map(objectNameToRuleParamPattern, psBase.Class),
+		psBase.FixedVarPatternParam,
+		psBase.BooleanPatternParam,
+		psBase.StringPatternParam,
+		psBase.NumberPatternParam,
+		ps.Map(classToPatternParam, psBase.Class),
 		psBase.InParentheses(nestedObjectRuleParamPattern),
 	)
-}
-
-func variableToRuleParamPattern(x tk.Token) stPattern.Param {
-	return st.NewVariable(x.Value())
-}
-
-func booleanToRuleParamPattern(x tk.Token) stPattern.Param {
-	return st.NewBoolean(x.Value())
-}
-
-func stringToRuleParamPattern(x tk.Token) stPattern.Param {
-	return st.NewString(x.Value())
-}
-
-func numberToRuleParamPattern(x tk.Token) stPattern.Param {
-	return st.NewNumber(x.Value())
-}
-
-func objectNameToRuleParamPattern(x tk.Token) stPattern.Param {
-	return stPattern.NewNamedRule(x.Value(), stPattern.FixedParamPart{})
 }

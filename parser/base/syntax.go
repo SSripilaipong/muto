@@ -38,6 +38,13 @@ func InParentheses[R any](x Parser[R]) Parser[R] {
 	return ps.Map(withoutParenthesis, ps.Sequence3(OpenParenthesis, x, CloseParenthesis))
 }
 
+func InDoubleQuotes[R any](x Parser[R]) Parser[R] {
+	withoutQuotes := func(x tuple.Of3[tk.Token, R, tk.Token]) R {
+		return x.X2()
+	}
+	return ps.Map(withoutQuotes, ps.Sequence3(chDoubleQuote, x, chDoubleQuote))
+}
+
 func IgnoreSpaceBetween2[R1, R2 any](p1 Parser[R1], p2 Parser[R2]) Parser[tuple.Of2[R1, R2]] {
 	merge := tuple.Fn3(func(r1 R1, _ []tk.Token, r2 R2) tuple.Of2[R1, R2] {
 		return tuple.New2(r1, r2)

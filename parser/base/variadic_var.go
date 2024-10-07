@@ -3,17 +3,17 @@ package base
 import (
 	"strings"
 
-	"github.com/SSripilaipong/muto/common/fn"
 	ps "github.com/SSripilaipong/muto/common/parsing"
+	"github.com/SSripilaipong/muto/common/strutil"
 	"github.com/SSripilaipong/muto/common/tuple"
-	psPred "github.com/SSripilaipong/muto/parser/predicate"
-	tk "github.com/SSripilaipong/muto/parser/tokens"
+	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-var VariadicVar = ps.Map(newVariadicVar, ps.Or(
-	ps.Map(tk.TokenToValue, ps.Filter(fn.And(tk.IsIdentifier, fn.Compose(psPred.IsVariadicVariable, tk.TokenToValue)), ps.One[tk.Token])),
-	ps.Map(tuple.Fn2(joinTokenString), ps.Sequence2(identifierStartingWithUpperCase, fixedChars("..."))),
-))
+var VariadicVar = ps.Map(newVariadicVar,
+	ps.Map(tuple.Fn2(strutil.Concat), ps.Sequence2(identifierStartingWithUpperCase, ThreeDots)),
+)
+
+var VariadicVarResultNode = ps.Map(variadicVarToResultNode, VariadicVar)
 
 type VariadicVarNode struct {
 	name string
@@ -25,4 +25,8 @@ func (v VariadicVarNode) Name() string {
 
 func newVariadicVar(name string) VariadicVarNode {
 	return VariadicVarNode{name: strings.Trim(name, ".")}
+}
+
+func variadicVarToResultNode(x VariadicVarNode) stResult.Param {
+	return stResult.NewVariadicVariable(x.Name())
 }

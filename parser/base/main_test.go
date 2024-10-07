@@ -5,12 +5,12 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	tk "github.com/SSripilaipong/muto/parser/tokens"
+	st "github.com/SSripilaipong/muto/syntaxtree"
 )
 
 func TestString(t *testing.T) {
 	r := String(StringToCharTokens(`"abc\n123\""abc`))
-	expectedResult := tk.NewString(`"abc\n123\""`)
+	expectedResult := st.NewString(`"abc\n123\""`)
 	expectedRemainder := StringToCharTokens(`abc`)
 	assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(r))
 }
@@ -18,21 +18,21 @@ func TestString(t *testing.T) {
 func TestNumber(t *testing.T) {
 	t.Run("should parse positive number", func(t *testing.T) {
 		r := Number(StringToCharTokens(`123abc`))
-		expectedResult := tk.NewNumber(`123`)
+		expectedResult := st.NewNumber(`123`)
 		expectedRemainder := StringToCharTokens(`abc`)
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(r))
 	})
 
 	t.Run("should parse positive float number", func(t *testing.T) {
 		r := Number(StringToCharTokens(`123.456abc`))
-		expectedResult := tk.NewNumber(`123.456`)
+		expectedResult := st.NewNumber(`123.456`)
 		expectedRemainder := StringToCharTokens(`abc`)
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(r))
 	})
 
 	t.Run("should parse negative number", func(t *testing.T) {
 		r := Number(StringToCharTokens(`-123abc`))
-		expectedResult := tk.NewNumber(`-123`)
+		expectedResult := st.NewNumber(`-123`)
 		expectedRemainder := StringToCharTokens(`abc`)
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(r))
 	})
@@ -41,14 +41,14 @@ func TestNumber(t *testing.T) {
 func TestBoolean(t *testing.T) {
 	t.Run("should parse true", func(t *testing.T) {
 		r := Boolean(StringToCharTokens(`trueabc`))
-		expectedResult := tk.NewIdentifier(`true`)
+		expectedResult := st.NewBoolean(`true`)
 		expectedRemainder := StringToCharTokens(`abc`)
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(r))
 	})
 
 	t.Run("should parse false", func(t *testing.T) {
 		r := Boolean(StringToCharTokens(`falseabc`))
-		expectedResult := tk.NewIdentifier(`false`)
+		expectedResult := st.NewBoolean(`false`)
 		expectedRemainder := StringToCharTokens(`abc`)
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(r))
 	})
@@ -57,26 +57,26 @@ func TestBoolean(t *testing.T) {
 func TestFixedVar(t *testing.T) {
 	t.Run("should parse single letter variable", func(t *testing.T) {
 		r := FixedVar(StringToCharTokens(`X.123`))
-		expectedResult := tk.NewIdentifier(`X`)
+		expectedResult := st.NewVariable(`X`)
 		expectedRemainder := StringToCharTokens(`.123`)
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(r))
 	})
 
 	t.Run("should parse multiple letters variable", func(t *testing.T) {
 		r := FixedVar(StringToCharTokens(`XYabc-123!'?-1s.123`))
-		expectedResult := tk.NewIdentifier(`XYabc-123!'?-1s`)
+		expectedResult := st.NewVariable(`XYabc-123!'?-1s`)
 		expectedRemainder := StringToCharTokens(`.123`)
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(r))
 	})
 
 	t.Run("should not parse identifier starting with small case", func(t *testing.T) {
 		r := FixedVar(StringToCharTokens(`xy`))
-		assert.Equal(t, EmptyResult[tk.Token](), AsParserResult(r))
+		assert.Equal(t, EmptyResult[st.Variable](), AsParserResult(r))
 	})
 
 	t.Run("should not parse variadic var", func(t *testing.T) {
 		r := FixedVar(StringToCharTokens(`X...`))
-		assert.Equal(t, EmptyResult[tk.Token](), AsParserResult(r))
+		assert.Equal(t, EmptyResult[st.Variable](), AsParserResult(r))
 	})
 }
 
@@ -114,26 +114,26 @@ func TestVariadicVar(t *testing.T) {
 func TestClass(t *testing.T) {
 	t.Run("should parse class", func(t *testing.T) {
 		r := Class(StringToCharTokens(`a_bc-'!'.123`))
-		expectedResult := tk.NewIdentifier(`a_bc-'!'`)
+		expectedResult := st.NewClass(`a_bc-'!'`)
 		expectedRemainder := StringToCharTokens(`.123`)
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(r))
 	})
 
 	t.Run("should not parse space", func(t *testing.T) {
 		r := Class(StringToCharTokens(`a b`))
-		expectedResult := tk.NewIdentifier(`a`)
+		expectedResult := st.NewClass(`a`)
 		expectedRemainder := StringToCharTokens(` b`)
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(r))
 	})
 
 	t.Run("should not parse variable", func(t *testing.T) {
 		r := Class(StringToCharTokens(`X`))
-		assert.Equal(t, EmptyResult[tk.Token](), AsParserResult(r))
+		assert.Equal(t, EmptyResult[st.Class](), AsParserResult(r))
 	})
 
 	t.Run("should parse symbol", func(t *testing.T) {
 		r := Class(StringToCharTokens(`-->.! @`))
-		expectedResult := tk.NewSymbol(`-->.!`)
+		expectedResult := st.NewClass(`-->.!`)
 		expectedRemainder := StringToCharTokens(` @`)
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(r))
 	})

@@ -3,7 +3,6 @@ package base
 import (
 	"strings"
 
-	"github.com/SSripilaipong/muto/common/fn"
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/common/tuple"
@@ -19,12 +18,6 @@ func StringToCharTokens(s string) []tk.Token {
 }
 
 var char = consumeTokenWithValueCondition(tk.IsCharacter)
-
-var consumeValue = consumeTokenWithValueCondition(fn.Not(tk.IsCharacter))
-
-var consumeId = consumeTokenWithValueCondition(tk.IsIdentifier)
-
-var consumeSymbol = consumeTokenWithValueCondition(tk.IsSymbol)
 
 func fixedChars(s string) Parser[string] {
 	rs := []rune(s)

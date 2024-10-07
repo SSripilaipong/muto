@@ -10,9 +10,9 @@ import (
 
 func nestedObjectRuleParamPattern(xs []tk.Token) []tuple.Of2[stPattern.Param, []tk.Token] {
 	anonymousHead := ps.Or(
-		ps.Map(booleanToRuleParamPattern, psBase.Boolean),
-		ps.Map(stringToRuleParamPattern, psBase.String),
-		ps.Map(numberToRuleParamPattern, psBase.Number),
+		psBase.BooleanPatternParam,
+		psBase.StringPatternParam,
+		psBase.NumberPatternParam,
 		psBase.InParentheses(nestedObjectRuleParamPattern),
 	)
 

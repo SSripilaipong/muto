@@ -3,8 +3,6 @@ package result
 import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	psBase "github.com/SSripilaipong/muto/parser/base"
-	tk "github.com/SSripilaipong/muto/parser/tokens"
-	st "github.com/SSripilaipong/muto/syntaxtree"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
@@ -14,11 +12,11 @@ var Node = ps.Or(
 )
 
 var nonNestedNode = ps.Or(
-	ps.Map(castBooleanNode, psBase.Boolean),
-	ps.Map(castStringNode, psBase.String),
-	ps.Map(castNumberNode, psBase.Number),
-	ps.Map(castClassNode, psBase.Class),
-	ps.Map(castVariableNode, psBase.FixedVar),
+	psBase.BooleanResultNode,
+	psBase.StringResultNode,
+	psBase.NumberResultNode,
+	psBase.ClassResultNode,
+	psBase.FixedVarResultNode,
 )
 
 func objectWithChildren(obj objectNode) bool {
@@ -28,26 +26,6 @@ func objectWithChildren(obj objectNode) bool {
 		return stResult.UnsafeParamPartToFixedParamPart(param).Size() > 0
 	}
 	return false
-}
-
-func castClassNode(x tk.Token) stResult.Node {
-	return st.NewClass(x.Value())
-}
-
-func castNumberNode(x tk.Token) stResult.Node {
-	return st.NewNumber(x.Value())
-}
-
-func castBooleanNode(x tk.Token) stResult.Node {
-	return st.NewBoolean(x.Value())
-}
-
-func castStringNode(x tk.Token) stResult.Node {
-	return st.NewString(x.Value())
-}
-
-func castVariableNode(x tk.Token) stResult.Node {
-	return st.NewVariable(x.Value())
 }
 
 func castObjectNode(obj objectNode) stResult.Node {

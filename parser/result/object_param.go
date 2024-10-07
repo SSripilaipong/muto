@@ -15,7 +15,7 @@ func objectParamPart(xs []tk.Token) []tuple.Of2[stResult.ParamPart, []tk.Token] 
 func objectParam(xs []tk.Token) []tuple.Of2[stResult.Param, []tk.Token] {
 	return ps.Or(
 		ps.Map(castNodeToParam, nonNestedNode),
-		ps.Map(castVariadicVariableParam, psBase.VariadicVar),
+		psBase.VariadicVarResultNode,
 		ps.Map(castObjectParam, psBase.InParentheses(object)),
 	)(xs)
 }
@@ -26,8 +26,4 @@ func castNodeToParam(x stResult.Node) stResult.Param {
 
 func castObjectParam(x objectNode) stResult.Param {
 	return stResult.NewObject(x.Head(), x.ParamPart())
-}
-
-func castVariadicVariableParam(x psBase.VariadicVarNode) stResult.Param {
-	return stResult.NewVariadicVariable(x.Name())
 }
