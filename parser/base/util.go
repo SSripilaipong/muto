@@ -1,34 +1,29 @@
 package base
 
 import (
-	"strings"
-
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/common/tuple"
-	tk "github.com/SSripilaipong/muto/parser/tokens"
 )
 
-func StringToCharTokens(s string) []tk.Token {
-	r := make([]tk.Token, len(s))
+func StringToCharTokens(s string) []Character {
+	r := make([]Character, len(s))
 	for i, x := range []rune(s) {
-		r[i] = tk.NewCharacter(x)
+		r[i] = NewCharacter(x)
 	}
 	return r
 }
 
-var char = consumeTokenWithValueCondition(tk.IsCharacter)
-
 func fixedChars(s string) Parser[string] {
 	rs := []rune(s)
 	n := len(rs)
-	return func(xs []tk.Token) []tuple.Of2[string, []tk.Token] {
+	return func(xs []Character) []tuple.Of2[string, []Character] {
 		if len(xs) < n {
 			return nil
 		}
 		for i := range rs {
 			x := xs[i]
-			if !tk.IsCharacter(x) || []rune(x.Value())[0] != rs[i] {
+			if x.Value() != rs[i] {
 				return nil
 			}
 		}
@@ -36,22 +31,20 @@ func fixedChars(s string) Parser[string] {
 	}
 }
 
-func consumeTokenWithValueCondition(f func(x tk.Token) bool) func(g func(s string) bool) Parser[tk.Token] {
-	return func(g func(s string) bool) Parser[tk.Token] {
-		return ps.ConsumeIf(func(x tk.Token) bool {
-			return f(x) && g(x.Value())
-		})
-	}
+func char(g func(s rune) bool) Parser[Character] {
+	return ps.ConsumeIf(func(x Character) bool {
+		return g(x.Value())
+	})
 }
 
-func tokensToString(xs []tk.Token) string {
-	var ss []string
-	for _, x := range xs {
-		ss = append(ss, x.Value())
-	}
-	return strings.Join(ss, "")
+func tokensToString(xs []Character) string {
+	return string(slc.Map(CharacterToValue)(xs))
 }
 
-var joinTokenString = func(x tk.Token, xs string) string {
-	return x.Value() + xs
+func tokenToRunes(x Character) []rune {
+	return slc.Pure(x.Value())
+}
+
+var joinTokenString = func(x Character, xs string) string {
+	return string(x.Value()) + xs
 }

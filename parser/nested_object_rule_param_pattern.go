@@ -4,11 +4,10 @@ import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/tuple"
 	psBase "github.com/SSripilaipong/muto/parser/base"
-	tk "github.com/SSripilaipong/muto/parser/tokens"
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
-func nestedObjectRuleParamPattern(xs []tk.Token) []tuple.Of2[stPattern.Param, []tk.Token] {
+func nestedObjectRuleParamPattern(xs []psBase.Character) []tuple.Of2[stPattern.Param, []psBase.Character] {
 	anonymousHead := ps.Or(
 		psBase.BooleanPatternParam,
 		psBase.StringPatternParam,

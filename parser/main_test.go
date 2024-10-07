@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/SSripilaipong/muto/common/tuple"
-	tk "github.com/SSripilaipong/muto/parser/tokens"
+	tk "github.com/SSripilaipong/muto/parser/base"
 	st "github.com/SSripilaipong/muto/syntaxtree"
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
@@ -61,7 +61,7 @@ func TestParseAnonymousObjectPattern(t *testing.T) {
 			),
 		})})
 		assert.Equal(t,
-			[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
+			[]tuple.Of2[st.Package, []tk.Character]{tuple.New2(expectedParsedTree, []tk.Character{})},
 			FilterSuccess(ParseString(s)),
 		)
 	})
@@ -77,7 +77,7 @@ func TestParseAnonymousObjectPattern(t *testing.T) {
 			),
 		})})
 		assert.Equal(t,
-			[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
+			[]tuple.Of2[st.Package, []tk.Character]{tuple.New2(expectedParsedTree, []tk.Character{})},
 			FilterSuccess(ParseString(s)),
 		)
 	})
@@ -93,7 +93,7 @@ func TestParseAnonymousObjectPattern(t *testing.T) {
 			),
 		})})
 		assert.Equal(t,
-			[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
+			[]tuple.Of2[st.Package, []tk.Character]{tuple.New2(expectedParsedTree, []tk.Character{})},
 			FilterSuccess(ParseString(s)),
 		)
 	})
@@ -109,7 +109,7 @@ func TestParseAnonymousObjectPattern(t *testing.T) {
 			),
 		})})
 		assert.Equal(t,
-			[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
+			[]tuple.Of2[st.Package, []tk.Character]{tuple.New2(expectedParsedTree, []tk.Character{})},
 			FilterSuccess(ParseString(s)),
 		)
 	})
@@ -154,7 +154,7 @@ func TestParseObject(t *testing.T) {
 			),
 		})})
 		assert.Equal(t,
-			[]tuple.Of2[st.Package, []tk.Token]{tuple.New2(expectedParsedTree, []tk.Token{})},
+			[]tuple.Of2[st.Package, []tk.Character]{tuple.New2(expectedParsedTree, []tk.Character{})},
 			FilterSuccess(ParseString(s)),
 		)
 	})
@@ -353,7 +353,7 @@ func TestNestedResult(t *testing.T) {
 	})
 }
 
-func expectedStatements(sts []st.Statement) []tuple.Of2[st.Package, []tk.Token] {
+func expectedStatements(sts []st.Statement) []tuple.Of2[st.Package, []tk.Character] {
 	pkg := st.NewPackage([]st.File{st.NewFile(sts)})
-	return []tuple.Of2[st.Package, []tk.Token]{tuple.New2(pkg, []tk.Token{})}
+	return []tuple.Of2[st.Package, []tk.Character]{tuple.New2(pkg, []tk.Character{})}
 }

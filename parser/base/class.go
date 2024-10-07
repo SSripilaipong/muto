@@ -19,7 +19,7 @@ func validClassName(x string) bool {
 }
 
 func classSymbol(x string) bool {
-	return !psPred.IsEqualSign(x)
+	return x != "="
 }
 
 func classToResultNode(x st.Class) stResult.Node { return x }

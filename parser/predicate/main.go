@@ -2,102 +2,66 @@ package predicate
 
 import (
 	"slices"
-	"strings"
 	"unicode"
 )
-
-func IsClassName(s string) bool {
-	return !IsFirstLetterCapital(s) && !IsKeyword(s)
-}
-
-func IsFirstLetterCapital(s string) bool {
-	return unicode.IsUpper([]rune(s)[0])
-}
-
-func IsKeyword(s string) bool {
-	return IsBooleanValue(s)
-}
 
 func IsBooleanValue(s string) bool {
 	return s == "true" || s == "false"
 }
 
-func IsVariableName(s string) bool {
-	return IsFirstLetterCapital(s) && NoVarSuffix(s)
+func IsAtSign(x rune) bool {
+	return x == '@'
 }
 
-func IsVariadicVariable(s string) bool {
-	return HasSuffix3Dots(s) && IsVariableName(s[:len(s)-3])
+func IsEqualSign(x rune) bool {
+	return x == '='
 }
 
-func NoVarSuffix(name string) bool {
-	return !HasSuffix3Dots(name)
+func IsOpenParenthesis(x rune) bool {
+	return x == '('
 }
 
-func HasSuffix3Dots(s string) bool {
-	return strings.HasSuffix(s, "...") && strings.Count(s, ".") == 3
+func IsCloseParenthesis(x rune) bool {
+	return x == ')'
 }
 
-func IsAtSign(x string) bool {
-	return strings.TrimSpace(x) == "@"
+func IsDoubleQuote(x rune) bool {
+	return x == '"'
 }
 
-func IsEqualSign(x string) bool {
-	return strings.TrimSpace(x) == "="
+func IsBackSlash(x rune) bool {
+	return x == '\\'
 }
 
-func IsSymbol(x string) bool {
-	return !IsEqualSign(x) && !IsOpenParenthesis(x) && !IsCloseParenthesis(x)
+func IsDigit(x rune) bool {
+	return unicode.IsDigit(x)
 }
 
-func IsOpenParenthesis(x string) bool {
-	return strings.TrimSpace(x) == "("
+func IsMinusSign(x rune) bool {
+	return x == '-'
 }
 
-func IsCloseParenthesis(x string) bool {
-	return strings.TrimSpace(x) == ")"
+func IsDot(x rune) bool {
+	return x == '.'
 }
 
-func IsDoubleQuote(x string) bool {
-	return strings.TrimSpace(x) == "\""
+func IsIdentifierFirstLetter(x rune) bool {
+	return unicode.IsLetter(x) || x == '_'
 }
 
-func IsBackSlash(x string) bool {
-	return strings.TrimSpace(x) == "\\"
+func IsIdentifierFirstLetterLowerCase(x rune) bool {
+	return IsIdentifierFirstLetter(x) && unicode.IsLower(x)
 }
 
-func IsFirstRuneDigit(x string) bool {
-	return unicode.IsDigit([]rune(x)[0])
+func IsIdentifierFirstLetterUpperCase(x rune) bool {
+	return IsIdentifierFirstLetter(x) && unicode.IsUpper(x)
 }
 
-func IsMinusSign(x string) bool {
-	return x == "-"
-}
-
-func IsDot(x string) bool {
-	return x == "."
-}
-
-func IsIdentifierFirstLetter(x string) bool {
-	c := []rune(x)[0]
-	return unicode.IsLetter(c) || c == '_'
-}
-
-func IsIdentifierFirstLetterLowerCase(x string) bool {
-	return IsIdentifierFirstLetter(x) && strings.ToLower(x) == x
-}
-
-func IsIdentifierFirstLetterUpperCase(x string) bool {
-	return IsIdentifierFirstLetter(x) && strings.ToUpper(x) == x
-}
-
-func IsIdentifierFollowingLetter(s string) bool {
-	x := []rune(s)[0]
+func IsIdentifierFollowingLetter(x rune) bool {
 	return unicode.IsLetter(x) || unicode.IsDigit(x) || slices.Contains([]rune{'_', '?', '\'', '!', '-'}, x)
 }
 
-func IsSymbolLetter(s string) bool {
-	x := []rune(s)[0]
+func IsSymbol(x rune) bool {
 	return (unicode.IsSymbol(x) || unicode.IsPunct(x)) && !isBracket(x)
 }
 
@@ -105,10 +69,10 @@ func isBracket(s rune) bool {
 	return s == '{' || s == '}' || s == '[' || s == ']' || s == '(' || s == ')'
 }
 
-func IsSpace(x string) bool {
-	return x == " " || x == "\t"
+func IsSpace(x rune) bool {
+	return x == ' ' || x == '\t'
 }
 
-func IsLineBreak(x string) bool {
-	return x == "\n"
+func IsLineBreak(x rune) bool {
+	return x == '\n'
 }

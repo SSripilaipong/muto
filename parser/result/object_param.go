@@ -4,15 +4,14 @@ import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/tuple"
 	psBase "github.com/SSripilaipong/muto/parser/base"
-	tk "github.com/SSripilaipong/muto/parser/tokens"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-func objectParamPart(xs []tk.Token) []tuple.Of2[stResult.ParamPart, []tk.Token] {
+func objectParamPart(xs []psBase.Character) []tuple.Of2[stResult.ParamPart, []psBase.Character] {
 	return ps.Map(stResult.ParamsToParamPart, psBase.OptionalGreedyRepeatSpaceSeparated(objectParam))(xs)
 }
 
-func objectParam(xs []tk.Token) []tuple.Of2[stResult.Param, []tk.Token] {
+func objectParam(xs []psBase.Character) []tuple.Of2[stResult.Param, []psBase.Character] {
 	return ps.Or(
 		ps.Map(castNodeToParam, nonNestedNode),
 		psBase.VariadicVarResultNode,

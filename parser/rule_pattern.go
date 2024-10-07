@@ -4,12 +4,11 @@ import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/tuple"
 	psBase "github.com/SSripilaipong/muto/parser/base"
-	tk "github.com/SSripilaipong/muto/parser/tokens"
 	st "github.com/SSripilaipong/muto/syntaxtree"
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
-func namedRulePattern() func(xs []tk.Token) []tuple.Of2[stPattern.NamedRule, []tk.Token] {
+func namedRulePattern() func(xs []psBase.Character) []tuple.Of2[stPattern.NamedRule, []psBase.Character] {
 	castWithParamPart := tuple.Fn2(func(class st.Class, params stPattern.ParamPart) stPattern.NamedRule {
 		return stPattern.NewNamedRule(class.Name(), params)
 	})
@@ -23,7 +22,7 @@ func namedRulePattern() func(xs []tk.Token) []tuple.Of2[stPattern.NamedRule, []t
 	)
 }
 
-func variableRulePattern() func(xs []tk.Token) []tuple.Of2[stPattern.VariableRule, []tk.Token] {
+func variableRulePattern() func(xs []psBase.Character) []tuple.Of2[stPattern.VariableRule, []psBase.Character] {
 	cast := tuple.Fn2(func(name st.Variable, params stPattern.ParamPart) stPattern.VariableRule {
 		return stPattern.NewVariableRulePattern(name.Name(), params)
 	})
@@ -31,7 +30,7 @@ func variableRulePattern() func(xs []tk.Token) []tuple.Of2[stPattern.VariableRul
 	return ps.Map(cast, psBase.SpaceSeparated2(psBase.FixedVar, rulePatternParamPart()))
 }
 
-func rulePatternParamPart() func([]tk.Token) []tuple.Of2[stPattern.ParamPart, []tk.Token] {
+func rulePatternParamPart() func([]psBase.Character) []tuple.Of2[stPattern.ParamPart, []psBase.Character] {
 
 	castVariadic := func(v psBase.VariadicVarNode) stPattern.ParamPart {
 		return stPattern.NewLeftVariadicParamPart(v.Name(), stPattern.ParamsToFixedParamPart([]stPattern.Param{}))
@@ -52,7 +51,7 @@ func rulePatternParamPart() func([]tk.Token) []tuple.Of2[stPattern.ParamPart, []
 	)
 }
 
-func fixedRuleParamPattern() func(xs []tk.Token) []tuple.Of2[stPattern.Param, []tk.Token] {
+func fixedRuleParamPattern() func(xs []psBase.Character) []tuple.Of2[stPattern.Param, []psBase.Character] {
 	var classToPatternParam = func(x st.Class) stPattern.Param {
 		return stPattern.NewNamedRule(x.Value(), stPattern.FixedParamPart{})
 	}
