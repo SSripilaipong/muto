@@ -9,14 +9,6 @@ func IsBooleanValue(s string) bool {
 	return s == "true" || s == "false"
 }
 
-func IsAtSign(x rune) bool {
-	return x == '@'
-}
-
-func IsEqualSign(x rune) bool {
-	return x == '='
-}
-
 func IsOpenParenthesis(x rune) bool {
 	return x == '('
 }
@@ -29,20 +21,8 @@ func IsDoubleQuote(x rune) bool {
 	return x == '"'
 }
 
-func IsBackSlash(x rune) bool {
-	return x == '\\'
-}
-
 func IsDigit(x rune) bool {
 	return unicode.IsDigit(x)
-}
-
-func IsMinusSign(x rune) bool {
-	return x == '-'
-}
-
-func IsDot(x rune) bool {
-	return x == '.'
 }
 
 func IsIdentifierFirstLetter(x rune) bool {

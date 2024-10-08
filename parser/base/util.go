@@ -37,6 +37,12 @@ func char(g func(s rune) bool) Parser[Character] {
 	})
 }
 
+func chRune(x rune) Parser[Character] {
+	return char(func(s rune) bool {
+		return x == s
+	})
+}
+
 func tokensToString(xs []Character) string {
 	return string(slc.Map(CharacterToValue)(xs))
 }
