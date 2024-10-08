@@ -14,6 +14,13 @@ func StringToCharTokens(s string) []Character {
 	return r
 }
 
+func Prefix[P, T any](pf Parser[P], x Parser[T]) Parser[T] {
+	var merge = tuple.Fn2(func(_ P, x T) T {
+		return x
+	})
+	return ps.Map(merge, ps.Sequence2(pf, x))
+}
+
 func fixedChars(s string) Parser[string] {
 	rs := []rune(s)
 	n := len(rs)

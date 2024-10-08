@@ -23,6 +23,8 @@ func newParamExtractor(p stPattern.Param) func(base.Node) optional.Of[*data.Muta
 		return newStringParamExtractor(st.UnsafeRuleParamPatternToString(p))
 	case stPattern.IsParamTypeNumber(p):
 		return newNumberParamExtractor(st.UnsafeRuleParamPatternToNumber(p))
+	case stPattern.IsParamTypeTag(p):
+		return newTagParamExtractor(st.UnsafeRuleParamPatternToTag(p))
 	case stPattern.IsParamTypeNestedNamedRule(p):
 		return newNestedNamedRuleExtractor(stPattern.UnsafeParamToNamedRule(p))
 	case stPattern.IsParamTypeNestedVariableRule(p):
@@ -63,6 +65,16 @@ func newNumberParamExtractor(v st.Number) func(base.Node) optional.Of[*data.Muta
 	value := v.NumberValue()
 	return func(x base.Node) optional.Of[*data.Mutation] {
 		if base.IsNumberNode(x) && base.UnsafeNodeToNumber(x).Value() == value {
+			return optional.Value(data.NewMutation())
+		}
+		return optional.Empty[*data.Mutation]()
+	}
+}
+
+func newTagParamExtractor(v st.Tag) func(base.Node) optional.Of[*data.Mutation] {
+	name := v.Name()
+	return func(x base.Node) optional.Of[*data.Mutation] {
+		if base.IsTagNode(x) && base.UnsafeNodeToTag(x).Name() == name {
 			return optional.Value(data.NewMutation())
 		}
 		return optional.Empty[*data.Mutation]()

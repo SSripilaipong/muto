@@ -18,6 +18,8 @@ func New(r stResult.Node) func(*data.Mutation) optional.Of[base.Node] {
 		return buildNumber(st.UnsafeRuleResultToNumber(r))
 	case stResult.IsNodeTypeClass(r):
 		return buildClass(st.UnsafeRuleResultToClass(r))
+	case stResult.IsNodeTypeTag(r):
+		return buildTag(st.UnsafeRuleResultToTag(r))
 	case stResult.IsNodeTypeObject(r):
 		return buildObject(stResult.UnsafeNodeToObject(r))
 	case stResult.IsNodeTypeVariable(r):

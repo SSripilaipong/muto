@@ -16,6 +16,7 @@ const (
 	NodeTypeBoolean NodeType = "BOOLEAN"
 	NodeTypeObject  NodeType = "OBJECT"
 	NodeTypeClass   NodeType = "CLASS"
+	NodeTypeTag     NodeType = "TAG"
 )
 
 func IsObjectNode(node Node) bool {
@@ -40,4 +41,8 @@ func IsNumberNode(node Node) bool {
 
 func IsStringNode(node Node) bool {
 	return node.NodeType() == NodeTypeString
+}
+
+func IsTagNode(node Node) bool {
+	return node.NodeType() == NodeTypeTag
 }

@@ -16,6 +16,7 @@ var nonNestedNode = ps.Or(
 	psBase.StringResultNode,
 	psBase.NumberResultNode,
 	psBase.ClassResultNode,
+	psBase.TagResultNode,
 	psBase.FixedVarResultNode,
 )
 

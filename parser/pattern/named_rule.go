@@ -1,4 +1,4 @@
-package parser
+package pattern
 
 import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
@@ -8,7 +8,7 @@ import (
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
-func namedRulePattern() func(xs []psBase.Character) []tuple.Of2[stPattern.NamedRule, []psBase.Character] {
+func NamedRule() func(xs []psBase.Character) []tuple.Of2[stPattern.NamedRule, []psBase.Character] {
 	castWithParamPart := tuple.Fn2(func(class st.Class, params stPattern.ParamPart) stPattern.NamedRule {
 		return stPattern.NewNamedRule(class.Name(), params)
 	})
@@ -61,6 +61,7 @@ func fixedRuleParamPattern() func(xs []psBase.Character) []tuple.Of2[stPattern.P
 		psBase.BooleanPatternParam,
 		psBase.StringPatternParam,
 		psBase.NumberPatternParam,
+		psBase.TagPatternParam,
 		ps.Map(classToPatternParam, psBase.Class),
 		psBase.InParentheses(nestedObjectRuleParamPattern),
 	)

@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/tuple"
 	tk "github.com/SSripilaipong/muto/parser/base"
 	st "github.com/SSripilaipong/muto/syntaxtree"
@@ -21,7 +22,7 @@ func TestParseString(t *testing.T) {
 				st.NewString(`"hello world"`),
 			),
 		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 
 	t.Run("should parse with pattern param", func(t *testing.T) {
@@ -32,7 +33,7 @@ func TestParseString(t *testing.T) {
 				stResult.NewObject(st.NewClass("+"), stResult.FixedParamPart([]stResult.Param{st.NewNumber("1"), st.NewString("\"abc\"")})),
 			),
 		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 }
 
@@ -45,7 +46,7 @@ func TestParseVariable(t *testing.T) {
 				st.NewNumber("1"),
 			),
 		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 }
 
@@ -62,7 +63,7 @@ func TestParseAnonymousObjectPattern(t *testing.T) {
 		})})
 		assert.Equal(t,
 			[]tuple.Of2[st.Package, []tk.Character]{tuple.New2(expectedParsedTree, []tk.Character{})},
-			FilterSuccess(ParseString(s)),
+			parsing.FilterSuccess(ParseString(s)),
 		)
 	})
 
@@ -78,7 +79,7 @@ func TestParseAnonymousObjectPattern(t *testing.T) {
 		})})
 		assert.Equal(t,
 			[]tuple.Of2[st.Package, []tk.Character]{tuple.New2(expectedParsedTree, []tk.Character{})},
-			FilterSuccess(ParseString(s)),
+			parsing.FilterSuccess(ParseString(s)),
 		)
 	})
 
@@ -94,7 +95,7 @@ func TestParseAnonymousObjectPattern(t *testing.T) {
 		})})
 		assert.Equal(t,
 			[]tuple.Of2[st.Package, []tk.Character]{tuple.New2(expectedParsedTree, []tk.Character{})},
-			FilterSuccess(ParseString(s)),
+			parsing.FilterSuccess(ParseString(s)),
 		)
 	})
 
@@ -110,7 +111,7 @@ func TestParseAnonymousObjectPattern(t *testing.T) {
 		})})
 		assert.Equal(t,
 			[]tuple.Of2[st.Package, []tk.Character]{tuple.New2(expectedParsedTree, []tk.Character{})},
-			FilterSuccess(ParseString(s)),
+			parsing.FilterSuccess(ParseString(s)),
 		)
 	})
 }
@@ -124,7 +125,7 @@ func TestParseObject(t *testing.T) {
 				stResult.NewObject(st.NewClass("a"), stResult.FixedParamPart([]stResult.Param{st.NewClass("b")})),
 			),
 		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 
 	t.Run("should parse nested object", func(t *testing.T) {
@@ -140,7 +141,7 @@ func TestParseObject(t *testing.T) {
 				st.NewNumber("999"),
 			),
 		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 	t.Run("should parse object", func(t *testing.T) {
 		s := `main A = (+ 1 2) 3 4`
@@ -155,7 +156,7 @@ func TestParseObject(t *testing.T) {
 		})})
 		assert.Equal(t,
 			[]tuple.Of2[st.Package, []tk.Character]{tuple.New2(expectedParsedTree, []tk.Character{})},
-			FilterSuccess(ParseString(s)),
+			parsing.FilterSuccess(ParseString(s)),
 		)
 	})
 
@@ -170,7 +171,7 @@ func TestParseObject(t *testing.T) {
 				),
 			),
 		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 
 	t.Run("should parse number as a head", func(t *testing.T) {
@@ -184,7 +185,7 @@ func TestParseObject(t *testing.T) {
 				),
 			),
 		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 }
 
@@ -197,7 +198,7 @@ func TestParseVariadicVarPattern(t *testing.T) {
 				stResult.NewObject(st.NewClass("g"), stResult.FixedParamPart([]stResult.Param{st.NewVariable("X")})),
 			),
 		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 
 	t.Run("should parse right variadic var", func(t *testing.T) {
@@ -208,7 +209,7 @@ func TestParseVariadicVarPattern(t *testing.T) {
 				stResult.NewObject(st.NewClass("g"), stResult.FixedParamPart([]stResult.Param{st.NewVariable("X")})),
 			),
 		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 
 	t.Run("should parse nested variadic var", func(t *testing.T) {
@@ -219,7 +220,7 @@ func TestParseVariadicVarPattern(t *testing.T) {
 				stResult.NewObject(st.NewClass("g"), stResult.FixedParamPart([]stResult.Param{st.NewVariable("Y")})),
 			),
 		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 }
 
@@ -232,7 +233,7 @@ func TestParseVariadicParamPart(t *testing.T) {
 				stResult.NewObject(st.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{stResult.NewVariadicVariable("Xs"), st.NewVariable("X")})),
 			),
 		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 
 	t.Run("should parse right variadic param part", func(t *testing.T) {
@@ -243,7 +244,7 @@ func TestParseVariadicParamPart(t *testing.T) {
 				stResult.NewObject(st.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{st.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
 			),
 		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 
 	t.Run("should parse result with multiple variadic variables in param part", func(t *testing.T) {
@@ -254,7 +255,7 @@ func TestParseVariadicParamPart(t *testing.T) {
 				stResult.NewObject(st.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{stResult.NewVariadicVariable("Xs"), st.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
 			),
 		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 }
 
@@ -274,7 +275,7 @@ func TestVariableRulePattern(t *testing.T) {
 				st.NewNumber("1"),
 			),
 		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 }
 
@@ -287,7 +288,7 @@ func TestActiveRule(t *testing.T) {
 				stResult.NewObject(st.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{st.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
 			),
 		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 }
 
@@ -300,7 +301,7 @@ func TestBoolean(t *testing.T) {
 				st.NewBoolean("true"),
 			),
 		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 
 	t.Run("should parse boolean as a rule param", func(t *testing.T) {
@@ -311,7 +312,7 @@ func TestBoolean(t *testing.T) {
 				stResult.NewObject(st.NewClass("f"), stResult.ParamsToFixedParamPart([]stResult.Param{st.NewBoolean("true")})),
 			),
 		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 
 	t.Run("should parse boolean as a rule pattern param", func(t *testing.T) {
@@ -322,7 +323,7 @@ func TestBoolean(t *testing.T) {
 				st.NewString("\"a\""),
 			),
 		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 
 	t.Run("should parse boolean as an object head", func(t *testing.T) {
@@ -333,7 +334,7 @@ func TestBoolean(t *testing.T) {
 				stResult.NewObject(st.NewBoolean("true"), stResult.ParamsToFixedParamPart([]stResult.Param{st.NewString("\"a\"")})),
 			),
 		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 }
 
@@ -349,7 +350,7 @@ func TestNestedResult(t *testing.T) {
 				),
 			),
 		})
-		assert.Equal(t, expected, FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 }
 

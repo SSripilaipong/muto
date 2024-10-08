@@ -38,3 +38,41 @@ func TestNew_ObjectWithValueHead(t *testing.T) {
 		assert.True(t, New(pattern)(obj).IsNotEmpty())
 	})
 }
+
+func TestTag(t *testing.T) {
+	t.Run("should match a tag child", func(t *testing.T) {
+		pattern := stPattern.NewNamedRule("f", stPattern.ParamsToFixedParamPart([]stPattern.Param{st.NewTag("abc")}))
+		obj := base.NewNamedObject("f", []base.Node{base.NewTag("abc")})
+
+		assert.True(t, New(pattern)(obj).IsNotEmpty())
+	})
+
+	t.Run("should not match a non-tag child", func(t *testing.T) {
+		pattern := stPattern.NewNamedRule("f", stPattern.ParamsToFixedParamPart([]stPattern.Param{st.NewTag("abc")}))
+		obj := base.NewNamedObject("f", []base.Node{base.NewClass("abc")})
+
+		assert.False(t, New(pattern)(obj).IsNotEmpty())
+	})
+
+	t.Run("should match a tag in a nested head", func(t *testing.T) {
+		pattern := stPattern.NewNamedRule("f", stPattern.ParamsToFixedParamPart([]stPattern.Param{
+			stPattern.NewAnonymousRule(st.NewTag("abc"), stPattern.ParamsToFixedParamPart([]stPattern.Param{
+				st.NewNumber("1"), st.NewNumber("2"),
+			})),
+		}))
+		obj := base.NewNamedObject("f", []base.Node{base.NewObject(base.NewTag("abc"), []base.Node{base.NewNumberFromString("1"), base.NewNumberFromString("2")})})
+
+		assert.True(t, New(pattern)(obj).IsNotEmpty())
+	})
+
+	t.Run("should match a tag in a nested head", func(t *testing.T) {
+		pattern := stPattern.NewNamedRule("f", stPattern.ParamsToFixedParamPart([]stPattern.Param{
+			stPattern.NewNamedRule("g", stPattern.ParamsToFixedParamPart([]stPattern.Param{
+				st.NewNumber("1"), st.NewTag("abc"), st.NewNumber("2"),
+			})),
+		}))
+		obj := base.NewNamedObject("f", []base.Node{base.NewObject(base.NewClass("g"), []base.Node{base.NewNumberFromString("1"), base.NewTag("abc"), base.NewNumberFromString("2")})})
+
+		assert.True(t, New(pattern)(obj).IsNotEmpty())
+	})
+}

@@ -29,6 +29,10 @@ func NewClass(name string) Class {
 	return Class{name: name}
 }
 
+func ClassToName(c Class) string {
+	return c.Name()
+}
+
 func UnsafeRuleResultToClass(p stResult.Node) Class {
 	return p.(Class)
 }

@@ -12,6 +12,7 @@ const (
 	ParamTypeString              ParamType = "STRING"
 	ParamTypeNumber              ParamType = "NUMBER"
 	ParamTypeClass               ParamType = "CLASS"
+	ParamTypeTag                 ParamType = "TAG"
 	ParamTypeNestedNamedRule     ParamType = "NESTED_NAMED_RULE"
 	ParamTypeNestedVariableRule  ParamType = "NESTED_VARIABLE_RULE"
 	ParamTypeNestedAnonymousRule ParamType = "NESTED_ANONYMOUS_RULE"
@@ -31,6 +32,10 @@ func IsParamTypeString(p Param) bool {
 
 func IsParamTypeNumber(p Param) bool {
 	return p.RulePatternParamType() == ParamTypeNumber
+}
+
+func IsParamTypeTag(p Param) bool {
+	return p.RulePatternParamType() == ParamTypeTag
 }
 
 func IsParamTypeClass(p Param) bool {

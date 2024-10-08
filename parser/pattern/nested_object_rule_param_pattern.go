@@ -1,4 +1,4 @@
-package parser
+package pattern
 
 import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
@@ -12,6 +12,7 @@ func nestedObjectRuleParamPattern(xs []psBase.Character) []tuple.Of2[stPattern.P
 		psBase.BooleanPatternParam,
 		psBase.StringPatternParam,
 		psBase.NumberPatternParam,
+		psBase.TagPatternParam,
 		psBase.InParentheses(nestedObjectRuleParamPattern),
 	)
 
@@ -26,7 +27,7 @@ func nestedObjectRuleParamPattern(xs []psBase.Character) []tuple.Of2[stPattern.P
 	return ps.Or(
 		ps.Map(castAnonymousObjectWithParamPart, psBase.SpaceSeparated2(anonymousHead, rulePatternParamPart())),
 		ps.Map(castAnonymousHead, anonymousHead),
-		ps.Map(stPattern.NamedRuleToParam, namedRulePattern()),
+		ps.Map(stPattern.NamedRuleToParam, NamedRule()),
 		ps.Map(stPattern.VariableRulePatternToRulePatternParam, variableRulePattern()),
 	)(xs)
 }

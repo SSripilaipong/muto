@@ -138,3 +138,17 @@ func TestClass(t *testing.T) {
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(r))
 	})
 }
+
+func TestTag(t *testing.T) {
+	t.Run("should parse tag like class with dot prefix", func(t *testing.T) {
+		r := Tag(StringToCharTokens(`.a_bc-'!'.123`))
+		expectedResult := st.NewTag(`.a_bc-'!'`)
+		expectedRemainder := StringToCharTokens(`.123`)
+		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(r))
+	})
+
+	t.Run("should not parse class", func(t *testing.T) {
+		r := Tag(StringToCharTokens(`abc`))
+		assert.Equal(t, EmptyResult[st.Tag](), AsParserResult(r))
+	})
+}
