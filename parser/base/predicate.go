@@ -9,14 +9,6 @@ func IsBooleanValue(s string) bool {
 	return s == "true" || s == "false"
 }
 
-func IsOpenParenthesis(x rune) bool {
-	return x == '('
-}
-
-func IsCloseParenthesis(x rune) bool {
-	return x == ')'
-}
-
 func IsDoubleQuote(x rune) bool {
 	return x == '"'
 }
