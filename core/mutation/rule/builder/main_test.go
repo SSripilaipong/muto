@@ -22,7 +22,7 @@ func TestBuildBoolean(t *testing.T) {
 
 func TestBuildTag(t *testing.T) {
 	t.Run("should build tag", func(t *testing.T) {
-		assert.Equal(t, base.NewTag("abc"), New(st.NewTag(":abc"))(nil).Value())
+		assert.Equal(t, base.NewTag("abc"), New(st.NewTag(".abc"))(nil).Value())
 	})
 }
 

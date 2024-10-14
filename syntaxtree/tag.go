@@ -28,7 +28,7 @@ func (t Tag) Value() string {
 }
 
 func (t Tag) Name() string {
-	name, _ := strings.CutPrefix(t.Value(), ":")
+	name, _ := strings.CutPrefix(t.Value(), ".")
 	return name
 }
 

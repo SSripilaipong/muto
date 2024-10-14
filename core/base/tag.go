@@ -32,7 +32,7 @@ func (t Tag) Name() string {
 }
 
 func (t Tag) MutoString() string {
-	return fmt.Sprintf(":%s", t.Name())
+	return fmt.Sprintf(".%s", t.Name())
 }
 
 func (t Tag) TopLevelString() string {

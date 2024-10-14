@@ -66,13 +66,13 @@ func TestBuildStructure(t *testing.T) {
 		})
 		mutationData := data.NewMutation().
 			WithVariableMappings(data.NewVariableMapping("A", base.NewClass("f"))).Value().
-			WithVariableMappings(data.NewVariableMapping("B", base.NewTag(".t"))).Value()
+			WithVariableMappings(data.NewVariableMapping("B", base.NewTag("t"))).Value()
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
 			base.NewStructureRecord(
-				base.NewTag(".e"),
+				base.NewTag("e"),
 				base.NewObject(
 					base.NewClass("f"),
-					[]base.Node{base.NewNumberFromString("123"), base.NewTag(".t")},
+					[]base.Node{base.NewNumberFromString("123"), base.NewTag("t")},
 				),
 			),
 		})
