@@ -227,19 +227,19 @@ $ 10 20 30
 ### Functional composition
 ```muto
 main = f 2
-f = . g h
+f = comp g h
 
 g = + 10
 h = * 16
 
-. F G X = F (G X)
+comp F G X = F (G X)
 ```
 Run explain:
 ```muto
 f 2
-. g h 2
-. (+ 10) h 2
-. (+ 10) (* 16) 2
+comp g h 2
+comp (+ 10) h 2
+comp (+ 10) (* 16) 2
 (+ 10) ((* 16) 2)
 + 10 ((* 16) 2)
 + 10 (* 16 2)
@@ -261,11 +261,11 @@ map' F R $ = R
 ```
 Now you can compose it like other Objects:
 ```muto
-main = . (map (+ 10)) (map (* 5)) ($ 1 2 3)
+main = comp (map (+ 10)) (map (* 5)) ($ 1 2 3)
 ```
 Run explain:
 ```muto
-. (map (+ 10)) (map (* 5)) ($ 1 2 3)
+comp (map (+ 10)) (map (* 5)) ($ 1 2 3)
 (map (+ 10)) ((map (* 5)) ($ 1 2 3))
 map (+ 10) ((map (* 5)) ($ 1 2 3))
 map (+ 10) (map (* 5) ($ 1 2 3))
