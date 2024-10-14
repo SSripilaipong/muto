@@ -30,6 +30,10 @@ func Fn2[A1, A2, B any](f func(A1, A2) B) func(Of2[A1, A2]) B {
 	}
 }
 
+func Of2ToX1[T1, T2 any](x Of2[T1, T2]) T1 {
+	return x.X1()
+}
+
 func Of2ToX2[T1, T2 any](x Of2[T1, T2]) T2 {
 	return x.X2()
 }

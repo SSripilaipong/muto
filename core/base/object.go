@@ -88,10 +88,6 @@ func NewNamedObject(name string, children []Node) Object {
 	return Object{class: NewClass(name), children: children}
 }
 
-func ObjectToNode(x Object) Node {
-	return x
-}
-
 func objectChildrenToString(obj Object) string {
 	var children []string
 	for _, child := range obj.Children() {

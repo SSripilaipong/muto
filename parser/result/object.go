@@ -19,5 +19,6 @@ func objectHead(xs []psBase.Character) []tuple.Of2[stResult.Node, []psBase.Chara
 	return ps.Or(
 		nonNestedNode,
 		ps.Map(castObjectNode, psBase.InParentheses(object)),
+		ps.Map(stResult.ToNode, structure),
 	)(xs)
 }

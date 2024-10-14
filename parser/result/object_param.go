@@ -13,14 +13,11 @@ func objectParamPart(xs []psBase.Character) []tuple.Of2[stResult.ParamPart, []ps
 
 func objectParam(xs []psBase.Character) []tuple.Of2[stResult.Param, []psBase.Character] {
 	return ps.Or(
-		ps.Map(castNodeToParam, nonNestedNode),
+		ps.Map(stResult.ToParam, nonNestedNode),
 		psBase.VariadicVarResultNode,
 		ps.Map(castObjectParam, psBase.InParentheses(object)),
+		ps.Map(stResult.ToParam, structure),
 	)(xs)
-}
-
-func castNodeToParam(x stResult.Node) stResult.Param {
-	return x
 }
 
 func castObjectParam(x objectNode) stResult.Param {

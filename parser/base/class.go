@@ -18,7 +18,7 @@ func validClassName(x string) bool {
 }
 
 func classSymbol(x string) bool {
-	return x != "=" && x[0] != '.'
+	return x != "=" && x[0] != '.' && x[0] != '"'
 }
 
 func classToResultNode(x st.Class) stResult.Node { return x }

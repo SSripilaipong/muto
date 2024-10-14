@@ -7,6 +7,10 @@ type MutableNode interface {
 	Mutate(mutation Mutation) optional.Of[Node]
 }
 
+func IsMutableNode(node Node) bool {
+	return IsObjectNode(node) || IsClassNode(node) || IsStructureNode(node)
+}
+
 func UnsafeNodeToMutable(x Node) MutableNode {
 	return x.(MutableNode)
 }

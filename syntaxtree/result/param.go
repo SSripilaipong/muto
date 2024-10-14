@@ -22,3 +22,7 @@ func IsParamTypeSingle(x Param) bool {
 func IsParamTypeVariadic(x Param) bool {
 	return x.ObjectParamType() == ParamTypeVariadic
 }
+
+func ToParam[T Param](x T) Param {
+	return x
+}

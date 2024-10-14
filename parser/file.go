@@ -23,7 +23,7 @@ var mergeActiveRule = tuple.Fn2(func(_ psBase.Character, r st.Rule) st.Statement
 	return st.NewActiveRule(r.Pattern(), r.Result())
 })
 
-var rule = ps.Map(mergeRule, psBase.SpaceSeparated3(psPattern.NamedRule(), psBase.EqualSign, psResult.Node))
+var rule = ps.Map(mergeRule, psBase.SpaceSeparated3(psPattern.NamedRule(), psBase.EqualSign, psResult.Node()))
 
 var mergeRule = tuple.Fn3(func(p stPattern.NamedRule, _ psBase.Character, r stResult.Node) st.Rule {
 	return st.NewRule(p, r)

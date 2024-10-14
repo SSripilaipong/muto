@@ -11,20 +11,17 @@ type Node interface {
 type NodeType string
 
 const (
-	NodeTypeString  NodeType = "STRING"
-	NodeTypeNumber  NodeType = "NUMBER"
-	NodeTypeBoolean NodeType = "BOOLEAN"
-	NodeTypeObject  NodeType = "OBJECT"
-	NodeTypeClass   NodeType = "CLASS"
-	NodeTypeTag     NodeType = "TAG"
+	NodeTypeString    NodeType = "STRING"
+	NodeTypeNumber    NodeType = "NUMBER"
+	NodeTypeBoolean   NodeType = "BOOLEAN"
+	NodeTypeObject    NodeType = "OBJECT"
+	NodeTypeClass     NodeType = "CLASS"
+	NodeTypeTag       NodeType = "TAG"
+	NodeTypeStructure NodeType = "STRUCTURE"
 )
 
 func IsObjectNode(node Node) bool {
 	return node.NodeType() == NodeTypeObject
-}
-
-func IsMutableNode(node Node) bool {
-	return IsObjectNode(node) || IsClassNode(node)
 }
 
 func IsClassNode(node Node) bool {
@@ -46,3 +43,9 @@ func IsStringNode(node Node) bool {
 func IsTagNode(node Node) bool {
 	return node.NodeType() == NodeTypeTag
 }
+
+func IsStructureNode(node Node) bool {
+	return node.NodeType() == NodeTypeStructure
+}
+
+func ToNode[T Node](x T) Node { return x }

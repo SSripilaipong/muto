@@ -21,12 +21,12 @@ func (Boolean) RulePatternParamType() stPattern.ParamType {
 	return stPattern.ParamTypeBoolean
 }
 
-func (s Boolean) Value() string {
-	return s.value
+func (b Boolean) Value() string {
+	return b.value
 }
 
-func (s Boolean) BooleanValue() bool {
-	return s.Value() == "true"
+func (b Boolean) BooleanValue() bool {
+	return b.Value() == "true"
 }
 
 func UnsafeRuleResultToBoolean(r stResult.Node) Boolean {
