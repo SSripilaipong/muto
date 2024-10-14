@@ -20,7 +20,35 @@ func NewStructureFromRecords(records []StructureRecord) Structure {
 func (Structure) NodeType() NodeType { return NodeTypeStructure }
 
 func (s Structure) MutateAsHead(children []Node, mutation Mutation) optional.Of[Node] {
-	return optional.Empty[Node]() // TODO implement
+	if len(children) > 0 {
+		newChildren := mutateChildren(children, mutation)
+		if newChildren.IsNotEmpty() {
+			return optional.Value[Node](NewObject(s, newChildren.Value()))
+		}
+	}
+
+	return unaryOp(func(x Node) optional.Of[Node] {
+		if !IsObjectNode(x) {
+			return optional.Empty[Node]()
+		}
+		obj := UnsafeNodeToObject(x)
+		head := obj.Head()
+		if !IsTagNode(head) {
+			return optional.Empty[Node]()
+		}
+
+		return s.processTag(UnsafeNodeToTag(head), obj.Children())
+	})(children)
+}
+
+func (s Structure) processTag(tag Tag, children []Node) optional.Of[Node] {
+	switch tag.Name() {
+	case GetTag.Name():
+		return s.processGetCommand(children)
+	case SetTag.Name():
+		return s.processSetCommand(children)
+	}
+	return optional.Empty[Node]()
 }
 
 func (s Structure) Mutate(mutation Mutation) optional.Of[Node] {
@@ -31,6 +59,45 @@ func (s Structure) Mutate(mutation Mutation) optional.Of[Node] {
 		if newRecord.IsNotEmpty() {
 			isMutated = true
 			record = newRecord.Value()
+		}
+		records = append(records, record)
+	}
+	if !isMutated {
+		return optional.Empty[Node]()
+	}
+	return optional.Value[Node](NewStructureFromRecords(records))
+}
+
+func (s Structure) processGetCommand(children []Node) optional.Of[Node] {
+	if len(children) != 1 {
+		return optional.Empty[Node]()
+	}
+	return s.get(children[0])
+}
+
+func (s Structure) processSetCommand(children []Node) optional.Of[Node] {
+	if len(children) != 2 {
+		return optional.Empty[Node]()
+	}
+	return s.set(children[0], children[1])
+}
+
+func (s Structure) get(key Node) optional.Of[Node] {
+	for _, record := range s.recordSlices() {
+		if NodeEqual(record.Key(), key) {
+			return optional.Value(record.Value())
+		}
+	}
+	return optional.Empty[Node]()
+}
+
+func (s Structure) set(key Node, value Node) optional.Of[Node] {
+	var records []StructureRecord
+	isMutated := false
+	for _, record := range s.recordSlices() {
+		if NodeEqual(record.Key(), key) {
+			isMutated = true
+			record = record.replaceValue(value)
 		}
 		records = append(records, record)
 	}
