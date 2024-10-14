@@ -80,18 +80,11 @@ main = g (f 1 2)
 		assert.Equal(t, base.NewNamedObject("g", []base.Node{base.NewNamedObject("f", []base.Node{base.NewNumberFromString("1"), base.NewNumberFromString("2")})}), execute(program))
 	})
 
-	t.Run("should resolve to data object when there are children left", func(t *testing.T) {
+	t.Run("should resolve to object with data head when there are children left", func(t *testing.T) {
 		program := BuildFromString(`f X = 999
 main = f 1 2
 `).Value()
-		assert.Equal(t, base.NewDataObject([]base.Node{base.NewNumberFromString("999"), base.NewNumberFromString("2")}), execute(program))
-	})
-
-	t.Run("should resolve to data object when there are children left", func(t *testing.T) {
-		program := BuildFromString(`f X = 999
-main = f 1 2
-`).Value()
-		assert.Equal(t, base.NewDataObject([]base.Node{base.NewNumberFromString("999"), base.NewNumberFromString("2")}), execute(program))
+		assert.Equal(t, base.NewObject(base.NewNumberFromString("999"), []base.Node{base.NewNumberFromString("2")}), execute(program))
 	})
 
 	t.Run("should extract nested object with variable object name pattern", func(t *testing.T) {
