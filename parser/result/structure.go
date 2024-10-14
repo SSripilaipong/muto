@@ -19,9 +19,9 @@ func structure(xs []psBase.Character) []tuple.Of2[stResult.Structure, []psBase.C
 	structureRecordWithComma := psBase.EndingWithCommaSpaceAllowed(record)
 	optionalCommaSeparatedRecords := psBase.OptionalGreedyRepeatIgnoreWhiteSpaceBetween(structureRecordWithComma)
 
-	return ps.Map(mergeStructure, psBase.InBracesWhiteSpacesAllowed(ps.Sequence2(
+	return ps.Filter(noRepeatStructureKeys, ps.Map(mergeStructure, psBase.InBracesWhiteSpacesAllowed(ps.Sequence2(
 		optionalCommaSeparatedRecords, ps.GreedyOptional(psBase.OptionalLeadingWhiteSpace(record)),
-	)))(xs)
+	))))(xs)
 }
 
 var structureKey = ps.Or(
@@ -31,6 +31,18 @@ var structureKey = ps.Or(
 	psBase.ClassResultNode,
 	psBase.TagResultNode,
 )
+
+func noRepeatStructureKeys(x stResult.Structure) bool {
+	mem := make(map[stResult.Node]bool) // Node is too loose as a map key
+	for _, record := range x.Records() {
+		key := record.Key()
+		if mem[key] {
+			return false
+		}
+		mem[key] = true
+	}
+	return true
+}
 
 var mergeStructure = tuple.Fn2(func(xs []stResult.StructureRecord, x optional.Of[stResult.StructureRecord]) stResult.Structure {
 	if x.IsNotEmpty() {

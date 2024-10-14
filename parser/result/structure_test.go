@@ -92,4 +92,8 @@ func TestStructure(t *testing.T) {
 		expectedRemainder := psBase.StringToCharTokens("abc")
 		assert.Equal(t, psBase.SingleResult(expectedResult, expectedRemainder), psBase.AsParserResult(result))
 	})
+
+	t.Run("should not parse records with duplicate key", func(t *testing.T) {
+		assert.Empty(t, structure(psBase.StringToCharTokens(`{1: 2,1:4, }abc`)))
+	})
 }
