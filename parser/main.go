@@ -16,10 +16,17 @@ var ParseToken = parsing.Map(newPackage, file)
 
 var ParseString = fn.Compose(ParseToken, psBase.StringToCharTokens)
 
-func FilterResult(s []tuple.Of2[syntaxtree.Package, []psBase.Character]) rslt.Of[syntaxtree.Package] {
-	s = parsing.FilterSuccess(s)
+func FilterResult(raw []tuple.Of2[syntaxtree.Package, []psBase.Character]) rslt.Of[syntaxtree.Package] {
+	s := parsing.FilterSuccess(raw)
 	if len(s) == 0 {
-		return rslt.Error[syntaxtree.Package](errors.New("unknown error"))
+		var err error
+		if len(raw) == 0 {
+			err = errors.New("unknown parsing error")
+		} else {
+			c := raw[0].X2()[0]
+			err = fmt.Errorf("parsing error at line %d, column %d: unexpected token '%c'", c.LineNumber(), c.ColumnNumber(), c.Value())
+		}
+		return rslt.Error[syntaxtree.Package](err)
 	}
 	result, residue := s[0].Return()
 	if len(residue) > 0 {

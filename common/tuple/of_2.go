@@ -37,3 +37,9 @@ func Of2ToX1[T1, T2 any](x Of2[T1, T2]) T1 {
 func Of2ToX2[T1, T2 any](x Of2[T1, T2]) T2 {
 	return x.X2()
 }
+
+func Of2MapX2[T1, T2, R any](f func(T2) R) func(x Of2[T1, T2]) Of2[T1, R] {
+	return func(x Of2[T1, T2]) Of2[T1, R] {
+		return New2(x.X1(), f(x.X2()))
+	}
+}

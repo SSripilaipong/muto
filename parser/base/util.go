@@ -7,9 +7,18 @@ import (
 )
 
 func StringToCharTokens(s string) []Character {
+	var lineNumber uint = 1
+	var columnNumber uint = 1
+
 	r := make([]Character, len(s))
 	for i, x := range []rune(s) {
-		r[i] = NewCharacter(x)
+		r[i] = NewCharacter(x, lineNumber, columnNumber)
+
+		columnNumber++
+		if x == '\n' {
+			lineNumber++
+			columnNumber = 1
+		}
 	}
 	return r
 }
