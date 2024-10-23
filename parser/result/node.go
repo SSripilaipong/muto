@@ -2,10 +2,13 @@ package result
 
 import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
+	"github.com/SSripilaipong/muto/common/rslt"
 	"github.com/SSripilaipong/muto/common/tuple"
 	psBase "github.com/SSripilaipong/muto/parser/base"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
+
+var RsNode = ps.Map(rslt.Value, Node())
 
 func Node() func([]psBase.Character) []tuple.Of2[stResult.Node, []psBase.Character] {
 	return ps.Or(

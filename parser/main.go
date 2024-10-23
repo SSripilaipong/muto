@@ -5,19 +5,19 @@ import (
 	"fmt"
 
 	"github.com/SSripilaipong/muto/common/fn"
-	"github.com/SSripilaipong/muto/common/parsing"
+	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/rslt"
 	"github.com/SSripilaipong/muto/common/tuple"
 	psBase "github.com/SSripilaipong/muto/parser/base"
-	"github.com/SSripilaipong/muto/syntaxtree"
+	st "github.com/SSripilaipong/muto/syntaxtree"
 )
 
-var ParseToken = parsing.Map(newPackage, file)
+var ParseToken = ps.RsMap(newPackage, file)
 
 var ParseString = fn.Compose(ParseToken, psBase.StringToCharTokens)
 
-func FilterResult(raw []tuple.Of2[syntaxtree.Package, []psBase.Character]) rslt.Of[syntaxtree.Package] {
-	s := parsing.FilterSuccess(raw)
+func FilterResult(raw []tuple.Of2[rslt.Of[st.Package], []psBase.Character]) rslt.Of[st.Package] {
+	s := ps.FilterResult(raw)
 	if len(s) == 0 {
 		var err error
 		if len(raw) == 0 {
@@ -26,15 +26,23 @@ func FilterResult(raw []tuple.Of2[syntaxtree.Package, []psBase.Character]) rslt.
 			c := raw[0].X2()[0]
 			err = fmt.Errorf("parsing error at line %d, column %d: unexpected token '%c'", c.LineNumber(), c.ColumnNumber(), c.Value())
 		}
-		return rslt.Error[syntaxtree.Package](err)
+		return rslt.Error[st.Package](err)
 	}
-	result, residue := s[0].Return()
-	if len(residue) > 0 {
-		return rslt.Error[syntaxtree.Package](fmt.Errorf("cannot parse at %v", residue[0]))
+	r, k := s[0].Return()
+	if len(k) > 0 {
+		err := errors.New("unknown parsing error")
+		if r.IsErr() {
+			err = r.Error()
+		}
+		c := k[0]
+		return rslt.Error[st.Package](fmt.Errorf("parsing error at line %d, column %d: %w", c.LineNumber(), c.ColumnNumber(), err))
 	}
-	return rslt.Value(result)
+	if r.IsErr() {
+		return rslt.Error[st.Package](fmt.Errorf("parsing error: %w", r.Error()))
+	}
+	return r
 }
 
-func newPackage(f syntaxtree.File) syntaxtree.Package {
-	return syntaxtree.NewPackage([]syntaxtree.File{f})
+func newPackage(f st.File) st.Package {
+	return st.NewPackage([]st.File{f})
 }

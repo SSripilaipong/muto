@@ -1,7 +1,11 @@
 package base
 
 import (
+	"fmt"
+	"strconv"
+
 	ps "github.com/SSripilaipong/muto/common/parsing"
+	"github.com/SSripilaipong/muto/common/rslt"
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/common/tuple"
 )
@@ -53,10 +57,24 @@ func char(g func(s rune) bool) Parser[Character] {
 	})
 }
 
+func rsChar(name string, g func(s rune) bool) RsParser[Character] {
+	return ps.RsFirst(
+		ps.Map(rslt.Value, char(g)),
+		ps.Result[Character](rslt.Error[Character](fmt.Errorf("expected %s", name))),
+	)
+}
+
 func chRune(x rune) Parser[Character] {
 	return char(func(s rune) bool {
 		return x == s
 	})
+}
+
+func rsChRune(x rune) RsParser[Character] {
+	return ps.RsFirst(
+		ps.Map(rslt.Value, chRune(x)),
+		ps.Result[Character](rslt.Error[Character](fmt.Errorf("expected %s", strconv.QuoteRune(x)))),
+	)
 }
 
 func tokensToString(xs []Character) string {

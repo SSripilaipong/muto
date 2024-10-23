@@ -2,6 +2,7 @@ package parser
 
 import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
+	"github.com/SSripilaipong/muto/common/rslt"
 	"github.com/SSripilaipong/muto/common/tuple"
 	psBase "github.com/SSripilaipong/muto/parser/base"
 	psPattern "github.com/SSripilaipong/muto/parser/pattern"
@@ -11,19 +12,20 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-var file = ps.Map(st.NewFile, psBase.IgnoreLeadingLineBreak(psBase.IgnoreTrailingLineBreak(statements)))
+var file = ps.RsMap(st.NewFile, psBase.IgnoreLeadingLineBreak(psBase.IgnoreTrailingLineBreak(rsStatements)))
 
-var statements = ps.Map(aggregateStatements, psBase.IgnoreSpaceBetween2(statement, ps.OptionalGreedyRepeat(psBase.WithLeadingLineBreak(statement))))
+var rsStatements = ps.RsMap(aggregateStatements, psBase.RsIgnoreSpaceBetween2(statement, ps.RsOptionalGreedyRepeat(psBase.RsWithLeadingLineBreak(statement))))
+
 var statement = ps.Or(
-	ps.Map(mergeActiveRule, psBase.SpaceSeparated2(psBase.AtSign, rule)),
-	ps.Map(st.RuleToStatement, rule),
+	ps.RsMap(mergeActiveRule, psBase.RsSpaceSeparated2(psBase.RsAtSign, rsRule)),
+	ps.RsMap(st.RuleToStatement, rsRule),
 )
 
 var mergeActiveRule = tuple.Fn2(func(_ psBase.Character, r st.Rule) st.Statement {
 	return st.NewActiveRule(r.Pattern(), r.Result())
 })
 
-var rule = ps.Map(mergeRule, psBase.SpaceSeparated3(psPattern.NamedRule(), psBase.EqualSign, psResult.Node()))
+var rsRule = ps.Map(rslt.Fmap(mergeRule), psBase.RsSpaceSeparated3(psPattern.RsNamedRule, psBase.RsEqualSign, psResult.RsNode))
 
 var mergeRule = tuple.Fn3(func(p stPattern.NamedRule, _ psBase.Character, r stResult.Node) st.Rule {
 	return st.NewRule(p, r)

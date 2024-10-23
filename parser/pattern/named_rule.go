@@ -2,11 +2,14 @@ package pattern
 
 import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
+	"github.com/SSripilaipong/muto/common/rslt"
 	"github.com/SSripilaipong/muto/common/tuple"
 	psBase "github.com/SSripilaipong/muto/parser/base"
 	st "github.com/SSripilaipong/muto/syntaxtree"
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
+
+var RsNamedRule = ps.Map(rslt.Value, NamedRule())
 
 func NamedRule() func(xs []psBase.Character) []tuple.Of2[stPattern.NamedRule, []psBase.Character] {
 	castWithParamPart := tuple.Fn2(func(class st.Class, params stPattern.ParamPart) stPattern.NamedRule {

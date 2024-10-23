@@ -1,15 +1,18 @@
 package base
 
 import (
+	"github.com/SSripilaipong/muto/common/rslt"
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/common/tuple"
 )
 
 type Parser[T any] func([]Character) []tuple.Of2[T, []Character]
 
-func (r Parser[T]) FunctionForm() func([]Character) []tuple.Of2[T, []Character] {
-	return r
-}
+func (r Parser[T]) FunctionForm() func([]Character) []tuple.Of2[T, []Character] { return r }
+
+type RsParser[T any] func([]Character) []tuple.Of2[rslt.Of[T], []Character]
+
+func (r RsParser[T]) FunctionForm() func([]Character) []tuple.Of2[rslt.Of[T], []Character] { return r }
 
 type ParserResult[T any] []tuple.Of2[T, []Character]
 

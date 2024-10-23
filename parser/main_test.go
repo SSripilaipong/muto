@@ -6,6 +6,8 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/SSripilaipong/muto/common/parsing"
+	"github.com/SSripilaipong/muto/common/rslt"
+	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/common/tuple"
 	tk "github.com/SSripilaipong/muto/parser/base"
 	st "github.com/SSripilaipong/muto/syntaxtree"
@@ -22,7 +24,7 @@ func TestParseString(t *testing.T) {
 				st.NewString(`"hello world"`),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterResult(ParseString(s)))
 	})
 
 	t.Run("should parse with pattern param", func(t *testing.T) {
@@ -53,66 +55,54 @@ func TestParseVariable(t *testing.T) {
 func TestParseAnonymousObjectPattern(t *testing.T) {
 	t.Run("should parse boolean as anonymous head", func(t *testing.T) {
 		s := `f (true 456) = 789`
-		expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
+		expected := expectedStatements([]st.Statement{
 			st.NewRule(
 				stPattern.NewNamedRule("f", stPattern.ParamsToFixedParamPart([]stPattern.Param{
 					stPattern.NewAnonymousRule(st.NewBoolean("true"), stPattern.ParamsToFixedParamPart([]stPattern.Param{st.NewNumber("456")})),
 				})),
 				st.NewNumber("789"),
 			),
-		})})
-		assert.Equal(t,
-			[]tuple.Of2[st.Package, []tk.Character]{tuple.New2(expectedParsedTree, []tk.Character{})},
-			parsing.FilterSuccess(ParseString(s)),
-		)
+		})
+		assert.Equal(t, expected, parsing.FilterResult(ParseString(s)))
 	})
 
 	t.Run("should parse string as anonymous head", func(t *testing.T) {
 		s := `f ("a" 456) = 789`
-		expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
+		expected := expectedStatements([]st.Statement{
 			st.NewRule(
 				stPattern.NewNamedRule("f", stPattern.ParamsToFixedParamPart([]stPattern.Param{
 					stPattern.NewAnonymousRule(st.NewString(`"a"`), stPattern.ParamsToFixedParamPart([]stPattern.Param{st.NewNumber("456")})),
 				})),
 				st.NewNumber("789"),
 			),
-		})})
-		assert.Equal(t,
-			[]tuple.Of2[st.Package, []tk.Character]{tuple.New2(expectedParsedTree, []tk.Character{})},
-			parsing.FilterSuccess(ParseString(s)),
-		)
+		})
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 
 	t.Run("should parse number as anonymous head", func(t *testing.T) {
 		s := `f (123 456) = 789`
-		expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
+		expected := expectedStatements([]st.Statement{
 			st.NewRule(
 				stPattern.NewNamedRule("f", stPattern.ParamsToFixedParamPart([]stPattern.Param{
 					stPattern.NewAnonymousRule(st.NewNumber("123"), stPattern.ParamsToFixedParamPart([]stPattern.Param{st.NewNumber("456")})),
 				})),
 				st.NewNumber("789"),
 			),
-		})})
-		assert.Equal(t,
-			[]tuple.Of2[st.Package, []tk.Character]{tuple.New2(expectedParsedTree, []tk.Character{})},
-			parsing.FilterSuccess(ParseString(s)),
-		)
+		})
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 
 	t.Run("should parse number as anonymous head without children", func(t *testing.T) {
 		s := `f (123) = 789`
-		expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
+		expected := expectedStatements([]st.Statement{
 			st.NewRule(
 				stPattern.NewNamedRule("f", stPattern.ParamsToFixedParamPart([]stPattern.Param{
 					stPattern.NewAnonymousRule(st.NewNumber("123"), stPattern.ParamsToFixedParamPart([]stPattern.Param{})),
 				})),
 				st.NewNumber("789"),
 			),
-		})})
-		assert.Equal(t,
-			[]tuple.Of2[st.Package, []tk.Character]{tuple.New2(expectedParsedTree, []tk.Character{})},
-			parsing.FilterSuccess(ParseString(s)),
-		)
+		})
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 }
 
@@ -125,7 +115,7 @@ func TestParseObject(t *testing.T) {
 				stResult.NewObject(st.NewClass("a"), stResult.FixedParamPart([]stResult.Param{st.NewClass("b")})),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
+		assert.Equal(t, expected, parsing.FilterResult(ParseString(s)))
 	})
 
 	t.Run("should parse nested object", func(t *testing.T) {
@@ -145,7 +135,7 @@ func TestParseObject(t *testing.T) {
 	})
 	t.Run("should parse object", func(t *testing.T) {
 		s := `main A = (+ 1 2) 3 4`
-		expectedParsedTree := st.NewPackage([]st.File{st.NewFile([]st.Statement{
+		expected := expectedStatements([]st.Statement{
 			st.NewRule(
 				stPattern.NewNamedRule("main", stPattern.FixedParamPart([]stPattern.Param{st.NewVariable("A")})),
 				stResult.NewObject(
@@ -153,11 +143,8 @@ func TestParseObject(t *testing.T) {
 					stResult.ParamsToFixedParamPart([]stResult.Param{st.NewNumber("3"), st.NewNumber("4")}),
 				),
 			),
-		})})
-		assert.Equal(t,
-			[]tuple.Of2[st.Package, []tk.Character]{tuple.New2(expectedParsedTree, []tk.Character{})},
-			parsing.FilterSuccess(ParseString(s)),
-		)
+		})
+		assert.Equal(t, expected, parsing.FilterSuccess(ParseString(s)))
 	})
 
 	t.Run("should parse nested anonymous object", func(t *testing.T) {
@@ -354,7 +341,7 @@ func TestNestedResult(t *testing.T) {
 	})
 }
 
-func expectedStatements(sts []st.Statement) []tuple.Of2[st.Package, []tk.Character] {
+func expectedStatements(sts []st.Statement) []tuple.Of2[rslt.Of[st.Package], []tk.Character] {
 	pkg := st.NewPackage([]st.File{st.NewFile(sts)})
-	return []tuple.Of2[st.Package, []tk.Character]{tuple.New2(pkg, []tk.Character{})}
+	return slc.Pure(tuple.New2(rslt.Value(pkg), []tk.Character{}))
 }

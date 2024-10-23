@@ -2,6 +2,7 @@ package base
 
 import (
 	"fmt"
+	"strconv"
 )
 
 type Character struct {
@@ -31,7 +32,7 @@ func (t Character) Value() rune {
 }
 
 func (t Character) String() string {
-	return fmt.Sprintf("character(%#v)", t.value)
+	return fmt.Sprintf("Char(%s)", strconv.QuoteRune(t.value))
 }
 
 func (t Character) ReplaceLineNumber(i uint) Character {

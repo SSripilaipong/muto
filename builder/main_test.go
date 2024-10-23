@@ -10,7 +10,7 @@ import (
 
 func TestBuildFromString(t *testing.T) {
 	t.Run("should resolve to string", func(t *testing.T) {
-		program := BuildFromString(`main = "hello world"`).Value()
+		program := buildOrPanic(`main = "hello world"`)
 		assert.Equal(t, base.NewString("hello world"), execute(program))
 	})
 
@@ -202,4 +202,12 @@ func mutateOnce(program Program) base.Node {
 
 func execute(program Program) base.Node {
 	return program.MutateUntilTerminated(program.InitialObject())
+}
+
+func buildOrPanic(src string) Program {
+	program := BuildFromString(src)
+	if program.IsErr() {
+		panic(program.Error())
+	}
+	return program.Value()
 }

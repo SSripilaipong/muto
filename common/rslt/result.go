@@ -1,5 +1,7 @@
 package rslt
 
+import "fmt"
+
 type Of[T any] struct {
 	value T
 	err   error
@@ -31,6 +33,13 @@ func (r Of[T]) IsErr() bool {
 
 func (r Of[T]) Error() error {
 	return r.err
+}
+
+func (r Of[T]) String() string {
+	if r.isErr {
+		return fmt.Sprintf("Error(%s)", fmt.Sprint(r.err))
+	}
+	return fmt.Sprintf("Value(%s)", fmt.Sprint(r.value))
 }
 
 func Value[T any](x T) Of[T] {
