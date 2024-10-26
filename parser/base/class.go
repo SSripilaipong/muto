@@ -16,7 +16,7 @@ var Class = ps.Map(st.NewClass, ps.Or(
 var ClassRule = ps.Filter(validClassRule, Class)
 
 func validClassRule(class st.Class) bool {
-	return !slices.Contains([]string{"try"}, class.Name())
+	return !slices.Contains([]string{"try", "do"}, class.Name())
 }
 
 var ClassResultNode = ps.Map(classToResultNode, Class)
