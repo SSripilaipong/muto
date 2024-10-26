@@ -11,7 +11,7 @@ import (
 func structure(xs []psBase.Character) []tuple.Of2[stResult.Structure, []psBase.Character] {
 	structureValue := ps.Or(
 		nonNestedNode,
-		ps.Map(castObjectNode, psBase.InParentheses(object)),
+		ps.Map(castObjectNode, psBase.InParenthesesWhiteSpaceAllowed(objectMultilines)),
 		ps.Map(stResult.ToNode, structure),
 	)
 	record := ps.Map(mergeStructureRecord, psBase.IgnoreSpaceBetween3(structureKey, psBase.Colon, structureValue))

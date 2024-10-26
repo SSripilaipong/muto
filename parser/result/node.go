@@ -14,6 +14,7 @@ func Node() func([]psBase.Character) []tuple.Of2[stResult.Node, []psBase.Charact
 	return ps.Or(
 		nonNestedNode,
 		ps.Map(castObjectNode, ps.Filter(objectWithChildren, object)),
+		ps.Map(castObjectNode, psBase.InParenthesesWhiteSpaceAllowed(objectMultilines)),
 		ps.Map(stResult.ToNode, structure),
 	)
 }

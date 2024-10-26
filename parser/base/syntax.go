@@ -44,6 +44,13 @@ func InParentheses[R any](x Parser[R]) Parser[R] {
 	return ps.Map(withoutParenthesis, ps.Sequence3(OpenParenthesis, x, CloseParenthesis))
 }
 
+func InParenthesesWhiteSpaceAllowed[R any](x Parser[R]) Parser[R] {
+	withoutParenthesis := func(x tuple.Of3[Character, R, Character]) R {
+		return x.X2()
+	}
+	return ps.Map(withoutParenthesis, IgnoreWhiteSpaceBetween3(OpenParenthesis, x, CloseParenthesis))
+}
+
 func InBracesWhiteSpacesAllowed[R any](x Parser[R]) Parser[R] {
 	withoutBrace := func(x tuple.Of3[Character, R, Character]) R {
 		return x.X2()
@@ -136,15 +143,29 @@ func WhiteSpaceSeparated3[R1, R2, R3 any](p1 Parser[R1], p2 Parser[R2], p3 Parse
 }
 
 func GreedyRepeatAtLeastOnceSpaceSeparated[R any](p Parser[R]) Parser[[]R] {
-	merge := tuple.Fn2(func(x R, xs []tuple.Of2[Character, R]) []R {
-		return append([]R{x}, slc.Map(tuple.Of2ToX2[Character, R])(xs)...)
+	merge := tuple.Fn2(func(x R, xs []tuple.Of2[[]Character, R]) []R {
+		return append([]R{x}, slc.Map(tuple.Of2ToX2[[]Character, R])(xs)...)
 	})
-	return ps.Map(merge, ps.Sequence2(p, ps.OptionalGreedyRepeat(ps.Sequence2(Space, p))))
+	return ps.Map(merge, ps.Sequence2(p, ps.OptionalGreedyRepeat(ps.Sequence2(ps.GreedyRepeatAtLeastOnce(Space), p))))
+}
+
+func GreedyRepeatAtLeastOnceWhiteSpaceSeparated[R any](p Parser[R]) Parser[[]R] {
+	merge := tuple.Fn2(func(x R, xs []tuple.Of2[[]Character, R]) []R {
+		return append([]R{x}, slc.Map(tuple.Of2ToX2[[]Character, R])(xs)...)
+	})
+	return ps.Map(merge, ps.Sequence2(p, ps.OptionalGreedyRepeat(ps.Sequence2(ps.GreedyRepeatAtLeastOnce(WhiteSpace), p))))
 }
 
 func OptionalGreedyRepeatSpaceSeparated[R any](p Parser[R]) Parser[[]R] {
 	return ps.First(
 		GreedyRepeatAtLeastOnceSpaceSeparated(p),
+		func(xs []Character) []tuple.Of2[[]R, []Character] { return SingleResult([]R{}, xs) },
+	)
+}
+
+func OptionalGreedyRepeatWhiteSpaceSeparated[R any](p Parser[R]) Parser[[]R] {
+	return ps.First(
+		GreedyRepeatAtLeastOnceWhiteSpaceSeparated(p),
 		func(xs []Character) []tuple.Of2[[]R, []Character] { return SingleResult([]R{}, xs) },
 	)
 }

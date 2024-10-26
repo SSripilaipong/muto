@@ -11,11 +11,15 @@ func objectParamPart(xs []psBase.Character) []tuple.Of2[stResult.ParamPart, []ps
 	return ps.Map(stResult.ParamsToParamPart, psBase.OptionalGreedyRepeatSpaceSeparated(objectParam))(xs)
 }
 
+func objectParamPartMultilines(xs []psBase.Character) []tuple.Of2[stResult.ParamPart, []psBase.Character] {
+	return ps.Map(stResult.ParamsToParamPart, psBase.OptionalGreedyRepeatWhiteSpaceSeparated(objectParam))(xs)
+}
+
 func objectParam(xs []psBase.Character) []tuple.Of2[stResult.Param, []psBase.Character] {
 	return ps.Or(
 		ps.Map(stResult.ToParam, nonNestedNode),
 		psBase.VariadicVarResultNode,
-		ps.Map(castObjectParam, psBase.InParentheses(object)),
+		ps.Map(castObjectParam, psBase.InParenthesesWhiteSpaceAllowed(objectMultilines)),
 		ps.Map(stResult.ToParam, structure),
 	)(xs)
 }
