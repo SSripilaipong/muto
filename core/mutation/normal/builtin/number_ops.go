@@ -8,43 +8,43 @@ import (
 	"github.com/SSripilaipong/muto/core/mutation/normal/object"
 )
 
-var addMutator = object.NewMutator("+", slc.Pure(numberBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
+var addMutator = object.NewRuleBasedMutator("+", slc.Pure(numberBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewNumber(datatype.AddNumber(x.Value(), y.Value())))
 })))
 
-var subtractMutator = object.NewMutator("-", slc.Pure(numberBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
+var subtractMutator = object.NewRuleBasedMutator("-", slc.Pure(numberBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewNumber(datatype.SubtractNumber(x.Value(), y.Value())))
 })))
 
-var multiplyMutator = object.NewMutator("*", slc.Pure(numberBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
+var multiplyMutator = object.NewRuleBasedMutator("*", slc.Pure(numberBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewNumber(datatype.MultiplyNumber(x.Value(), y.Value())))
 })))
 
-var divideMutator = object.NewMutator("/", slc.Pure(numberBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
+var divideMutator = object.NewRuleBasedMutator("/", slc.Pure(numberBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
 	return optional.Map(base.NewNumber)(datatype.DivideNumber(x.Value(), y.Value()))
 })))
 
-var modIntegerMutator = object.NewMutator("mod", slc.Pure(integerBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
+var modIntegerMutator = object.NewRuleBasedMutator("mod", slc.Pure(integerBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
 	return optional.Map(base.NewNumber)(datatype.ModInteger(x.Value(), y.Value()))
 })))
 
-var divIntegerMutator = object.NewMutator("div", slc.Pure(integerBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
+var divIntegerMutator = object.NewRuleBasedMutator("div", slc.Pure(integerBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
 	return optional.Map(base.NewNumber)(datatype.DivInteger(x.Value(), y.Value()))
 })))
 
-var numberGreaterThanMutator = object.NewMutator(">", slc.Pure(numberBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
+var numberGreaterThanMutator = object.NewRuleBasedMutator(">", slc.Pure(numberBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewBoolean(datatype.GreaterThanNumber(x.Value(), y.Value())))
 })))
 
-var numberGreaterThanOrEqualMutator = object.NewMutator(">=", slc.Pure(numberBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
+var numberGreaterThanOrEqualMutator = object.NewRuleBasedMutator(">=", slc.Pure(numberBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewBoolean(datatype.GreaterThanOrEqualNumber(x.Value(), y.Value())))
 })))
 
-var numberLessThanMutator = object.NewMutator("<", slc.Pure(numberBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
+var numberLessThanMutator = object.NewRuleBasedMutator("<", slc.Pure(numberBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewBoolean(datatype.LessThanNumber(x.Value(), y.Value())))
 })))
 
-var numberLessThanOrEqualMutator = object.NewMutator("<=", slc.Pure(numberBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
+var numberLessThanOrEqualMutator = object.NewRuleBasedMutator("<=", slc.Pure(numberBinaryOp(func(x, y base.Number) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewBoolean(datatype.LessThanOrEqualNumber(x.Value(), y.Value())))
 })))
 

@@ -24,7 +24,7 @@ func (obj Object) Mutate(mutation Mutation) optional.Of[Node] {
 	if ok {
 		return optional.New(r, ok)
 	}
-	return obj.tryBubbleUp()
+	return obj.BubbleUp()
 }
 
 func (obj Object) MutateAsHead(children []Node, mutation Mutation) optional.Of[Node] {
@@ -73,10 +73,18 @@ func (obj Object) MutoString() string {
 	return obj.String()
 }
 
-func (obj Object) tryBubbleUp() optional.Of[Node] {
-	if len(obj.Children()) == 0 {
+func (obj Object) BubbleUp() optional.Of[Node] {
+	children := obj.Children()
+
+	if len(children) == 0 {
 		return optional.Value(obj.Head())
 	}
+
+	head := obj.Head()
+	if IsObjectNode(head) {
+		return optional.Value[Node](UnsafeNodeToObject(head).AppendChildren(children))
+	}
+
 	return optional.Empty[Node]()
 }
 

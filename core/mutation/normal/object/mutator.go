@@ -5,46 +5,26 @@ import (
 	"github.com/SSripilaipong/muto/core/base"
 )
 
-type Mutator struct {
-	name          string
-	mutationRules []func(t base.Object) optional.Of[base.Node]
+type Mutator interface {
+	Mutate(name string, obj base.Object) optional.Of[base.Node]
+	SetGlobalMutator(_ Mutator)
+	Name() string
 }
 
-func NewMutator(name string, mutationRules []func(t base.Object) optional.Of[base.Node]) Mutator {
-	return Mutator{
-		name:          name,
-		mutationRules: mutationRules,
-	}
+type MutatorFunc func(name string, obj base.Object) optional.Of[base.Node]
+
+func (m MutatorFunc) Mutate(name string, obj base.Object) optional.Of[base.Node] {
+	return m(name, obj)
 }
 
-func MergeMutators(mutators ...Mutator) Mutator {
-	name := mutators[0].name
-	var rules []func(t base.Object) optional.Of[base.Node]
-	for _, mutator := range mutators {
-		if mutator.Name() != name {
-			panic("mutator name mismatched")
-		}
-		rules = append(rules, mutator.mutationRules...)
-	}
-	return NewMutator(name, rules)
-}
+func (m MutatorFunc) SetGlobalMutator(_ Mutator) {}
 
-func (t Mutator) Mutate(name string, obj base.Object) optional.Of[base.Node] {
-	if name != t.name {
-		return optional.Empty[base.Node]()
-	}
-	for _, mutate := range t.mutationRules {
-		if result := mutate(obj); result.IsNotEmpty() {
-			return result
-		}
-	}
-	return optional.Empty[base.Node]()
-}
+func (m MutatorFunc) Name() string { return "" }
 
-func (t Mutator) Name() string {
-	return t.name
-}
+var _ Mutator = MutatorFunc(nil)
 
 func MutatorName(t Mutator) string {
 	return t.Name()
 }
+
+func ToMutator[T Mutator](x T) Mutator { return x }

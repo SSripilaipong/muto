@@ -9,9 +9,12 @@ import (
 
 var NewMutatorsFromStatements = fn.Compose(ReduceMutatorFromRules, mapFilterRuleFromStatement)
 
-var ReduceMutatorFromRules = slc.FoldGroup(mergeMutatorWithRule, st.RuleToPatternName)(NewMutator("", nil))
+var ReduceMutatorFromRules = fn.Compose(
+	slc.Map(ToMutator[RuleBasedMutator]),
+	slc.FoldGroup(mergeRuleBasedMutatorWithRule, st.RuleToPatternName)(NewRuleBasedMutator("", nil)),
+)
 
-func mergeMutatorWithRule(t Mutator, rule st.Rule) Mutator {
+func mergeRuleBasedMutatorWithRule(t RuleBasedMutator, rule st.Rule) RuleBasedMutator {
 	if t.name == "" {
 		t.name = rule.PatternName()
 	}

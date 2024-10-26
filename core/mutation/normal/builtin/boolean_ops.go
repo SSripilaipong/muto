@@ -7,15 +7,15 @@ import (
 	"github.com/SSripilaipong/muto/core/mutation/normal/object"
 )
 
-var andMutator = object.NewMutator("&", slc.Pure(booleanBinaryOp(func(x, y base.Boolean) optional.Of[base.Node] {
+var andMutator = object.NewRuleBasedMutator("&", slc.Pure(booleanBinaryOp(func(x, y base.Boolean) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewBoolean(x.Value() && y.Value()))
 })))
 
-var orMutator = object.NewMutator("|", slc.Pure(booleanBinaryOp(func(x, y base.Boolean) optional.Of[base.Node] {
+var orMutator = object.NewRuleBasedMutator("|", slc.Pure(booleanBinaryOp(func(x, y base.Boolean) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewBoolean(x.Value() || y.Value()))
 })))
 
-var notMutator = object.NewMutator("!", slc.Pure(booleanUnaryOp(func(x base.Boolean) optional.Of[base.Node] {
+var notMutator = object.NewRuleBasedMutator("!", slc.Pure(booleanUnaryOp(func(x base.Boolean) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewBoolean(!x.Value()))
 })))
 

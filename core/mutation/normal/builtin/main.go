@@ -29,5 +29,6 @@ func NewMutators() []object.Mutator {
 		andMutator,
 		orMutator,
 		notMutator,
+		newTryMutator(),
 	}
 }

@@ -7,14 +7,14 @@ import (
 	"github.com/SSripilaipong/muto/core/mutation/normal/object"
 )
 
-var isNumberMutator = object.NewMutator("number?", slc.Pure(unaryOp(func(x base.Node) optional.Of[base.Node] {
+var isNumberMutator = object.NewRuleBasedMutator("number?", slc.Pure(unaryOp(func(x base.Node) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewBoolean(base.IsNumberNode(x)))
 })))
 
-var isStringMutator = object.NewMutator("string?", slc.Pure(unaryOp(func(x base.Node) optional.Of[base.Node] {
+var isStringMutator = object.NewRuleBasedMutator("string?", slc.Pure(unaryOp(func(x base.Node) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewBoolean(base.IsStringNode(x)))
 })))
 
-var isBooleanMutator = object.NewMutator("boolean?", slc.Pure(unaryOp(func(x base.Node) optional.Of[base.Node] {
+var isBooleanMutator = object.NewRuleBasedMutator("boolean?", slc.Pure(unaryOp(func(x base.Node) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewBoolean(base.IsBooleanNode(x)))
 })))

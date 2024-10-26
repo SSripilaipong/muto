@@ -14,6 +14,9 @@ func newSelectiveMutator(ms []object.Mutator) func(string, base.Object) optional
 	mutator := slc.ToMapValue(object.MutatorName)(ms)
 
 	return func(name string, obj base.Object) optional.Of[base.Node] {
-		return mutator[name].Mutate(name, obj)
+		if m, ok := mutator[name]; ok {
+			return m.Mutate(name, obj)
+		}
+		return optional.Empty[base.Node]()
 	}
 }

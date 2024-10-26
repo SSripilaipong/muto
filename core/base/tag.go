@@ -10,6 +10,7 @@ type Tag struct {
 	name string
 }
 
+// NewTag expects name without leading dot
 func NewTag(name string) Node {
 	return Tag{name: name}
 }

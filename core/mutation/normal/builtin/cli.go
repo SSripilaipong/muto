@@ -8,8 +8,8 @@ import (
 	"github.com/SSripilaipong/muto/core/mutation/normal/object"
 )
 
-func cliPrintMutator(print func(string)) object.Mutator {
-	return object.NewMutator("print!", slc.Pure(unaryOp(func(x base.Node) optional.Of[base.Node] {
+func cliPrintMutator(print func(string)) object.RuleBasedMutator {
+	return object.NewRuleBasedMutator("print!", slc.Pure(unaryOp(func(x base.Node) optional.Of[base.Node] {
 		if base.IsStringNode(x) {
 			print(base.UnsafeNodeToString(x).Value())
 			return optional.Value[base.Node](base.NewClass("$"))
@@ -18,8 +18,8 @@ func cliPrintMutator(print func(string)) object.Mutator {
 	})))
 }
 
-func cliInputMutator(read func() rslt.Of[string]) object.Mutator {
-	return object.NewMutator("input!", slc.Pure(unaryOp(func(x base.Node) optional.Of[base.Node] {
+func cliInputMutator(read func() rslt.Of[string]) object.RuleBasedMutator {
+	return object.NewRuleBasedMutator("input!", slc.Pure(unaryOp(func(x base.Node) optional.Of[base.Node] {
 		if base.IsClassNode(x) && base.UnsafeNodeToClass(x).Name() == "$" {
 			s, err := read().Return()
 			if err != nil {

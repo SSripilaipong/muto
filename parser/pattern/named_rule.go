@@ -20,8 +20,8 @@ func NamedRule() func(xs []psBase.Character) []tuple.Of2[stPattern.NamedRule, []
 	}
 
 	return ps.First(
-		ps.Map(castWithParamPart, psBase.SpaceSeparated2(psBase.Class, rulePatternParamPart())),
-		ps.Map(castClass, psBase.Class),
+		ps.Map(castWithParamPart, psBase.SpaceSeparated2(psBase.ClassRule, rulePatternParamPart())),
+		ps.Map(castClass, psBase.ClassRule),
 	)
 }
 
@@ -65,7 +65,7 @@ func fixedRuleParamPattern() func(xs []psBase.Character) []tuple.Of2[stPattern.P
 		psBase.StringPatternParam,
 		psBase.NumberPatternParam,
 		psBase.TagPatternParam,
-		ps.Map(classToPatternParam, psBase.Class),
+		ps.Map(classToPatternParam, psBase.ClassRule),
 		psBase.InParentheses(nestedObjectRuleParamPattern),
 	)
 }

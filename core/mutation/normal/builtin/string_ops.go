@@ -7,27 +7,27 @@ import (
 	"github.com/SSripilaipong/muto/core/mutation/normal/object"
 )
 
-var concatMutator = object.NewMutator("++", slc.Pure(stringBinaryOp(func(x, y string) optional.Of[base.Node] {
+var concatMutator = object.NewRuleBasedMutator("++", slc.Pure(stringBinaryOp(func(x, y string) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewString(x + y))
 })))
 
-var stringGreaterThanMutator = object.NewMutator(">", slc.Pure(stringBinaryOp(func(x, y string) optional.Of[base.Node] {
+var stringGreaterThanMutator = object.NewRuleBasedMutator(">", slc.Pure(stringBinaryOp(func(x, y string) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewBoolean(x > y))
 })))
 
-var stringGreaterThanOrEqualMutator = object.NewMutator(">=", slc.Pure(stringBinaryOp(func(x, y string) optional.Of[base.Node] {
+var stringGreaterThanOrEqualMutator = object.NewRuleBasedMutator(">=", slc.Pure(stringBinaryOp(func(x, y string) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewBoolean(x >= y))
 })))
 
-var stringLessThanMutator = object.NewMutator("<", slc.Pure(stringBinaryOp(func(x, y string) optional.Of[base.Node] {
+var stringLessThanMutator = object.NewRuleBasedMutator("<", slc.Pure(stringBinaryOp(func(x, y string) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewBoolean(x < y))
 })))
 
-var stringLessThanOrEqualMutator = object.NewMutator("<=", slc.Pure(stringBinaryOp(func(x, y string) optional.Of[base.Node] {
+var stringLessThanOrEqualMutator = object.NewRuleBasedMutator("<=", slc.Pure(stringBinaryOp(func(x, y string) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewBoolean(x <= y))
 })))
 
-var stringMutator = object.NewMutator("string", slc.Pure(unaryOp(func(x base.Node) optional.Of[base.Node] {
+var stringMutator = object.NewRuleBasedMutator("string", slc.Pure(unaryOp(func(x base.Node) optional.Of[base.Node] {
 	s, isStringer := x.(base.MutoStringer)
 	if !isStringer {
 		return optional.Empty[base.Node]()
