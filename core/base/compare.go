@@ -14,6 +14,8 @@ func NodeEqual(x, y Node) bool {
 		return numberEqual(UnsafeNodeToNumber(x), y)
 	case IsStringNode(x):
 		return stringEqual(UnsafeNodeToString(x), y)
+	case IsTagNode(x):
+		return tagEqual(UnsafeNodeToTag(x), y)
 	case IsClassNode(x):
 		return classEqual(UnsafeNodeToClass(x), y)
 	case IsObjectNode(x):
@@ -22,6 +24,10 @@ func NodeEqual(x, y Node) bool {
 		return booleanEqual(UnsafeNodeToBoolean(x), y)
 	}
 	return false
+}
+
+func tagEqual(x Tag, y Node) bool {
+	return IsTagNode(y) && x.Name() == UnsafeNodeToTag(y).Name()
 }
 
 func booleanEqual(x Boolean, y Node) bool {
