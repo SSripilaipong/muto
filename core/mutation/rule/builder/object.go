@@ -5,15 +5,15 @@ import (
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/core/base"
-	"github.com/SSripilaipong/muto/core/mutation/rule/data"
+	"github.com/SSripilaipong/muto/core/pattern/parameter"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-func buildObject(obj stResult.Object) func(*data.Mutation) optional.Of[base.Node] {
+func buildObject(obj stResult.Object) func(*parameter.Parameter) optional.Of[base.Node] {
 	buildHead := New(obj.Head())
 	buildChildren := buildChildren(obj.ParamPart())
 
-	return func(mapping *data.Mutation) optional.Of[base.Node] {
+	return func(mapping *parameter.Parameter) optional.Of[base.Node] {
 		children, ok := buildChildren(mapping).Return()
 		if !ok {
 			return optional.Empty[base.Node]()
@@ -27,7 +27,7 @@ func buildObject(obj stResult.Object) func(*data.Mutation) optional.Of[base.Node
 	}
 }
 
-func buildObjectParam(p stResult.Param) func(mapping *data.Mutation) optional.Of[[]base.Node] {
+func buildObjectParam(p stResult.Param) func(mapping *parameter.Parameter) optional.Of[[]base.Node] {
 	switch {
 	case stResult.IsParamTypeSingle(p):
 		return buildObjectParamTypeSingle(p)
@@ -37,16 +37,16 @@ func buildObjectParam(p stResult.Param) func(mapping *data.Mutation) optional.Of
 	panic("not implemented")
 }
 
-func buildObjectParamTypeSingle(p stResult.Param) func(mapping *data.Mutation) optional.Of[[]base.Node] {
+func buildObjectParamTypeSingle(p stResult.Param) func(mapping *parameter.Parameter) optional.Of[[]base.Node] {
 	return fn.Compose(
 		optional.Map(slc.Pure[base.Node]), New(stResult.UnsafeParamToNode(p)),
 	)
 }
 
-func buildObjectParamTypeVariadic(p stResult.Param) func(mapping *data.Mutation) optional.Of[[]base.Node] {
+func buildObjectParamTypeVariadic(p stResult.Param) func(mapping *parameter.Parameter) optional.Of[[]base.Node] {
 	name := stResult.UnsafeParamToVariadicVariable(p).Name()
 
-	return func(mapping *data.Mutation) optional.Of[[]base.Node] {
+	return func(mapping *parameter.Parameter) optional.Of[[]base.Node] {
 		return mapping.VariadicVarValue(name)
 	}
 }

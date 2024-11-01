@@ -44,6 +44,10 @@ func (obj Object) Children() []Node {
 	return obj.children
 }
 
+func (obj Object) Explode() []Node {
+	return append([]Node{obj.Head()}, obj.Children()...)
+}
+
 func (obj Object) Head() Node {
 	return obj.class
 }
@@ -106,6 +110,10 @@ func objectChildrenToString(obj Object) string {
 
 func ObjectToChildren(obj Object) []Node {
 	return obj.Children()
+}
+
+func ExplodeObject(obj Object) []Node {
+	return obj.Explode()
 }
 
 func UnsafeNodeToObject(x Node) Object {

@@ -76,3 +76,14 @@ func TestTag(t *testing.T) {
 		assert.True(t, New(pattern)(obj).IsNotEmpty())
 	})
 }
+
+func TestNestedObject(t *testing.T) {
+	t.Run("should not match leaf object with simple node", func(t *testing.T) {
+		pattern := stPattern.NewNamedRule("f", stPattern.ParamsToFixedParamPart([]stPattern.Param{
+			stPattern.NewNamedRule("g", stPattern.ParamsToFixedParamPart([]stPattern.Param{})),
+		}))
+		obj := base.NewNamedObject("f", []base.Node{base.NewClass("g")})
+
+		assert.True(t, New(pattern)(obj).IsEmpty())
+	})
+}

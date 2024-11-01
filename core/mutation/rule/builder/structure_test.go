@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/SSripilaipong/muto/core/base"
-	"github.com/SSripilaipong/muto/core/mutation/rule/data"
+	"github.com/SSripilaipong/muto/core/pattern/parameter"
 	st "github.com/SSripilaipong/muto/syntaxtree"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
@@ -14,7 +14,7 @@ import (
 func TestBuildStructure(t *testing.T) {
 	t.Run("should build empty structure", func(t *testing.T) {
 		tree := stResult.NewStructure([]stResult.StructureRecord{})
-		mutationData := data.NewMutation()
+		mutationData := parameter.New()
 		expectedObject := base.NewStructureFromRecords(nil)
 		assert.Equal(t, expectedObject, buildStructure(tree)(mutationData).Value())
 	})
@@ -23,7 +23,7 @@ func TestBuildStructure(t *testing.T) {
 		tree := stResult.NewStructure([]stResult.StructureRecord{
 			stResult.NewStructureRecord(st.NewString(`"abc"`), st.NewString(`"def"`)),
 		})
-		mutationData := data.NewMutation()
+		mutationData := parameter.New()
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
 			base.NewStructureRecord(base.NewString("abc"), base.NewString("def")),
 		})
@@ -34,7 +34,7 @@ func TestBuildStructure(t *testing.T) {
 		tree := stResult.NewStructure([]stResult.StructureRecord{
 			stResult.NewStructureRecord(st.NewClass("f"), st.NewString(`"def"`)),
 		})
-		mutationData := data.NewMutation()
+		mutationData := parameter.New()
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
 			base.NewStructureRecord(base.NewClass("f"), base.NewString("def")),
 		})
@@ -45,8 +45,8 @@ func TestBuildStructure(t *testing.T) {
 		tree := stResult.NewStructure([]stResult.StructureRecord{
 			stResult.NewStructureRecord(st.NewBoolean("true"), st.NewVariable("A")),
 		})
-		mutationData := data.NewMutation().
-			WithVariableMappings(data.NewVariableMapping("A", base.NewObject(base.NewClass("f"), []base.Node{base.NewNumberFromString("123")}))).
+		mutationData := parameter.New().
+			WithVariableMappings(parameter.NewVariableMapping("A", base.NewObject(base.NewClass("f"), []base.Node{base.NewNumberFromString("123")}))).
 			Value()
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
 			base.NewStructureRecord(base.NewBoolean(true), base.NewObject(base.NewClass("f"), []base.Node{base.NewNumberFromString("123")})),
@@ -64,9 +64,9 @@ func TestBuildStructure(t *testing.T) {
 				),
 			),
 		})
-		mutationData := data.NewMutation().
-			WithVariableMappings(data.NewVariableMapping("A", base.NewClass("f"))).Value().
-			WithVariableMappings(data.NewVariableMapping("B", base.NewTag("t"))).Value()
+		mutationData := parameter.New().
+			WithVariableMappings(parameter.NewVariableMapping("A", base.NewClass("f"))).Value().
+			WithVariableMappings(parameter.NewVariableMapping("B", base.NewTag("t"))).Value()
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
 			base.NewStructureRecord(
 				base.NewTag("e"),

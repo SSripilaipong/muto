@@ -4,21 +4,21 @@ import (
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
 	"github.com/SSripilaipong/muto/core/mutation/rule/builder"
-	"github.com/SSripilaipong/muto/core/mutation/rule/data"
-	"github.com/SSripilaipong/muto/core/mutation/rule/extractor"
+	ruleExtractor "github.com/SSripilaipong/muto/core/mutation/rule/extractor"
 	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
+	"github.com/SSripilaipong/muto/core/pattern/parameter"
 	st "github.com/SSripilaipong/muto/syntaxtree"
 )
 
 func New(rule st.Rule) func(t base.Object) optional.Of[base.Node] {
 	return mutator.New(
 		mutator.BuilderFunc(withRemainingChildren(builder.New(rule.Result()))),
-		mutator.ExtractorFunc(extractor.New(rule.Pattern())),
+		mutator.ExtractorFunc(ruleExtractor.New(rule.Pattern())),
 	)
 }
 
-func withRemainingChildren(f func(*data.Mutation) optional.Of[base.Node]) func(*data.Mutation) optional.Of[base.Node] {
-	return func(mutation *data.Mutation) optional.Of[base.Node] {
+func withRemainingChildren(f func(*parameter.Parameter) optional.Of[base.Node]) func(*parameter.Parameter) optional.Of[base.Node] {
+	return func(mutation *parameter.Parameter) optional.Of[base.Node] {
 		node, ok := f(mutation).Return()
 		if !ok {
 			return optional.Empty[base.Node]()

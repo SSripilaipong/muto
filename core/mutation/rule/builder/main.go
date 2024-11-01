@@ -3,12 +3,12 @@ package builder
 import (
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
-	"github.com/SSripilaipong/muto/core/mutation/rule/data"
+	"github.com/SSripilaipong/muto/core/pattern/parameter"
 	st "github.com/SSripilaipong/muto/syntaxtree"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-func New(r stResult.Node) func(*data.Mutation) optional.Of[base.Node] {
+func New(r stResult.Node) func(*parameter.Parameter) optional.Of[base.Node] {
 	switch {
 	case stResult.IsNodeTypeBoolean(r):
 		return buildBoolean(st.UnsafeRuleResultToBoolean(r))

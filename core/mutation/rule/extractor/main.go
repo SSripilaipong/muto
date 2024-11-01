@@ -4,34 +4,52 @@ import (
 	"github.com/SSripilaipong/muto/common/fn"
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
-	"github.com/SSripilaipong/muto/core/mutation/rule/data"
+	"github.com/SSripilaipong/muto/core/pattern/extractor"
+	"github.com/SSripilaipong/muto/core/pattern/parameter"
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
-func New(rule stPattern.NamedRule) func(obj base.Object) optional.Of[*data.Mutation] {
-	return newForParamPart(rule.ParamPart(), nonStrictlyMatchChildren)
+func New(rule stPattern.NamedRule) func(base.Object) optional.Of[*parameter.Parameter] {
+	return fn.Compose(newForParamPartTopLevel(rule.ParamPart()).Extract, base.ObjectToChildren)
 }
 
-func newForParamPart(paramPart stPattern.ParamPart, nChildrenMatch func(nP int, nC int) bool) func(obj base.Object) optional.Of[*data.Mutation] {
+func newForParamPartTopLevel(paramPart stPattern.ParamPart) extractor.NodeListExtractor {
 	switch {
 	case stPattern.IsParamPartTypeFixed(paramPart):
-		return newForFixedParamPart(stPattern.UnsafeParamPartToParams(paramPart), nChildrenMatch)
+		return newForFixedParamPartTopLevel(stPattern.UnsafeParamPartToParams(paramPart))
 	case stPattern.IsParamPartTypeVariadic(paramPart):
-		return newForVariadicParamPart(stPattern.UnsafeParamPartToVariadicParamPart(paramPart), nChildrenMatch)
+		return newForVariadicParamPart(stPattern.UnsafeParamPartToVariadicParamPart(paramPart))
 	}
 	panic("not implemented")
 }
 
-func newForVariadicParamPart(paramPart stPattern.VariadicParamPart, nChildrenMatch func(nP int, nC int) bool) func(obj base.Object) optional.Of[*data.Mutation] {
+func newForParamPartNested(paramPart stPattern.ParamPart) extractor.NodeListExtractor {
+	switch {
+	case stPattern.IsParamPartTypeFixed(paramPart):
+		return newForFixedParamPart(stPattern.UnsafeParamPartToParams(paramPart))
+	case stPattern.IsParamPartTypeVariadic(paramPart):
+		return newForVariadicParamPart(stPattern.UnsafeParamPartToVariadicParamPart(paramPart))
+	}
+	panic("not implemented")
+}
+
+func newForVariadicParamPart(paramPart stPattern.VariadicParamPart) extractor.NodeListExtractor {
 	switch {
 	case stPattern.IsVariadicParamPartTypeRight(paramPart):
-		return newForRightVariadicParamPart(stPattern.UnsafeVariadicParamPartToRightVariadicParamPart(paramPart), nChildrenMatch)
+		return newForRightVariadicParamPart(stPattern.UnsafeVariadicParamPartToRightVariadicParamPart(paramPart))
 	case stPattern.IsVariadicParamPartTypeLeft(paramPart):
-		return newForLeftVariadicParamPart(stPattern.UnsafeVariadicParamPartToLeftVariadicParamPart(paramPart), nChildrenMatch)
+		return newForLeftVariadicParamPart(stPattern.UnsafeVariadicParamPartToLeftVariadicParamPart(paramPart))
 	}
 	panic("not implemented")
 }
 
-func newForFixedParamPart(params []stPattern.Param, nChildrenMatch func(nP int, nC int) bool) func(obj base.Object) optional.Of[*data.Mutation] {
-	return fn.Compose(extractChildrenNodes(params, nChildrenMatch), base.ObjectToChildren)
+func newForFixedParamPartTopLevel(params []stPattern.Param) extractor.ImplicitRightVariadic {
+	return extractor.NewImplicitRightVariadic(newParamExtractors(params))
+}
+
+func newForFixedParamPart(params []stPattern.Param) extractor.NodeListExtractor {
+	if len(params) == 0 {
+		return nil
+	}
+	return extractor.NewExactNodeList(newParamExtractors(params))
 }
