@@ -6,7 +6,7 @@ import (
 	"github.com/SSripilaipong/muto/common/optional"
 )
 
-func mutateChildren(children []Node, mutation Mutation) optional.Of[[]Node] {
+func mutateChildren(children []Node, mutation NameWiseMutation) optional.Of[[]Node] {
 	children = slices.Clone(children)
 
 	for i, child := range children {

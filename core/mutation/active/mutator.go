@@ -3,14 +3,14 @@ package active
 import (
 	"github.com/SSripilaipong/muto/common/fn"
 	"github.com/SSripilaipong/muto/common/slc"
-	"github.com/SSripilaipong/muto/core/mutation/normal/object"
-	st "github.com/SSripilaipong/muto/syntaxtree"
+	ruleMutation "github.com/SSripilaipong/muto/core/mutation/rule"
+	"github.com/SSripilaipong/muto/syntaxtree/base"
 )
 
-var newMutatorsFromStatements = fn.Compose3(object.ReduceMutatorFromRules, slc.Map(activeRuleToRule), mapFilterActiveRuleFromStatement)
+var newMutatorsFromStatements = fn.Compose3(slc.Map(ruleMutation.New), slc.Map(activeRuleToRule), mapFilterActiveRuleFromStatement)
 
-func activeRuleToRule(x st.ActiveRule) st.Rule {
-	return st.NewRule(x.Pattern(), x.Result())
+func activeRuleToRule(x base.ActiveRule) base.Rule {
+	return base.NewRule(x.Pattern(), x.Result())
 }
 
-var mapFilterActiveRuleFromStatement = fn.Compose(slc.Map(st.UnsafeStatementToActiveRule), slc.Filter(st.IsActiveRuleStatement))
+var mapFilterActiveRuleFromStatement = fn.Compose(slc.Map(base.UnsafeStatementToActiveRule), slc.Filter(base.IsActiveRuleStatement))

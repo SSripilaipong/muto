@@ -16,22 +16,22 @@ func (c Class) NodeType() NodeType {
 	return NodeTypeClass
 }
 
-func (c Class) Mutate(mutation Mutation) optional.Of[Node] {
+func (c Class) Mutate(mutation NameWiseMutation) optional.Of[Node] {
 	return c.MutateAsHead(nil, mutation)
 }
 
-func (c Class) MutateAsHead(children []Node, mutation Mutation) optional.Of[Node] {
+func (c Class) MutateAsHead(children []Node, mutation NameWiseMutation) optional.Of[Node] {
 	if result, ok := c.ActivelyMutateWithObjMutateFunc(children, mutation).Return(); ok {
 		return optional.Value(result)
 	}
 	return c.MutateWithObjMutateFunc(children, mutation)
 }
 
-func (c Class) ActivelyMutateWithObjMutateFunc(children []Node, mutation Mutation) optional.Of[Node] {
+func (c Class) ActivelyMutateWithObjMutateFunc(children []Node, mutation NameWiseMutation) optional.Of[Node] {
 	return mutation.Active(c.Name(), NewObject(c, children))
 }
 
-func (c Class) MutateWithObjMutateFunc(children []Node, mutation Mutation) optional.Of[Node] {
+func (c Class) MutateWithObjMutateFunc(children []Node, mutation NameWiseMutation) optional.Of[Node] {
 	newChildren := mutateChildren(children, mutation)
 	if newChildren.IsNotEmpty() {
 		return optional.Value[Node](NewObject(c, newChildren.Value()))

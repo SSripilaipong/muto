@@ -2,7 +2,7 @@ package base
 
 import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
-	st "github.com/SSripilaipong/muto/syntaxtree"
+	st "github.com/SSripilaipong/muto/syntaxtree/base"
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )

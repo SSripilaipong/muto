@@ -1,16 +1,10 @@
 package builder
 
 import (
-	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
-	"github.com/SSripilaipong/muto/core/pattern/parameter"
-	st "github.com/SSripilaipong/muto/syntaxtree"
+	st "github.com/SSripilaipong/muto/syntaxtree/base"
 )
 
-func buildClass(x st.Class) func(*parameter.Parameter) optional.Of[base.Node] {
-	value := base.NewClass(x.Name())
-
-	return func(r *parameter.Parameter) optional.Of[base.Node] {
-		return optional.Value[base.Node](value)
-	}
+func newClassBuilder(x st.Class) constantBuilder[base.Class] {
+	return newConstantBuilder(base.NewClass(x.Name()))
 }

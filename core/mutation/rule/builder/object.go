@@ -5,26 +5,34 @@ import (
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/core/base"
+	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
 	"github.com/SSripilaipong/muto/core/pattern/parameter"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-func buildObject(obj stResult.Object) func(*parameter.Parameter) optional.Of[base.Node] {
-	buildHead := New(obj.Head())
-	buildChildren := buildChildren(obj.ParamPart())
+type objectBuilder struct {
+	buildHead     mutator.Builder
+	buildChildren func(mapping *parameter.Parameter) optional.Of[[]base.Node]
+}
 
-	return func(mapping *parameter.Parameter) optional.Of[base.Node] {
-		children, ok := buildChildren(mapping).Return()
-		if !ok {
-			return optional.Empty[base.Node]()
-		}
-		head, hasHead := buildHead(mapping).Return()
-		if !hasHead {
-			return optional.Empty[base.Node]()
-		}
-
-		return optional.Value[base.Node](base.NewObject(head, children))
+func newObjectBuilder(obj stResult.Object) objectBuilder {
+	return objectBuilder{
+		buildHead:     New(obj.Head()),
+		buildChildren: buildChildren(obj.ParamPart()),
 	}
+}
+
+func (b objectBuilder) Build(param *parameter.Parameter) optional.Of[base.Node] {
+	children, ok := b.buildChildren(param).Return()
+	if !ok {
+		return optional.Empty[base.Node]()
+	}
+	head, hasHead := b.buildHead.Build(param).Return()
+	if !hasHead {
+		return optional.Empty[base.Node]()
+	}
+
+	return optional.Value[base.Node](base.NewObject(head, children))
 }
 
 func buildObjectParam(p stResult.Param) func(mapping *parameter.Parameter) optional.Of[[]base.Node] {
@@ -39,7 +47,7 @@ func buildObjectParam(p stResult.Param) func(mapping *parameter.Parameter) optio
 
 func buildObjectParamTypeSingle(p stResult.Param) func(mapping *parameter.Parameter) optional.Of[[]base.Node] {
 	return fn.Compose(
-		optional.Map(slc.Pure[base.Node]), New(stResult.UnsafeParamToNode(p)),
+		optional.Map(slc.Pure[base.Node]), New(stResult.UnsafeParamToNode(p)).Build,
 	)
 }
 

@@ -2,11 +2,11 @@ package builtin
 
 import (
 	"github.com/SSripilaipong/muto/common/cliio"
-	"github.com/SSripilaipong/muto/core/mutation/normal/object"
+	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
 )
 
-func NewMutators() []object.Mutator {
-	return []object.Mutator{
+func NewMutators() []mutator.NamedObjectMutator {
+	return []mutator.NamedObjectMutator{
 		stringMutator,
 		addMutator,
 		subtractMutator,

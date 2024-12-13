@@ -19,7 +19,7 @@ func (obj Object) ReplaceChild(i int, n Node) Object {
 	return obj
 }
 
-func (obj Object) Mutate(mutation Mutation) optional.Of[Node] {
+func (obj Object) Mutate(mutation NameWiseMutation) optional.Of[Node] {
 	r, ok := obj.Head().MutateAsHead(obj.Children(), mutation).Return()
 	if ok {
 		return optional.New(r, ok)
@@ -27,7 +27,7 @@ func (obj Object) Mutate(mutation Mutation) optional.Of[Node] {
 	return obj.BubbleUp()
 }
 
-func (obj Object) MutateAsHead(children []Node, mutation Mutation) optional.Of[Node] {
+func (obj Object) MutateAsHead(children []Node, mutation NameWiseMutation) optional.Of[Node] {
 	newHead, ok := obj.Mutate(mutation).Return()
 	if ok {
 		return optional.Value[Node](NewObject(newHead, children))

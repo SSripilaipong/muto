@@ -5,17 +5,17 @@ import (
 	"github.com/SSripilaipong/muto/common/rslt"
 	"github.com/SSripilaipong/muto/common/tuple"
 	psBase "github.com/SSripilaipong/muto/parser/base"
-	st "github.com/SSripilaipong/muto/syntaxtree"
+	"github.com/SSripilaipong/muto/syntaxtree/base"
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
 var RsNamedRule = ps.Map(rslt.Value, NamedRule())
 
 func NamedRule() func(xs []psBase.Character) []tuple.Of2[stPattern.NamedRule, []psBase.Character] {
-	castWithParamPart := tuple.Fn2(func(class st.Class, params stPattern.ParamPart) stPattern.NamedRule {
+	castWithParamPart := tuple.Fn2(func(class base.Class, params stPattern.ParamPart) stPattern.NamedRule {
 		return stPattern.NewNamedRule(class.Name(), params)
 	})
-	castClass := func(class st.Class) stPattern.NamedRule {
+	castClass := func(class base.Class) stPattern.NamedRule {
 		return stPattern.NewNamedRule(class.Name(), stPattern.ParamsToFixedParamPart([]stPattern.Param{}))
 	}
 
@@ -26,7 +26,7 @@ func NamedRule() func(xs []psBase.Character) []tuple.Of2[stPattern.NamedRule, []
 }
 
 func variableRulePattern() func(xs []psBase.Character) []tuple.Of2[stPattern.VariableRule, []psBase.Character] {
-	cast := tuple.Fn2(func(name st.Variable, params stPattern.ParamPart) stPattern.VariableRule {
+	cast := tuple.Fn2(func(name base.Variable, params stPattern.ParamPart) stPattern.VariableRule {
 		return stPattern.NewVariableRulePattern(name.Name(), params)
 	})
 
@@ -55,7 +55,7 @@ func rulePatternParamPart() func([]psBase.Character) []tuple.Of2[stPattern.Param
 }
 
 func fixedRuleParamPattern() func(xs []psBase.Character) []tuple.Of2[stPattern.Param, []psBase.Character] {
-	var classToPatternParam = func(x st.Class) stPattern.Param {
+	var classToPatternParam = func(x base.Class) stPattern.Param {
 		return stPattern.NewNamedRule(x.Value(), stPattern.FixedParamPart{})
 	}
 

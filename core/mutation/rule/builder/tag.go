@@ -1,16 +1,10 @@
 package builder
 
 import (
-	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
-	"github.com/SSripilaipong/muto/core/pattern/parameter"
-	st "github.com/SSripilaipong/muto/syntaxtree"
+	st "github.com/SSripilaipong/muto/syntaxtree/base"
 )
 
-func buildTag(x st.Tag) func(*parameter.Parameter) optional.Of[base.Node] {
-	value := base.NewTag(x.Name())
-
-	return func(mapping *parameter.Parameter) optional.Of[base.Node] {
-		return optional.Value[base.Node](value)
-	}
+func newTagBuilder(x st.Tag) constantBuilder[base.Node] {
+	return newConstantBuilder(base.NewTag(x.Name()))
 }

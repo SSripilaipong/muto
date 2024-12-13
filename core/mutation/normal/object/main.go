@@ -4,22 +4,9 @@ import (
 	"github.com/SSripilaipong/muto/common/fn"
 	"github.com/SSripilaipong/muto/common/slc"
 	ruleMutation "github.com/SSripilaipong/muto/core/mutation/rule"
-	st "github.com/SSripilaipong/muto/syntaxtree"
+	"github.com/SSripilaipong/muto/syntaxtree/base"
 )
 
-var NewMutatorsFromStatements = fn.Compose(ReduceMutatorFromRules, mapFilterRuleFromStatement)
+var NewMutatorsFromStatements = fn.Compose(slc.Map(ruleMutation.New), mapFilterRuleFromStatement)
 
-var ReduceMutatorFromRules = fn.Compose(
-	slc.Map(ToMutator[RuleBasedMutator]),
-	slc.FoldGroup(mergeRuleBasedMutatorWithRule, st.RuleToPatternName)(NewRuleBasedMutator("", nil)),
-)
-
-func mergeRuleBasedMutatorWithRule(t RuleBasedMutator, rule st.Rule) RuleBasedMutator {
-	if t.name == "" {
-		t.name = rule.PatternName()
-	}
-	t.mutationRules = append(t.mutationRules, ruleMutation.New(rule))
-	return t
-}
-
-var mapFilterRuleFromStatement = fn.Compose(slc.Map(st.UnsafeStatementToRule), slc.Filter(st.IsRuleStatement))
+var mapFilterRuleFromStatement = fn.Compose(slc.Map(base.UnsafeStatementToRule), slc.Filter(base.IsRuleStatement))

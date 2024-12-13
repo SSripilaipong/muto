@@ -4,7 +4,7 @@ import (
 	"slices"
 
 	ps "github.com/SSripilaipong/muto/common/parsing"
-	st "github.com/SSripilaipong/muto/syntaxtree"
+	st "github.com/SSripilaipong/muto/syntaxtree/base"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 

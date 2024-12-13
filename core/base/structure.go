@@ -19,7 +19,7 @@ func NewStructureFromRecords(records []StructureRecord) Structure {
 
 func (Structure) NodeType() NodeType { return NodeTypeStructure }
 
-func (s Structure) MutateAsHead(children []Node, mutation Mutation) optional.Of[Node] {
+func (s Structure) MutateAsHead(children []Node, mutation NameWiseMutation) optional.Of[Node] {
 	if len(children) > 0 {
 		newChildren := mutateChildren(children, mutation)
 		if newChildren.IsNotEmpty() {
@@ -51,7 +51,7 @@ func (s Structure) processTag(tag Tag, children []Node) optional.Of[Node] {
 	return optional.Empty[Node]()
 }
 
-func (s Structure) Mutate(mutation Mutation) optional.Of[Node] {
+func (s Structure) Mutate(mutation NameWiseMutation) optional.Of[Node] {
 	var records []StructureRecord
 	isMutated := false
 	for _, record := range s.records {
@@ -130,7 +130,7 @@ func NewStructureRecord(key Node, value Node) StructureRecord {
 	return StructureRecord{key: key, value: value}
 }
 
-func (r StructureRecord) Mutate(mutation Mutation) optional.Of[StructureRecord] {
+func (r StructureRecord) Mutate(mutation NameWiseMutation) optional.Of[StructureRecord] {
 	value := r.Value()
 	if IsMutableNode(value) {
 		newValue := UnsafeNodeToMutable(value).Mutate(mutation)

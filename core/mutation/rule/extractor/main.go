@@ -4,13 +4,20 @@ import (
 	"github.com/SSripilaipong/muto/common/fn"
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
+	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
 	"github.com/SSripilaipong/muto/core/pattern/extractor"
 	"github.com/SSripilaipong/muto/core/pattern/parameter"
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
-func New(rule stPattern.NamedRule) func(base.Object) optional.Of[*parameter.Parameter] {
-	return fn.Compose(newForParamPartTopLevel(rule.ParamPart()).Extract, base.ObjectToChildren)
+type extractorFunc func(base.Object) optional.Of[*parameter.Parameter]
+
+func (f extractorFunc) Extract(x base.Object) optional.Of[*parameter.Parameter] {
+	return f(x)
+}
+
+func New(rule stPattern.NamedRule) mutator.Extractor {
+	return extractorFunc(fn.Compose(newForParamPartTopLevel(rule.ParamPart()).Extract, base.ObjectToChildren))
 }
 
 func newForParamPartTopLevel(paramPart stPattern.ParamPart) extractor.NodeListExtractor {

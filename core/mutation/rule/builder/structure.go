@@ -9,13 +9,17 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-func buildStructure(structure stResult.Structure) func(*parameter.Parameter) optional.Of[base.Node] {
-	recordsBuilder := buildStructureRecords(structure)
+type structureBuilder struct {
+	recordsBuilder func(mutation *parameter.Parameter) optional.Of[[]base.StructureRecord]
+}
 
-	return func(mutation *parameter.Parameter) optional.Of[base.Node] {
-		records := recordsBuilder(mutation)
-		return optional.Fmap(fn.Compose(base.ToNode, base.NewStructureFromRecords))(records)
-	}
+func newStructureBuilder(structure stResult.Structure) structureBuilder {
+	return structureBuilder{recordsBuilder: buildStructureRecords(structure)}
+}
+
+func (b structureBuilder) Build(param *parameter.Parameter) optional.Of[base.Node] {
+	records := b.recordsBuilder(param)
+	return optional.Fmap(fn.Compose(base.ToNode, base.NewStructureFromRecords))(records)
 }
 
 func buildStructureRecords(structure stResult.Structure) func(mutation *parameter.Parameter) optional.Of[[]base.StructureRecord] {
@@ -38,11 +42,11 @@ func buildStructureRecord(record stResult.StructureRecord) func(mutation *parame
 	valueBuilder := New(record.Value())
 
 	return func(mutation *parameter.Parameter) optional.Of[base.StructureRecord] {
-		key := keyBuilder(mutation)
+		key := keyBuilder.Build(mutation)
 		if key.IsEmpty() {
 			return optional.Empty[base.StructureRecord]()
 		}
-		value := valueBuilder(mutation)
+		value := valueBuilder.Build(mutation)
 		if value.IsEmpty() {
 			return optional.Empty[base.StructureRecord]()
 		}

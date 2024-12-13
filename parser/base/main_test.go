@@ -5,12 +5,12 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	st "github.com/SSripilaipong/muto/syntaxtree"
+	stBase "github.com/SSripilaipong/muto/syntaxtree/base"
 )
 
 func TestString(t *testing.T) {
 	r := String(StringToCharTokens(`"abc\n123\""abc`))
-	expectedResult := st.NewString(`"abc\n123\""`)
+	expectedResult := stBase.NewString(`"abc\n123\""`)
 	expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`abc`))
 	assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 }
@@ -18,21 +18,21 @@ func TestString(t *testing.T) {
 func TestNumber(t *testing.T) {
 	t.Run("should parse positive number", func(t *testing.T) {
 		r := Number(StringToCharTokens(`123abc`))
-		expectedResult := st.NewNumber(`123`)
+		expectedResult := stBase.NewNumber(`123`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`abc`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should parse positive float number", func(t *testing.T) {
 		r := Number(StringToCharTokens(`123.456abc`))
-		expectedResult := st.NewNumber(`123.456`)
+		expectedResult := stBase.NewNumber(`123.456`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`abc`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should parse negative number", func(t *testing.T) {
 		r := Number(StringToCharTokens(`-123abc`))
-		expectedResult := st.NewNumber(`-123`)
+		expectedResult := stBase.NewNumber(`-123`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`abc`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
@@ -41,14 +41,14 @@ func TestNumber(t *testing.T) {
 func TestBoolean(t *testing.T) {
 	t.Run("should parse true", func(t *testing.T) {
 		r := Boolean(StringToCharTokens(`trueabc`))
-		expectedResult := st.NewBoolean(`true`)
+		expectedResult := stBase.NewBoolean(`true`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`abc`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should parse false", func(t *testing.T) {
 		r := Boolean(StringToCharTokens(`falseabc`))
-		expectedResult := st.NewBoolean(`false`)
+		expectedResult := stBase.NewBoolean(`false`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`abc`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
@@ -57,26 +57,26 @@ func TestBoolean(t *testing.T) {
 func TestFixedVar(t *testing.T) {
 	t.Run("should parse single letter variable", func(t *testing.T) {
 		r := FixedVar(StringToCharTokens(`X.123`))
-		expectedResult := st.NewVariable(`X`)
+		expectedResult := stBase.NewVariable(`X`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`.123`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should parse multiple letters variable", func(t *testing.T) {
 		r := FixedVar(StringToCharTokens(`XYabc-123!'?-1s.123`))
-		expectedResult := st.NewVariable(`XYabc-123!'?-1s`)
+		expectedResult := stBase.NewVariable(`XYabc-123!'?-1s`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`.123`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should not parse identifier starting with small case", func(t *testing.T) {
 		r := FixedVar(StringToCharTokens(`xy`))
-		assert.Equal(t, EmptyResult[st.Variable](), AsParserResult(IgnoreLineAndColumnInResult(r)))
+		assert.Equal(t, EmptyResult[stBase.Variable](), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should not parse variadic var", func(t *testing.T) {
 		r := FixedVar(IgnoreLineAndColumn(StringToCharTokens(`X...`)))
-		assert.Equal(t, EmptyResult[st.Variable](), AsParserResult(IgnoreLineAndColumnInResult(r)))
+		assert.Equal(t, EmptyResult[stBase.Variable](), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 }
 
@@ -114,26 +114,26 @@ func TestVariadicVar(t *testing.T) {
 func TestClass(t *testing.T) {
 	t.Run("should parse class", func(t *testing.T) {
 		r := Class(StringToCharTokens(`a_bc-'!'.123`))
-		expectedResult := st.NewClass(`a_bc-'!'`)
+		expectedResult := stBase.NewClass(`a_bc-'!'`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`.123`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should not parse space", func(t *testing.T) {
 		r := Class(StringToCharTokens(`a b`))
-		expectedResult := st.NewClass(`a`)
+		expectedResult := stBase.NewClass(`a`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(` b`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should not parse variable", func(t *testing.T) {
 		r := Class(StringToCharTokens(`X`))
-		assert.Equal(t, EmptyResult[st.Class](), AsParserResult(IgnoreLineAndColumnInResult(r)))
+		assert.Equal(t, EmptyResult[stBase.Class](), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should parse symbol", func(t *testing.T) {
 		r := Class(StringToCharTokens(`-->.! @`))
-		expectedResult := st.NewClass(`-->.!`)
+		expectedResult := stBase.NewClass(`-->.!`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(` @`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
@@ -142,13 +142,13 @@ func TestClass(t *testing.T) {
 func TestTag(t *testing.T) {
 	t.Run("should parse tag like class with dot prefix", func(t *testing.T) {
 		r := Tag(StringToCharTokens(`.a_bc-'!'.123`))
-		expectedResult := st.NewTag(`.a_bc-'!'`)
+		expectedResult := stBase.NewTag(`.a_bc-'!'`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`.123`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should not parse class", func(t *testing.T) {
 		r := Tag(StringToCharTokens(`abc`))
-		assert.Equal(t, EmptyResult[st.Tag](), AsParserResult(IgnoreLineAndColumnInResult(r)))
+		assert.Equal(t, EmptyResult[stBase.Tag](), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 }

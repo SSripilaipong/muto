@@ -3,18 +3,19 @@ package mutation
 import (
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
-	activeMutation "github.com/SSripilaipong/muto/core/mutation/active"
-	normalMutation "github.com/SSripilaipong/muto/core/mutation/normal"
-	st "github.com/SSripilaipong/muto/syntaxtree"
+	st "github.com/SSripilaipong/muto/syntaxtree/base"
 )
 
-func NewFromStatements(ss []st.Statement) func(base.MutableNode) optional.Of[base.Node] {
-	mutate := mutation{
-		active: activeMutation.NewFromStatements(ss),
-		normal: normalMutation.NewFromStatements(ss),
-	}
+type TopLevelMutation struct {
+	nameWiseMutation
+}
 
-	return func(x base.MutableNode) optional.Of[base.Node] {
-		return x.Mutate(mutate)
+func NewFromStatements(ss []st.Statement) TopLevelMutation {
+	return TopLevelMutation{
+		nameWiseMutation: newNameWiseMutation(ss),
 	}
+}
+
+func (m TopLevelMutation) Mutate(x base.MutableNode) optional.Of[base.Node] {
+	return topLevelObjectFlatten(x.Mutate(m.nameWiseMutation))
 }
