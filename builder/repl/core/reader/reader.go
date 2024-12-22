@@ -1,24 +1,26 @@
 package reader
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/SSripilaipong/muto/builder/repl/core/command"
 	"github.com/SSripilaipong/muto/common/optional"
 )
 
-type Reader struct{}
-
-func New() Reader {
-	return Reader{}
+type Reader struct {
+	lineReader lineReader
 }
 
-func (Reader) Read() optional.Of[command.Command] {
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("µ> ")
-	text, _ := reader.ReadString('\n')
+func New() Reader {
+	return Reader{lineReader: newLineReader()}
+}
+
+func (r Reader) Read() optional.Of[command.Command] {
+	text, err := r.lineReader.ReadLine()
+	if err != nil {
+		fmt.Println("error reading stdin:", err.Error())
+		return optional.Empty[command.Command]()
+	}
 	return textToCommand(strings.TrimSpace(text))
 }
