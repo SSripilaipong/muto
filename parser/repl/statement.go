@@ -14,6 +14,7 @@ import (
 var ParseStatement = fn.Compose3(psBase.FilterStatement, statement, psBase.StringToCharTokens)
 
 var statement = ps.Or(
+	ps.RsMap(replSt.ToStatement, command),
 	ps.RsMap(mergeRule, fileParser.Rule),
 	ps.RsMap(mergeActiveRule, fileParser.ActiveRule),
 	ps.RsMap(mergeNode, psResult.RsNode),

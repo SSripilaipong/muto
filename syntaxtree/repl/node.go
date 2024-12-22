@@ -5,15 +5,15 @@ import (
 )
 
 type Node struct {
+	statementTypeMixin
 	node stResult.Node
 }
 
 func NewNode(node stResult.Node) Node {
-	return Node{node: node}
-}
-
-func (n Node) ReplStatementType() StatementType {
-	return StatementTypeNode
+	return Node{
+		statementTypeMixin: newStatementTypeMixin(StatementTypeNode),
+		node:               node,
+	}
 }
 
 func (n Node) Node() stResult.Node {

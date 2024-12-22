@@ -3,15 +3,15 @@ package repl
 import "github.com/SSripilaipong/muto/syntaxtree/base"
 
 type Rule struct {
+	statementTypeMixin
 	rule base.Rule
 }
 
 func NewRule(rule base.Rule) Rule {
-	return Rule{rule: rule}
-}
-
-func (r Rule) ReplStatementType() StatementType {
-	return StatementTypeRule
+	return Rule{
+		statementTypeMixin: newStatementTypeMixin(StatementTypeRule),
+		rule:               rule,
+	}
 }
 
 func (r Rule) Rule() base.Rule {

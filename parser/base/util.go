@@ -51,6 +51,13 @@ func fixedChars(s string) Parser[string] {
 	}
 }
 
+func RsFixedChars(x string) RsParser[string] {
+	return ps.RsFirst(
+		ps.Map(rslt.Value, fixedChars(x)),
+		ps.Result[Character](rslt.Error[string](fmt.Errorf("expected %s", x))),
+	)
+}
+
 func char(g func(s rune) bool) Parser[Character] {
 	return ps.ConsumeIf(func(x Character) bool {
 		return g(x.Value())

@@ -18,6 +18,8 @@ func New(prog replProgram.Wrapper) Executor {
 
 func (e Executor) Execute(cmd command.Command) optional.Of[int] {
 	switch {
+	case command.IsQuitCommand(cmd):
+		return optional.Value(0)
 	case command.IsMutateNodeCommand(cmd):
 		return e.program.MutateNode(command.UnsafeCommandToMutateNodeCommand(cmd).InitialNode())
 	case command.IsAddRuleCommand(cmd):

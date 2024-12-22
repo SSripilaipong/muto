@@ -21,6 +21,8 @@ func textToCommand(text string) optional.Of[command.Command] {
 
 	s := statement.Value()
 	switch {
+	case replSt.IsReplCommand(s):
+		return newReplCommand(replSt.UnsafeStatementToReplCommand(s))
 	case replSt.IsRuleStatement(s):
 		return newAddRuleCommand(replSt.UnsafeStatementToRule(s))
 	case replSt.IsNodeStatement(s):
