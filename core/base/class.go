@@ -21,28 +21,23 @@ func (c Class) Mutate(mutation NameWiseMutation) optional.Of[Node] {
 }
 
 func (c Class) MutateAsHead(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
-	children := params.DirectParams()
-	if result, ok := c.ActivelyMutateWithObjMutateFunc(children, mutation).Return(); ok {
+	if result, ok := c.ActivelyMutateWithObjMutateFunc(params, mutation).Return(); ok {
 		return optional.Value(result)
 	}
-	return c.MutateWithObjMutateFunc(children, mutation)
+	return c.MutateWithObjMutateFunc(params, mutation)
 }
 
-func (c Class) ActivelyMutateWithObjMutateFunc(children []Node, mutation NameWiseMutation) optional.Of[Node] {
-	return mutation.Active(c.Name(), NewObject(c, children))
+func (c Class) ActivelyMutateWithObjMutateFunc(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
+	return mutation.Active(c.Name(), NewObject(c, params))
 }
 
-func (c Class) MutateWithObjMutateFunc(children []Node, mutation NameWiseMutation) optional.Of[Node] {
-	newChildren := mutateChildren(children, mutation)
+func (c Class) MutateWithObjMutateFunc(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
+	newChildren := mutateChildren(params, mutation)
 	if newChildren.IsNotEmpty() {
 		return optional.Value[Node](NewObject(c, newChildren.Value()))
 	}
 
-	return mutation.Normal(c.Name(), NewObject(c, children))
-}
-
-func (c Class) AppendChildren(children []Node) Object {
-	return NewObject(c, children)
+	return mutation.Normal(c.Name(), NewObject(c, params))
 }
 
 func (c Class) Name() string {

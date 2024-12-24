@@ -18,8 +18,8 @@ func TestObjectOps_try(t *testing.T) {
 			calledObject = obj
 			return optional.Empty[base.Node]()
 		}))
-		m.MutateByName(tryMutatorName, base.NewNamedObject(tryMutatorName, []base.Node{base.NewClass("f"), base.NewString("abc"), base.NewString("def")}))
-		assert.Equal(t, base.NewObject(base.NewClass("f"), []base.Node{base.NewString("abc"), base.NewString("def")}), calledObject)
+		m.MutateByName(tryMutatorName, base.NewNamedOneLayerObject(tryMutatorName, []base.Node{base.NewClass("f"), base.NewString("abc"), base.NewString("def")}))
+		assert.Equal(t, base.NewOneLayerObject(base.NewClass("f"), []base.Node{base.NewString("abc"), base.NewString("def")}), calledObject)
 	})
 
 	t.Run("should become value of the mutation result", func(t *testing.T) {
@@ -27,8 +27,8 @@ func TestObjectOps_try(t *testing.T) {
 		m.SetGlobalMutator(mutator.NameBoundedFunc(func(name string, obj base.Object) optional.Of[base.Node] {
 			return optional.Value[base.Node](base.NewNumberFromString("123"))
 		}))
-		result := m.MutateByName(tryMutatorName, base.NewNamedObject(tryMutatorName, []base.Node{base.NewClass("f"), base.NewString("abc")}))
-		assert.Equal(t, base.NewObject(base.ValueTag, []base.Node{base.NewNumberFromString("123")}), result.Value())
+		result := m.MutateByName(tryMutatorName, base.NewNamedOneLayerObject(tryMutatorName, []base.Node{base.NewClass("f"), base.NewString("abc")}))
+		assert.Equal(t, base.NewOneLayerObject(base.ValueTag, []base.Node{base.NewNumberFromString("123")}), result.Value())
 	})
 
 	t.Run("should become empty if mutation does not occur", func(t *testing.T) {
@@ -36,8 +36,8 @@ func TestObjectOps_try(t *testing.T) {
 		m.SetGlobalMutator(mutator.NameBoundedFunc(func(name string, obj base.Object) optional.Of[base.Node] {
 			return optional.Empty[base.Node]()
 		}))
-		result := m.MutateByName(tryMutatorName, base.NewNamedObject(tryMutatorName, []base.Node{base.NewClass("f"), base.NewString("abc")}))
-		assert.Equal(t, base.NewObject(base.EmptyTag, []base.Node{}), result.Value())
+		result := m.MutateByName(tryMutatorName, base.NewNamedOneLayerObject(tryMutatorName, []base.Node{base.NewClass("f"), base.NewString("abc")}))
+		assert.Equal(t, base.NewOneLayerObject(base.EmptyTag, []base.Node{}), result.Value())
 	})
 
 	t.Run("should not mutate if the number of children less than 2", func(t *testing.T) {
@@ -45,7 +45,7 @@ func TestObjectOps_try(t *testing.T) {
 		m.SetGlobalMutator(mutator.NameBoundedFunc(func(name string, obj base.Object) optional.Of[base.Node] {
 			return optional.Value[base.Node](base.NewNumberFromString("123"))
 		}))
-		result := m.MutateByName(tryMutatorName, base.NewNamedObject(tryMutatorName, []base.Node{base.NewClass("f")}))
+		result := m.MutateByName(tryMutatorName, base.NewNamedOneLayerObject(tryMutatorName, []base.Node{base.NewClass("f")}))
 		assert.True(t, result.IsEmpty())
 	})
 }

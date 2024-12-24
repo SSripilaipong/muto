@@ -2,6 +2,7 @@ package builtin
 
 import (
 	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/core/base"
 	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
 )
@@ -32,7 +33,7 @@ func (t *tryMutator) Mutate(obj base.Object) optional.Of[base.Node] {
 	if len(children) < 2 {
 		return optional.Empty[base.Node]()
 	}
-	subject := base.NewObject(children[0], children[1:])
+	subject := base.NewObject(children[0], base.NewParamChain(slc.Pure(children[1:])))
 	if bb, ok := subject.BubbleUp().Return(); ok {
 		if base.IsObjectNode(bb) {
 			subject = base.UnsafeNodeToObject(bb)
@@ -42,9 +43,9 @@ func (t *tryMutator) Mutate(obj base.Object) optional.Of[base.Node] {
 	}
 	result := subject.Mutate(newNormalMutationFunc(t.globalMutator.MutateByName))
 	if result.IsEmpty() {
-		return optional.Value[base.Node](base.NewObject(base.EmptyTag, []base.Node{}))
+		return optional.Value[base.Node](base.NewObject(base.EmptyTag, base.NewParamChain(slc.Pure([]base.Node{}))))
 	}
-	return optional.Value[base.Node](base.NewObject(base.ValueTag, []base.Node{result.Value()}))
+	return optional.Value[base.Node](base.NewObject(base.ValueTag, base.NewParamChain(slc.Pure([]base.Node{result.Value()}))))
 }
 
 func (t *tryMutator) SetGlobalMutator(m mutator.NameBasedMutator) {

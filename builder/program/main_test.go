@@ -22,7 +22,7 @@ func TestBuildFromString(t *testing.T) {
 
 	t.Run("should resolve to object", func(t *testing.T) {
 		program := BuildProgramFromString(`main = hello "world"`).Value()
-		assert.Equal(t, base.NewNamedObject("hello", []base.Node{base.NewString("world")}), execute(program))
+		assert.Equal(t, base.NewNamedOneLayerObject("hello", []base.Node{base.NewString("world")}), execute(program))
 	})
 
 	t.Run("should resolve variable", func(t *testing.T) {
@@ -64,7 +64,7 @@ main = hello (f "abc" 123)
 		program := BuildProgramFromString(`f X Xs... = g Xs...
 main = f 1 2 3
 `).Value()
-		assert.Equal(t, base.NewNamedObject("g", []base.Node{base.NewNumberFromString("2"), base.NewNumberFromString("3")}), execute(program))
+		assert.Equal(t, base.NewNamedOneLayerObject("g", []base.Node{base.NewNumberFromString("2"), base.NewNumberFromString("3")}), execute(program))
 	})
 
 	t.Run("should match nested variadic variable with size 0", func(t *testing.T) {
@@ -78,35 +78,35 @@ main = g f
 		program := BuildProgramFromString(`g (f 1) = 555
 main = g (f 1 2)
 `).Value()
-		assert.Equal(t, base.NewNamedObject("g", []base.Node{base.NewNamedObject("f", []base.Node{base.NewNumberFromString("1"), base.NewNumberFromString("2")})}), execute(program))
+		assert.Equal(t, base.NewNamedOneLayerObject("g", []base.Node{base.NewNamedOneLayerObject("f", []base.Node{base.NewNumberFromString("1"), base.NewNumberFromString("2")})}), execute(program))
 	})
 
 	t.Run("should resolve to object with data head when there are children left", func(t *testing.T) {
 		program := BuildProgramFromString(`f X = 999
 main = f 1 2
 `).Value()
-		assert.Equal(t, base.NewObject(base.NewNumberFromString("999"), []base.Node{base.NewNumberFromString("2")}), execute(program))
+		assert.Equal(t, base.NewOneLayerObject(base.NewNumberFromString("999"), []base.Node{base.NewNumberFromString("2")}), execute(program))
 	})
 
 	t.Run("should extract nested object with variable object name pattern", func(t *testing.T) {
 		program := BuildProgramFromString(`f (G X) = h (G X)
 main = f (hello "world")
 `).Value()
-		assert.Equal(t, base.NewNamedObject("h", []base.Node{base.NewNamedObject("hello", []base.Node{base.NewString("world")})}), execute(program))
+		assert.Equal(t, base.NewNamedOneLayerObject("h", []base.Node{base.NewNamedOneLayerObject("hello", []base.Node{base.NewString("world")})}), execute(program))
 	})
 
 	t.Run("should build nested variable object with variadic params", func(t *testing.T) {
 		program := BuildProgramFromString(`f (H X...) = g (H X...)
 main = f (h "1" "2")
 `).Value()
-		assert.Equal(t, base.NewNamedObject("g", []base.Node{base.NewNamedObject("h", []base.Node{base.NewString("1"), base.NewString("2")})}), execute(program))
+		assert.Equal(t, base.NewNamedOneLayerObject("g", []base.Node{base.NewNamedOneLayerObject("h", []base.Node{base.NewString("1"), base.NewString("2")})}), execute(program))
 	})
 
 	t.Run("should not fail when variadic param part tries to match with no children", func(t *testing.T) {
 		program := BuildProgramFromString(`f (G S... 0) = 0
 main = f $
 `).Value()
-		assert.Equal(t, base.NewNamedObject("f", []base.Node{base.NewClass("$")}), execute(program))
+		assert.Equal(t, base.NewNamedOneLayerObject("f", []base.Node{base.NewClass("$")}), execute(program))
 	})
 
 	t.Run("should not fail when variadic right param part tries to match with no children", func(t *testing.T) {
@@ -142,7 +142,7 @@ main = f ((g 456) 123)
 		program := BuildProgramFromString(`f Xs... = $ Xs... Xs...
 main = f 1 2 3
 `).Value()
-		assert.Equal(t, base.NewNamedObject("$", []base.Node{
+		assert.Equal(t, base.NewNamedOneLayerObject("$", []base.Node{
 			base.NewNumberFromString("1"), base.NewNumberFromString("2"), base.NewNumberFromString("3"),
 			base.NewNumberFromString("1"), base.NewNumberFromString("2"), base.NewNumberFromString("3"),
 		}), execute(program))
@@ -185,7 +185,7 @@ main = f g
 		program := BuildProgramFromString(`f X = X
 main = f (g 1)
 `).Value()
-		assert.Equal(t, base.NewNamedObject("f", []base.Node{base.NewNamedObject("g", []base.Node{base.NewNumberFromString("1")})}), mutateOnce(program))
+		assert.Equal(t, base.NewNamedOneLayerObject("f", []base.Node{base.NewNamedOneLayerObject("g", []base.Node{base.NewNumberFromString("1")})}), mutateOnce(program))
 	})
 
 	t.Run("should mutate children after bubbling up to data object", func(t *testing.T) {
@@ -193,7 +193,7 @@ main = f (g 1)
 f X = X
 g = 2
 `).Value()
-		assert.Equal(t, base.NewObject(base.NewNumberFromString("1"), []base.Node{base.NewNumberFromString("2")}), execute(program))
+		assert.Equal(t, base.NewOneLayerObject(base.NewNumberFromString("1"), []base.Node{base.NewNumberFromString("2")}), execute(program))
 	})
 }
 

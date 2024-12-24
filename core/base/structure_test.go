@@ -56,14 +56,14 @@ func TestStructure_MutateAsHead(t *testing.T) {
 				return optional.Empty[Node]()
 			})).Value()
 
-		expected := NewObject(NewStructureFromRecords([]StructureRecord{}), []Node{NewNumberFromString("123"), NewNumberFromString("456")})
+		expected := NewOneLayerObject(NewStructureFromRecords([]StructureRecord{}), []Node{NewNumberFromString("123"), NewNumberFromString("456")})
 		assert.Equal(t, expected, result)
 	})
 
 	t.Run("should process get tag", func(t *testing.T) {
 		result := NewStructureFromRecords([]StructureRecord{
 			NewStructureRecord(NewNumberFromString("123"), NewString("hello")),
-		}).MutateAsHead(NewParamChain(slc.Pure([]Node{NewObject(NewTag("get"), []Node{NewNumberFromString("123")})})), nil).Value()
+		}).MutateAsHead(NewParamChain(slc.Pure([]Node{NewOneLayerObject(NewTag("get"), []Node{NewNumberFromString("123")})})), nil).Value()
 
 		expected := NewString("hello")
 		assert.Equal(t, expected, result)
@@ -72,7 +72,7 @@ func TestStructure_MutateAsHead(t *testing.T) {
 	t.Run("should not mutate when get with unknown key", func(t *testing.T) {
 		result := NewStructureFromRecords([]StructureRecord{
 			NewStructureRecord(NewNumberFromString("123"), NewString("hello")),
-		}).MutateAsHead(NewParamChain(slc.Pure([]Node{NewObject(NewTag("get"), []Node{NewNumberFromString("999")})})), nil)
+		}).MutateAsHead(NewParamChain(slc.Pure([]Node{NewOneLayerObject(NewTag("get"), []Node{NewNumberFromString("999")})})), nil)
 
 		assert.True(t, result.IsEmpty())
 	})
@@ -80,7 +80,7 @@ func TestStructure_MutateAsHead(t *testing.T) {
 	t.Run("should process set tag", func(t *testing.T) {
 		result := NewStructureFromRecords([]StructureRecord{
 			NewStructureRecord(NewNumberFromString("123"), NewString("hello")),
-		}).MutateAsHead(NewParamChain(slc.Pure([]Node{NewObject(NewTag("set"), []Node{NewNumberFromString("123"), NewString("f")})})), nil).Value()
+		}).MutateAsHead(NewParamChain(slc.Pure([]Node{NewOneLayerObject(NewTag("set"), []Node{NewNumberFromString("123"), NewString("f")})})), nil).Value()
 
 		expected := NewStructureFromRecords([]StructureRecord{
 			NewStructureRecord(NewNumberFromString("123"), NewString("f")),
@@ -91,7 +91,7 @@ func TestStructure_MutateAsHead(t *testing.T) {
 	t.Run("should not mutate when set with unknown key", func(t *testing.T) {
 		result := NewStructureFromRecords([]StructureRecord{
 			NewStructureRecord(NewNumberFromString("123"), NewString("hello")),
-		}).MutateAsHead(NewParamChain(slc.Pure([]Node{NewObject(NewTag("set"), []Node{NewNumberFromString("999"), NewString("f")})})), nil)
+		}).MutateAsHead(NewParamChain(slc.Pure([]Node{NewOneLayerObject(NewTag("set"), []Node{NewNumberFromString("999"), NewString("f")})})), nil)
 
 		assert.True(t, result.IsEmpty())
 	})

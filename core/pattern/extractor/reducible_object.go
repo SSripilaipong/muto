@@ -23,7 +23,7 @@ func (t ReducibleObject) Extract(node base.Node) optional.Of[*parameter.Paramete
 	case base.IsObjectNode(node):
 		return t.extractObject(base.UnsafeNodeToObject(node))
 	case base.IsClassNode(node):
-		return t.extractObject(base.NewObject(node, nil))
+		return t.extractObject(base.NewObject(node, base.NewParamChain(nil)))
 	}
 	return optional.Empty[*parameter.Parameter]()
 }

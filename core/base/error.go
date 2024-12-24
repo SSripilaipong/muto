@@ -1,5 +1,5 @@
 package base
 
 func NewErrorWithMessage(msg string) Object {
-	return NewNamedObject("error", []Node{NewString(msg)})
+	return NewNamedOneLayerObject("error", []Node{NewString(msg)})
 }

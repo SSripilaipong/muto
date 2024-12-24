@@ -33,12 +33,11 @@ func (obj Object) ParamChain() ParamChain {
 }
 
 func (obj Object) MutateAsHead(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
-	children := params.DirectParams()
 	newHead, ok := obj.Mutate(mutation).Return()
 	if ok {
-		return optional.Value[Node](NewObject(newHead, children))
+		return optional.Value[Node](NewObject(newHead, params))
 	}
-	return optional.Value[Node](obj.AppendChildren(children))
+	return optional.Value[Node](obj.AppendChildren(params.DirectParams()))
 }
 
 func (obj Object) AppendChildren(children []Node) Object {
@@ -98,12 +97,16 @@ func (obj Object) BubbleUp() optional.Of[Node] {
 	return optional.Empty[Node]()
 }
 
-func NewObject(class Node, children []Node) Object {
-	return Object{class: class, children: children}
+func NewObject(class Node, params ParamChain) Object {
+	return Object{class: class, children: params.DirectParams()}
 }
 
-func NewNamedObject(name string, children []Node) Object {
-	return Object{class: NewClass(name), children: children}
+func NewOneLayerObject(class Node, children []Node) Object {
+	return NewObject(class, NewParamChain(slc.Pure(children)))
+}
+
+func NewNamedOneLayerObject(name string, children []Node) Object {
+	return NewOneLayerObject(NewClass(name), children)
 }
 
 func objectChildrenToString(obj Object) string {

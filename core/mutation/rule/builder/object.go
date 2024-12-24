@@ -32,7 +32,7 @@ func (b objectBuilder) Build(param *parameter.Parameter) optional.Of[base.Node] 
 		return optional.Empty[base.Node]()
 	}
 
-	return optional.Value[base.Node](base.NewObject(head, children))
+	return optional.Value[base.Node](base.NewObject(head, base.NewParamChain(slc.Pure(children))))
 }
 
 func buildObjectParam(p stResult.Param) func(mapping *parameter.Parameter) optional.Of[[]base.Node] {

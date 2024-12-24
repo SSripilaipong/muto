@@ -1,6 +1,9 @@
 package base
 
-import "github.com/SSripilaipong/muto/common/optional"
+import (
+	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/muto/common/slc"
+)
 
 type NameWiseMutation interface {
 	Active(name string, obj Object) optional.Of[Node]
@@ -30,6 +33,6 @@ func ProcessMutationResultWithChildren(r optional.Of[Node], otherChildren []Node
 		if len(otherChildren) == 0 {
 			return optional.Value(result)
 		}
-		return optional.Value[Node](NewObject(result, otherChildren))
+		return optional.Value[Node](NewObject(result, NewParamChain(slc.Pure(otherChildren))))
 	}
 }

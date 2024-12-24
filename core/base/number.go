@@ -24,7 +24,7 @@ func (Number) NodeType() NodeType { return NodeTypeNumber }
 func (n Number) MutateAsHead(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
 	children := params.DirectParams()
 	if len(children) > 0 {
-		newChildren := mutateChildren(children, mutation)
+		newChildren := mutateChildren(params, mutation)
 		if newChildren.IsEmpty() {
 			return optional.Empty[Node]()
 		}

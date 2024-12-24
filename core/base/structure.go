@@ -22,7 +22,7 @@ func (Structure) NodeType() NodeType { return NodeTypeStructure }
 func (s Structure) MutateAsHead(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
 	children := params.DirectParams()
 	if len(children) > 0 {
-		newChildren := mutateChildren(children, mutation)
+		newChildren := mutateChildren(params, mutation)
 		if newChildren.IsNotEmpty() {
 			return optional.Value[Node](NewObject(s, newChildren.Value()))
 		}

@@ -16,7 +16,7 @@ func New(mutation coreMutation.TopLevelMutation) Program {
 }
 
 func (p Program) InitialObject() base.Object {
-	return base.NewNamedObject("main", nil)
+	return base.NewNamedOneLayerObject("main", nil)
 }
 
 func (p Program) MutateUntilTerminated(node base.Node) base.Node {
