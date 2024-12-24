@@ -19,7 +19,8 @@ func NewStructureFromRecords(records []StructureRecord) Structure {
 
 func (Structure) NodeType() NodeType { return NodeTypeStructure }
 
-func (s Structure) MutateAsHead(children []Node, mutation NameWiseMutation) optional.Of[Node] {
+func (s Structure) MutateAsHead(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
+	children := params.DirectParams()
 	if len(children) > 0 {
 		newChildren := mutateChildren(children, mutation)
 		if newChildren.IsNotEmpty() {

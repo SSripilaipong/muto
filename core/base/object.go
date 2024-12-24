@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/muto/common/slc"
 )
 
 type Object struct {
@@ -20,14 +21,19 @@ func (obj Object) ReplaceChild(i int, n Node) Object {
 }
 
 func (obj Object) Mutate(mutation NameWiseMutation) optional.Of[Node] {
-	r, ok := obj.Head().MutateAsHead(obj.Children(), mutation).Return()
+	r, ok := obj.Head().MutateAsHead(obj.ParamChain(), mutation).Return()
 	if ok {
 		return optional.New(r, ok)
 	}
 	return obj.BubbleUp()
 }
 
-func (obj Object) MutateAsHead(children []Node, mutation NameWiseMutation) optional.Of[Node] {
+func (obj Object) ParamChain() ParamChain {
+	return NewParamChain(slc.Pure(obj.Children()))
+}
+
+func (obj Object) MutateAsHead(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
+	children := params.DirectParams()
 	newHead, ok := obj.Mutate(mutation).Return()
 	if ok {
 		return optional.Value[Node](NewObject(newHead, children))

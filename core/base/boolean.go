@@ -16,7 +16,8 @@ func NewBoolean(x bool) Boolean {
 
 func (Boolean) NodeType() NodeType { return NodeTypeBoolean }
 
-func (b Boolean) MutateAsHead(children []Node, mutation NameWiseMutation) optional.Of[Node] {
+func (b Boolean) MutateAsHead(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
+	children := params.DirectParams()
 	if len(children) > 0 {
 		newChildren := mutateChildren(children, mutation)
 		if newChildren.IsEmpty() {

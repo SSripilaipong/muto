@@ -17,10 +17,11 @@ func (c Class) NodeType() NodeType {
 }
 
 func (c Class) Mutate(mutation NameWiseMutation) optional.Of[Node] {
-	return c.MutateAsHead(nil, mutation)
+	return c.MutateAsHead(NewParamChain(nil), mutation)
 }
 
-func (c Class) MutateAsHead(children []Node, mutation NameWiseMutation) optional.Of[Node] {
+func (c Class) MutateAsHead(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
+	children := params.DirectParams()
 	if result, ok := c.ActivelyMutateWithObjMutateFunc(children, mutation).Return(); ok {
 		return optional.Value(result)
 	}
