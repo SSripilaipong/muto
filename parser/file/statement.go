@@ -5,6 +5,7 @@ import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/tuple"
 	psBase "github.com/SSripilaipong/muto/parser/base"
+	"github.com/SSripilaipong/muto/syntaxtree"
 	"github.com/SSripilaipong/muto/syntaxtree/base"
 )
 
@@ -17,6 +18,6 @@ var aggregateStatements = tuple.Fn2(func(s base.Statement, ss []base.Statement) 
 })
 
 var statement = ps.RsFirst(
-	ps.RsMap(base.ActiveRuleToStatement, ActiveRule),
-	ps.RsMap(base.RuleToStatement, Rule),
+	ps.RsMap(syntaxtree.ActiveRuleToStatement, ActiveRule),
+	ps.RsMap(syntaxtree.RuleToStatement, Rule),
 )

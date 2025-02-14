@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/SSripilaipong/muto/common/fn"
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/common/strutil"
@@ -17,15 +18,14 @@ func NewStructureFromRecords(records []StructureRecord) Structure {
 	return Structure{records: records}
 }
 
+var NewStructureObjectFromRecords = fn.Compose(NewPrimitiveObject, NewStructureFromRecords)
+
 func (Structure) NodeType() NodeType { return NodeTypeStructure }
 
 func (s Structure) MutateAsHead(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
-	children := params.DirectParams()
-	if len(children) > 0 {
-		newChildren := mutateChildren(params, mutation)
-		if newChildren.IsNotEmpty() {
-			return optional.Value[Node](NewObject(s, newChildren.Value()))
-		}
+	newChildren := mutateParamChain(params, mutation)
+	if newChildren.IsNotEmpty() {
+		return optional.Value[Node](NewCompoundObject(s, newChildren.Value()))
 	}
 
 	return unaryOp(func(x Node) optional.Of[Node] {
@@ -39,15 +39,15 @@ func (s Structure) MutateAsHead(params ParamChain, mutation NameWiseMutation) op
 		}
 
 		return s.processTag(UnsafeNodeToTag(head), obj.Children())
-	})(children)
+	})(params)
 }
 
-func (s Structure) processTag(tag Tag, children []Node) optional.Of[Node] {
+func (s Structure) processTag(tag Tag, params []Node) optional.Of[Node] {
 	switch tag.Name() {
 	case GetTag.Name():
-		return s.processGetCommand(children)
+		return s.processGetCommand(params)
 	case SetTag.Name():
-		return s.processSetCommand(children)
+		return s.processSetCommand(params)
 	}
 	return optional.Empty[Node]()
 }

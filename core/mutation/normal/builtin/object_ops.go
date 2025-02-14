@@ -28,13 +28,13 @@ func (t *tryMutator) MutateByName(name string, obj base.Object) optional.Of[base
 	return t.Mutate(obj)
 }
 
-func (t *tryMutator) Mutate(obj base.Object) optional.Of[base.Node] {
+func (t *tryMutator) Mutate(obj base.Object) optional.Of[base.Node] { // TODO check if it still works with param chain
 	children := obj.Children()
 	if len(children) < 2 {
 		return optional.Empty[base.Node]()
 	}
-	subject := base.NewObject(children[0], base.NewParamChain(slc.Pure(children[1:])))
-	if bb, ok := subject.BubbleUp().Return(); ok {
+	subject := base.NewCompoundObject(children[0], base.NewParamChain(slc.Pure(children[1:])))
+	if bb, ok := subject.BubbleUp().Return(); ok { // why it uses bubble up here?
 		if base.IsObjectNode(bb) {
 			subject = base.UnsafeNodeToObject(bb)
 		} else {
@@ -43,9 +43,9 @@ func (t *tryMutator) Mutate(obj base.Object) optional.Of[base.Node] {
 	}
 	result := subject.Mutate(newNormalMutationFunc(t.globalMutator.MutateByName))
 	if result.IsEmpty() {
-		return optional.Value[base.Node](base.NewObject(base.EmptyTag, base.NewParamChain(slc.Pure([]base.Node{}))))
+		return optional.Value[base.Node](base.NewCompoundObject(base.EmptyTag, base.NewParamChain(slc.Pure([]base.Node{}))))
 	}
-	return optional.Value[base.Node](base.NewObject(base.ValueTag, base.NewParamChain(slc.Pure([]base.Node{result.Value()}))))
+	return optional.Value[base.Node](base.NewCompoundObject(base.ValueTag, base.NewParamChain(slc.Pure([]base.Node{result.Value()}))))
 }
 
 func (t *tryMutator) SetGlobalMutator(m mutator.NameBasedMutator) {

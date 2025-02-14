@@ -61,6 +61,7 @@ func TestStructure_MutateAsHead(t *testing.T) {
 	})
 
 	t.Run("should process get tag", func(t *testing.T) {
+		// result: {123: "hello"} (.get 123)
 		result := NewStructureFromRecords([]StructureRecord{
 			NewStructureRecord(NewNumberFromString("123"), NewString("hello")),
 		}).MutateAsHead(NewParamChain(slc.Pure([]Node{NewOneLayerObject(NewTag("get"), []Node{NewNumberFromString("123")})})), nil).Value()

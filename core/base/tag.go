@@ -3,6 +3,7 @@ package base
 import (
 	"fmt"
 
+	"github.com/SSripilaipong/muto/common/fn"
 	"github.com/SSripilaipong/muto/common/optional"
 )
 
@@ -15,18 +16,16 @@ func NewTag(name string) Node {
 	return Tag{name: name}
 }
 
+var NewTagObject = fn.Compose(NewPrimitiveObject, NewTag)
+
 func (Tag) NodeType() NodeType { return NodeTypeTag }
 
 func (t Tag) MutateAsHead(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
-	children := params.DirectParams()
-	if len(children) > 0 {
-		newChildren := mutateChildren(params, mutation)
-		if newChildren.IsEmpty() {
-			return optional.Empty[Node]()
-		}
-		return optional.Value[Node](NewObject(t, newChildren.Value()))
+	newChildren := mutateParamChain(params, mutation)
+	if newChildren.IsNotEmpty() {
+		return optional.Value[Node](NewCompoundObject(t, newChildren.Value()))
 	}
-	return optional.Value[Node](t)
+	return optional.Empty[Node]()
 }
 
 func (t Tag) Name() string {

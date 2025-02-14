@@ -9,30 +9,18 @@ import (
 )
 
 func TestObject_WithObjectHead(t *testing.T) {
-	t.Run("should mutate head", func(t *testing.T) {
-		node := NewOneLayerObject(NewNamedOneLayerObject("hello", nil), nil)
+	t.Run("should mutate from mutation function", func(t *testing.T) {
+		node := NewCompoundObject(NewClass("hello"), NewParamChain([][]Node{{}}))
 		result := node.Mutate(newNormalMutationForTest(func(s string, object Object) optional.Of[Node] {
 			return optional.Value[Node](NewNamedOneLayerObject("world", nil))
 		}))
-		assert.Equal(t, NewOneLayerObject(NewNamedOneLayerObject("world", nil), nil), result.Value())
-	})
-
-	t.Run("should bubble up terminated head", func(t *testing.T) {
-		node := NewOneLayerObject(NewNamedOneLayerObject("hello", nil), nil)
-		result := node.Mutate(newNormalMutationForTest(func(s string, object Object) optional.Of[Node] { return optional.Empty[Node]() }))
-		assert.Equal(t, NewNamedOneLayerObject("hello", nil), result.Value())
-	})
-
-	t.Run("should bubble up terminated head with children", func(t *testing.T) {
-		node := NewOneLayerObject(NewNamedOneLayerObject("hello", []Node{NewString("a"), NewString("b")}), nil)
-		result := node.Mutate(newNormalMutationForTest(func(s string, object Object) optional.Of[Node] { return optional.Empty[Node]() }))
-		assert.Equal(t, NewNamedOneLayerObject("hello", []Node{NewString("a"), NewString("b")}), result.Value())
+		assert.Equal(t, NewCompoundObject(NewClass("world"), NewParamChain([][]Node{nil})), result.Value())
 	})
 
 	t.Run("should bubble up data to head to data node when children not exist", func(t *testing.T) {
 		node := NewOneLayerObject(NewString("abc"), nil)
 		result := node.Mutate(nil)
-		assert.Equal(t, NewString("abc"), result.Value())
+		assert.True(t, result.IsEmpty())
 	})
 }
 

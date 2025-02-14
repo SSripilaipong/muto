@@ -2,7 +2,6 @@ package builder
 
 import (
 	"github.com/SSripilaipong/muto/common/optional"
-	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/core/base"
 	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
 	"github.com/SSripilaipong/muto/core/pattern/parameter"
@@ -21,14 +20,11 @@ func (x withRemainingChildren) Build(mutation *parameter.Parameter) optional.Of[
 	if !ok {
 		return optional.Empty[base.Node]()
 	}
-	if mutation == nil || len(mutation.RemainingChildren()) == 0 {
+	if mutation == nil || mutation.RemainingParamChain().Size() == 0 {
 		return optional.Value(node)
 	}
-	if base.IsClassNode(node) {
-		return optional.Value[base.Node](base.NewObject(base.UnsafeNodeToClass(node), base.NewParamChain(slc.Pure(mutation.RemainingChildren()))))
-	}
 	if base.IsObjectNode(node) {
-		return optional.Value[base.Node](base.UnsafeNodeToObject(node).AppendChildren(mutation.RemainingChildren()))
+		return optional.Value[base.Node](base.UnsafeNodeToObject(node).ChainParams(mutation.RemainingParamChain()))
 	}
-	return optional.Value[base.Node](base.NewObject(node, base.NewParamChain(slc.Pure(mutation.RemainingChildren()))))
+	return optional.Value[base.Node](base.NewCompoundObject(node, mutation.RemainingParamChain()))
 }

@@ -1,6 +1,7 @@
 package base
 
 import (
+	"github.com/SSripilaipong/muto/common/fn"
 	"github.com/SSripilaipong/muto/common/optional"
 )
 
@@ -17,7 +18,7 @@ func (c Class) NodeType() NodeType {
 }
 
 func (c Class) Mutate(mutation NameWiseMutation) optional.Of[Node] {
-	return c.MutateAsHead(NewParamChain(nil), mutation)
+	return c.MutateAsHead(NewParamChain([][]Node{{}}), mutation) // act as a one-layered object with no param
 }
 
 func (c Class) MutateAsHead(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
@@ -28,16 +29,15 @@ func (c Class) MutateAsHead(params ParamChain, mutation NameWiseMutation) option
 }
 
 func (c Class) ActivelyMutateWithObjMutateFunc(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
-	return mutation.Active(c.Name(), NewObject(c, params))
+	return mutation.Active(c.Name(), NewCompoundObject(c, params))
 }
 
 func (c Class) MutateWithObjMutateFunc(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
-	newChildren := mutateChildren(params, mutation)
+	newChildren := mutateParamChain(params, mutation)
 	if newChildren.IsNotEmpty() {
-		return optional.Value[Node](NewObject(c, newChildren.Value()))
+		return optional.Value[Node](NewCompoundObject(c, newChildren.Value()))
 	}
-
-	return mutation.Normal(c.Name(), NewObject(c, params))
+	return mutation.Normal(c.Name(), NewCompoundObject(c, params))
 }
 
 func (c Class) Name() string {
@@ -59,6 +59,8 @@ func (c Class) MutoString() string {
 func NewClass(name string) Class {
 	return Class{name: name}
 }
+
+var NewClassObject = fn.Compose(NewPrimitiveObject, NewClass)
 
 func UnsafeNodeToClass(obj Node) Class {
 	return obj.(Class)

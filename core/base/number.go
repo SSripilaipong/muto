@@ -3,6 +3,7 @@ package base
 import (
 	"fmt"
 
+	"github.com/SSripilaipong/muto/common/fn"
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base/datatype"
 )
@@ -19,18 +20,17 @@ func NewNumberFromString(s string) Node {
 	return Number{value: datatype.NewNumber(s)}
 }
 
+var NewNumberObject = fn.Compose(NewPrimitiveObject, NewNumber)
+var NewNumberObjectFromString = fn.Compose(NewPrimitiveObject, NewNumberFromString)
+
 func (Number) NodeType() NodeType { return NodeTypeNumber }
 
 func (n Number) MutateAsHead(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
-	children := params.DirectParams()
-	if len(children) > 0 {
-		newChildren := mutateChildren(params, mutation)
-		if newChildren.IsEmpty() {
-			return optional.Empty[Node]()
-		}
-		return optional.Value[Node](NewObject(n, newChildren.Value()))
+	newChildren := mutateParamChain(params, mutation)
+	if newChildren.IsNotEmpty() {
+		return optional.Value[Node](NewCompoundObject(n, newChildren.Value()))
 	}
-	return optional.Value[Node](n)
+	return optional.Empty[Node]()
 }
 
 func (n Number) Value() datatype.Number {

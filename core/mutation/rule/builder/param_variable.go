@@ -7,14 +7,14 @@ import (
 	st "github.com/SSripilaipong/muto/syntaxtree/base"
 )
 
-type variableBuilder struct {
+type paramVariableBuilder struct {
 	name string
 }
 
-func newVariableBuilder(variable st.Variable) variableBuilder {
-	return variableBuilder{name: variable.Name()}
+func newParamVariableBuilder(variable st.Variable) paramVariableBuilder {
+	return paramVariableBuilder{name: variable.Name()}
 }
 
-func (b variableBuilder) Build(mutation *parameter.Parameter) optional.Of[base.Node] {
+func (b paramVariableBuilder) Build(mutation *parameter.Parameter) optional.Of[base.Node] {
 	return mutation.VariableValue(b.name)
 }

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strconv"
 
-	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
@@ -20,8 +19,8 @@ func (String) RuleResultNodeType() stResult.NodeType { return stResult.NodeTypeS
 
 func (String) ObjectParamType() stResult.ParamType { return stResult.ParamTypeSingle }
 
-func (String) RulePatternParamType() stPattern.ParamType {
-	return stPattern.ParamTypeString
+func (String) RulePatternParamType() PatternParamType {
+	return PatternParamTypeString
 }
 
 func (s String) Value() string {
@@ -40,6 +39,6 @@ func UnsafeRuleResultToString(r stResult.Node) String {
 	return r.(String)
 }
 
-func UnsafeRuleParamPatternToString(r stPattern.Param) String {
+func UnsafeRuleParamPatternToString(r PatternParam) String {
 	return r.(String)
 }

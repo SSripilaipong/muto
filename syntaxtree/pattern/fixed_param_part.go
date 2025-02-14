@@ -1,19 +1,21 @@
 package pattern
 
-type FixedParamPart []Param
+import "github.com/SSripilaipong/muto/syntaxtree/base"
+
+type FixedParamPart []base.PatternParam
 
 func (FixedParamPart) RulePatternParamPartType() ParamPartType {
 	return ParamPartTypeFixed
 }
 
-func ParamsToFixedParamPart(xs []Param) FixedParamPart {
+func ParamsToFixedParamPart(xs []base.PatternParam) FixedParamPart {
 	return xs
 }
 
-func ParamsToParamPart(xs []Param) ParamPart {
+func ParamsToParamPart(xs []base.PatternParam) ParamPart {
 	return ParamsToFixedParamPart(xs)
 }
 
-func UnsafeParamPartToParams(p ParamPart) []Param {
+func UnsafeParamPartToParams(p ParamPart) []base.PatternParam {
 	return p.(FixedParamPart)
 }

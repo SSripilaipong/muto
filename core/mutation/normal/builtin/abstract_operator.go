@@ -7,31 +7,40 @@ import (
 
 func unaryOp(f func(x base.Node) optional.Of[base.Node]) func(t base.Object) optional.Of[base.Node] {
 	return func(t base.Object) optional.Of[base.Node] {
-		children := t.Children()
-		if len(children) == 0 {
+		params := t.ParamChain()
+		innerChildren := params.DirectParams()
+		if len(innerChildren) < 1 {
 			return optional.Empty[base.Node]()
 		}
-		return base.ProcessMutationResultWithChildren(f(children[0]), children[1:])
+
+		remainingParams := params.SliceFromNodeOrEmpty(0, 1)
+		return base.ProcessMutationResultWithParamChain(f(innerChildren[0]), remainingParams)
 	}
 }
 
 func binaryOp(f func(x, y base.Node) optional.Of[base.Node]) func(t base.Object) optional.Of[base.Node] {
 	return func(t base.Object) optional.Of[base.Node] {
-		children := t.Children()
-		if len(children) < 2 {
+		params := t.ParamChain()
+		innerChildren := params.DirectParams()
+		if len(innerChildren) < 2 {
 			return optional.Empty[base.Node]()
 		}
-		return base.ProcessMutationResultWithChildren(f(children[0], children[1]), children[2:])
+
+		remainingParams := params.SliceFromNodeOrEmpty(0, 2)
+		return base.ProcessMutationResultWithParamChain(f(innerChildren[0], innerChildren[1]), remainingParams)
 	}
 }
 
 func leftVariadicUnaryOp(f func(xs []base.Node, x base.Node) optional.Of[base.Node]) func(t base.Object) optional.Of[base.Node] {
 	return func(t base.Object) optional.Of[base.Node] {
-		children := t.Children()
-		length := len(children)
+		params := t.ParamChain()
+		innerChildren := params.DirectParams()
+		length := len(innerChildren)
 		if length < 1 {
 			return optional.Empty[base.Node]()
 		}
-		return base.ProcessMutationResultWithChildren(f(children[:length-1], children[length-1]), []base.Node{})
+
+		remainingParams := base.NewParamChain(nil).AppendAll(params.SliceFromOrEmpty(1))
+		return base.ProcessMutationResultWithParamChain(f(innerChildren[:length-1], innerChildren[length-1]), remainingParams)
 	}
 }

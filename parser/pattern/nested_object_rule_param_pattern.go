@@ -4,10 +4,11 @@ import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/tuple"
 	psBase "github.com/SSripilaipong/muto/parser/base"
+	"github.com/SSripilaipong/muto/syntaxtree/base"
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
-func nestedObjectRuleParamPattern(xs []psBase.Character) []tuple.Of2[stPattern.Param, []psBase.Character] {
+func nestedObjectRuleParamPattern(xs []psBase.Character) []tuple.Of2[base.PatternParam, []psBase.Character] {
 	anonymousHead := ps.Or(
 		psBase.BooleanPatternParam,
 		psBase.StringPatternParam,
@@ -16,11 +17,11 @@ func nestedObjectRuleParamPattern(xs []psBase.Character) []tuple.Of2[stPattern.P
 		psBase.InParentheses(nestedObjectRuleParamPattern),
 	)
 
-	castAnonymousHead := func(head stPattern.Param) stPattern.Param {
-		return stPattern.NewAnonymousRule(head, stPattern.ParamsToFixedParamPart([]stPattern.Param{}))
+	castAnonymousHead := func(head base.PatternParam) base.PatternParam {
+		return stPattern.NewAnonymousRule(head, stPattern.ParamsToFixedParamPart([]base.PatternParam{}))
 	}
 
-	castAnonymousObjectWithParamPart := tuple.Fn2(func(head stPattern.Param, paramPart stPattern.ParamPart) stPattern.Param {
+	castAnonymousObjectWithParamPart := tuple.Fn2(func(head base.PatternParam, paramPart stPattern.ParamPart) base.PatternParam {
 		return stPattern.NewAnonymousRule(head, paramPart)
 	})
 

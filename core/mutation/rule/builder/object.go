@@ -1,6 +1,8 @@
 package builder
 
 import (
+	"slices"
+
 	"github.com/SSripilaipong/muto/common/fn"
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/common/slc"
@@ -11,28 +13,46 @@ import (
 )
 
 type objectBuilder struct {
-	buildHead     mutator.Builder
-	buildChildren func(mapping *parameter.Parameter) optional.Of[[]base.Node]
+	buildHead       mutator.Builder
+	buildParamChain func(mapping *parameter.Parameter) optional.Of[base.ParamChain]
 }
 
 func newObjectBuilder(obj stResult.Object) objectBuilder {
+	var params []stResult.ParamPart
+	var head stResult.Node = obj
+	for stResult.IsNodeTypeObject(head) {
+		headObj := stResult.UnsafeNodeToObject(head)
+		params = append(params, headObj.ParamPart())
+		head = headObj.Head()
+	}
+	slices.Reverse(params)
+
 	return objectBuilder{
-		buildHead:     New(obj.Head()),
-		buildChildren: buildChildren(obj.ParamPart()),
+		buildHead:       buildHead(head),
+		buildParamChain: buildParamChain(params),
 	}
 }
 
 func (b objectBuilder) Build(param *parameter.Parameter) optional.Of[base.Node] {
-	children, ok := b.buildChildren(param).Return()
-	if !ok {
-		return optional.Empty[base.Node]()
-	}
-	head, hasHead := b.buildHead.Build(param).Return()
+	paramWithoutRemainingParamChain := param.SetRemainingParamChain(base.NewParamChain(nil))
+
+	head, hasHead := b.buildHead.Build(paramWithoutRemainingParamChain).Return()
 	if !hasHead {
 		return optional.Empty[base.Node]()
 	}
 
-	return optional.Value[base.Node](base.NewObject(head, base.NewParamChain(slc.Pure(children))))
+	paramChain, ok := b.buildParamChain(paramWithoutRemainingParamChain).Return()
+	if !ok {
+		return optional.Empty[base.Node]()
+	}
+
+	if base.IsObjectNode(head) {
+		if base.IsCompoundObject(base.UnsafeNodeToObject(head)) {
+			return optional.Value[base.Node](base.UnsafeNodeToObject(head).AppendParams(paramChain))
+		}
+		panic("not implemented")
+	}
+	return optional.Value[base.Node](base.NewCompoundObject(head, paramChain))
 }
 
 func buildObjectParam(p stResult.Param) func(mapping *parameter.Parameter) optional.Of[[]base.Node] {

@@ -12,6 +12,15 @@ func Fold[A, T any](f func(A, T) A) func(zero A) func(xs []T) A {
 	}
 }
 
+func Reduce[T any](f func(T, T) T) func(xs []T) T {
+	return func(xs []T) (z T) {
+		if len(xs) == 0 {
+			return
+		}
+		return Fold(f)(xs[0])(xs[1:])
+	}
+}
+
 func FoldGroup[A, T any, G comparable](merge func(A, T) A, group func(T) G) func(zero A) func(xs []T) []A {
 	return func(zero A) func(xs []T) []A {
 		return func(xs []T) []A {

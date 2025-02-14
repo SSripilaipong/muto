@@ -17,5 +17,5 @@ func NewFromStatements(ss []st.Statement) TopLevelMutation {
 }
 
 func (m TopLevelMutation) Mutate(x base.MutableNode) optional.Of[base.Node] {
-	return topLevelObjectFlatten(x.Mutate(m.nameWiseMutation))
+	return x.Mutate(m.nameWiseMutation)
 }

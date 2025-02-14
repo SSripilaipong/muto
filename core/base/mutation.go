@@ -2,7 +2,6 @@ package base
 
 import (
 	"github.com/SSripilaipong/muto/common/optional"
-	"github.com/SSripilaipong/muto/common/slc"
 )
 
 type NameWiseMutation interface {
@@ -10,16 +9,19 @@ type NameWiseMutation interface {
 	Normal(name string, obj Object) optional.Of[Node]
 }
 
-func unaryOp(f func(x Node) optional.Of[Node]) func(children []Node) optional.Of[Node] {
-	return func(children []Node) optional.Of[Node] {
-		if len(children) == 0 {
+func unaryOp(f func(x Node) optional.Of[Node]) func(params ParamChain) optional.Of[Node] {
+	return func(params ParamChain) optional.Of[Node] {
+		innerChildren := params.DirectParams()
+		if len(innerChildren) < 1 {
 			return optional.Empty[Node]()
 		}
-		return ProcessMutationResultWithChildren(f(children[0]), children[1:])
+
+		remainingParams := params.SliceFromNodeOrEmpty(0, 1)
+		return ProcessMutationResultWithParamChain(f(innerChildren[0]), remainingParams)
 	}
 }
 
-func ProcessMutationResultWithChildren(r optional.Of[Node], otherChildren []Node) optional.Of[Node] {
+func ProcessMutationResultWithParamChain(r optional.Of[Node], remainingChain ParamChain) optional.Of[Node] {
 	result, ok := r.Return()
 	if !ok {
 		return optional.Empty[Node]()
@@ -28,11 +30,11 @@ func ProcessMutationResultWithChildren(r optional.Of[Node], otherChildren []Node
 	switch {
 	case IsObjectNode(result):
 		obj := UnsafeNodeToObject(result)
-		return optional.Value[Node](obj.AppendChildren(otherChildren))
+		return optional.Value[Node](obj.ChainParams(remainingChain))
 	default:
-		if len(otherChildren) == 0 {
+		if remainingChain.Size() == 0 {
 			return optional.Value(result)
 		}
-		return optional.Value[Node](NewObject(result, NewParamChain(slc.Pure(otherChildren))))
+		return optional.Value[Node](NewCompoundObject(result, remainingChain))
 	}
 }
