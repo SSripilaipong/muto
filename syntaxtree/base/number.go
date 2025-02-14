@@ -2,7 +2,6 @@ package base
 
 import (
 	"github.com/SSripilaipong/muto/core/base/datatype"
-	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
@@ -14,8 +13,8 @@ func (Number) RuleResultNodeType() stResult.NodeType { return stResult.NodeTypeN
 
 func (Number) ObjectParamType() stResult.ParamType { return stResult.ParamTypeSingle }
 
-func (Number) RulePatternParamType() stPattern.ParamType {
-	return stPattern.ParamTypeNumber
+func (Number) RulePatternParamType() PatternParamType {
+	return PatternParamTypeNumber
 }
 
 func (n Number) Value() string {
@@ -34,6 +33,6 @@ func UnsafeRuleResultToNumber(p stResult.Node) Number {
 	return p.(Number)
 }
 
-func UnsafeRuleParamPatternToNumber(p stPattern.Param) Number {
+func UnsafeRuleParamPatternToNumber(p PatternParam) Number {
 	return p.(Number)
 }

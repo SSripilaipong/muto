@@ -28,7 +28,7 @@ func (p ImplicitRightVariadic) Extract(nodes []base.Node) optional.Of[*parameter
 	if len(nodes) > 0 {
 		param = p.ExactLeftPattern().Extract(nodes[:nLeft])
 	}
-	return optional.Fmap(parameter.WithRemainingChildren(nodes[nLeft:]))(param)
+	return optional.Fmap(parameter.AddRemainingParamChain(nodes[nLeft:]))(param)
 }
 
 func (p ImplicitRightVariadic) ExactLeftPattern() ExactNodeList {

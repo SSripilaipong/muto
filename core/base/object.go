@@ -9,48 +9,41 @@ import (
 )
 
 type Object struct {
-	class    Node
-	children []Node
+	class      Node
+	paramChain ParamChain
 }
 
 func (Object) NodeType() NodeType { return NodeTypeObject }
 
 func (obj Object) ReplaceChild(i int, n Node) Object {
-	obj.children[i] = n
+	obj.paramChain = obj.paramChain.ReplaceChild(0, i, n).Value() // assume no error TODO revise
 	return obj
 }
 
 func (obj Object) Mutate(mutation NameWiseMutation) optional.Of[Node] {
-	r, ok := obj.Head().MutateAsHead(obj.ParamChain(), mutation).Return()
-	if ok {
-		return optional.New(r, ok)
-	}
-	return obj.BubbleUp()
+	return obj.Head().MutateAsHead(obj.ParamChain(), mutation)
 }
 
 func (obj Object) ParamChain() ParamChain {
-	return NewParamChain(slc.Pure(obj.Children()))
+	return obj.paramChain
 }
 
-func (obj Object) MutateAsHead(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
-	newHead, ok := obj.Mutate(mutation).Return()
-	if ok {
-		return optional.Value[Node](NewObject(newHead, params))
-	}
-	return optional.Value[Node](obj.AppendChildren(params.DirectParams()))
+func (obj Object) MutateAsHead(ParamChain, NameWiseMutation) optional.Of[Node] {
+	panic("deprecated")
 }
 
 func (obj Object) AppendChildren(children []Node) Object {
-	obj.children = append(obj.children, children...)
+	obj.paramChain = obj.paramChain.AppendChildrenMostOuter(children)
+	return obj
+}
+
+func (obj Object) ChainParams(params ParamChain) Object {
+	obj.paramChain = obj.paramChain.Chain(params)
 	return obj
 }
 
 func (obj Object) Children() []Node {
-	return obj.children
-}
-
-func (obj Object) Explode() []Node {
-	return append([]Node{obj.Head()}, obj.Children()...)
+	return obj.ParamChain().DirectParams()
 }
 
 func (obj Object) Head() Node {
@@ -61,7 +54,7 @@ func (obj Object) Equals(x Object) bool {
 	if !NodeEqual(obj.Head(), x.Head()) {
 		return false
 	}
-	if len(obj.Children())+len(x.Children()) == 0 {
+	if obj.ParamChain().TotalNodes()+x.ParamChain().TotalNodes() == 0 {
 		return true
 	}
 	return objectChildrenEqual(obj.Children(), x.Children())
@@ -98,7 +91,7 @@ func (obj Object) BubbleUp() optional.Of[Node] {
 }
 
 func NewObject(class Node, params ParamChain) Object {
-	return Object{class: class, children: params.DirectParams()}
+	return Object{class: class, paramChain: params}
 }
 
 func NewOneLayerObject(class Node, children []Node) Object {
@@ -115,14 +108,6 @@ func objectChildrenToString(obj Object) string {
 		children = append(children, fmt.Sprint(child))
 	}
 	return strings.Join(children, " ")
-}
-
-func ObjectToChildren(obj Object) []Node {
-	return obj.Children()
-}
-
-func ExplodeObject(obj Object) []Node {
-	return obj.Explode()
 }
 
 func UnsafeNodeToObject(x Node) Object {

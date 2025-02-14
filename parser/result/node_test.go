@@ -96,6 +96,18 @@ func TestNode_nestedHead(t *testing.T) {
 	})
 }
 
+func TestNode_nestedObject(t *testing.T) {
+	node := Node()
+
+	t.Run("should parse nested object with no params", func(t *testing.T) {
+		r := node(psBase.StringToCharTokens(`g (f)`))
+		expectedResult := stResult.ToNode(stResult.NewObject(base.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{
+			stResult.NewObject(base.NewClass("f"), stResult.ParamsToFixedParamPart([]stResult.Param{})),
+		})))
+		assert.Equal(t, psBase.SingleResult(expectedResult, []psBase.Character{}), psBase.AsParserResult(parsing.FilterSuccess(r)))
+	})
+}
+
 func TestNode_objectMultilines(t *testing.T) {
 	node := Node()
 

@@ -6,7 +6,6 @@ import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/tuple"
 	st "github.com/SSripilaipong/muto/syntaxtree/base"
-	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
@@ -34,5 +33,5 @@ var floatingNumber = tuple.Fn3(func(left string, _dot Character, right string) s
 	return fmt.Sprintf("%s.%s", left, right)
 })
 
-func numberToPatternParam(x st.Number) stPattern.Param { return x }
+func numberToPatternParam(x st.Number) st.PatternParam { return x }
 func numberToResultNode(x st.Number) stResult.Node     { return x }

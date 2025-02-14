@@ -16,7 +16,7 @@ func NamedRule() func(xs []psBase.Character) []tuple.Of2[stPattern.NamedRule, []
 		return stPattern.NewNamedRule(class.Name(), params)
 	})
 	castClass := func(class base.Class) stPattern.NamedRule {
-		return stPattern.NewNamedRule(class.Name(), stPattern.ParamsToFixedParamPart([]stPattern.Param{}))
+		return stPattern.NewNamedRule(class.Name(), stPattern.ParamsToFixedParamPart([]base.PatternParam{}))
 	}
 
 	return ps.First(
@@ -36,12 +36,12 @@ func variableRulePattern() func(xs []psBase.Character) []tuple.Of2[stPattern.Var
 func rulePatternParamPart() func([]psBase.Character) []tuple.Of2[stPattern.ParamPart, []psBase.Character] {
 
 	castVariadic := func(v psBase.VariadicVarNode) stPattern.ParamPart {
-		return stPattern.NewLeftVariadicParamPart(v.Name(), stPattern.ParamsToFixedParamPart([]stPattern.Param{}))
+		return stPattern.NewLeftVariadicParamPart(v.Name(), stPattern.ParamsToFixedParamPart([]base.PatternParam{}))
 	}
-	castLeftVariadic := tuple.Fn2(func(v psBase.VariadicVarNode, p []stPattern.Param) stPattern.ParamPart {
+	castLeftVariadic := tuple.Fn2(func(v psBase.VariadicVarNode, p []base.PatternParam) stPattern.ParamPart {
 		return stPattern.NewLeftVariadicParamPart(v.Name(), p)
 	})
-	castRightVariadic := tuple.Fn2(func(p []stPattern.Param, v psBase.VariadicVarNode) stPattern.ParamPart {
+	castRightVariadic := tuple.Fn2(func(p []base.PatternParam, v psBase.VariadicVarNode) stPattern.ParamPart {
 		return stPattern.NewRightVariadicParamPart(v.Name(), p)
 	})
 
@@ -54,8 +54,8 @@ func rulePatternParamPart() func([]psBase.Character) []tuple.Of2[stPattern.Param
 	)
 }
 
-func fixedRuleParamPattern() func(xs []psBase.Character) []tuple.Of2[stPattern.Param, []psBase.Character] {
-	var classToPatternParam = func(x base.Class) stPattern.Param {
+func fixedRuleParamPattern() func(xs []psBase.Character) []tuple.Of2[base.PatternParam, []psBase.Character] {
+	var classToPatternParam = func(x base.Class) base.PatternParam {
 		return stPattern.NewNamedRule(x.Value(), stPattern.FixedParamPart{})
 	}
 

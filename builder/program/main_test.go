@@ -10,6 +10,8 @@ import (
 )
 
 func TestBuildFromString(t *testing.T) {
+	t.Parallel()
+
 	t.Run("should resolve to string", func(t *testing.T) {
 		program := buildOrPanic(`main = "hello world"`)
 		assert.Equal(t, base.NewString("hello world"), execute(program))
@@ -21,8 +23,8 @@ func TestBuildFromString(t *testing.T) {
 	})
 
 	t.Run("should resolve to object", func(t *testing.T) {
-		program := BuildProgramFromString(`main = hello "world"`).Value()
-		assert.Equal(t, base.NewNamedOneLayerObject("hello", []base.Node{base.NewString("world")}), execute(program))
+		program := BuildProgramFromString(`main = hello "world" 123`).Value()
+		assert.Equal(t, base.NewNamedOneLayerObject("hello", []base.Node{base.NewString("world"), base.NewNumberFromString("123")}), execute(program))
 	})
 
 	t.Run("should resolve variable", func(t *testing.T) {
@@ -69,7 +71,7 @@ main = f 1 2 3
 
 	t.Run("should match nested variadic variable with size 0", func(t *testing.T) {
 		program := BuildProgramFromString(`g (f Xs...) = h Xs...
-main = g f
+main = g (f)
 `).Value()
 		assert.Equal(t, base.NewClass("h"), execute(program))
 	})
@@ -127,6 +129,13 @@ main = f (+ 1 999)
 		program := BuildProgramFromString(`@ f (g X) = X
 @ h = g 123
 main = f h
+`).Value()
+		assert.Equal(t, base.NewNumberFromString("123"), execute(program))
+	})
+
+	t.Run("should match variable rule pattern with anonymous object", func(t *testing.T) {
+		program := BuildProgramFromString(`f (G X) = X
+main = f ((g 456) 123)
 `).Value()
 		assert.Equal(t, base.NewNumberFromString("123"), execute(program))
 	})

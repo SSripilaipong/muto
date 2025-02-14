@@ -28,13 +28,13 @@ func (t *tryMutator) MutateByName(name string, obj base.Object) optional.Of[base
 	return t.Mutate(obj)
 }
 
-func (t *tryMutator) Mutate(obj base.Object) optional.Of[base.Node] {
+func (t *tryMutator) Mutate(obj base.Object) optional.Of[base.Node] { // TODO check if it still works with param chain
 	children := obj.Children()
 	if len(children) < 2 {
 		return optional.Empty[base.Node]()
 	}
 	subject := base.NewObject(children[0], base.NewParamChain(slc.Pure(children[1:])))
-	if bb, ok := subject.BubbleUp().Return(); ok {
+	if bb, ok := subject.BubbleUp().Return(); ok { // why it uses bubble up here?
 		if base.IsObjectNode(bb) {
 			subject = base.UnsafeNodeToObject(bb)
 		} else {

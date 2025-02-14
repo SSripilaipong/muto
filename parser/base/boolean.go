@@ -3,7 +3,6 @@ package base
 import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	st "github.com/SSripilaipong/muto/syntaxtree/base"
-	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
@@ -13,5 +12,5 @@ var BooleanPatternParam = ps.Map(booleanToPatternParam, Boolean)
 
 var BooleanResultNode = ps.Map(booleanToResultNode, Boolean)
 
-func booleanToPatternParam(x st.Boolean) stPattern.Param { return x }
+func booleanToPatternParam(x st.Boolean) st.PatternParam { return x }
 func booleanToResultNode(x st.Boolean) stResult.Node     { return x }

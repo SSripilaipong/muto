@@ -1,6 +1,8 @@
 package builder
 
 import (
+	"slices"
+
 	"github.com/SSripilaipong/muto/common/fn"
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/common/slc"
@@ -11,19 +13,28 @@ import (
 )
 
 type objectBuilder struct {
-	buildHead     mutator.Builder
-	buildChildren func(mapping *parameter.Parameter) optional.Of[[]base.Node]
+	buildHead       mutator.Builder
+	buildParamChain func(mapping *parameter.Parameter) optional.Of[base.ParamChain]
 }
 
 func newObjectBuilder(obj stResult.Object) objectBuilder {
+	var params []stResult.ParamPart
+	var head stResult.Node = obj
+	for stResult.IsNodeTypeObject(head) {
+		headObj := stResult.UnsafeNodeToObject(head)
+		params = append(params, headObj.ParamPart())
+		head = headObj.Head()
+	}
+	slices.Reverse(params)
+
 	return objectBuilder{
-		buildHead:     New(obj.Head()),
-		buildChildren: buildChildren(obj.ParamPart()),
+		buildHead:       buildNonObject(head),
+		buildParamChain: buildParamChain(params),
 	}
 }
 
 func (b objectBuilder) Build(param *parameter.Parameter) optional.Of[base.Node] {
-	children, ok := b.buildChildren(param).Return()
+	paramChain, ok := b.buildParamChain(param).Return()
 	if !ok {
 		return optional.Empty[base.Node]()
 	}
@@ -32,7 +43,7 @@ func (b objectBuilder) Build(param *parameter.Parameter) optional.Of[base.Node] 
 		return optional.Empty[base.Node]()
 	}
 
-	return optional.Value[base.Node](base.NewObject(head, base.NewParamChain(slc.Pure(children))))
+	return optional.Value[base.Node](base.NewObject(head, paramChain))
 }
 
 func buildObjectParam(p stResult.Param) func(mapping *parameter.Parameter) optional.Of[[]base.Node] {

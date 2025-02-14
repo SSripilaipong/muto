@@ -1,20 +1,22 @@
 package repl
 
-import "github.com/SSripilaipong/muto/syntaxtree/base"
+import (
+	"github.com/SSripilaipong/muto/syntaxtree"
+)
 
 type Rule struct {
 	statementTypeMixin
-	rule base.Rule
+	rule syntaxtree.Rule
 }
 
-func NewRule(rule base.Rule) Rule {
+func NewRule(rule syntaxtree.Rule) Rule {
 	return Rule{
 		statementTypeMixin: newStatementTypeMixin(StatementTypeRule),
 		rule:               rule,
 	}
 }
 
-func (r Rule) Rule() base.Rule {
+func (r Rule) Rule() syntaxtree.Rule {
 	return r.rule
 }
 

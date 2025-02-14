@@ -17,7 +17,7 @@ func (c Class) NodeType() NodeType {
 }
 
 func (c Class) Mutate(mutation NameWiseMutation) optional.Of[Node] {
-	return c.MutateAsHead(NewParamChain(nil), mutation)
+	return c.MutateAsHead(NewParamChain([][]Node{{}}), mutation) // act as an one-layer object with no param
 }
 
 func (c Class) MutateAsHead(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
@@ -32,11 +32,10 @@ func (c Class) ActivelyMutateWithObjMutateFunc(params ParamChain, mutation NameW
 }
 
 func (c Class) MutateWithObjMutateFunc(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
-	newChildren := mutateChildren(params, mutation)
+	newChildren := mutateParamChain(params, mutation)
 	if newChildren.IsNotEmpty() {
 		return optional.Value[Node](NewObject(c, newChildren.Value()))
 	}
-
 	return mutation.Normal(c.Name(), NewObject(c, params))
 }
 

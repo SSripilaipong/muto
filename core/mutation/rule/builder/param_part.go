@@ -19,6 +19,24 @@ func buildChildren(paramPart stResult.ParamPart) func(mapping *parameter.Paramet
 	panic("not implemented")
 }
 
+func buildParamChain(paramParts []stResult.ParamPart) func(mapping *parameter.Parameter) optional.Of[base.ParamChain] {
+	var childrenBuilders []func(mapping *parameter.Parameter) optional.Of[[]base.Node]
+	for _, paramPart := range paramParts {
+		childrenBuilders = append(childrenBuilders, buildChildren(paramPart))
+	}
+	return func(mapping *parameter.Parameter) optional.Of[base.ParamChain] {
+		var chain [][]base.Node
+		for _, childBuilder := range childrenBuilders {
+			child, ok := childBuilder(mapping).Return()
+			if !ok {
+				return optional.Empty[base.ParamChain]()
+			}
+			chain = append(chain, child)
+		}
+		return optional.Value(base.NewParamChain(chain))
+	}
+}
+
 func buildFixedParamPart(part stResult.FixedParamPart) func(mapping *parameter.Parameter) optional.Of[[]base.Node] {
 	buildParams := slc.Map(buildObjectParam)(part)
 

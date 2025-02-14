@@ -8,7 +8,6 @@ import (
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/common/tuple"
 	st "github.com/SSripilaipong/muto/syntaxtree/base"
-	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
@@ -33,4 +32,4 @@ var escapeStringCharToRunes = tuple.Fn2(func(_bs Character, x Character) []rune 
 })
 
 func stringToResultNode(x st.String) stResult.Node     { return x }
-func stringToPatternParam(x st.String) stPattern.Param { return x }
+func stringToPatternParam(x st.String) st.PatternParam { return x }

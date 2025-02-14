@@ -7,27 +7,27 @@ import (
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
-func newParamExtractors(params []stPattern.Param) []extractor.NodeExtractor {
+func newParamExtractors(params []base.PatternParam) []extractor.NodeExtractor {
 	return slc.Map(newParamExtractor)(params)
 }
 
-func newParamExtractor(p stPattern.Param) extractor.NodeExtractor {
+func newParamExtractor(p base.PatternParam) extractor.NodeExtractor {
 	switch {
-	case stPattern.IsParamTypeVariable(p):
+	case base.IsPatternParamTypeVariable(p):
 		return newVariableParamExtractor(base.UnsafeRuleParamPatternToVariable(p))
-	case stPattern.IsParamTypeBoolean(p):
+	case base.IsPatternParamTypeBoolean(p):
 		return newBooleanParamExtractor(base.UnsafeRuleParamPatternToBoolean(p))
-	case stPattern.IsParamTypeString(p):
+	case base.IsPatternParamTypeString(p):
 		return newStringParamExtractor(base.UnsafeRuleParamPatternToString(p))
-	case stPattern.IsParamTypeNumber(p):
+	case base.IsPatternParamTypeNumber(p):
 		return newNumberParamExtractor(base.UnsafeRuleParamPatternToNumber(p))
-	case stPattern.IsParamTypeTag(p):
+	case base.IsPatternParamTypeTag(p):
 		return newTagParamExtractor(base.UnsafeRuleParamPatternToTag(p))
-	case stPattern.IsParamTypeNestedNamedRule(p):
+	case base.IsPatternParamTypeNestedNamedRule(p):
 		return newNestedNamedRuleExtractor(stPattern.UnsafeParamToNamedRule(p))
-	case stPattern.IsParamTypeNestedVariableRule(p):
+	case base.IsPatternParamTypeNestedVariableRule(p):
 		return newNestedVariableRuleExtractor(stPattern.UnsafeRuleParamPatternToVariableRulePattern(p))
-	case stPattern.IsParamTypeNestedAnonymousRule(p):
+	case base.IsPatternParamTypeNestedAnonymousRule(p):
 		return newNestedAnonymousRuleExtractor(stPattern.UnsafeParamToAnonymousRule(p))
 	}
 	panic("not implemented")
