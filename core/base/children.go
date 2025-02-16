@@ -1,6 +1,8 @@
 package base
 
 import (
+	"slices"
+
 	"github.com/SSripilaipong/muto/common/optional"
 )
 
@@ -18,6 +20,7 @@ func mutateParamChain(params ParamChain, mutation NameWiseMutation) optional.Of[
 }
 
 func mutateChildren(children []Node, mutation NameWiseMutation) optional.Of[[]Node] {
+	children = slices.Clone(children)
 	for i, child := range children {
 		if IsMutableNode(child) {
 			childObj := UnsafeNodeToMutable(child)

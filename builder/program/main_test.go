@@ -1,6 +1,7 @@
 package program
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -73,7 +74,8 @@ main = f 1 2 3
 		program := BuildProgramFromString(`g (f Xs...) = h Xs...
 main = g (f)
 `).Value()
-		assert.Equal(t, base.NewClass("h"), execute(program))
+		fmt.Println(execute(program))
+		assert.Equal(t, base.NewObject(base.NewClass("h"), base.NewParamChain([][]base.Node{nil})), execute(program))
 	})
 
 	t.Run("should match children strictly for nested pattern", func(t *testing.T) {
