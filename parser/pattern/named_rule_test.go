@@ -11,7 +11,7 @@ import (
 )
 
 func TestTag(t *testing.T) {
-	namedRule := NamedRule()
+	namedRule := Pattern()
 	t.Run("should parse tag as a child", func(t *testing.T) {
 		r := namedRule(base.StringToCharTokens(`f 1 .abc 2`))
 		expectedResult := stPattern.NewNamedRule("f", stPattern.ParamsToFixedParamPart([]stBase.PatternParam{
@@ -32,7 +32,7 @@ func TestTag(t *testing.T) {
 }
 
 func TestNamedRule_variadic(t *testing.T) {
-	namedRule := NamedRule()
+	namedRule := Pattern()
 
 	t.Run("should parse nested variadic param", func(t *testing.T) {
 		r := namedRule(base.StringToCharTokens(`g (f Xs...)`))

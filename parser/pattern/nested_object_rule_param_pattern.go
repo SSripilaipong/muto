@@ -28,7 +28,7 @@ func nestedObjectRuleParamPattern(xs []psBase.Character) []tuple.Of2[base.Patter
 	return ps.Or(
 		ps.Map(castAnonymousObjectWithParamPart, psBase.SpaceSeparated2(anonymousHead, rulePatternParamPart())),
 		ps.Map(castAnonymousHead, anonymousHead),
-		ps.Map(stPattern.NamedRuleToParam, NamedRule()),
+		ps.Map(stPattern.NamedRuleToParam, Pattern()),
 		ps.Map(stPattern.VariableRulePatternToRulePatternParam, variableRulePattern()),
 	)(xs)
 }
