@@ -49,6 +49,6 @@ func fixedRuleParamPattern() func(xs []psBase.Character) []tuple.Of2[base.Patter
 		psBase.NumberPatternParam,
 		psBase.TagPatternParam,
 		ps.Map(classToPatternParam, psBase.ClassRule),
-		psBase.InParentheses(nestedObjectRuleParamPattern),
+		psBase.InParentheses(nestedObjectRuleParamPattern()),
 	)
 }
