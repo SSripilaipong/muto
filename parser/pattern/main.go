@@ -20,6 +20,7 @@ func Pattern() func(xs []psBase.Character) []tuple.Of2[stPattern.NamedRule, []ps
 	}
 
 	return ps.First(
+		//anonymousRulePatternTopLevel(), // TODO create one and put it here
 		ps.Map(castWithParamPart, psBase.SpaceSeparated2(psBase.ClassRule, rulePatternParamPart())),
 		ps.Map(castClass, psBase.ClassRule),
 	)
