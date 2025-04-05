@@ -15,7 +15,7 @@ func newParamExtractors(params []base.PatternParam) []extractor.NodeExtractor {
 func newParamExtractor(p base.PatternParam) extractor.NodeExtractor {
 	x, ok := newPrimitiveExtractor(p).Return()
 	if ok {
-		return extractor.NewPrimitiveParam(x)
+		return x
 	}
 	return newNonPrimitiveExtractor(p)
 }

@@ -3,7 +3,6 @@ package base
 import (
 	"fmt"
 
-	"github.com/SSripilaipong/muto/common/fn"
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base/datatype"
 )
@@ -19,9 +18,6 @@ func NewNumber(value datatype.Number) Node {
 func NewNumberFromString(s string) Node {
 	return Number{value: datatype.NewNumber(s)}
 }
-
-var NewNumberObject = fn.Compose(NewPrimitiveObject, NewNumber)
-var NewNumberObjectFromString = fn.Compose(NewPrimitiveObject, NewNumberFromString)
 
 func (Number) NodeType() NodeType { return NodeTypeNumber }
 

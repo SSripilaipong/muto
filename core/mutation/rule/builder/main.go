@@ -1,11 +1,8 @@
 package builder
 
 import (
-	"github.com/SSripilaipong/muto/common/fn"
 	"github.com/SSripilaipong/muto/common/optional"
-	"github.com/SSripilaipong/muto/core/base"
 	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
-	"github.com/SSripilaipong/muto/core/pattern/parameter"
 	stBase "github.com/SSripilaipong/muto/syntaxtree/base"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
@@ -13,7 +10,7 @@ import (
 func New(r stResult.Node) mutator.Builder {
 	return wrapWithRemainingChildren(func() mutator.Builder {
 		if x, ok := switchConstant(r).Return(); ok {
-			return wrapWithObject(x)
+			return x
 		}
 		if stResult.IsNodeTypeVariable(r) {
 			return newParamVariableBuilder(stBase.UnsafeRuleResultToVariable(r))
@@ -54,17 +51,3 @@ func switchConstant(r stResult.Node) optional.Of[mutator.Builder] {
 	}
 	return optional.Empty[mutator.Builder]()
 }
-
-type objectWrapper struct {
-	builder mutator.Builder
-}
-
-func wrapWithObject(builder mutator.Builder) objectWrapper {
-	return objectWrapper{builder: builder}
-}
-
-func (o objectWrapper) Build(parameter *parameter.Parameter) optional.Of[base.Node] {
-	return optional.Fmap(fn.Compose(base.ToNode, base.NewPrimitiveObject[base.Node]))(o.builder.Build(parameter))
-}
-
-var _ mutator.Builder = objectWrapper{}

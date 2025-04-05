@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/SSripilaipong/muto/common/fn"
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/common/strutil"
@@ -17,8 +16,6 @@ type Structure struct {
 func NewStructureFromRecords(records []StructureRecord) Structure {
 	return Structure{records: records}
 }
-
-var NewStructureObjectFromRecords = fn.Compose(NewPrimitiveObject, NewStructureFromRecords)
 
 func (Structure) NodeType() NodeType { return NodeTypeStructure }
 

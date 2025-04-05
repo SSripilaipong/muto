@@ -3,7 +3,6 @@ package base
 import (
 	"fmt"
 
-	"github.com/SSripilaipong/muto/common/fn"
 	"github.com/SSripilaipong/muto/common/optional"
 )
 
@@ -14,8 +13,6 @@ type Boolean struct {
 func NewBoolean(x bool) Boolean {
 	return Boolean{value: x}
 }
-
-var NewBooleanObject = fn.Compose(NewPrimitiveObject, NewBoolean)
 
 func (Boolean) NodeType() NodeType { return NodeTypeBoolean }
 

@@ -25,7 +25,7 @@ func TestBuildStructure(t *testing.T) {
 		})
 		mutationData := parameter.New()
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
-			base.NewStructureRecord(base.NewStringObject("abc"), base.NewStringObject("def")),
+			base.NewStructureRecord(base.NewString("abc"), base.NewString("def")),
 		})
 		assert.Equal(t, expectedObject, newStructureBuilder(tree).Build(mutationData).Value())
 	})
@@ -36,7 +36,7 @@ func TestBuildStructure(t *testing.T) {
 		})
 		mutationData := parameter.New()
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
-			base.NewStructureRecord(base.NewClassObject("f"), base.NewStringObject("def")),
+			base.NewStructureRecord(base.NewClass("f"), base.NewString("def")),
 		})
 		assert.Equal(t, expectedObject, newStructureBuilder(tree).Build(mutationData).Value())
 	})
@@ -46,10 +46,10 @@ func TestBuildStructure(t *testing.T) {
 			stResult.NewStructureRecord(stBase.NewBoolean("true"), stBase.NewVariable("A")),
 		})
 		mutationData := parameter.New().
-			WithVariableMappings(parameter.NewVariableMapping("A", base.NewOneLayerObject(base.NewClass("f"), []base.Node{base.NewNumberObjectFromString("123")}))).
+			WithVariableMappings(parameter.NewVariableMapping("A", base.NewOneLayerObject(base.NewClass("f"), []base.Node{base.NewNumberFromString("123")}))).
 			Value()
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
-			base.NewStructureRecord(base.NewBooleanObject(true), base.NewOneLayerObject(base.NewClass("f"), []base.Node{base.NewNumberObjectFromString("123")})),
+			base.NewStructureRecord(base.NewBoolean(true), base.NewOneLayerObject(base.NewClass("f"), []base.Node{base.NewNumberFromString("123")})),
 		})
 		assert.Equal(t, expectedObject, newStructureBuilder(tree).Build(mutationData).Value())
 	})
@@ -65,14 +65,14 @@ func TestBuildStructure(t *testing.T) {
 			),
 		})
 		mutationData := parameter.New().
-			WithVariableMappings(parameter.NewVariableMapping("A", base.NewClassObject("f"))).Value().
-			WithVariableMappings(parameter.NewVariableMapping("B", base.NewTagObject("t"))).Value()
+			WithVariableMappings(parameter.NewVariableMapping("A", base.NewClass("f"))).Value().
+			WithVariableMappings(parameter.NewVariableMapping("B", base.NewTag("t"))).Value()
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
 			base.NewStructureRecord(
-				base.NewTagObject("e"),
+				base.NewTag("e"),
 				base.NewOneLayerObject(
 					base.NewClass("f"),
-					[]base.Node{base.NewNumberObjectFromString("123"), base.NewTagObject("t")},
+					[]base.Node{base.NewNumberFromString("123"), base.NewTag("t")},
 				),
 			),
 		})

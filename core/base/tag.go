@@ -3,7 +3,6 @@ package base
 import (
 	"fmt"
 
-	"github.com/SSripilaipong/muto/common/fn"
 	"github.com/SSripilaipong/muto/common/optional"
 )
 
@@ -15,8 +14,6 @@ type Tag struct {
 func NewTag(name string) Node {
 	return Tag{name: name}
 }
-
-var NewTagObject = fn.Compose(NewPrimitiveObject, NewTag)
 
 func (Tag) NodeType() NodeType { return NodeTypeTag }
 

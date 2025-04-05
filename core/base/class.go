@@ -1,7 +1,6 @@
 package base
 
 import (
-	"github.com/SSripilaipong/muto/common/fn"
 	"github.com/SSripilaipong/muto/common/optional"
 )
 
@@ -59,8 +58,6 @@ func (c Class) MutoString() string {
 func NewClass(name string) Class {
 	return Class{name: name}
 }
-
-var NewClassObject = fn.Compose(NewPrimitiveObject, NewClass)
 
 func UnsafeNodeToClass(obj Node) Class {
 	return obj.(Class)

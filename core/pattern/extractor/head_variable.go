@@ -15,7 +15,7 @@ func NewHeadVariable(name string) HeadVariable {
 }
 
 func (v HeadVariable) Extract(x base.Node) optional.Of[*parameter.Parameter] {
-	return optional.Value(parameter.NewParameterWithVariableMapping(parameter.NewVariableMapping(v.Name(), base.NewPrimitiveObject(x))))
+	return optional.Value(parameter.NewParameterWithVariableMapping(parameter.NewVariableMapping(v.Name(), x)))
 }
 
 func (v HeadVariable) Name() string {

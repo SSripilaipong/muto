@@ -58,10 +58,14 @@ func (obj CompoundObject) Equals(x Object) bool {
 }
 
 func (obj CompoundObject) String() string {
-	return fmt.Sprintf("(%s)", obj.TopLevelString())
+	return obj.TopLevelString()
 }
 
 func (obj CompoundObject) TopLevelString() string {
+	return fmt.Sprintf("(%s)", obj.SimplifiedString())
+}
+
+func (obj CompoundObject) SimplifiedString() string {
 	params := obj.ParamChain()
 
 	if params.Size() == 0 {

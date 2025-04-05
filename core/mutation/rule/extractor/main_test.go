@@ -17,7 +17,7 @@ func TestNew_ObjectWithValueHead(t *testing.T) {
 			stPattern.NewAnonymousRule(stBase.NewBoolean("true"), stPattern.ParamsToFixedParamPart([]stBase.PatternParam{stBase.NewNumber("456")})),
 		}))
 		// obj: f (true 456)
-		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewOneLayerObject(base.NewBoolean(true), []base.Node{base.NewNumberObjectFromString("456")})})
+		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewOneLayerObject(base.NewBoolean(true), []base.Node{base.NewNumberFromString("456")})})
 
 		assert.True(t, New(pattern).Extract(obj).IsNotEmpty())
 	})
@@ -26,7 +26,7 @@ func TestNew_ObjectWithValueHead(t *testing.T) {
 		pattern := stPattern.NewNamedRule("f", stPattern.ParamsToFixedParamPart([]stBase.PatternParam{
 			stPattern.NewAnonymousRule(stBase.NewString(`"a"`), stPattern.ParamsToFixedParamPart([]stBase.PatternParam{stBase.NewNumber("456")})),
 		}))
-		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewOneLayerObject(base.NewString(`a`), []base.Node{base.NewNumberObjectFromString("456")})})
+		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewOneLayerObject(base.NewString(`a`), []base.Node{base.NewNumberFromString("456")})})
 
 		assert.True(t, New(pattern).Extract(obj).IsNotEmpty())
 	})
@@ -35,7 +35,7 @@ func TestNew_ObjectWithValueHead(t *testing.T) {
 		pattern := stPattern.NewNamedRule("f", stPattern.ParamsToFixedParamPart([]stBase.PatternParam{
 			stPattern.NewAnonymousRule(stBase.NewNumber("123"), stPattern.ParamsToFixedParamPart([]stBase.PatternParam{stBase.NewNumber("456")})),
 		}))
-		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewOneLayerObject(base.NewNumberFromString("123"), []base.Node{base.NewNumberObjectFromString("456")})})
+		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewOneLayerObject(base.NewNumberFromString("123"), []base.Node{base.NewNumberFromString("456")})})
 
 		assert.True(t, New(pattern).Extract(obj).IsNotEmpty())
 	})
@@ -44,7 +44,7 @@ func TestNew_ObjectWithValueHead(t *testing.T) {
 func TestTag(t *testing.T) {
 	t.Run("should match a tag child", func(t *testing.T) {
 		pattern := stPattern.NewNamedRule("f", stPattern.ParamsToFixedParamPart([]stBase.PatternParam{stBase.NewTag("abc")}))
-		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewTagObject("abc")})
+		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewTag("abc")})
 
 		assert.True(t, New(pattern).Extract(obj).IsNotEmpty())
 	})
@@ -64,7 +64,7 @@ func TestTag(t *testing.T) {
 			})),
 		}))
 		// obj: f (.abc 1 2)
-		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewOneLayerObject(base.NewTag("abc"), []base.Node{base.NewNumberObjectFromString("1"), base.NewNumberObjectFromString("2")})})
+		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewOneLayerObject(base.NewTag("abc"), []base.Node{base.NewNumberFromString("1"), base.NewNumberFromString("2")})})
 
 		assert.True(t, New(pattern).Extract(obj).IsNotEmpty())
 	})
@@ -77,7 +77,7 @@ func TestTag(t *testing.T) {
 			})),
 		}))
 		// obj: f (g 1 .abc 2)
-		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewOneLayerObject(base.NewClass("g"), []base.Node{base.NewNumberObjectFromString("1"), base.NewTagObject("abc"), base.NewNumberObjectFromString("2")})})
+		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewOneLayerObject(base.NewClass("g"), []base.Node{base.NewNumberFromString("1"), base.NewTag("abc"), base.NewNumberFromString("2")})})
 
 		assert.True(t, New(pattern).Extract(obj).IsNotEmpty())
 	})
@@ -117,8 +117,8 @@ func TestRemainingChildren(t *testing.T) {
 			stBase.NewNumber("1"),
 		}))
 		// obj: f 1 2 3
-		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewNumberObjectFromString("1"), base.NewNumberObjectFromString("2"), base.NewNumberObjectFromString("3")})
+		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewNumberFromString("1"), base.NewNumberFromString("2"), base.NewNumberFromString("3")})
 
-		assert.Equal(t, []base.Node{base.NewNumberObjectFromString("2"), base.NewNumberObjectFromString("3")}, New(pattern).Extract(obj).Value().RemainingParamChain().All()[0])
+		assert.Equal(t, []base.Node{base.NewNumberFromString("2"), base.NewNumberFromString("3")}, New(pattern).Extract(obj).Value().RemainingParamChain().All()[0])
 	})
 }

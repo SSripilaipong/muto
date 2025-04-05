@@ -3,7 +3,6 @@ package base
 import (
 	"fmt"
 
-	"github.com/SSripilaipong/muto/common/fn"
 	"github.com/SSripilaipong/muto/common/optional"
 )
 
@@ -14,8 +13,6 @@ type String struct {
 func NewString(value string) String {
 	return String{value: value}
 }
-
-var NewStringObject = fn.Compose(NewPrimitiveObject, NewString)
 
 func (String) NodeType() NodeType { return NodeTypeString }
 
