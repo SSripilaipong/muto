@@ -7,11 +7,11 @@ import (
 	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
 )
 
-var equalMutator = NewRuleBasedMutatorFromFunctions("==", slc.Pure(binaryOp(func(x, y base.Node) optional.Of[base.Node] {
+var equalMutator = NewRuleBasedMutatorFromFunctions("==", slc.Pure(strictBinaryOp(func(x, y base.Node) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewBoolean(base.NodeEqual(x, y)))
 })))
 
-var notEqualMutator = NewRuleBasedMutatorFromFunctions("!=", slc.Pure(binaryOp(func(x, y base.Node) optional.Of[base.Node] {
+var notEqualMutator = NewRuleBasedMutatorFromFunctions("!=", slc.Pure(strictBinaryOp(func(x, y base.Node) optional.Of[base.Node] {
 	return optional.Value[base.Node](base.NewBoolean(base.NodeNotEqual(x, y)))
 })))
 

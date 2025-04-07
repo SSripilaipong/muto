@@ -16,10 +16,6 @@ func (c Class) NodeType() NodeType {
 	return NodeTypeClass
 }
 
-func (c Class) Mutate(mutation NameWiseMutation) optional.Of[Node] {
-	return c.MutateAsHead(NewParamChain([][]Node{{}}), mutation) // act as a one-layered object with no param
-}
-
 func (c Class) MutateAsHead(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
 	if result, ok := c.ActivelyMutateWithObjMutateFunc(params, mutation).Return(); ok {
 		return optional.Value(result)
@@ -63,4 +59,4 @@ func UnsafeNodeToClass(obj Node) Class {
 	return obj.(Class)
 }
 
-var _ MutableNode = Class{}
+var _ Node = Class{}

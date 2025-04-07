@@ -126,6 +126,10 @@ func NewOneLayerObject(class Node, children []Node) Object {
 	return NewCompoundObject(class, NewParamChain(slc.Pure(children)))
 }
 
+func WrapWithObject(n Node) Object {
+	return NewOneLayerObject(n, nil)
+}
+
 func NewNamedOneLayerObject(name string, children []Node) Object {
 	return NewOneLayerObject(NewClass(name), children)
 }

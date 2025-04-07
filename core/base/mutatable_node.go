@@ -8,7 +8,7 @@ type MutableNode interface {
 }
 
 func IsMutableNode(node Node) bool {
-	return IsObjectNode(node) || IsClassNode(node) || IsStructureNode(node)
+	return IsObjectNode(node) || IsStructureNode(node)
 }
 
 func UnsafeNodeToMutable(x Node) MutableNode {

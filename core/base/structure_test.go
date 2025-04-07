@@ -11,9 +11,10 @@ import (
 
 func TestStructure_Mutate(t *testing.T) {
 	t.Run("should mutate value", func(t *testing.T) {
+		// subject: {.hello: "world", .abc: (f)}
 		result := NewStructureFromRecords([]StructureRecord{
 			NewStructureRecord(NewTag("hello"), NewString("world")),
-			NewStructureRecord(NewTag("abc"), NewClass("f")),
+			NewStructureRecord(NewTag("abc"), WrapWithObject(NewClass("f"))),
 		}).Mutate(newNormalMutationForTest(func(s string, object Object) optional.Of[Node] {
 			if s == "f" {
 				return optional.Value[Node](NewNumberFromString("123"))
@@ -35,9 +36,10 @@ func TestStructure_Mutate(t *testing.T) {
 			return optional.Empty[Node]()
 		})
 
+		// subject: {.hello: "world", .abc: (f)}
 		result := NewStructureFromRecords([]StructureRecord{
 			NewStructureRecord(NewTag("hello"), NewString("world")),
-			NewStructureRecord(NewTag("abc"), NewClass("f")),
+			NewStructureRecord(NewTag("abc"), WrapWithObject(NewClass("f"))),
 		}).Mutate(mutation). // stable after the first time
 					Value().(Structure).
 					Mutate(mutation)
@@ -48,13 +50,16 @@ func TestStructure_Mutate(t *testing.T) {
 
 func TestStructure_MutateAsHead(t *testing.T) {
 	t.Run("should mutate children first", func(t *testing.T) {
+		mutation := newNormalMutationForTest(func(s string, object Object) optional.Of[Node] {
+			if s == "f" {
+				return optional.Value[Node](NewNumberFromString("123"))
+			}
+			return optional.Empty[Node]()
+		})
+
+		// subject: {} (f) 456
 		result := NewStructureFromRecords([]StructureRecord{}).
-			MutateAsHead(NewParamChain(slc.Pure([]Node{NewClass("f"), NewNumberFromString("456")})), newNormalMutationForTest(func(s string, object Object) optional.Of[Node] {
-				if s == "f" {
-					return optional.Value[Node](NewNumberFromString("123"))
-				}
-				return optional.Empty[Node]()
-			})).Value()
+			MutateAsHead(NewParamChain(slc.Pure([]Node{WrapWithObject(NewClass("f")), NewNumberFromString("456")})), mutation).Value()
 
 		expected := NewOneLayerObject(NewStructureFromRecords([]StructureRecord{}), []Node{NewNumberFromString("123"), NewNumberFromString("456")})
 		assert.Equal(t, expected, result)

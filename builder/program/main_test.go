@@ -128,7 +128,7 @@ main = f (+ 1 999)
 	t.Run("should be able to actively mutate children while mutating parent", func(t *testing.T) {
 		program := BuildProgramFromString(`@ f (g X) = X
 @ h = g 123
-main = f h
+main = f (h)
 `).Value()
 		assert.Equal(t, base.NewNumberFromString("123"), execute(program))
 	})
@@ -198,10 +198,10 @@ main = f (g 1)
 	})
 
 	t.Run("should mutate children after bubbling up to data object", func(t *testing.T) {
-		program := BuildProgramFromString(`main = (f 1) g
+		program := BuildProgramFromString(`main = (f 1) (g)
 f X = X
 g = 2
-`).Value()
+`).Value() // TODO should be (g) = 2 instead
 		assert.Equal(t, base.NewOneLayerObject(base.NewNumberFromString("1"), []base.Node{base.NewNumberFromString("2")}), execute(program))
 	})
 }

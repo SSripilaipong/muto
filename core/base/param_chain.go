@@ -110,16 +110,16 @@ func (c *paramChain) Prepend(nodes []Node) ParamChain {
 func (c *paramChain) SliceFromNodeOrEmpty(i, j int) ParamChain {
 	slicedFromChain := c.SliceFromOrEmpty(i)
 
-	if !slc.ValidSliceFromIndex(slicedFromChain.All(), 1) {
-		return NewParamChain(nil)
+	var right [][]Node
+	if slc.ValidSliceFromIndex(slicedFromChain.All(), 1) {
+		right = slicedFromChain.All()[1:]
 	}
-	right := slicedFromChain.All()[1:]
 
 	directParams := slicedFromChain.DirectParams()
-	if !slc.ValidSliceFromIndex(directParams, j) {
-		return NewParamChain(nil)
+	var left [][]Node
+	if slc.ValidSliceFromIndex(directParams, j) {
+		left = slc.Pure(slices.Clone(directParams[j:]))
 	}
-	left := slc.Pure(slices.Clone(directParams))
 
 	return NewParamChain(append(left, right...))
 }
@@ -150,5 +150,5 @@ func (c *paramChain) String() string {
 }
 
 func nodeToString(x Node) string {
-	return fmt.Sprintf("%s", x)
+	return fmt.Sprint(x)
 }

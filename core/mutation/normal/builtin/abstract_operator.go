@@ -5,11 +5,11 @@ import (
 	"github.com/SSripilaipong/muto/core/base"
 )
 
-func unaryOp(f func(x base.Node) optional.Of[base.Node]) func(t base.Object) optional.Of[base.Node] {
+func strictUnaryOp(f func(x base.Node) optional.Of[base.Node]) func(t base.Object) optional.Of[base.Node] {
 	return func(t base.Object) optional.Of[base.Node] {
 		params := t.ParamChain()
 		innerChildren := params.DirectParams()
-		if len(innerChildren) < 1 {
+		if len(innerChildren) != 1 {
 			return optional.Empty[base.Node]()
 		}
 
@@ -18,11 +18,11 @@ func unaryOp(f func(x base.Node) optional.Of[base.Node]) func(t base.Object) opt
 	}
 }
 
-func binaryOp(f func(x, y base.Node) optional.Of[base.Node]) func(t base.Object) optional.Of[base.Node] {
+func strictBinaryOp(f func(x, y base.Node) optional.Of[base.Node]) func(t base.Object) optional.Of[base.Node] {
 	return func(t base.Object) optional.Of[base.Node] {
 		params := t.ParamChain()
 		innerChildren := params.DirectParams()
-		if len(innerChildren) < 2 {
+		if len(innerChildren) != 2 {
 			return optional.Empty[base.Node]()
 		}
 

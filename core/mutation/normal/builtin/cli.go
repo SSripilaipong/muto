@@ -9,7 +9,7 @@ import (
 )
 
 func cliPrintMutator(print func(string)) mutator.ClassMutator {
-	return NewRuleBasedMutatorFromFunctions("print!", slc.Pure(unaryOp(func(x base.Node) optional.Of[base.Node] {
+	return NewRuleBasedMutatorFromFunctions("print!", slc.Pure(strictUnaryOp(func(x base.Node) optional.Of[base.Node] {
 		if base.IsStringNode(x) {
 			print(base.UnsafeNodeToString(x).Value())
 			return optional.Value[base.Node](base.NewClass("$"))
@@ -19,7 +19,7 @@ func cliPrintMutator(print func(string)) mutator.ClassMutator {
 }
 
 func cliInputMutator(read func() rslt.Of[string]) mutator.ClassMutator {
-	return NewRuleBasedMutatorFromFunctions("input!", slc.Pure(unaryOp(func(x base.Node) optional.Of[base.Node] {
+	return NewRuleBasedMutatorFromFunctions("input!", slc.Pure(strictUnaryOp(func(x base.Node) optional.Of[base.Node] {
 		if base.IsClassNode(x) && base.UnsafeNodeToClass(x).Name() == "$" {
 			s, err := read().Return()
 			if err != nil {

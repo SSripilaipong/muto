@@ -25,7 +25,7 @@ func (s Structure) MutateAsHead(params ParamChain, mutation NameWiseMutation) op
 		return optional.Value[Node](NewCompoundObject(s, newChildren.Value()))
 	}
 
-	return unaryOp(func(x Node) optional.Of[Node] {
+	return strictUnaryOp(func(x Node) optional.Of[Node] {
 		if !IsObjectNode(x) {
 			return optional.Empty[Node]()
 		}
