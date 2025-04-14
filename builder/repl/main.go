@@ -13,11 +13,11 @@ type Repl struct {
 	replExecutor.Executor
 }
 
-func New() Repl {
-	prog := replProgram.New(program.New(mutation.NewFromStatements(nil)))
+func New(lineReader replReader.LineReader, printer replProgram.Printer) Repl {
+	prog := replProgram.New(program.New(mutation.NewFromStatements(nil)), printer)
 
 	return Repl{
-		Reader:   replReader.New(),
+		Reader:   replReader.New(lineReader, printer),
 		Executor: replExecutor.New(prog),
 	}
 }

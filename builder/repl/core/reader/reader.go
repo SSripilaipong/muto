@@ -9,18 +9,27 @@ import (
 )
 
 type Reader struct {
-	lineReader lineReader
+	lineReader LineReader
+	errPrinter ErrorPrinter
 }
 
-func New() Reader {
-	return Reader{lineReader: newLineReader()}
+type LineReader interface {
+	ReadLine() (string, error)
+}
+
+type ErrorPrinter interface {
+	Print(x string)
+}
+
+func New(lineReader LineReader, errPrinter ErrorPrinter) Reader {
+	return Reader{lineReader: lineReader, errPrinter: errPrinter}
 }
 
 func (r Reader) Read() optional.Of[command.Command] {
 	text, err := r.lineReader.ReadLine()
 	if err != nil {
-		fmt.Println("error reading stdin:", err.Error())
+		r.errPrinter.Print(fmt.Sprint("error reading stdin:", err.Error()))
 		return optional.Empty[command.Command]()
 	}
-	return textToCommand(strings.TrimSpace(text))
+	return TextToCommand(strings.TrimSpace(text))
 }

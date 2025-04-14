@@ -6,8 +6,13 @@ import (
 
 type Wrapper struct {
 	program program.Program
+	printer Printer
 }
 
-func New(prog program.Program) Wrapper {
-	return Wrapper{program: prog}
+type Printer interface {
+	Print(x string)
+}
+
+func New(prog program.Program, printer Printer) Wrapper {
+	return Wrapper{program: prog, printer: printer}
 }

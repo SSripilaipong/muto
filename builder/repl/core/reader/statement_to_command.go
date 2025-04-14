@@ -12,7 +12,7 @@ import (
 	replSt "github.com/SSripilaipong/muto/syntaxtree/repl"
 )
 
-func textToCommand(text string) optional.Of[command.Command] {
+func TextToCommand(text string) optional.Of[command.Command] {
 	statement := repl.ParseStatement(text)
 	if statement.IsErr() {
 		fmt.Println(statement.Error().Error())
