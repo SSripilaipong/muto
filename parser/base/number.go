@@ -14,9 +14,9 @@ var Number = ps.Or(
 	ps.Map(digitsWithMinusSign, ps.Sequence2(MinusSign, unsignedNumber)),
 )
 
-var NumberResultNode = ps.Map(numberToResultNode, Number)
+var NumberResultNode = ps.Map(stResult.ToNode, Number)
 
-var NumberPatternParam = ps.Map(numberToPatternParam, Number)
+var NumberPattern = ps.Map(st.ToPattern, Number)
 
 var digitsWithMinusSign = tuple.Fn2(func(ms Character, x string) st.Number {
 	return st.NewNumber("-" + x)
@@ -32,6 +32,3 @@ var digits = ps.Map(tokensToString, ps.GreedyRepeatAtLeastOnce(Digit))
 var floatingNumber = tuple.Fn3(func(left string, _dot Character, right string) string {
 	return fmt.Sprintf("%s.%s", left, right)
 })
-
-func numberToPatternParam(x st.Number) st.PatternParam { return x }
-func numberToResultNode(x st.Number) stResult.Node     { return x }

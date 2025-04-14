@@ -8,9 +8,8 @@ import (
 
 var Boolean = ps.Map(st.NewBoolean, ps.Or(fixedChars("true"), fixedChars("false")))
 
-var BooleanPatternParam = ps.Map(booleanToPatternParam, Boolean)
+var BooleanPattern = ps.Map(st.ToPattern, Boolean)
 
 var BooleanResultNode = ps.Map(booleanToResultNode, Boolean)
 
-func booleanToPatternParam(x st.Boolean) st.PatternParam { return x }
-func booleanToResultNode(x st.Boolean) stResult.Node     { return x }
+func booleanToResultNode(x st.Boolean) stResult.Node { return x }

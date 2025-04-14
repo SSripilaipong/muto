@@ -15,9 +15,9 @@ var String = ps.Map(
 	fn.Compose(st.NewString, stringWithQuotes), InDoubleQuotes(innerString),
 )
 
-var StringResultNode = ps.Map(stringToResultNode, String)
+var StringResultNode = ps.Map(stResult.ToNode, String)
 
-var StringPatternParam = ps.Map(stringToPatternParam, String)
+var StringPattern = ps.Map(st.ToPattern, String)
 
 var innerString = ps.Map(slc.Flatten, ps.OptionalGreedyRepeat(ps.First(escapedChar, nonEscapedChar)))
 var escapedChar = ps.Map(escapeStringCharToRunes, ps.Sequence2(BackSlash, ps.ConsumeIf(fn.Const[Character](true))))
@@ -30,6 +30,3 @@ func stringWithQuotes(x []rune) string {
 var escapeStringCharToRunes = tuple.Fn2(func(_bs Character, x Character) []rune {
 	return []rune{'\\', x.Value()}
 })
-
-func stringToResultNode(x st.String) stResult.Node     { return x }
-func stringToPatternParam(x st.String) st.PatternParam { return x }

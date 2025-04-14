@@ -8,42 +8,41 @@ import (
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
-func newParamExtractors(params []base.PatternParam) []extractor.NodeExtractor {
-	return slc.Map(newParamExtractor)(params)
+func newParamExtractors(params []base.Pattern) []extractor.NodeExtractor {
+	return slc.Map(newPatternExtractor)(params)
 }
 
-func newParamExtractor(p base.PatternParam) extractor.NodeExtractor {
-	x, ok := newPrimitiveExtractor(p).Return()
-	if ok {
-		return x
+func newPatternExtractor(p base.Pattern) extractor.NodeExtractor {
+	if r, ok := tryNonObjectPatternExtractor(p).Return(); ok {
+		return r
 	}
-	return newNonPrimitiveExtractor(p)
-}
-
-func newNonPrimitiveExtractor(p base.PatternParam) extractor.NodeExtractor {
-	switch {
-	case base.IsPatternParamTypeVariable(p):
-		return newVariableParamExtractor(base.UnsafeRuleParamPatternToVariable(p))
-	case base.IsPatternParamTypeNestedNamedRule(p):
-		return newNestedNamedRuleExtractor(stPattern.UnsafeParamToNamedRule(p))
-	case base.IsPatternParamTypeNestedVariableRule(p):
-		return newNestedVariableRuleExtractor(stPattern.UnsafeRuleParamPatternToVariableRulePattern(p))
-	case base.IsPatternParamTypeNestedAnonymousRule(p):
-		return newNestedAnonymousRuleExtractor(stPattern.UnsafeParamToAnonymousRule(p))
+	if base.IsPatternTypeObject(p) {
+		return newObjectExtractor(stPattern.UnsafePatternToObject(p))
 	}
 	panic("not implemented")
 }
 
-func newPrimitiveExtractor(p base.PatternParam) optional.Of[extractor.NodeExtractor] {
+func newNonObjectPatternExtractor(p base.Pattern) extractor.NodeExtractor {
+	if r, ok := tryNonObjectPatternExtractor(p).Return(); ok {
+		return r
+	}
+	panic("not implemented")
+}
+
+func tryNonObjectPatternExtractor(p base.Pattern) optional.Of[extractor.NodeExtractor] {
 	switch {
-	case base.IsPatternParamTypeBoolean(p):
-		return optional.Value(newBooleanParamExtractor(base.UnsafeRuleParamPatternToBoolean(p)))
-	case base.IsPatternParamTypeString(p):
-		return optional.Value(newStringParamExtractor(base.UnsafeRuleParamPatternToString(p)))
-	case base.IsPatternParamTypeNumber(p):
-		return optional.Value(newNumberParamExtractor(base.UnsafeRuleParamPatternToNumber(p)))
-	case base.IsPatternParamTypeTag(p):
-		return optional.Value(newTagParamExtractor(base.UnsafeRuleParamPatternToTag(p)))
+	case base.IsPatternTypeBoolean(p):
+		return optional.Value(newBooleanParamExtractor(base.UnsafePatternToBoolean(p)))
+	case base.IsPatternTypeString(p):
+		return optional.Value(newStringParamExtractor(base.UnsafePatternToString(p)))
+	case base.IsPatternTypeNumber(p):
+		return optional.Value(newNumberParamExtractor(base.UnsafePatternToNumber(p)))
+	case base.IsPatternTypeTag(p):
+		return optional.Value(newTagParamExtractor(base.UnsafePatternToTag(p)))
+	case base.IsPatternTypeClass(p):
+		return optional.Value(newClassParamExtractor(base.UnsafePatternToClass(p)))
+	case base.IsPatternTypeVariable(p):
+		return optional.Value(newVariableParamExtractor(base.UnsafePatternToVariable(p)))
 	}
 	return optional.Empty[extractor.NodeExtractor]()
 }
@@ -66,4 +65,8 @@ func newNumberParamExtractor(v base.Number) extractor.NodeExtractor {
 
 func newTagParamExtractor(v base.Tag) extractor.NodeExtractor {
 	return extractor.NewTag(v.Name())
+}
+
+func newClassParamExtractor(v base.Class) extractor.NodeExtractor {
+	return extractor.NewClass(v.Name())
 }

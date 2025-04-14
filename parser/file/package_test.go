@@ -21,7 +21,7 @@ func TestParseString(t *testing.T) {
 		s := `main = "hello world"`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("main", stPattern.FixedParamPart([]base.PatternParam{})),
+				stPattern.NewDeterminantObject(base.NewClass("main"), stPattern.PatternsToFixedParamPart([]base.Pattern{})),
 				base.NewString(`"hello world"`),
 			),
 		})
@@ -32,7 +32,7 @@ func TestParseString(t *testing.T) {
 		s := `main A = + 1 "abc"`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("main", stPattern.FixedParamPart([]base.PatternParam{base.NewVariable("A")})),
+				stPattern.NewDeterminantObject(base.NewClass("main"), stPattern.PatternsToFixedParamPart([]base.Pattern{base.NewVariable("A")})),
 				stResult.NewObject(base.NewClass("+"), stResult.FixedParamPart([]stResult.Param{base.NewNumber("1"), base.NewString("\"abc\"")})),
 			),
 		})
@@ -45,7 +45,7 @@ func TestParseVariable(t *testing.T) {
 		s := `f X X = 1`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("f", stPattern.FixedParamPart([]base.PatternParam{base.NewVariable("X"), base.NewVariable("X")})),
+				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.PatternsToParamPart([]base.Pattern{base.NewVariable("X"), base.NewVariable("X")})),
 				base.NewNumber("1"),
 			),
 		})
@@ -53,13 +53,13 @@ func TestParseVariable(t *testing.T) {
 	})
 }
 
-func TestParseAnonymousObjectPattern(t *testing.T) {
-	t.Run("should parse boolean as anonymous head", func(t *testing.T) {
+func TestParseObjectParam(t *testing.T) {
+	t.Run("should parse boolean as object head", func(t *testing.T) {
 		s := `f (true 456) = 789`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("f", stPattern.ParamsToFixedParamPart([]base.PatternParam{
-					stPattern.NewAnonymousRule(base.NewBoolean("true"), stPattern.ParamsToFixedParamPart([]base.PatternParam{base.NewNumber("456")})),
+				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.PatternsToFixedParamPart([]base.Pattern{
+					stPattern.NewNonDeterminantObject(base.NewBoolean("true"), stPattern.PatternsToFixedParamPart([]base.Pattern{base.NewNumber("456")})),
 				})),
 				base.NewNumber("789"),
 			),
@@ -71,8 +71,8 @@ func TestParseAnonymousObjectPattern(t *testing.T) {
 		s := `f ("a" 456) = 789`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("f", stPattern.ParamsToFixedParamPart([]base.PatternParam{
-					stPattern.NewAnonymousRule(base.NewString(`"a"`), stPattern.ParamsToFixedParamPart([]base.PatternParam{base.NewNumber("456")})),
+				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.PatternsToFixedParamPart([]base.Pattern{
+					stPattern.NewNonDeterminantObject(base.NewString(`"a"`), stPattern.PatternsToFixedParamPart([]base.Pattern{base.NewNumber("456")})),
 				})),
 				base.NewNumber("789"),
 			),
@@ -84,8 +84,8 @@ func TestParseAnonymousObjectPattern(t *testing.T) {
 		s := `f (123 456) = 789`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("f", stPattern.ParamsToFixedParamPart([]base.PatternParam{
-					stPattern.NewAnonymousRule(base.NewNumber("123"), stPattern.ParamsToFixedParamPart([]base.PatternParam{base.NewNumber("456")})),
+				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.PatternsToFixedParamPart([]base.Pattern{
+					stPattern.NewNonDeterminantObject(base.NewNumber("123"), stPattern.PatternsToFixedParamPart([]base.Pattern{base.NewNumber("456")})),
 				})),
 				base.NewNumber("789"),
 			),
@@ -97,8 +97,8 @@ func TestParseAnonymousObjectPattern(t *testing.T) {
 		s := `f (123) = 789`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("f", stPattern.ParamsToFixedParamPart([]base.PatternParam{
-					stPattern.NewAnonymousRule(base.NewNumber("123"), stPattern.ParamsToFixedParamPart([]base.PatternParam{})),
+				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.PatternsToFixedParamPart([]base.Pattern{
+					stPattern.NewNonDeterminantObject(base.NewNumber("123"), stPattern.PatternsToFixedParamPart([]base.Pattern{})),
 				})),
 				base.NewNumber("789"),
 			),
@@ -112,7 +112,7 @@ func TestParseObject(t *testing.T) {
 		s := `main = a b`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("main", stPattern.FixedParamPart([]base.PatternParam{})),
+				stPattern.NewDeterminantObject(base.NewClass("main"), stPattern.PatternsToParamPart([]base.Pattern{})),
 				stResult.NewObject(base.NewClass("a"), stResult.FixedParamPart([]stResult.Param{base.NewClass("b")})),
 			),
 		})
@@ -123,10 +123,10 @@ func TestParseObject(t *testing.T) {
 		s := `h ((g 1) X) = 999`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("h", stPattern.FixedParamPart([]base.PatternParam{
-					stPattern.NewAnonymousRule(
-						stPattern.NewNamedRule("g", stPattern.FixedParamPart([]base.PatternParam{base.NewNumber("1")})),
-						stPattern.FixedParamPart([]base.PatternParam{base.NewVariable("X")}),
+				stPattern.NewDeterminantObject(base.NewClass("h"), stPattern.PatternsToParamPart([]base.Pattern{
+					stPattern.NewNonDeterminantObject(
+						stPattern.NewNonDeterminantObject(base.NewClass("g"), stPattern.PatternsToParamPart([]base.Pattern{base.NewNumber("1")})),
+						stPattern.FixedParamPart([]base.Pattern{base.NewVariable("X")}),
 					),
 				})),
 				base.NewNumber("999"),
@@ -138,7 +138,7 @@ func TestParseObject(t *testing.T) {
 		s := `main A = (+ 1 2) 3 4`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("main", stPattern.FixedParamPart([]base.PatternParam{base.NewVariable("A")})),
+				stPattern.NewDeterminantObject(base.NewClass("main"), stPattern.PatternsToParamPart([]base.Pattern{base.NewVariable("A")})),
 				stResult.NewObject(
 					stResult.NewObject(base.NewClass("+"), stResult.FixedParamPart([]stResult.Param{base.NewNumber("1"), base.NewNumber("2")})),
 					stResult.ParamsToFixedParamPart([]stResult.Param{base.NewNumber("3"), base.NewNumber("4")}),
@@ -152,7 +152,7 @@ func TestParseObject(t *testing.T) {
 		s := `main A = ((+ 1 2) 3 4) 5 6`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("main", stPattern.FixedParamPart([]base.PatternParam{base.NewVariable("A")})),
+				stPattern.NewDeterminantObject(base.NewClass("main"), stPattern.PatternsToParamPart([]base.Pattern{base.NewVariable("A")})),
 				stResult.NewObject(
 					stResult.NewObject(stResult.NewObject(base.NewClass("+"), stResult.FixedParamPart([]stResult.Param{base.NewNumber("1"), base.NewNumber("2")})), stResult.ParamsToFixedParamPart([]stResult.Param{base.NewNumber("3"), base.NewNumber("4")})),
 					stResult.ParamsToFixedParamPart([]stResult.Param{base.NewNumber("5"), base.NewNumber("6")}),
@@ -166,7 +166,7 @@ func TestParseObject(t *testing.T) {
 		s := `main = 123 456`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("main", stPattern.FixedParamPart([]base.PatternParam{})),
+				stPattern.NewDeterminantObject(base.NewClass("main"), stPattern.PatternsToParamPart([]base.Pattern{})),
 				stResult.NewObject(
 					base.NewNumber("123"),
 					stResult.ParamsToFixedParamPart([]stResult.Param{base.NewNumber("456")}),
@@ -182,7 +182,7 @@ func TestParseVariadicVarPattern(t *testing.T) {
 		s := `f Xs... X = g X`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("f", stPattern.NewLeftVariadicParamPart("Xs", []base.PatternParam{base.NewVariable("X")})),
+				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.NewLeftVariadicParamPart("Xs", []base.Pattern{base.NewVariable("X")})),
 				stResult.NewObject(base.NewClass("g"), stResult.FixedParamPart([]stResult.Param{base.NewVariable("X")})),
 			),
 		})
@@ -193,7 +193,7 @@ func TestParseVariadicVarPattern(t *testing.T) {
 		s := `f X Xs... = g X`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("f", stPattern.NewRightVariadicParamPart("Xs", []base.PatternParam{base.NewVariable("X")})),
+				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.NewRightVariadicParamPart("Xs", []base.Pattern{base.NewVariable("X")})),
 				stResult.NewObject(base.NewClass("g"), stResult.FixedParamPart([]stResult.Param{base.NewVariable("X")})),
 			),
 		})
@@ -204,7 +204,13 @@ func TestParseVariadicVarPattern(t *testing.T) {
 		s := `f X (g Y Ys...) = g Y`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("f", stPattern.FixedParamPart([]base.PatternParam{base.NewVariable("X"), stPattern.NewNamedRule("g", stPattern.NewRightVariadicParamPart("Ys", []base.PatternParam{base.NewVariable("Y")}))})),
+				stPattern.NewDeterminantObject(
+					base.NewClass("f"),
+					stPattern.PatternsToParamPart([]base.Pattern{
+						base.NewVariable("X"),
+						stPattern.NewNonDeterminantObject(base.NewClass("g"), stPattern.NewRightVariadicParamPart("Ys", []base.Pattern{base.NewVariable("Y")})),
+					}),
+				),
 				stResult.NewObject(base.NewClass("g"), stResult.FixedParamPart([]stResult.Param{base.NewVariable("Y")})),
 			),
 		})
@@ -217,7 +223,7 @@ func TestParseVariadicParamPart(t *testing.T) {
 		s := `f Xs... = g Xs... X`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("f", stPattern.NewLeftVariadicParamPart("Xs", stPattern.FixedParamPart{})),
+				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.NewLeftVariadicParamPart("Xs", stPattern.PatternsToFixedParamPart([]base.Pattern{}))),
 				stResult.NewObject(base.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{stResult.NewVariadicVariable("Xs"), base.NewVariable("X")})),
 			),
 		})
@@ -228,7 +234,7 @@ func TestParseVariadicParamPart(t *testing.T) {
 		s := `f Xs... X = g X Xs...`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("f", stPattern.NewLeftVariadicParamPart("Xs", []base.PatternParam{base.NewVariable("X")})),
+				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.NewLeftVariadicParamPart("Xs", []base.Pattern{base.NewVariable("X")})),
 				stResult.NewObject(base.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{base.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
 			),
 		})
@@ -239,7 +245,7 @@ func TestParseVariadicParamPart(t *testing.T) {
 		s := `f Xs... X = g Xs... X Xs...`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("f", stPattern.NewLeftVariadicParamPart("Xs", []base.PatternParam{base.NewVariable("X")})),
+				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.NewLeftVariadicParamPart("Xs", []base.Pattern{base.NewVariable("X")})),
 				stResult.NewObject(base.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{stResult.NewVariadicVariable("Xs"), base.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
 			),
 		})
@@ -250,15 +256,15 @@ func TestParseVariadicParamPart(t *testing.T) {
 func TestVariableRulePattern(t *testing.T) {
 	t.Run("should parse variable rule pattern", func(t *testing.T) {
 		s := `f (G X) = 1`
-		expectedNestedPattern := stPattern.NewVariableRulePattern(
-			"G",
-			stPattern.ParamsToFixedParamPart([]base.PatternParam{base.NewVariable("X")}),
+		expectedNestedPattern := stPattern.NewNonDeterminantObject(
+			base.NewVariable("G"),
+			stPattern.PatternsToFixedParamPart([]base.Pattern{base.NewVariable("X")}),
 		)
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule(
-					"f",
-					stPattern.ParamsToFixedParamPart([]base.PatternParam{expectedNestedPattern}),
+				stPattern.NewDeterminantObject(
+					base.NewClass("f"),
+					stPattern.PatternsToFixedParamPart([]base.Pattern{expectedNestedPattern}),
 				),
 				base.NewNumber("1"),
 			),
@@ -272,7 +278,7 @@ func TestActiveRule(t *testing.T) {
 		s := `@ f Xs... X = g X Xs...`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewActiveRule(
-				stPattern.NewNamedRule("f", stPattern.NewLeftVariadicParamPart("Xs", []base.PatternParam{base.NewVariable("X")})),
+				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.NewLeftVariadicParamPart("Xs", []base.Pattern{base.NewVariable("X")})),
 				stResult.NewObject(base.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{base.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
 			),
 		})
@@ -285,7 +291,7 @@ func TestBoolean(t *testing.T) {
 		s := `main = true`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("main", stPattern.ParamsToFixedParamPart([]base.PatternParam{})),
+				stPattern.NewDeterminantObject(base.NewClass("main"), stPattern.PatternsToFixedParamPart([]base.Pattern{})),
 				base.NewBoolean("true"),
 			),
 		})
@@ -296,7 +302,7 @@ func TestBoolean(t *testing.T) {
 		s := `main = f true`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("main", stPattern.ParamsToFixedParamPart([]base.PatternParam{})),
+				stPattern.NewDeterminantObject(base.NewClass("main"), stPattern.PatternsToFixedParamPart([]base.Pattern{})),
 				stResult.NewObject(base.NewClass("f"), stResult.ParamsToFixedParamPart([]stResult.Param{base.NewBoolean("true")})),
 			),
 		})
@@ -307,7 +313,7 @@ func TestBoolean(t *testing.T) {
 		s := `f true = "a"`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("f", stPattern.ParamsToFixedParamPart([]base.PatternParam{base.NewBoolean("true")})),
+				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.PatternsToFixedParamPart([]base.Pattern{base.NewBoolean("true")})),
 				base.NewString("\"a\""),
 			),
 		})
@@ -318,7 +324,7 @@ func TestBoolean(t *testing.T) {
 		s := `main = true "a"`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("main", stPattern.ParamsToFixedParamPart([]base.PatternParam{})),
+				stPattern.NewDeterminantObject(base.NewClass("main"), stPattern.PatternsToFixedParamPart([]base.Pattern{})),
 				stResult.NewObject(base.NewBoolean("true"), stResult.ParamsToFixedParamPart([]stResult.Param{base.NewString("\"a\"")})),
 			),
 		})
@@ -331,7 +337,7 @@ func TestNestedResult(t *testing.T) {
 		s := `main = (p) "a"`
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
-				stPattern.NewNamedRule("main", stPattern.ParamsToFixedParamPart([]base.PatternParam{})),
+				stPattern.NewDeterminantObject(base.NewClass("main"), stPattern.PatternsToFixedParamPart([]base.Pattern{})),
 				stResult.NewObject(
 					stResult.NewObject(base.NewClass("p"), stResult.ParamsToFixedParamPart([]stResult.Param{})),
 					stResult.ParamsToFixedParamPart([]stResult.Param{base.NewString("\"a\"")}),

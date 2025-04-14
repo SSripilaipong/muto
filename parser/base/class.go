@@ -15,6 +15,9 @@ var Class = ps.Map(st.NewClass, ps.Or(
 
 var ClassRule = ps.Filter(validClassRule, Class)
 
+var ClassRulePattern = ps.Map(st.ToPattern, ClassRule)
+var ClassDeterminant = ps.Map(st.ToDeterminant, ClassRule)
+
 func validClassRule(class st.Class) bool {
 	return !slices.Contains([]string{"try", "do"}, class.Name())
 }

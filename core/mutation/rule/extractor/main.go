@@ -15,7 +15,7 @@ type topLevelNamedRule struct {
 	param extractor.ParamChainPartial
 }
 
-func New(rule stPattern.NamedRule) mutator.Extractor {
+func New(rule stPattern.DeterminantObject) mutator.Extractor {
 	return topLevelNamedRule{param: newForParamChainPartial(stPattern.ExtractParamChain(rule))}
 }
 
@@ -27,17 +27,21 @@ func newForParamChainPartial(chain []stPattern.ParamPart) extractor.ParamChainPa
 	var extractors []extractor.NodeListExtractor
 	if len(chain) > 0 {
 		extractors = slc.Map(newForParamPartNested)(chain[:slc.LastIndex(chain)])
-		extractors = append(extractors, newForParamPartTopLevel(slc.LastDefaultZero(chain)))
+		if rightMostExtractor, ok := newForParamPartTopLevel(slc.LastDefaultZero(chain)).Return(); ok {
+			extractors = append(extractors, rightMostExtractor)
+		}
 	}
 	return extractor.NewParamChainPartial(extractors)
 }
 
-func newForParamPartTopLevel(paramPart stPattern.ParamPart) extractor.NodeListExtractor {
+func newForParamPartTopLevel(paramPart stPattern.ParamPart) optional.Of[extractor.NodeListExtractor] {
 	switch {
 	case stPattern.IsParamPartTypeFixed(paramPart):
-		return newForFixedParamPartTopLevel(stPattern.UnsafeParamPartToParams(paramPart))
+		return optional.Fmap(extractor.ToNodeListExtractor[extractor.ImplicitRightVariadic])(
+			newForFixedParamPartTopLevel(stPattern.UnsafeParamPartToPatterns(paramPart)),
+		)
 	case stPattern.IsParamPartTypeVariadic(paramPart):
-		return newForVariadicParamPart(stPattern.UnsafeParamPartToVariadicParamPart(paramPart))
+		return optional.Value(newForVariadicParamPart(stPattern.UnsafeParamPartToVariadicParamPart(paramPart)))
 	}
 	panic("not implemented")
 }
@@ -45,7 +49,7 @@ func newForParamPartTopLevel(paramPart stPattern.ParamPart) extractor.NodeListEx
 func newForParamPartNested(paramPart stPattern.ParamPart) extractor.NodeListExtractor {
 	switch {
 	case stPattern.IsParamPartTypeFixed(paramPart):
-		return newForFixedParamPart(stPattern.UnsafeParamPartToParams(paramPart))
+		return newForFixedParamPart(stPattern.UnsafeParamPartToPatterns(paramPart))
 	case stPattern.IsParamPartTypeVariadic(paramPart):
 		return newForVariadicParamPart(stPattern.UnsafeParamPartToVariadicParamPart(paramPart))
 	}
@@ -62,11 +66,14 @@ func newForVariadicParamPart(paramPart stPattern.VariadicParamPart) extractor.No
 	panic("not implemented")
 }
 
-func newForFixedParamPartTopLevel(params []stBase.PatternParam) extractor.ImplicitRightVariadic {
-	return extractor.NewImplicitRightVariadic(newParamExtractors(params))
+func newForFixedParamPartTopLevel(params []stBase.Pattern) optional.Of[extractor.ImplicitRightVariadic] {
+	if len(params) == 0 {
+		return optional.Empty[extractor.ImplicitRightVariadic]()
+	}
+	return optional.Value(extractor.NewImplicitRightVariadic(newParamExtractors(params)))
 }
 
-func newForFixedParamPart(params []stBase.PatternParam) extractor.NodeListExtractor {
+func newForFixedParamPart(params []stBase.Pattern) extractor.NodeListExtractor {
 	if len(params) == 0 {
 		return extractor.NewExactNodeList(nil)
 	}

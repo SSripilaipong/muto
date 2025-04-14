@@ -18,6 +18,10 @@ type NodeListExtractor interface {
 	Extract(nodes []base.Node) optional.Of[*parameter.Parameter]
 }
 
+func ToNodeListExtractor[T NodeListExtractor](extractor T) NodeListExtractor {
+	return extractor
+}
+
 func extractNodeList(extractor NodeListExtractor) func(nodes []base.Node) optional.Of[*parameter.Parameter] {
 	return extractor.Extract
 }

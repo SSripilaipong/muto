@@ -19,7 +19,7 @@ func objectParam(xs []psBase.Character) []tuple.Of2[stResult.Param, []psBase.Cha
 	return ps.Or(
 		ps.Map(stResult.ToParam, nonNestedNode),
 		psBase.VariadicVarResultNode,
-		ps.Map(castObjectParam, psBase.InParenthesesWhiteSpaceAllowed(objectMultilines)),
+		ps.Map(castObjectParam, psBase.InParenthesesWhiteSpaceAllowed(nakedObjectMultilines)),
 		ps.Map(stResult.ToParam, structure),
 	)(xs)
 }

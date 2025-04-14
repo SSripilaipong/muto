@@ -13,7 +13,7 @@ import (
 )
 
 func TestTag(t *testing.T) {
-	node := Node()
+	node := SimplifiedNode()
 	t.Run("should parse tag as result", func(t *testing.T) {
 		r := node(psBase.StringToCharTokens(`.abc`))
 		expectedResult := stResult.ToNode(base.NewTag(`.abc`))
@@ -54,7 +54,7 @@ func TestTag(t *testing.T) {
 }
 
 func TestNode_Structure(t *testing.T) {
-	node := Node()
+	node := SimplifiedNode()
 	emptyStructure := stResult.NewStructure([]stResult.StructureRecord{})
 
 	t.Run("should parse structure as result", func(t *testing.T) {
@@ -85,19 +85,29 @@ func TestNode_Structure(t *testing.T) {
 }
 
 func TestNode_nestedHead(t *testing.T) {
-	node := Node()
+	node := SimplifiedNode()
 
 	t.Run("should parse object as a head", func(t *testing.T) {
 		r := node(psBase.StringToCharTokens(`(p) "a"`))
-		expectedResult := stResult.ToNode(stResult.NewObject(stResult.NewObject(base.NewClass("p"), stResult.ParamsToFixedParamPart([]stResult.Param{})), stResult.ParamsToFixedParamPart([]stResult.Param{
-			base.NewString(`"a"`),
-		})))
+		expectedResult := stResult.ToNode(stResult.NewObject(
+			stResult.NewObject(base.NewClass("p"), stResult.ParamsToFixedParamPart([]stResult.Param{})),
+			stResult.ParamsToFixedParamPart([]stResult.Param{base.NewString(`"a"`)}),
+		))
+		assert.Equal(t, psBase.SingleResult(expectedResult, []psBase.Character{}), psBase.AsParserResult(parsing.FilterSuccess(r)))
+	})
+
+	t.Run("should parse double-nested head", func(t *testing.T) {
+		r := node(psBase.StringToCharTokens(`((p)) "a"`))
+		expectedResult := stResult.ToNode(stResult.NewObject(
+			stResult.NewObject(stResult.NewObject(base.NewClass("p"), stResult.ParamsToFixedParamPart([]stResult.Param{})), stResult.ParamsToFixedParamPart([]stResult.Param{})),
+			stResult.ParamsToFixedParamPart([]stResult.Param{base.NewString(`"a"`)}),
+		))
 		assert.Equal(t, psBase.SingleResult(expectedResult, []psBase.Character{}), psBase.AsParserResult(parsing.FilterSuccess(r)))
 	})
 }
 
 func TestNode_nestedObject(t *testing.T) {
-	node := Node()
+	node := SimplifiedNode()
 
 	t.Run("should parse nested object with no params", func(t *testing.T) {
 		r := node(psBase.StringToCharTokens(`g (f)`))
@@ -109,13 +119,16 @@ func TestNode_nestedObject(t *testing.T) {
 }
 
 func TestNode_objectMultilines(t *testing.T) {
-	node := Node()
+	node := SimplifiedNode()
 
 	t.Run("should allow multiline object inside parentheses", func(t *testing.T) {
 		r := node(psBase.StringToCharTokens("(\nf \n  g\n\n 1 2 )"))
-		expectedResult := stResult.ToNode(stResult.NewObject(base.NewClass("f"), stResult.ParamsToFixedParamPart([]stResult.Param{
-			base.NewClass("g"), base.NewNumber("1"), base.NewNumber(`2`),
-		})))
+		expectedResult := stResult.ToNode(stResult.NewObject(
+			stResult.NewObject(base.NewClass("f"), stResult.ParamsToFixedParamPart([]stResult.Param{
+				base.NewClass("g"), base.NewNumber("1"), base.NewNumber(`2`),
+			})),
+			stResult.ParamsToFixedParamPart([]stResult.Param{}),
+		))
 		assert.Equal(t, psBase.SingleResult(expectedResult, []psBase.Character{}), psBase.AsParserResult(parsing.FilterSuccess(r)))
 	})
 

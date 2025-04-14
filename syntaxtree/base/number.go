@@ -9,13 +9,11 @@ type Number struct {
 	value string
 }
 
+func (Number) PatternType() PatternType { return PatternTypeNumber }
+
 func (Number) RuleResultNodeType() stResult.NodeType { return stResult.NodeTypeNumber }
 
 func (Number) ObjectParamType() stResult.ParamType { return stResult.ParamTypeSingle }
-
-func (Number) RulePatternParamType() PatternParamType {
-	return PatternParamTypeNumber
-}
 
 func (n Number) Value() string {
 	return n.value
@@ -33,6 +31,6 @@ func UnsafeRuleResultToNumber(p stResult.Node) Number {
 	return p.(Number)
 }
 
-func UnsafeRuleParamPatternToNumber(p PatternParam) Number {
+func UnsafePatternToNumber(p Pattern) Number {
 	return p.(Number)
 }

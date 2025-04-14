@@ -15,13 +15,11 @@ func NewString(value string) String {
 	return String{value: value}
 }
 
+func (String) PatternType() PatternType { return PatternTypeString }
+
 func (String) RuleResultNodeType() stResult.NodeType { return stResult.NodeTypeString }
 
 func (String) ObjectParamType() stResult.ParamType { return stResult.ParamTypeSingle }
-
-func (String) RulePatternParamType() PatternParamType {
-	return PatternParamTypeString
-}
 
 func (s String) Value() string {
 	return s.value
@@ -39,6 +37,6 @@ func UnsafeRuleResultToString(r stResult.Node) String {
 	return r.(String)
 }
 
-func UnsafeRuleParamPatternToString(r PatternParam) String {
-	return r.(String)
+func UnsafePatternToString(p Pattern) String {
+	return p.(String)
 }

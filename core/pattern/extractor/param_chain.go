@@ -16,9 +16,12 @@ func NewParamChainPartial(extractors []NodeListExtractor) ParamChainPartial {
 }
 
 func (p ParamChainPartial) Extract(x base.ParamChain) optional.Of[*parameter.Parameter] {
-	extractParams := slc.LeftZipApply(mapExtractNodeList(p.extractors))(optional.Empty[*parameter.Parameter]())
-	params := extractParams(x.All())
-	merged := slc.Reduce(optionalMergeParam)(params)
+	merged := optional.Value(parameter.New())
+	if len(p.extractors) > 0 {
+		extractParams := slc.LeftZipApply(mapExtractNodeList(p.extractors))(optional.Empty[*parameter.Parameter]())
+		params := extractParams(x.All())
+		merged = slc.Reduce(optionalMergeParam)(params)
+	}
 	return p.chainRemainingParams(merged, x)
 }
 

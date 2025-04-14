@@ -6,20 +6,20 @@ import (
 	"github.com/SSripilaipong/muto/core/pattern/parameter"
 )
 
-type HeadVariable struct {
+type Variable struct {
 	name string
 }
 
-func NewHeadVariable(name string) HeadVariable {
-	return HeadVariable{name: name}
+func NewVariable(name string) Variable {
+	return Variable{name: name}
 }
 
-func (v HeadVariable) Extract(x base.Node) optional.Of[*parameter.Parameter] {
+func (v Variable) Extract(x base.Node) optional.Of[*parameter.Parameter] {
 	return optional.Value(parameter.NewParameterWithVariableMapping(parameter.NewVariableMapping(v.Name(), x)))
 }
 
-func (v HeadVariable) Name() string {
+func (v Variable) Name() string {
 	return v.name
 }
 
-var _ NodeExtractor = HeadVariable{}
+var _ NodeExtractor = Variable{}

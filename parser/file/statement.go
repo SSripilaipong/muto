@@ -1,15 +1,12 @@
 package file
 
 import (
-	"github.com/SSripilaipong/muto/common/fn"
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/tuple"
 	psBase "github.com/SSripilaipong/muto/parser/base"
 	"github.com/SSripilaipong/muto/syntaxtree"
 	"github.com/SSripilaipong/muto/syntaxtree/base"
 )
-
-var ParseStatement = fn.Compose3(psBase.FilterStatement, statement, psBase.StringToCharTokens)
 
 var rsStatements = ps.RsMap(aggregateStatements, psBase.RsIgnoreSpaceBetween2(statement, ps.RsOptionalGreedyRepeat(psBase.RsWithLeadingLineBreak(statement))))
 

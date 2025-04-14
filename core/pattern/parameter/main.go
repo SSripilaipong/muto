@@ -109,9 +109,7 @@ func (m *Parameter) SetRemainingParamChain(params base.ParamChain) *Parameter {
 
 func (m *Parameter) AddRemainingParamChain(nodes []base.Node) *Parameter {
 	newM := m.Clone()
-	if len(nodes) > 0 {
-		newM.remainingParamChain = newM.remainingParamChain.Append(nodes)
-	}
+	newM.remainingParamChain = newM.remainingParamChain.Append(nodes)
 	return newM
 }
 

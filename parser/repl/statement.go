@@ -17,7 +17,7 @@ var statement = ps.Or(
 	ps.RsMap(replSt.ToStatement, command),
 	ps.RsMap(mergeRule, fileParser.Rule),
 	ps.RsMap(mergeActiveRule, fileParser.ActiveRule),
-	ps.RsMap(mergeNode, psResult.RsNode),
+	ps.RsMap(mergeNode, psResult.RsSimplifiedNode),
 )
 
 func mergeRule(r syntaxtree.Rule) replSt.Statement {

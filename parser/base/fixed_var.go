@@ -9,11 +9,8 @@ import (
 
 var FixedVar = ps.Map(st.NewVariable, ps.Lookahead(not3Dots, identifierStartingWithUpperCase))
 
-var FixedVarPatternParam = ps.Map(fixedVarToPatternParam, FixedVar)
+var FixedVarPattern = ps.Map(st.ToPattern, FixedVar)
 
-var FixedVarResultNode = ps.Map(fixedVarToResultNode, FixedVar)
-
-func fixedVarToPatternParam(x st.Variable) st.PatternParam { return x }
-func fixedVarToResultNode(x st.Variable) stResult.Node     { return x }
+var FixedVarResultNode = ps.Map(stResult.ToNode, FixedVar)
 
 var not3Dots = fn.Not(ps.Matches(ThreeDots))
