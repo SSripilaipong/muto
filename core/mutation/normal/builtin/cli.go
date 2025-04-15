@@ -8,20 +8,36 @@ import (
 	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
 )
 
-func cliPrintMutator(print func(string)) mutator.ClassMutator {
+type CliReader interface {
+	Read() rslt.Of[string]
+}
+
+type CliReaderFunc func() rslt.Of[string]
+
+func (r CliReaderFunc) Read() rslt.Of[string] { return r() }
+
+type CliPrinter interface {
+	Print(string)
+}
+
+type CliPrinterFunc func(string)
+
+func (p CliPrinterFunc) Print(s string) { p(s) }
+
+func cliPrintMutator(printer CliPrinter) mutator.ClassMutator {
 	return NewRuleBasedMutatorFromFunctions("print!", slc.Pure(strictUnaryOp(func(x base.Node) optional.Of[base.Node] {
 		if base.IsStringNode(x) {
-			print(base.UnsafeNodeToString(x).Value())
+			printer.Print(base.UnsafeNodeToString(x).Value())
 			return optional.Value[base.Node](base.NewClass("$"))
 		}
 		return optional.Empty[base.Node]()
 	})))
 }
 
-func cliInputMutator(read func() rslt.Of[string]) mutator.ClassMutator {
+func cliInputMutator(reader CliReader) mutator.ClassMutator {
 	return NewRuleBasedMutatorFromFunctions("input!", slc.Pure(strictUnaryOp(func(x base.Node) optional.Of[base.Node] {
 		if base.IsClassNode(x) && base.UnsafeNodeToClass(x).Name() == "$" {
-			s, err := read().Return()
+			s, err := reader.Read().Return()
 			if err != nil {
 				return optional.Value[base.Node](base.NewErrorWithMessage(err.Error()))
 			}

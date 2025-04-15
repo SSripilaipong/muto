@@ -14,10 +14,10 @@ type nameWiseMutation struct {
 	normal mutator.AppendableNameSwitch
 }
 
-func newNameWiseMutation(ss []st.Statement) nameWiseMutation {
+func newNameWiseMutation(ss []st.Statement, builtins []mutator.NamedObjectMutator) nameWiseMutation {
 	return nameWiseMutation{
 		active: activeMutation.NewFromStatements(ss),
-		normal: normalMutation.NewFromStatements(ss),
+		normal: normalMutation.NewFromStatementsWithBuiltins(ss, builtins),
 	}
 }
 

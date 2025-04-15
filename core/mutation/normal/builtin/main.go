@@ -5,7 +5,7 @@ import (
 	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
 )
 
-func NewMutators() []mutator.NamedObjectMutator {
+func NewMutators(cliReader CliReader, cliPrinter CliPrinter) []mutator.NamedObjectMutator {
 	return []mutator.NamedObjectMutator{
 		stringMutator,
 		addMutator,
@@ -24,12 +24,19 @@ func NewMutators() []mutator.NamedObjectMutator {
 		greaterThanOrEqualMutator,
 		lessThanMutator,
 		lessThanOrEqualMutator,
-		cliInputMutator(cliio.ReadInputOneLine),
-		cliPrintMutator(cliio.PrintStringWithNewLine),
+		cliInputMutator(cliReader),
+		cliPrintMutator(cliPrinter),
 		andMutator,
 		orMutator,
 		notMutator,
 		newTryMutator(),
 		doMutator,
 	}
+}
+
+func NewBuiltinMutatorsForStdio() []mutator.NamedObjectMutator {
+	return NewMutators(
+		CliReaderFunc(cliio.ReadInputOneLine),
+		CliPrinterFunc(cliio.PrintStringWithNewLine),
+	)
 }

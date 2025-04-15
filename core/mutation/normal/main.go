@@ -1,18 +1,19 @@
 package normal
 
 import (
-	"github.com/SSripilaipong/muto/common/fn"
-	"github.com/SSripilaipong/muto/core/mutation/normal/builtin"
 	"github.com/SSripilaipong/muto/core/mutation/normal/object"
 	ruleMutator "github.com/SSripilaipong/muto/core/mutation/rule/mutator"
+	"github.com/SSripilaipong/muto/syntaxtree/base"
 )
 
-var NewFromStatements = fn.Compose(mergeNameWised, object.NewMutatorsFromStatements)
+func NewFromStatementsWithBuiltins(st []base.Statement, builtins []ruleMutator.NamedObjectMutator) ruleMutator.AppendableNameSwitch {
+	return mergeNameWisedWithNamedObjectMutators(object.NewFromStatements(st), builtins)
+}
 
-func mergeNameWised(ms []ruleMutator.NameWrapper) ruleMutator.AppendableNameSwitch {
+func mergeNameWisedWithNamedObjectMutators(ms []ruleMutator.NameWrapper, ns []ruleMutator.NamedObjectMutator) ruleMutator.AppendableNameSwitch {
 	var rs []ruleMutator.NamedObjectMutator
 	for _, m := range ms {
 		rs = append(rs, m)
 	}
-	return ruleMutator.NewAppendableNameSwitch(append(rs, builtin.NewMutators()...))
+	return ruleMutator.NewAppendableNameSwitch(append(rs, ns...))
 }

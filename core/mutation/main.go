@@ -3,6 +3,7 @@ package mutation
 import (
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
+	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
 	st "github.com/SSripilaipong/muto/syntaxtree/base"
 )
 
@@ -10,9 +11,9 @@ type TopLevelMutation struct {
 	nameWiseMutation
 }
 
-func NewFromStatements(ss []st.Statement) TopLevelMutation {
+func NewFromStatements(ss []st.Statement, builtins []mutator.NamedObjectMutator) TopLevelMutation {
 	return TopLevelMutation{
-		nameWiseMutation: newNameWiseMutation(ss),
+		nameWiseMutation: newNameWiseMutation(ss, builtins),
 	}
 }
 

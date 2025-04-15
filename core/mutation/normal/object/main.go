@@ -8,6 +8,6 @@ import (
 	"github.com/SSripilaipong/muto/syntaxtree/base"
 )
 
-var NewMutatorsFromStatements = fn.Compose(slc.Map(ruleMutation.New), mapFilterRuleFromStatement)
+var NewFromStatements = fn.Compose(slc.Map(ruleMutation.New), mapFilterRuleFromStatement)
 
 var mapFilterRuleFromStatement = fn.Compose(slc.Map(syntaxtree.UnsafeStatementToRule), slc.Filter(base.IsRuleStatement))
