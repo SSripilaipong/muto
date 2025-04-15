@@ -16,7 +16,7 @@ var RsNode = ps.Map(rslt.Value, Node())
 func Node() func([]psBase.Character) []tuple.Of2[stResult.Node, []psBase.Character] {
 	return ps.Or(
 		nonNestedNode,
-		ps.Map(castObjectNode, psBase.InParentheses(nakedObjectMultilines)),
+		ps.Map(castObjectNode, psBase.InParentheses(NakedObjectMultilines)),
 		ps.Map(stResult.ToNode, structure),
 	)
 }
