@@ -8,7 +8,7 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-func nakedObject(xs []psBase.Character) []tuple.Of2[objectNode, []psBase.Character] {
+func nakedObjectWithChildren(xs []psBase.Character) []tuple.Of2[objectNode, []psBase.Character] {
 	return ps.Or(
 		ps.Map(mergeObject, psBase.SpaceSeparated2(objectHead, objectParamPart)),
 		ps.Map(fn.Compose(nodeToObject, castObjectNode), psBase.InParenthesesWhiteSpaceAllowed(nakedObjectMultilines)),
