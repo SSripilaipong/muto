@@ -29,16 +29,18 @@ func New(r stResult.SimplifiedNode) mutator.Builder { // TODO unit test
 }
 
 func NewLiteral(r stResult.Node) mutator.Builder {
-	return wrapChainRemainingChildren(func() mutator.Builder {
-		if nonObj, ok := newNonObject(r).Return(); ok {
-			return nonObj
-		} else if stResult.IsNodeTypeObject(r) {
-			if obj, ok := newCoreObject(stResult.UnsafeNodeToObject(r)).Return(); ok {
-				return obj
-			}
+	return wrapChainRemainingChildren(NewLiteralWithoutCarry(r))
+}
+
+func NewLiteralWithoutCarry(r stResult.Node) mutator.Builder {
+	if nonObj, ok := newNonObject(r).Return(); ok {
+		return nonObj
+	} else if stResult.IsNodeTypeObject(r) {
+		if obj, ok := newCoreObject(stResult.UnsafeNodeToObject(r)).Return(); ok {
+			return obj
 		}
-		panic("not implemented")
-	}())
+	}
+	panic("not implemented")
 }
 
 func NewNonObject(r stResult.Node) mutator.Builder {
@@ -59,18 +61,6 @@ func newNonObject(r stResult.Node) optional.Of[mutator.Builder] {
 		return optional.Value[mutator.Builder](newParamVariableBuilder(stBase.UnsafeRuleResultToVariable(r)))
 	}
 	return optional.Empty[mutator.Builder]()
-}
-
-func buildHead(r stResult.Node) mutator.Builder {
-	return wrapChainRemainingChildren(func() mutator.Builder {
-		if x, ok := switchConstant(r).Return(); ok {
-			return x
-		}
-		if stResult.IsNodeTypeVariable(r) {
-			return newHeadVariableBuilder(stBase.UnsafeRuleResultToVariable(r))
-		}
-		panic("not implemented")
-	}())
 }
 
 func switchConstant(r stResult.Node) optional.Of[mutator.Builder] {

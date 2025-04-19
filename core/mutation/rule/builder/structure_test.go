@@ -78,4 +78,17 @@ func TestBuildStructure(t *testing.T) {
 		})
 		assert.Equal(t, expectedObject, newStructureBuilder(tree).Build(mutationData).Value())
 	})
+
+	t.Run("should not carry remaining children to inner record object", func(t *testing.T) {
+		// tree: {.k: .v}
+		tree := stResult.NewStructure([]stResult.StructureRecord{
+			stResult.NewStructureRecord(stBase.NewTag(".k"), stBase.NewTag(".v")),
+		})
+		mutationData := parameter.New().
+			SetRemainingParamChain(base.NewParamChain([][]base.Node{{base.NewTag("xxx")}}))
+		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
+			base.NewStructureRecord(base.NewTag("k"), base.NewTag("v")),
+		})
+		assert.Equal(t, expectedObject, newStructureBuilder(tree).Build(mutationData).Value())
+	})
 }

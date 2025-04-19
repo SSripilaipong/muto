@@ -38,8 +38,8 @@ func buildStructureRecords(structure stResult.Structure) func(mutation *paramete
 }
 
 func buildStructureRecord(record stResult.StructureRecord) func(mutation *parameter.Parameter) optional.Of[base.StructureRecord] {
-	keyBuilder := NewLiteral(record.Key())
-	valueBuilder := NewLiteral(record.Value())
+	keyBuilder := NewLiteralWithoutCarry(record.Key())
+	valueBuilder := NewLiteralWithoutCarry(record.Value())
 
 	return func(mutation *parameter.Parameter) optional.Of[base.StructureRecord] {
 		key := keyBuilder.Build(mutation)
