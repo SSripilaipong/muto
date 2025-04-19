@@ -21,6 +21,8 @@ func (String) RuleResultNodeType() stResult.NodeType { return stResult.NodeTypeS
 
 func (String) ObjectParamType() stResult.ParamType { return stResult.ParamTypeSingle }
 
+func (String) NonObjectNode() {}
+
 func (s String) Value() string {
 	return s.value
 }

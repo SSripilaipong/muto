@@ -12,7 +12,7 @@ import (
 func nakedObjectWithChildren(xs []psBase.Character) []tuple.Of2[objectNode, []psBase.Character] {
 	return ps.Or(
 		ps.Map(mergeObject, psBase.SpaceSeparated2(objectHead, objectParamPart)),
-		ps.Map(fn.Compose(nodeToObject, castObjectNode), psBase.InParenthesesWhiteSpaceAllowed(NakedObjectMultilines)),
+		ps.Map(nodeToObject, objectHead),
 	)(xs)
 }
 

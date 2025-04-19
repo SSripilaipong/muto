@@ -6,17 +6,17 @@ import (
 
 type Node struct {
 	statementTypeMixin
-	node stResult.Node
+	node stResult.SimplifiedNode
 }
 
-func NewNode(node stResult.Node) Node {
+func NewNode(node stResult.SimplifiedNode) Node {
 	return Node{
 		statementTypeMixin: newStatementTypeMixin(StatementTypeNode),
 		node:               node,
 	}
 }
 
-func (n Node) Node() stResult.Node {
+func (n Node) Node() stResult.SimplifiedNode {
 	return n.node
 }
 

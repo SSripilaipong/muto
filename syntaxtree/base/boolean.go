@@ -18,6 +18,8 @@ func (Boolean) RuleResultNodeType() stResult.NodeType { return stResult.NodeType
 
 func (Boolean) ObjectParamType() stResult.ParamType { return stResult.ParamTypeSingle }
 
+func (Boolean) NonObjectNode() {}
+
 func (b Boolean) Value() string {
 	return b.value
 }

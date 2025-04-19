@@ -37,7 +37,7 @@ func newAddRuleCommand(s replSt.Rule) optional.Of[command.Command] {
 }
 
 func newMutateNodeCommand(x replSt.Node) optional.Of[command.Command] {
-	builder := mutationRuleBuilder.New(x.Node())
+	builder := mutationRuleBuilder.NewObject(x.Node().AsObject())
 	node := builder.Build(parameter.New())
 	if node.IsEmpty() {
 		return optional.Empty[command.Command]()

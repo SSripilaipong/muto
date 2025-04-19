@@ -17,7 +17,16 @@ type objectBuilder struct {
 	buildParamChain func(mapping *parameter.Parameter) optional.Of[base.ParamChain]
 }
 
-func newObjectBuilder(obj stResult.Object) objectBuilder {
+func NewObject(obj stResult.Object) mutator.Builder {
+	return wrapChainRemainingChildren(func() mutator.Builder {
+		if builder, ok := newCoreObject(obj).Return(); ok {
+			return builder
+		}
+		panic("not implemented")
+	}())
+}
+
+func newCoreObject(obj stResult.Object) optional.Of[objectBuilder] {
 	var params []stResult.ParamPart
 	var head stResult.Node = obj
 	for stResult.IsNodeTypeObject(head) {
@@ -27,10 +36,10 @@ func newObjectBuilder(obj stResult.Object) objectBuilder {
 	}
 	slices.Reverse(params)
 
-	return objectBuilder{
+	return optional.Value(objectBuilder{
 		buildHead:       buildHead(head),
 		buildParamChain: buildParamChain(params),
-	}
+	})
 }
 
 func (b objectBuilder) Build(param *parameter.Parameter) optional.Of[base.Node] {
@@ -67,7 +76,7 @@ func buildObjectParam(p stResult.Param) func(mapping *parameter.Parameter) optio
 
 func buildObjectParamTypeSingle(p stResult.Param) func(mapping *parameter.Parameter) optional.Of[[]base.Node] {
 	return fn.Compose(
-		optional.Map(slc.Pure[base.Node]), New(stResult.UnsafeParamToNode(p)).Build,
+		optional.Map(slc.Pure[base.Node]), NewLiteral(stResult.UnsafeParamToNode(p)).Build,
 	)
 }
 

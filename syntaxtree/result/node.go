@@ -14,6 +14,7 @@ const (
 	NodeTypeClass            NodeType = "CLASS"
 	NodeTypeTag              NodeType = "TAG"
 	NodeTypeObject           NodeType = "OBJECT"
+	NodeTypeNakedObject      NodeType = "NAKED_OBJECT"
 	NodeTypeVariable         NodeType = "VARIABLE"
 	NodeTypeVariadicVariable NodeType = "VARIADIC_VARIABLE"
 	NodeTypeStructure        NodeType = "STRUCTURE"
@@ -41,6 +42,10 @@ func IsNodeTypeTag(r Node) bool {
 
 func IsNodeTypeObject(r Node) bool {
 	return r.RuleResultNodeType() == NodeTypeObject
+}
+
+func IsNodeTypeNakedObject(r Node) bool {
+	return r.RuleResultNodeType() == NodeTypeNakedObject
 }
 
 func IsNodeTypeVariable(r Node) bool {

@@ -25,6 +25,7 @@ func (t topLevelNamedRule) Extract(x base.Object) optional.Of[*parameter.Paramet
 
 func newForParamChainPartial(chain []stPattern.ParamPart) extractor.ParamChainPartial {
 	var extractors []extractor.NodeListExtractor
+	extractors = slc.Map(newForParamPartNested)(chain)
 	if len(chain) > 0 {
 		extractors = slc.Map(newForParamPartNested)(chain[:slc.LastIndex(chain)])
 		if rightMostExtractor, ok := newForParamPartTopLevel(slc.LastDefaultZero(chain)).Return(); ok {

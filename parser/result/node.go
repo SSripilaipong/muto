@@ -1,6 +1,7 @@
 package result
 
 import (
+	"github.com/SSripilaipong/muto/common/fn"
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/rslt"
 	"github.com/SSripilaipong/muto/common/tuple"
@@ -10,11 +11,12 @@ import (
 
 var RsSimplifiedNode = ps.Map(rslt.Value, SimplifiedNode())
 
-func SimplifiedNode() func([]psBase.Character) []tuple.Of2[stResult.Node, []psBase.Character] {
+func SimplifiedNode() func([]psBase.Character) []tuple.Of2[stResult.SimplifiedNode, []psBase.Character] {
 	return ps.Or(
-		nonNestedNode,
-		ps.Map(castObjectNode, nakedObjectWithChildren),
-		ps.Map(stResult.ToNode, structure),
+		ps.Map(wrapNodeWithNakedObject, nonNestedNode),
+		ps.Map(castObjectNodeSimplified, psBase.InParenthesesWhiteSpaceAllowed(NakedObjectMultilines)),
+		ps.Map(fn.Compose(castObjectNodeNaked, mergeObject), psBase.SpaceSeparated2(objectHead, objectParamPart)),
+		ps.Map(fn.Compose(wrapNodeWithNakedObject, stResult.ToNode[stResult.Structure]), structure),
 	)
 }
 
@@ -27,6 +29,20 @@ var nonNestedNode = ps.Or(
 	psBase.FixedVarResultNode,
 )
 
+func castNakedObjectNode(obj objectNode) stResult.SimplifiedNode {
+	return stResult.NewNakedObject(obj.Head(), obj.ParamPart())
+}
+
 func castObjectNode(obj objectNode) stResult.Node {
 	return stResult.NewObject(obj.Head(), obj.ParamPart())
 }
+
+func castObjectNodeSimplified(obj objectNode) stResult.SimplifiedNode {
+	return stResult.NewObject(obj.Head(), obj.ParamPart())
+}
+
+func castObjectNodeNaked(obj objectNode) stResult.SimplifiedNode {
+	return stResult.NewNakedObject(obj.Head(), obj.ParamPart())
+}
+
+var wrapNodeWithNakedObject = fn.Compose(stResult.ToSimplifiedNode, stResult.SingleNodeToNakedObject)

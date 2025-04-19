@@ -22,7 +22,7 @@ func TestParseString(t *testing.T) {
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
 				stPattern.NewDeterminantObject(base.NewClass("main"), stPattern.PatternsToFixedParamPart([]base.Pattern{})),
-				base.NewString(`"hello world"`),
+				stResult.SingleNodeToNakedObject(base.NewString(`"hello world"`)),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterResult(ParsePackageCombinationFromString(s)))
@@ -33,7 +33,7 @@ func TestParseString(t *testing.T) {
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
 				stPattern.NewDeterminantObject(base.NewClass("main"), stPattern.PatternsToFixedParamPart([]base.Pattern{base.NewVariable("A")})),
-				stResult.NewObject(base.NewClass("+"), stResult.FixedParamPart([]stResult.Param{base.NewNumber("1"), base.NewString("\"abc\"")})),
+				stResult.NewNakedObject(base.NewClass("+"), stResult.FixedParamPart([]stResult.Param{base.NewNumber("1"), base.NewString("\"abc\"")})),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterSuccess(ParsePackageCombinationFromString(s)))
@@ -46,7 +46,7 @@ func TestParseVariable(t *testing.T) {
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
 				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.PatternsToParamPart([]base.Pattern{base.NewVariable("X"), base.NewVariable("X")})),
-				base.NewNumber("1"),
+				stResult.SingleNodeToNakedObject(base.NewNumber("1")),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterSuccess(ParsePackageCombinationFromString(s)))
@@ -61,7 +61,7 @@ func TestParseObjectParam(t *testing.T) {
 				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.PatternsToFixedParamPart([]base.Pattern{
 					stPattern.NewNonDeterminantObject(base.NewBoolean("true"), stPattern.PatternsToFixedParamPart([]base.Pattern{base.NewNumber("456")})),
 				})),
-				base.NewNumber("789"),
+				stResult.SingleNodeToNakedObject(base.NewNumber("789")),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterResult(ParsePackageCombinationFromString(s)))
@@ -74,7 +74,7 @@ func TestParseObjectParam(t *testing.T) {
 				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.PatternsToFixedParamPart([]base.Pattern{
 					stPattern.NewNonDeterminantObject(base.NewString(`"a"`), stPattern.PatternsToFixedParamPart([]base.Pattern{base.NewNumber("456")})),
 				})),
-				base.NewNumber("789"),
+				stResult.SingleNodeToNakedObject(base.NewNumber("789")),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterSuccess(ParsePackageCombinationFromString(s)))
@@ -87,7 +87,7 @@ func TestParseObjectParam(t *testing.T) {
 				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.PatternsToFixedParamPart([]base.Pattern{
 					stPattern.NewNonDeterminantObject(base.NewNumber("123"), stPattern.PatternsToFixedParamPart([]base.Pattern{base.NewNumber("456")})),
 				})),
-				base.NewNumber("789"),
+				stResult.SingleNodeToNakedObject(base.NewNumber("789")),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterSuccess(ParsePackageCombinationFromString(s)))
@@ -100,7 +100,7 @@ func TestParseObjectParam(t *testing.T) {
 				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.PatternsToFixedParamPart([]base.Pattern{
 					stPattern.NewNonDeterminantObject(base.NewNumber("123"), stPattern.PatternsToFixedParamPart([]base.Pattern{})),
 				})),
-				base.NewNumber("789"),
+				stResult.SingleNodeToNakedObject(base.NewNumber("789")),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterSuccess(ParsePackageCombinationFromString(s)))
@@ -113,7 +113,7 @@ func TestParseObject(t *testing.T) {
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
 				stPattern.NewDeterminantObject(base.NewClass("main"), stPattern.PatternsToParamPart([]base.Pattern{})),
-				stResult.NewObject(base.NewClass("a"), stResult.FixedParamPart([]stResult.Param{base.NewClass("b")})),
+				stResult.NewNakedObject(base.NewClass("a"), stResult.FixedParamPart([]stResult.Param{base.NewClass("b")})),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterResult(ParsePackageCombinationFromString(s)))
@@ -129,7 +129,7 @@ func TestParseObject(t *testing.T) {
 						stPattern.FixedParamPart([]base.Pattern{base.NewVariable("X")}),
 					),
 				})),
-				base.NewNumber("999"),
+				stResult.SingleNodeToNakedObject(base.NewNumber("999")),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterSuccess(ParsePackageCombinationFromString(s)))
@@ -139,7 +139,7 @@ func TestParseObject(t *testing.T) {
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
 				stPattern.NewDeterminantObject(base.NewClass("main"), stPattern.PatternsToParamPart([]base.Pattern{base.NewVariable("A")})),
-				stResult.NewObject(
+				stResult.NewNakedObject(
 					stResult.NewObject(base.NewClass("+"), stResult.FixedParamPart([]stResult.Param{base.NewNumber("1"), base.NewNumber("2")})),
 					stResult.ParamsToFixedParamPart([]stResult.Param{base.NewNumber("3"), base.NewNumber("4")}),
 				),
@@ -153,7 +153,7 @@ func TestParseObject(t *testing.T) {
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
 				stPattern.NewDeterminantObject(base.NewClass("main"), stPattern.PatternsToParamPart([]base.Pattern{base.NewVariable("A")})),
-				stResult.NewObject(
+				stResult.NewNakedObject(
 					stResult.NewObject(stResult.NewObject(base.NewClass("+"), stResult.FixedParamPart([]stResult.Param{base.NewNumber("1"), base.NewNumber("2")})), stResult.ParamsToFixedParamPart([]stResult.Param{base.NewNumber("3"), base.NewNumber("4")})),
 					stResult.ParamsToFixedParamPart([]stResult.Param{base.NewNumber("5"), base.NewNumber("6")}),
 				),
@@ -167,7 +167,7 @@ func TestParseObject(t *testing.T) {
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
 				stPattern.NewDeterminantObject(base.NewClass("main"), stPattern.PatternsToParamPart([]base.Pattern{})),
-				stResult.NewObject(
+				stResult.NewNakedObject(
 					base.NewNumber("123"),
 					stResult.ParamsToFixedParamPart([]stResult.Param{base.NewNumber("456")}),
 				),
@@ -183,7 +183,7 @@ func TestParseVariadicVarPattern(t *testing.T) {
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
 				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.NewLeftVariadicParamPart("Xs", []base.Pattern{base.NewVariable("X")})),
-				stResult.NewObject(base.NewClass("g"), stResult.FixedParamPart([]stResult.Param{base.NewVariable("X")})),
+				stResult.NewNakedObject(base.NewClass("g"), stResult.FixedParamPart([]stResult.Param{base.NewVariable("X")})),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterSuccess(ParsePackageCombinationFromString(s)))
@@ -194,7 +194,7 @@ func TestParseVariadicVarPattern(t *testing.T) {
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
 				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.NewRightVariadicParamPart("Xs", []base.Pattern{base.NewVariable("X")})),
-				stResult.NewObject(base.NewClass("g"), stResult.FixedParamPart([]stResult.Param{base.NewVariable("X")})),
+				stResult.NewNakedObject(base.NewClass("g"), stResult.FixedParamPart([]stResult.Param{base.NewVariable("X")})),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterSuccess(ParsePackageCombinationFromString(s)))
@@ -211,7 +211,7 @@ func TestParseVariadicVarPattern(t *testing.T) {
 						stPattern.NewNonDeterminantObject(base.NewClass("g"), stPattern.NewRightVariadicParamPart("Ys", []base.Pattern{base.NewVariable("Y")})),
 					}),
 				),
-				stResult.NewObject(base.NewClass("g"), stResult.FixedParamPart([]stResult.Param{base.NewVariable("Y")})),
+				stResult.NewNakedObject(base.NewClass("g"), stResult.FixedParamPart([]stResult.Param{base.NewVariable("Y")})),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterSuccess(ParsePackageCombinationFromString(s)))
@@ -224,7 +224,7 @@ func TestParseVariadicParamPart(t *testing.T) {
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
 				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.NewLeftVariadicParamPart("Xs", stPattern.PatternsToFixedParamPart([]base.Pattern{}))),
-				stResult.NewObject(base.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{stResult.NewVariadicVariable("Xs"), base.NewVariable("X")})),
+				stResult.NewNakedObject(base.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{stResult.NewVariadicVariable("Xs"), base.NewVariable("X")})),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterSuccess(ParsePackageCombinationFromString(s)))
@@ -235,7 +235,7 @@ func TestParseVariadicParamPart(t *testing.T) {
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
 				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.NewLeftVariadicParamPart("Xs", []base.Pattern{base.NewVariable("X")})),
-				stResult.NewObject(base.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{base.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
+				stResult.NewNakedObject(base.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{base.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterSuccess(ParsePackageCombinationFromString(s)))
@@ -246,7 +246,7 @@ func TestParseVariadicParamPart(t *testing.T) {
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
 				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.NewLeftVariadicParamPart("Xs", []base.Pattern{base.NewVariable("X")})),
-				stResult.NewObject(base.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{stResult.NewVariadicVariable("Xs"), base.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
+				stResult.NewNakedObject(base.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{stResult.NewVariadicVariable("Xs"), base.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterSuccess(ParsePackageCombinationFromString(s)))
@@ -266,7 +266,7 @@ func TestVariableRulePattern(t *testing.T) {
 					base.NewClass("f"),
 					stPattern.PatternsToFixedParamPart([]base.Pattern{expectedNestedPattern}),
 				),
-				base.NewNumber("1"),
+				stResult.SingleNodeToNakedObject(base.NewNumber("1")),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterSuccess(ParsePackageCombinationFromString(s)))
@@ -279,7 +279,7 @@ func TestActiveRule(t *testing.T) {
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewActiveRule(
 				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.NewLeftVariadicParamPart("Xs", []base.Pattern{base.NewVariable("X")})),
-				stResult.NewObject(base.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{base.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
+				stResult.NewNakedObject(base.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{base.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterSuccess(ParsePackageCombinationFromString(s)))
@@ -292,7 +292,7 @@ func TestBoolean(t *testing.T) {
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
 				stPattern.NewDeterminantObject(base.NewClass("main"), stPattern.PatternsToFixedParamPart([]base.Pattern{})),
-				base.NewBoolean("true"),
+				stResult.SingleNodeToNakedObject(base.NewBoolean("true")),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterSuccess(ParsePackageCombinationFromString(s)))
@@ -303,7 +303,7 @@ func TestBoolean(t *testing.T) {
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
 				stPattern.NewDeterminantObject(base.NewClass("main"), stPattern.PatternsToFixedParamPart([]base.Pattern{})),
-				stResult.NewObject(base.NewClass("f"), stResult.ParamsToFixedParamPart([]stResult.Param{base.NewBoolean("true")})),
+				stResult.NewNakedObject(base.NewClass("f"), stResult.ParamsToFixedParamPart([]stResult.Param{base.NewBoolean("true")})),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterSuccess(ParsePackageCombinationFromString(s)))
@@ -314,7 +314,7 @@ func TestBoolean(t *testing.T) {
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
 				stPattern.NewDeterminantObject(base.NewClass("f"), stPattern.PatternsToFixedParamPart([]base.Pattern{base.NewBoolean("true")})),
-				base.NewString("\"a\""),
+				stResult.SingleNodeToNakedObject(base.NewString("\"a\"")),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterSuccess(ParsePackageCombinationFromString(s)))
@@ -325,7 +325,7 @@ func TestBoolean(t *testing.T) {
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
 				stPattern.NewDeterminantObject(base.NewClass("main"), stPattern.PatternsToFixedParamPart([]base.Pattern{})),
-				stResult.NewObject(base.NewBoolean("true"), stResult.ParamsToFixedParamPart([]stResult.Param{base.NewString("\"a\"")})),
+				stResult.NewNakedObject(base.NewBoolean("true"), stResult.ParamsToFixedParamPart([]stResult.Param{base.NewString("\"a\"")})),
 			),
 		})
 		assert.Equal(t, expected, parsing.FilterSuccess(ParsePackageCombinationFromString(s)))
@@ -338,7 +338,7 @@ func TestNestedResult(t *testing.T) {
 		expected := expectedStatements([]base.Statement{
 			syntaxtree.NewRule(
 				stPattern.NewDeterminantObject(base.NewClass("main"), stPattern.PatternsToFixedParamPart([]base.Pattern{})),
-				stResult.NewObject(
+				stResult.NewNakedObject(
 					stResult.NewObject(base.NewClass("p"), stResult.ParamsToFixedParamPart([]stResult.Param{})),
 					stResult.ParamsToFixedParamPart([]stResult.Param{base.NewString("\"a\"")}),
 				),

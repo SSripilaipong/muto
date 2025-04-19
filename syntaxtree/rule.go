@@ -8,16 +8,16 @@ import (
 
 type Rule struct {
 	pattern stPattern.DeterminantObject
-	result  stResult.Node
+	result  stResult.SimplifiedNode
 }
 
-func NewRule(p stPattern.DeterminantObject, r stResult.Node) Rule {
+func NewRule(p stPattern.DeterminantObject, r stResult.SimplifiedNode) Rule {
 	return Rule{pattern: p, result: r}
 }
 
 func (r Rule) StatementType() base.StatementType { return base.RuleStatement }
 
-func (r Rule) Result() stResult.Node { return r.result }
+func (r Rule) Result() stResult.SimplifiedNode { return r.result }
 
 func (r Rule) Pattern() stPattern.DeterminantObject { return r.pattern }
 
@@ -39,7 +39,7 @@ type ActiveRule struct {
 
 func (r ActiveRule) StatementType() base.StatementType { return base.ActiveRuleStatement }
 
-func NewActiveRule(p stPattern.DeterminantObject, r stResult.Node) ActiveRule {
+func NewActiveRule(p stPattern.DeterminantObject, r stResult.SimplifiedNode) ActiveRule {
 	return ActiveRule{Rule: NewRule(p, r)}
 }
 

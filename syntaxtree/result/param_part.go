@@ -1,7 +1,7 @@
 package result
 
 type ParamPart interface {
-	ObjectParamPartType() ParamPartType
+	ObjectParamPartType() ParamPartType // TODO remove this, just use ParamPartTypeFixed
 }
 
 type ParamPartType string

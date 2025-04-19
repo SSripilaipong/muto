@@ -20,6 +20,8 @@ func (Variable) RuleResultNodeType() stResult.NodeType {
 
 func (Variable) ObjectParamType() stResult.ParamType { return stResult.ParamTypeSingle }
 
+func (Variable) NonObjectNode() {}
+
 func (v Variable) Name() string {
 	return v.name
 }

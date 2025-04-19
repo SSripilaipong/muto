@@ -16,6 +16,8 @@ func (Class) RuleResultNodeType() stResult.NodeType { return stResult.NodeTypeCl
 
 func (Class) ObjectParamType() stResult.ParamType { return stResult.ParamTypeSingle }
 
+func (Class) NonObjectNode() {}
+
 func (c Class) Value() string {
 	return c.Name()
 }

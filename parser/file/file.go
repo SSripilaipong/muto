@@ -17,7 +17,7 @@ var file = ps.RsMap(base.NewFile, psBase.IgnoreLeadingLineBreak(psBase.IgnoreTra
 
 var Rule = ps.Map(rslt.Fmap(mergeRule), psBase.RsSpaceSeparated3(psPattern.RsDeterminant, psBase.RsEqualSign, psResult.RsSimplifiedNode))
 
-var mergeRule = tuple.Fn3(func(p stPattern.DeterminantObject, _ psBase.Character, r stResult.Node) syntaxtree.Rule {
+var mergeRule = tuple.Fn3(func(p stPattern.DeterminantObject, _ psBase.Character, r stResult.SimplifiedNode) syntaxtree.Rule {
 	return syntaxtree.NewRule(p, r)
 })
 

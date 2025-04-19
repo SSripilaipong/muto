@@ -28,6 +28,6 @@ func mergeActiveRule(r syntaxtree.ActiveRule) replSt.Statement {
 	return replSt.NewActiveRule(r)
 }
 
-func mergeNode(n stResult.Node) replSt.Statement {
+func mergeNode(n stResult.SimplifiedNode) replSt.Statement {
 	return replSt.NewNode(n)
 }
