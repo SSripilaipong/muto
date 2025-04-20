@@ -9,7 +9,7 @@ import (
 func mutateParamChain(params ParamChain, mutation NameWiseMutation) optional.Of[ParamChain] {
 	nodesList := params.All()
 
-	for i := len(nodesList) - 1; i >= 0; i-- {
+	for i := range nodesList {
 		newNodes, ok := mutateChildren(nodesList[i], mutation).Return()
 		if ok {
 			nodesList[i] = newNodes
