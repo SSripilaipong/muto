@@ -9,7 +9,7 @@ import (
 )
 
 var Class = ps.Map(st.NewClass, ps.Or(
-	ps.Filter(validClassName, identifierStartingWithLowerCase),
+	ps.Filter(validClassName, identifierStartingWithNonUpperCase),
 	ps.Filter(classSymbol, symbol),
 ))
 

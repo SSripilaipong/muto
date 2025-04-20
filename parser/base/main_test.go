@@ -56,57 +56,57 @@ func TestBoolean(t *testing.T) {
 
 func TestFixedVar(t *testing.T) {
 	t.Run("should parse single letter variable", func(t *testing.T) {
-		r := FixedVar(StringToCharTokens(`X.123`))
+		r := FixedVarWithUnderscore(StringToCharTokens(`X.123`))
 		expectedResult := stBase.NewVariable(`X`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`.123`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should parse multiple letters variable", func(t *testing.T) {
-		r := FixedVar(StringToCharTokens(`XYabc-123!'?-1s.123`))
+		r := FixedVarWithUnderscore(StringToCharTokens(`XYabc-123!'?-1s.123`))
 		expectedResult := stBase.NewVariable(`XYabc-123!'?-1s`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`.123`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should not parse identifier starting with small case", func(t *testing.T) {
-		r := FixedVar(StringToCharTokens(`xy`))
+		r := FixedVarWithUnderscore(StringToCharTokens(`xy`))
 		assert.Equal(t, EmptyResult[stBase.Variable](), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should not parse variadic var", func(t *testing.T) {
-		r := FixedVar(IgnoreLineAndColumn(StringToCharTokens(`X...`)))
+		r := FixedVarWithUnderscore(IgnoreLineAndColumn(StringToCharTokens(`X...`)))
 		assert.Equal(t, EmptyResult[stBase.Variable](), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 }
 
 func TestVariadicVar(t *testing.T) {
 	t.Run("should parse single letter variadic variable", func(t *testing.T) {
-		r := VariadicVar(StringToCharTokens(`X...123`))
+		r := VariadicVarWithUnderscore(StringToCharTokens(`X...123`))
 		expectedResult := newVariadicVar("X")
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`123`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should parse multiple letters variadic variable", func(t *testing.T) {
-		r := VariadicVar(StringToCharTokens(`XYabc-123!'?-1s...123`))
+		r := VariadicVarWithUnderscore(StringToCharTokens(`XYabc-123!'?-1s...123`))
 		expectedResult := newVariadicVar(`XYabc-123!'?-1s`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`123`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should not parse identifier starting with small case", func(t *testing.T) {
-		r := VariadicVar(StringToCharTokens(`xy...`))
+		r := VariadicVarWithUnderscore(StringToCharTokens(`xy...`))
 		assert.Equal(t, EmptyResult[VariadicVarNode](), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should not parse fixed var", func(t *testing.T) {
-		r := VariadicVar(StringToCharTokens(`X.123`))
+		r := VariadicVarWithUnderscore(StringToCharTokens(`X.123`))
 		assert.Equal(t, EmptyResult[VariadicVarNode](), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should not parse variadic var with . in the name", func(t *testing.T) {
-		r := VariadicVar(StringToCharTokens(`X.y...`))
+		r := VariadicVarWithUnderscore(StringToCharTokens(`X.y...`))
 		assert.Equal(t, EmptyResult[VariadicVarNode](), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 }
@@ -136,6 +136,11 @@ func TestClass(t *testing.T) {
 		expectedResult := stBase.NewClass(`-->.!`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(` @`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
+	})
+
+	t.Run("should not match name starting with underscore", func(t *testing.T) {
+		r := Class(StringToCharTokens(`_`))
+		assert.Equal(t, EmptyResult[stBase.Class](), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 }
 

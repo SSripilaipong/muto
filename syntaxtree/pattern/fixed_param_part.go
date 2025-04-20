@@ -1,6 +1,8 @@
 package pattern
 
-import "github.com/SSripilaipong/muto/syntaxtree/base"
+import (
+	"github.com/SSripilaipong/muto/syntaxtree/base"
+)
 
 type FixedParamPart []base.Pattern
 

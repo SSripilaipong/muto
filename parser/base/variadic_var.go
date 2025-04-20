@@ -9,6 +9,10 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
+var VariadicVarWithUnderscore = ps.Map(newVariadicVar,
+	ps.Map(tuple.Fn2(strutil.Concat), ps.Sequence2(identifierStartingWithUpperCaseAndUnderscore, ThreeDots)),
+)
+
 var VariadicVar = ps.Map(newVariadicVar,
 	ps.Map(tuple.Fn2(strutil.Concat), ps.Sequence2(identifierStartingWithUpperCase, ThreeDots)),
 )

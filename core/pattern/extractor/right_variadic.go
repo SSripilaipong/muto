@@ -44,3 +44,33 @@ func (p RightVariadic) ExactLeftPattern() ExactNodeList {
 }
 
 var _ NodeListExtractor = RightVariadic{}
+
+type IgnoredRightVariadic struct {
+	nLeft            int
+	exactLeftPattern ExactNodeList
+}
+
+func NewIgnoredRightVariadic(patternsFromLeft []NodeExtractor) IgnoredRightVariadic {
+	return IgnoredRightVariadic{
+		nLeft:            len(patternsFromLeft),
+		exactLeftPattern: NewExactNodeList(patternsFromLeft),
+	}
+}
+
+func (p IgnoredRightVariadic) Extract(nodes []base.Node) optional.Of[*parameter.Parameter] {
+	nLeft := p.NLeft()
+	if len(nodes) < nLeft {
+		return optional.Empty[*parameter.Parameter]()
+	}
+	return p.ExactLeftPattern().Extract(nodes[:nLeft])
+}
+
+func (p IgnoredRightVariadic) NLeft() int {
+	return p.nLeft
+}
+
+func (p IgnoredRightVariadic) ExactLeftPattern() ExactNodeList {
+	return p.exactLeftPattern
+}
+
+var _ NodeListExtractor = IgnoredRightVariadic{}

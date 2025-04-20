@@ -11,7 +11,7 @@ import (
 func paramPart() func([]psBase.Character) []tuple.Of2[stPattern.ParamPart, []psBase.Character] {
 
 	fixedParam := ps.Or(
-		psBase.FixedVarPattern,
+		psBase.FixedVarWithUnderscorePattern,
 		psBase.BooleanPattern,
 		psBase.StringPattern,
 		psBase.NumberPattern,
@@ -31,9 +31,9 @@ func paramPart() func([]psBase.Character) []tuple.Of2[stPattern.ParamPart, []psB
 	})
 
 	return ps.Or(
-		ps.Map(castVariadic, psBase.VariadicVar), // not redundant to left-var because left-var consumes space!
-		ps.Map(castLeftVariadic, psBase.SpaceSeparated2(psBase.VariadicVar, psBase.OptionalGreedyRepeatSpaceSeparated(fixedParam))),
-		ps.Map(castRightVariadic, psBase.SpaceSeparated2(psBase.GreedyRepeatAtLeastOnceSpaceSeparated(fixedParam), psBase.VariadicVar)),
+		ps.Map(castVariadic, psBase.VariadicVarWithUnderscore), // not redundant to left-var because left-var consumes space!
+		ps.Map(castLeftVariadic, psBase.SpaceSeparated2(psBase.VariadicVarWithUnderscore, psBase.OptionalGreedyRepeatSpaceSeparated(fixedParam))),
+		ps.Map(castRightVariadic, psBase.SpaceSeparated2(psBase.GreedyRepeatAtLeastOnceSpaceSeparated(fixedParam), psBase.VariadicVarWithUnderscore)),
 		ps.Map(stPattern.PatternsToParamPart, psBase.GreedyRepeatAtLeastOnceSpaceSeparated(fixedParam)),
 	)
 }

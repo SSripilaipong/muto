@@ -7,9 +7,10 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
+var FixedVarWithUnderscore = ps.Map(st.NewVariable, ps.Lookahead(not3Dots, identifierStartingWithUpperCaseAndUnderscore))
 var FixedVar = ps.Map(st.NewVariable, ps.Lookahead(not3Dots, identifierStartingWithUpperCase))
 
-var FixedVarPattern = ps.Map(st.ToPattern, FixedVar)
+var FixedVarWithUnderscorePattern = ps.Map(st.ToPattern, FixedVarWithUnderscore)
 
 var FixedVarResultNode = ps.Map(stResult.ToNode, FixedVar)
 

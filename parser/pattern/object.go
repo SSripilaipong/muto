@@ -19,7 +19,7 @@ func Object() func(xs []psBase.Character) []tuple.Of2[stPattern.NonDeterminantOb
 
 	return func(xs []psBase.Character) []tuple.Of2[stPattern.NonDeterminantObject, []psBase.Character] {
 		head := ps.First(
-			psBase.FixedVarPattern,
+			psBase.FixedVarWithUnderscorePattern,
 			psBase.BooleanPattern,
 			psBase.StringPattern,
 			psBase.NumberPattern,

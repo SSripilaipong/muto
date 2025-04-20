@@ -5,8 +5,12 @@ import (
 	"github.com/SSripilaipong/muto/common/tuple"
 )
 
-var identifierStartingWithLowerCase = ps.Map(
-	tuple.Fn2(joinTokenString), ps.Sequence2(char(IsIdentifierFirstLetterLowerCase), identifierFollowingLetters),
+var identifierStartingWithNonUpperCase = ps.Map(
+	tuple.Fn2(joinTokenString), ps.Sequence2(char(IsIdentifierFirstLetterNonUpperCase), identifierFollowingLetters),
+)
+
+var identifierStartingWithUpperCaseAndUnderscore = ps.Map(
+	tuple.Fn2(joinTokenString), ps.Sequence2(char(IsIdentifierFirstLetterUpperCaseAndUnderscore), identifierFollowingLetters),
 )
 
 var identifierStartingWithUpperCase = ps.Map(

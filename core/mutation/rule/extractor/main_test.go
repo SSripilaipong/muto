@@ -108,6 +108,38 @@ func TestVariadicParam(t *testing.T) {
 
 		assert.True(t, New(pattern).Extract(obj).IsNotEmpty())
 	})
+
+	t.Run("should ignore underscore variadic variable", func(t *testing.T) {
+		// pattern: g (f _Bc...)
+		pattern := stPattern.NewDeterminantObject(stBase.NewClass("g"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
+			stPattern.NewDeterminantObject(stBase.NewClass("f"),
+				stPattern.NewLeftVariadicParamPart("_Bc", stPattern.FixedParamPart{})),
+		}))
+		// obj: g (f x y)
+		obj := base.NewNamedOneLayerObject("g", []base.Node{
+			base.NewNamedOneLayerObject("f", []base.Node{base.NewClass("x"), base.NewClass("y")}),
+		})
+
+		p := New(pattern).Extract(obj)
+		assert.True(t, p.IsNotEmpty() && p.Value().VariadicVarValue("_Bc").IsEmpty())
+	})
+}
+
+func TestVariableParam(t *testing.T) {
+	t.Run("should ignore underscore variable", func(t *testing.T) {
+		// pattern: g (f _Bc)
+		pattern := stPattern.NewDeterminantObject(stBase.NewClass("g"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
+			stPattern.NewDeterminantObject(stBase.NewClass("f"),
+				stPattern.NewLeftVariadicParamPart("_Bc", stPattern.FixedParamPart{})),
+		}))
+		// obj: g (f x)
+		obj := base.NewNamedOneLayerObject("g", []base.Node{
+			base.NewNamedOneLayerObject("f", []base.Node{base.NewClass("x"), base.NewClass("y")}),
+		})
+
+		p := New(pattern).Extract(obj)
+		assert.True(t, p.IsNotEmpty() && p.Value().VariableValue("_Bc").IsEmpty())
+	})
 }
 
 func TestRemainingChildren(t *testing.T) {

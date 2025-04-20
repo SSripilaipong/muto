@@ -23,3 +23,17 @@ func (v ParamVariable) Name() string {
 }
 
 var _ NodeExtractor = ParamVariable{}
+
+type IgnoredParamVariable struct {
+	name string
+}
+
+func NewIgnoredParamVariable() IgnoredParamVariable {
+	return IgnoredParamVariable{}
+}
+
+func (v IgnoredParamVariable) Extract(base.Node) optional.Of[*parameter.Parameter] {
+	return optional.Value(parameter.New())
+}
+
+var _ NodeExtractor = IgnoredParamVariable{}

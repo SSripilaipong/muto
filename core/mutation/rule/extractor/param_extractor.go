@@ -48,6 +48,12 @@ func tryNonObjectPatternExtractor(p base.Pattern) optional.Of[extractor.NodeExtr
 }
 
 func newVariableParamExtractor(v base.Variable) extractor.NodeExtractor {
+	if len(v.Name()) == 0 {
+		panic("variable name should not be empty")
+	}
+	if v.Name()[0] == '_' {
+		return extractor.NewIgnoredParamVariable()
+	}
 	return extractor.NewParamVariable(v.Name())
 }
 

@@ -21,8 +21,12 @@ func IsIdentifierFirstLetter(x rune) bool {
 	return unicode.IsLetter(x) || x == '_'
 }
 
-func IsIdentifierFirstLetterLowerCase(x rune) bool {
-	return IsIdentifierFirstLetter(x) && unicode.IsLower(x)
+func IsIdentifierFirstLetterNonUpperCase(x rune) bool {
+	return IsIdentifierFirstLetter(x) && !unicode.IsUpper(x) && x != '_'
+}
+
+func IsIdentifierFirstLetterUpperCaseAndUnderscore(x rune) bool {
+	return IsIdentifierFirstLetterUpperCase(x) || x == '_'
 }
 
 func IsIdentifierFirstLetterUpperCase(x rune) bool {
@@ -34,7 +38,7 @@ func IsIdentifierFollowingLetter(x rune) bool {
 }
 
 func IsSymbol(x rune) bool {
-	return (unicode.IsSymbol(x) || unicode.IsPunct(x)) && !isBracket(x)
+	return (unicode.IsSymbol(x) || unicode.IsPunct(x)) && !isBracket(x) && x != '_'
 }
 
 func isBracket(s rune) bool {
