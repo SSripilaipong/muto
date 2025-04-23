@@ -35,7 +35,7 @@ func TestNew_Structure(t *testing.T) {
 
 func TestNew_Object(t *testing.T) {
 	t.Run("should build nested object with no params", func(t *testing.T) {
-		template := stResult.NewObject(stBase.NewClass("f"), stResult.ParamsToFixedParamPart(stResult.FixedParamPart{}))
+		template := stResult.NewObject(stBase.NewClass("f"), stResult.FixedParamPart{})
 		expectedResult := base.NewNamedOneLayerObject("f", nil)
 		assert.Equal(t, expectedResult, New(template).Build(parameter.New()).Value())
 	})
@@ -43,7 +43,7 @@ func TestNew_Object(t *testing.T) {
 	t.Run("should not carry remaining children to param object", func(t *testing.T) {
 		template := stResult.NewNakedObject(
 			stBase.NewClass("f"),
-			stResult.ParamsToFixedParamPart(stResult.FixedParamPart{stBase.NewClass("a")}),
+			stResult.FixedParamPart{stBase.NewClass("a")},
 		)
 		param := parameter.New().SetRemainingParamChain(base.NewParamChain([][]base.Node{{base.NewString("xxx")}}))
 		expectedResult := base.NewNamedOneLayerObject("f", []base.Node{base.NewClass("a"), base.NewString("xxx")})

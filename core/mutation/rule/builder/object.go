@@ -28,7 +28,7 @@ func NewObject(obj stResult.Object) mutator.Builder {
 }
 
 func newCoreObject(obj stResult.Object) optional.Of[objectBuilder] {
-	var params []stResult.ParamPart
+	var params []stResult.FixedParamPart
 	var head stResult.Node = obj
 	for stResult.IsNodeTypeObject(head) {
 		headObj := stResult.UnsafeNodeToObject(head)
@@ -73,7 +73,7 @@ func buildHead(r stResult.Node) mutator.Builder {
 	panic("not implemented")
 }
 
-func buildParamChain(paramParts []stResult.ParamPart) func(mapping *parameter.Parameter) optional.Of[base.ParamChain] {
+func buildParamChain(paramParts []stResult.FixedParamPart) func(mapping *parameter.Parameter) optional.Of[base.ParamChain] {
 	var childrenBuilders []func(mapping *parameter.Parameter) optional.Of[[]base.Node]
 	for _, paramPart := range paramParts {
 		childrenBuilders = append(childrenBuilders, buildChildren(paramPart))
@@ -91,14 +91,11 @@ func buildParamChain(paramParts []stResult.ParamPart) func(mapping *parameter.Pa
 	}
 }
 
-func buildChildren(paramPart stResult.ParamPart) func(mapping *parameter.Parameter) optional.Of[[]base.Node] {
-	switch {
-	case paramPart == nil:
+func buildChildren(paramPart stResult.FixedParamPart) func(mapping *parameter.Parameter) optional.Of[[]base.Node] {
+	if paramPart.Size() == 0 {
 		return func(*parameter.Parameter) optional.Of[[]base.Node] { return optional.Value[[]base.Node](nil) }
-	case stResult.IsParamPartTypeFixed(paramPart):
-		return buildFixedParamPart(stResult.UnsafeParamPartToFixedParamPart(paramPart))
 	}
-	panic("not implemented")
+	return buildFixedParamPart(paramPart)
 }
 
 func buildFixedParamPart(part stResult.FixedParamPart) func(mapping *parameter.Parameter) optional.Of[[]base.Node] {

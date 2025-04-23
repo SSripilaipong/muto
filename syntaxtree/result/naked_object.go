@@ -4,7 +4,7 @@ type NakedObject struct {
 	Object
 }
 
-func NewNakedObject(head Node, paramPart ParamPart) NakedObject {
+func NewNakedObject(head Node, paramPart FixedParamPart) NakedObject {
 	return NakedObject{Object: NewObject(head, paramPart)}
 }
 

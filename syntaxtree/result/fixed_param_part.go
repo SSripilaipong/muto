@@ -1,23 +1,17 @@
 package result
 
-type FixedParamPart []Param
+import "slices"
 
-func (FixedParamPart) ObjectParamPartType() ParamPartType {
-	return ParamPartTypeFixed
-}
+type FixedParamPart []Param
 
 func (p FixedParamPart) Size() int {
 	return len(p)
 }
 
-func UnsafeParamPartToFixedParamPart(part ParamPart) FixedParamPart {
-	return part.(FixedParamPart)
+func (p FixedParamPart) Append(q FixedParamPart) FixedParamPart {
+	return append(slices.Clone(p), q...)
 }
 
 func ParamsToFixedParamPart(params []Param) FixedParamPart {
 	return params
-}
-
-func ParamsToParamPart(params []Param) ParamPart {
-	return ParamsToFixedParamPart(params)
 }

@@ -4,10 +4,10 @@ import stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 
 type objectNode struct {
 	head      stResult.Node
-	paramPart stResult.ParamPart
+	paramPart stResult.FixedParamPart
 }
 
-func (n objectNode) ParamPart() stResult.ParamPart {
+func (n objectNode) ParamPart() stResult.FixedParamPart {
 	return n.paramPart
 }
 

@@ -13,9 +13,9 @@ var RsSimplifiedNode = ps.Map(rslt.Value, SimplifiedNode())
 
 func SimplifiedNode() func([]psBase.Character) []tuple.Of2[stResult.SimplifiedNode, []psBase.Character] {
 	return ps.Or(
-		ps.Map(wrapNodeWithNakedObject, nonNestedNode),
 		ps.Map(castObjectNodeSimplified, psBase.InParenthesesWhiteSpaceAllowed(NakedObjectMultilines)),
-		ps.Map(fn.Compose(castObjectNodeNaked, mergeObject), psBase.SpaceSeparated2(objectHead, objectParamPart)),
+		ps.Map(castObjectNodeNaked, nakedObjectWithChildren()),
+		ps.Map(wrapNodeWithNakedObject, nonNestedNode),
 		ps.Map(fn.Compose(wrapNodeWithNakedObject, stResult.ToNode[stResult.Structure]), structure),
 	)
 }

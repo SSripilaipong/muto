@@ -27,7 +27,7 @@ func fixFreeObject(pattern stPattern.DeterminantObject, result stResult.Simplifi
 
 func isNonPrimitiveNakedObject(result stResult.SimplifiedNode) bool {
 	return stResult.IsSimplifiedNodeTypeNakedObject(result) &&
-		hasResultParam(stResult.UnsafeSimplifiedNodeToNakedObject(result))
+		stResult.UnsafeSimplifiedNodeToNakedObject(result).ParamPart().Size() > 0
 }
 
 func hasExtraParentheses(pattern stPattern.DeterminantObject) bool {
@@ -35,10 +35,4 @@ func hasExtraParentheses(pattern stPattern.DeterminantObject) bool {
 
 	return stPattern.IsParamPartTypeFixed(paramPart) &&
 		stPattern.UnsafeParamPartToFixedParamPart(paramPart).Size() == 0
-}
-
-func hasResultParam(obj stResult.NakedObject) bool {
-	paramPart := obj.ParamPart()
-	return stResult.IsParamPartTypeFixed(paramPart) &&
-		stResult.UnsafeParamPartToFixedParamPart(paramPart).Size() > 0
 }

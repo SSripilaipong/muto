@@ -24,10 +24,10 @@ func TestTag(t *testing.T) {
 		r := node(psBase.StringToCharTokens(`1 (.abc 2)`))
 		expectedResult := stResult.ToSimplifiedNode(stResult.NewNakedObject(
 			base.NewNumber("1"),
-			stResult.ParamsToParamPart([]stResult.Param{
+			stResult.ParamsToFixedParamPart([]stResult.Param{
 				stResult.NewObject(
 					base.NewTag(`.abc`),
-					stResult.ParamsToParamPart([]stResult.Param{base.NewNumber("2")}),
+					stResult.ParamsToFixedParamPart([]stResult.Param{base.NewNumber("2")}),
 				),
 			}),
 		))
@@ -38,10 +38,10 @@ func TestTag(t *testing.T) {
 		r := node(psBase.StringToCharTokens(`1 (2 .abc)`))
 		expectedResult := stResult.ToSimplifiedNode(stResult.NewNakedObject(
 			base.NewNumber("1"),
-			stResult.ParamsToParamPart([]stResult.Param{
+			stResult.ParamsToFixedParamPart([]stResult.Param{
 				stResult.NewObject(
 					base.NewNumber("2"),
-					stResult.ParamsToParamPart([]stResult.Param{base.NewTag(`.abc`)}),
+					stResult.ParamsToFixedParamPart([]stResult.Param{base.NewTag(`.abc`)}),
 				),
 			}),
 		))
@@ -116,6 +116,26 @@ func TestNode_nestedObject(t *testing.T) {
 
 func TestNode_objectMultilines(t *testing.T) {
 	node := SimplifiedNode()
+
+	t.Run("should allow naked multiline object with uniform indent block", func(t *testing.T) {
+		r := node(psBase.StringToCharTokens("f\n  g\n  1\n  2"))
+		expectedResult := stResult.ToSimplifiedNode(stResult.NewNakedObject(
+			base.NewClass("f"), stResult.ParamsToFixedParamPart([]stResult.Param{
+				base.NewClass("g"), base.NewNumber("1"), base.NewNumber(`2`),
+			}),
+		))
+		assert.Equal(t, psBase.SingleResult(expectedResult, []psBase.Character{}), psBase.AsParserResult(parsing.FilterSuccess(r)))
+	})
+
+	t.Run("should allow naked multiline object with uniform indent block starting with single-line param", func(t *testing.T) {
+		r := node(psBase.StringToCharTokens("f  g\n  1\n  2"))
+		expectedResult := stResult.ToSimplifiedNode(stResult.NewNakedObject(
+			base.NewClass("f"), stResult.ParamsToFixedParamPart([]stResult.Param{
+				base.NewClass("g"), base.NewNumber("1"), base.NewNumber(`2`),
+			}),
+		))
+		assert.Equal(t, psBase.SingleResult(expectedResult, []psBase.Character{}), psBase.AsParserResult(parsing.FilterSuccess(r)))
+	})
 
 	t.Run("should allow multiline object inside parentheses", func(t *testing.T) {
 		r := node(psBase.StringToCharTokens("(\nf \n  g\n\n 1 2 )"))

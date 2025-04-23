@@ -2,10 +2,10 @@ package result
 
 type Object struct {
 	head      Node
-	paramPart ParamPart
+	paramPart FixedParamPart
 }
 
-func NewObject(head Node, paramPart ParamPart) Object {
+func NewObject(head Node, paramPart FixedParamPart) Object {
 	return Object{head: head, paramPart: paramPart}
 }
 
@@ -30,7 +30,7 @@ func (obj Object) Head() Node {
 	return obj.head
 }
 
-func (obj Object) ParamPart() ParamPart {
+func (obj Object) ParamPart() FixedParamPart {
 	return obj.paramPart
 }
 

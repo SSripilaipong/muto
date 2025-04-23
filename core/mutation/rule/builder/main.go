@@ -14,15 +14,12 @@ func New(r stResult.SimplifiedNode) mutator.Builder { // TODO unit test
 		}
 	} else if stResult.IsSimplifiedNodeTypeNakedObject(r) {
 		obj := stResult.UnsafeSimplifiedNodeToNakedObject(r)
-		params := obj.ParamPart()
-		if stResult.IsParamPartTypeFixed(params) {
-			fixedParams := stResult.UnsafeParamPartToFixedParamPart(params)
-			if fixedParams.Size() == 0 {
-				return NewLiteral(obj.Head())
-			}
-			if builder, ok := newCoreObject(obj.AsObject()).Return(); ok {
-				return wrapChainRemainingChildren(builder)
-			}
+		fixedParams := obj.ParamPart()
+		if fixedParams.Size() == 0 {
+			return NewLiteral(obj.Head())
+		}
+		if builder, ok := newCoreObject(obj.AsObject()).Return(); ok {
+			return wrapChainRemainingChildren(builder)
 		}
 	}
 	panic("not implemented")

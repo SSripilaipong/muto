@@ -1,6 +1,9 @@
 package base
 
 import (
+	"math"
+	"slices"
+
 	"github.com/SSripilaipong/muto/common/fn"
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/rslt"
@@ -190,4 +193,49 @@ func EndingWithCommaSpaceAllowed[R any](p Parser[R]) Parser[R] {
 
 func OptionalLeadingWhiteSpace[R any](p Parser[R]) Parser[R] {
 	return ps.Map(tuple.Of2ToX2, ps.Sequence2(ps.OptionalGreedyRepeat(WhiteSpace), p))
+}
+
+func GreedyRepeatedLinesInAutoIndentBlockAtLeastOnce[R any](line Parser[R]) Parser[[]R] {
+	return func(xs []Character) []tuple.Of2[[]R, []Character] {
+		indentWidthPossibilities := ps.GreedyRepeatAtLeastOnce(Space)(xs)
+		if len(indentWidthPossibilities) == 0 {
+			return EmptyResult[[]R]()
+		}
+		indentWidth := len(indentWidthPossibilities[0].X1())
+		if indentWidth == 0 {
+			return EmptyResult[[]R]()
+		}
+		return GreedyRepeatedLinesInIndentBlockAtLeastOnce(line, indentWidth)(xs)
+	}
+}
+
+func GreedyRepeatedLinesInIndentBlockAtLeastOnce[R any](line Parser[R], indentWidth int) Parser[[]R] {
+	mergeLine := tuple.Fn2(func(_ []Character, p R) R { return p })
+	mergeNewLine := tuple.Fn2(func(_ []Character, p R) R { return p })
+
+	indentedLine := ps.Map(mergeLine, ps.Sequence2(NTimesRepeat(Space, indentWidth), line))
+	indentedLineWithNewLine := ps.Map(mergeNewLine, ps.Sequence2(ps.GreedyRepeatAtLeastOnce(LineBreak), indentedLine))
+
+	mergeMultiple := tuple.Fn2(func(p R, qs []R) []R { return append([]R{p}, qs...) })
+	return ps.First(
+		ps.Map(mergeMultiple, ps.Sequence2(indentedLine, ps.OptionalGreedyRepeat(indentedLineWithNewLine))),
+		ps.Map(slc.Pure, indentedLine),
+	)
+}
+
+func NTimesRepeat[R any](p Parser[R], n int) Parser[[]R] {
+	if n <= 0 {
+		return func(xs []Character) []tuple.Of2[[]R, []Character] { return SingleResult([]R{}, xs) }
+	}
+	if n == 1 {
+		return ps.Map(slc.Pure, p)
+	}
+	if n == 2 {
+		return ps.Map(tuple.Fn2(func(a R, b R) []R { return []R{a, b} }), ps.Sequence2(p, p))
+	}
+
+	half := float64(n) / 2.
+	l, r := int(math.Floor(half)), int(math.Ceil(half))
+	concat := tuple.Fn2(func(a []R, b []R) []R { return append(slices.Clone(a), b...) })
+	return ps.Map(concat, ps.Sequence2(NTimesRepeat[R](p, l), NTimesRepeat[R](p, r)))
 }

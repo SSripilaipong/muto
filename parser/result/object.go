@@ -9,11 +9,30 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-func nakedObjectWithChildren(xs []psBase.Character) []tuple.Of2[objectNode, []psBase.Character] {
+func nakedObjectWithChildren() func(xs []psBase.Character) []tuple.Of2[objectNode, []psBase.Character] {
+	mergeParam := func(ps []stResult.FixedParamPart) (r stResult.FixedParamPart) {
+		for _, p := range ps {
+			r = r.Append(p)
+		}
+		return
+	}
+	mergeParamIgnoreNewLine := tuple.Fn2(func(_ psBase.Character, ps []stResult.FixedParamPart) stResult.FixedParamPart {
+		return mergeParam(ps)
+	})
+	mergeParamWithFirstParam := tuple.Fn3(func(first stResult.FixedParamPart, _ psBase.Character, others []stResult.FixedParamPart) stResult.FixedParamPart {
+		return mergeParam(append([]stResult.FixedParamPart{first}, others...))
+	})
+
+	paramLine := objectParamPart()
+	paramLinesInBlock := psBase.GreedyRepeatedLinesInAutoIndentBlockAtLeastOnce(paramLine)
+	paramLinesInBlockStartingWithLineBreak := ps.Map(mergeParamIgnoreNewLine, ps.Sequence2(psBase.LineBreak, paramLinesInBlock))
+	paramLineFollowedByParamBlock := ps.Map(mergeParamWithFirstParam, ps.Sequence3(paramLine, psBase.LineBreak, paramLinesInBlock))
+
 	return ps.Or(
-		ps.Map(mergeObject, psBase.SpaceSeparated2(objectHead, objectParamPart)),
-		ps.Map(nodeToObject, objectHead),
-	)(xs)
+		ps.Map(mergeObject, ps.Sequence2(objectHead, paramLinesInBlockStartingWithLineBreak)),
+		ps.Map(mergeObject, psBase.SpaceSeparated2(objectHead, paramLineFollowedByParamBlock)),
+		ps.Map(mergeObject, psBase.SpaceSeparated2(objectHead, paramLine)),
+	)
 }
 
 var ParseNakedObjectMultilines = fn.Compose3(psBase.FilterStatement, RsNakedObjectMultilines, psBase.StringToCharTokens)
@@ -27,7 +46,7 @@ func NakedObjectMultilines(xs []psBase.Character) []tuple.Of2[objectNode, []psBa
 	)(xs)
 }
 
-var mergeObject = tuple.Fn2(func(head stResult.Node, params stResult.ParamPart) objectNode {
+var mergeObject = tuple.Fn2(func(head stResult.Node, params stResult.FixedParamPart) objectNode {
 	return objectNode{head: head, paramPart: params}
 })
 

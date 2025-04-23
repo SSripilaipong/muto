@@ -7,12 +7,12 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-func objectParamPart(xs []psBase.Character) []tuple.Of2[stResult.ParamPart, []psBase.Character] {
-	return ps.Map(stResult.ParamsToParamPart, psBase.OptionalGreedyRepeatSpaceSeparated(objectParam))(xs)
+func objectParamPart() func(xs []psBase.Character) []tuple.Of2[stResult.FixedParamPart, []psBase.Character] {
+	return ps.Map(stResult.ParamsToFixedParamPart, psBase.OptionalGreedyRepeatSpaceSeparated(objectParam))
 }
 
-func objectParamPartMultilines(xs []psBase.Character) []tuple.Of2[stResult.ParamPart, []psBase.Character] {
-	return ps.Map(stResult.ParamsToParamPart, psBase.OptionalGreedyRepeatWhiteSpaceSeparated(objectParam))(xs)
+func objectParamPartMultilines(xs []psBase.Character) []tuple.Of2[stResult.FixedParamPart, []psBase.Character] {
+	return ps.Map(stResult.ParamsToFixedParamPart, psBase.OptionalGreedyRepeatWhiteSpaceSeparated(objectParam))(xs)
 }
 
 func objectParam(xs []psBase.Character) []tuple.Of2[stResult.Param, []psBase.Character] {
