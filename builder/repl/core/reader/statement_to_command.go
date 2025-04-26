@@ -33,11 +33,13 @@ func TextToCommand(text string) optional.Of[command.Command] {
 }
 
 func newAddRuleCommand(s replSt.Rule) optional.Of[command.Command] {
-	return optional.Value[command.Command](command.NewAddRule(ruleMutation.New(s.Rule())))
+	builder := ruleMutation.NewRuleBuilder(mutationRuleBuilder.NewStaticClassCollection()) // TODO apply dynamic class collection
+	return optional.Value[command.Command](command.NewAddRule(builder.Build(s.Rule())))
 }
 
 func newMutateNodeCommand(x replSt.Node) optional.Of[command.Command] {
-	builder := mutationRuleBuilder.NewObject(x.Node().AsObject())
+	factory := mutationRuleBuilder.NewObjectBuilderFactory(mutationRuleBuilder.NewStaticClassCollection()) // TODO apply dynamic class collection
+	builder := factory.NewBuilder(x.Node().AsObject())
 	node := builder.Build(parameter.New())
 	if node.IsEmpty() {
 		return optional.Empty[command.Command]()

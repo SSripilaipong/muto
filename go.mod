@@ -1,6 +1,6 @@
 module github.com/SSripilaipong/muto
 
-go 1.22.7
+go 1.23.8
 
 require (
 	github.com/stretchr/testify v1.9.0

@@ -5,6 +5,11 @@ import (
 	"github.com/SSripilaipong/muto/core/base"
 )
 
+type RuleMutator interface {
+	Active(obj base.Object) optional.Of[base.Node]
+	Normal(obj base.Object) optional.Of[base.Node]
+}
+
 type ObjectMutator interface {
 	Mutate(obj base.Object) optional.Of[base.Node]
 }
@@ -41,7 +46,9 @@ type NamedObjectMutator interface {
 	ObjectMutator
 }
 
-type NamedAppendableObjectMutator interface {
-	NamedObjectMutator
-	Append(r NamedObjectMutator)
+func ToNamedObjectMutator[T NamedObjectMutator](x T) NamedObjectMutator { return x }
+
+type NamedRuleMutator interface {
+	Named
+	RuleMutator
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/SSripilaipong/muto/common/fn"
 	"github.com/SSripilaipong/muto/common/rslt"
 	"github.com/SSripilaipong/muto/core/mutation"
-	"github.com/SSripilaipong/muto/core/mutation/normal/builtin"
+	"github.com/SSripilaipong/muto/core/mutation/builtin"
 	fileParser "github.com/SSripilaipong/muto/parser/file"
 	"github.com/SSripilaipong/muto/program"
 	st "github.com/SSripilaipong/muto/syntaxtree/base"

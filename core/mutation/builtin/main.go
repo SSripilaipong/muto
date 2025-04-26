@@ -34,7 +34,7 @@ func NewMutators(cliReader CliReader, cliPrinter CliPrinter) []mutator.NamedObje
 	}
 }
 
-func NewBuiltinMutatorsForStdio() []mutator.NamedObjectMutator {
+func NewBuiltinMutatorsForStdio() []mutator.NamedObjectMutator { // TODO create builtin as a collection that's ready to be merged from here
 	return NewMutators(
 		CliReaderFunc(cliio.ReadInputOneLine),
 		CliPrinterFunc(cliio.PrintStringWithNewLine),

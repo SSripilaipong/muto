@@ -12,11 +12,13 @@ import (
 )
 
 func TestBuildStructure(t *testing.T) {
+	builder := newStructureBuilderFactory(newCoreLiteralBuilderFactory(NewStaticClassCollection()))
+
 	t.Run("should build empty structure", func(t *testing.T) {
 		tree := stResult.NewStructure([]stResult.StructureRecord{})
 		mutationData := parameter.New()
 		expectedObject := base.NewStructureFromRecords(nil)
-		assert.Equal(t, expectedObject, newStructureBuilder(tree).Build(mutationData).Value())
+		assert.Equal(t, expectedObject, builder.NewBuilder(tree).Build(mutationData).Value())
 	})
 
 	t.Run("should build string key and value", func(t *testing.T) {
@@ -27,7 +29,7 @@ func TestBuildStructure(t *testing.T) {
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
 			base.NewStructureRecord(base.NewString("abc"), base.NewString("def")),
 		})
-		assert.Equal(t, expectedObject, newStructureBuilder(tree).Build(mutationData).Value())
+		assert.Equal(t, expectedObject, builder.NewBuilder(tree).Build(mutationData).Value())
 	})
 
 	t.Run("should build class key", func(t *testing.T) {
@@ -38,7 +40,7 @@ func TestBuildStructure(t *testing.T) {
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
 			base.NewStructureRecord(base.NewClass("f"), base.NewString("def")),
 		})
-		assert.Equal(t, expectedObject, newStructureBuilder(tree).Build(mutationData).Value())
+		assert.Equal(t, expectedObject, builder.NewBuilder(tree).Build(mutationData).Value())
 	})
 
 	t.Run("should build variable value", func(t *testing.T) {
@@ -51,7 +53,7 @@ func TestBuildStructure(t *testing.T) {
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
 			base.NewStructureRecord(base.NewBoolean(true), base.NewOneLayerObject(base.NewClass("f"), []base.Node{base.NewNumberFromString("123")})),
 		})
-		assert.Equal(t, expectedObject, newStructureBuilder(tree).Build(mutationData).Value())
+		assert.Equal(t, expectedObject, builder.NewBuilder(tree).Build(mutationData).Value())
 	})
 
 	t.Run("should build object value with variables", func(t *testing.T) {
@@ -76,7 +78,7 @@ func TestBuildStructure(t *testing.T) {
 				),
 			),
 		})
-		assert.Equal(t, expectedObject, newStructureBuilder(tree).Build(mutationData).Value())
+		assert.Equal(t, expectedObject, builder.NewBuilder(tree).Build(mutationData).Value())
 	})
 
 	t.Run("should not carry remaining children to inner record object", func(t *testing.T) {
@@ -89,6 +91,6 @@ func TestBuildStructure(t *testing.T) {
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
 			base.NewStructureRecord(base.NewTag("k"), base.NewTag("v")),
 		})
-		assert.Equal(t, expectedObject, newStructureBuilder(tree).Build(mutationData).Value())
+		assert.Equal(t, expectedObject, builder.NewBuilder(tree).Build(mutationData).Value())
 	})
 }

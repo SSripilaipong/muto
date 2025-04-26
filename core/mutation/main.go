@@ -8,15 +8,19 @@ import (
 )
 
 type TopLevelMutation struct {
-	nameWiseMutation
+	mutator.RuleCollection
 }
 
 func NewFromStatements(ss []st.Statement, builtins []mutator.NamedObjectMutator) TopLevelMutation {
-	return TopLevelMutation{
-		nameWiseMutation: newNameWiseMutation(ss, builtins),
-	}
+	linker := NewClassLinker()
+	builder := newRuleCollectionBuilder(linker.GetClassFactory())
+
+	ruleCollection := builder.Build(ss, builtins)
+	linker.Link(ruleCollection)
+
+	return TopLevelMutation{RuleCollection: ruleCollection}
 }
 
 func (m TopLevelMutation) Mutate(x base.MutableNode) optional.Of[base.Node] {
-	return x.Mutate(m.nameWiseMutation)
+	return x.Mutate(m.RuleCollection)
 }

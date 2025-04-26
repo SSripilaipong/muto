@@ -4,6 +4,7 @@ import (
 	"slices"
 
 	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/core/base"
 )
 
@@ -13,6 +14,10 @@ type Switch struct {
 
 func NewSwitch(mutators []ObjectMutator) Switch {
 	return Switch{mutators: slices.Clone(mutators)}
+}
+
+func NewSwitchFromSingleObjectMutator(mutator ObjectMutator) Switch {
+	return NewSwitch(slc.Pure[ObjectMutator](mutator))
 }
 
 func (s Switch) Mutate(obj base.Object) optional.Of[base.Node] {
@@ -25,8 +30,7 @@ func (s Switch) Mutate(obj base.Object) optional.Of[base.Node] {
 }
 
 func (s Switch) Append(mutator ObjectMutator) Switch {
-	s.mutators = append(s.mutators, mutator)
-	return s
+	return NewSwitch(slc.CloneAppend(s.mutators, mutator))
 }
 
 func (s Switch) Mutators() []ObjectMutator {
@@ -39,6 +43,10 @@ func (s Switch) SetGlobalMutator(gm NameBasedMutator) {
 			r.SetGlobalMutator(gm)
 		}
 	}
+}
+
+func (s Switch) Concat(t Switch) Switch {
+	return NewSwitch(slc.CloneConcat(s.mutators, t.mutators))
 }
 
 var _ ObjectMutator = Switch{}
