@@ -9,6 +9,11 @@ type LiteralBuilderFactory struct {
 	coreLiteral nodeBuilderFactory
 }
 
+func NewLiteralBuilderFactoryWithClassCollection(classCollection ClassCollection) LiteralBuilderFactory {
+	coreLiteral := newCoreLiteralBuilderFactory(classCollection)
+	return NewLiteralBuilderFactory(coreLiteral)
+}
+
 func NewLiteralBuilderFactory(coreLiteral nodeBuilderFactory) LiteralBuilderFactory {
 	return LiteralBuilderFactory{coreLiteral: coreLiteral}
 }
