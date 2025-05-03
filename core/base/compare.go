@@ -49,11 +49,11 @@ func objectEqual(x Object, y Node) bool {
 	return x.Equals(UnsafeNodeToObject(y))
 }
 
-func classEqual(x Class, y Node) bool {
+func classEqual(x *Class, y Node) bool {
 	if !IsClassNode(y) {
 		return false
 	}
-	return x.Name() == UnsafeNodeToClass(y).Name()
+	return x.Equals(UnsafeNodeToClass(y))
 }
 
 func objectChildrenEqual(xs []Node, ys []Node) bool {

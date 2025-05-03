@@ -37,10 +37,6 @@ func (m NameBoundedFunc) Name() string { return "" }
 
 var _ NameBounded = NameBoundedFunc(nil)
 
-type GlobalMutatorAware interface {
-	SetGlobalMutator(_ NameBasedMutator)
-}
-
 type NamedObjectMutator interface {
 	Named
 	ObjectMutator

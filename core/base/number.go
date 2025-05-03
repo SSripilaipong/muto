@@ -21,8 +21,8 @@ func NewNumberFromString(s string) Node {
 
 func (Number) NodeType() NodeType { return NodeTypeNumber }
 
-func (n Number) MutateAsHead(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
-	newChildren := mutateParamChain(params, mutation)
+func (n Number) MutateAsHead(params ParamChain) optional.Of[Node] {
+	newChildren := mutateParamChain(params)
 	if newChildren.IsNotEmpty() {
 		return optional.Value[Node](NewCompoundObject(n, newChildren.Value()))
 	}

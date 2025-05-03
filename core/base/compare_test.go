@@ -32,14 +32,14 @@ func TestNodeEqual_Boolean(t *testing.T) {
 	})
 
 	t.Run("should not be equal with class", func(t *testing.T) {
-		assert.False(t, NodeEqual(NewClass("true"), NewBoolean(true)))
-		assert.False(t, NodeEqual(NewBoolean(true), NewClass("true")))
+		assert.False(t, NodeEqual(NewUnlinkedClass("true"), NewBoolean(true)))
+		assert.False(t, NodeEqual(NewBoolean(true), NewUnlinkedClass("true")))
 	})
 }
 
 func TestNodeEqual_Tag(t *testing.T) {
 	t.Run("should not be equal to other type", func(t *testing.T) {
-		assert.False(t, NodeEqual(NewTag("a"), NewClass("a")))
+		assert.False(t, NodeEqual(NewTag("a"), NewUnlinkedClass("a")))
 	})
 
 	t.Run("should not be equal to tag with different name", func(t *testing.T) {

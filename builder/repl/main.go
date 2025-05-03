@@ -1,6 +1,7 @@
 package repl
 
 import (
+	"github.com/SSripilaipong/muto/builder/repl/core/command"
 	replExecutor "github.com/SSripilaipong/muto/builder/repl/core/executor"
 	replProgram "github.com/SSripilaipong/muto/builder/repl/core/program"
 	replReader "github.com/SSripilaipong/muto/builder/repl/core/reader"
@@ -15,10 +16,11 @@ type Repl struct {
 }
 
 func New(lineReader replReader.LineReader, printer replProgram.Printer) Repl {
-	prog := replProgram.New(program.New(mutation.NewFromStatements(nil, builtin.NewBuiltinMutatorsForStdio())), printer)
+	pkg := mutation.NewPackageFromStatements(nil, builtin.NewBuiltinMutatorsForStdio())
+	prog := replProgram.New(program.New(pkg), printer)
 
 	return Repl{
-		Reader:   replReader.New(lineReader, printer),
+		Reader:   replReader.New(command.NewParser(prog), lineReader, printer),
 		Executor: replExecutor.New(prog),
 	}
 }

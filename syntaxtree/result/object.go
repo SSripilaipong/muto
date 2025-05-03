@@ -22,6 +22,7 @@ func (Object) ObjectParamType() ParamType { return ParamTypeSingle }
 func (Object) SimplifiedNodeType() SimplifiedNodeType {
 	return SimplifiedNodeTypeObject
 }
+
 func (obj Object) AsObject() Object {
 	return obj
 }

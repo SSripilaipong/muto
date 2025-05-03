@@ -3,25 +3,24 @@ package program
 import (
 	"github.com/SSripilaipong/muto/core/base"
 	coreMutation "github.com/SSripilaipong/muto/core/mutation"
-	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
 )
 
 type Program struct {
-	mutation          coreMutation.TopLevelMutation
+	mainPackage       coreMutation.Package
 	afterMutationHook func(node base.Node)
 }
 
-func New(mutation coreMutation.TopLevelMutation) Program {
-	return Program{mutation: mutation}
+func New(pkg coreMutation.Package) Program {
+	return Program{mainPackage: pkg}
 }
 
 func (p Program) InitialObject() base.Object {
-	return base.NewNamedOneLayerObject("main", nil)
+	return base.NewOneLayerObject(p.mainPackage.GetClass("main"), nil)
 }
 
 func (p Program) MutateUntilTerminated(node base.Node) base.Node {
 	for base.IsMutableNode(node) {
-		newNode := p.mutation.Mutate(base.UnsafeNodeToMutable(node))
+		newNode := base.UnsafeNodeToMutable(node).Mutate()
 		if newNode.IsEmpty() {
 			break
 		}
@@ -35,7 +34,7 @@ func (p Program) MutateOnce(node base.Node) base.Node {
 	if !base.IsMutableNode(node) {
 		return node
 	}
-	newNode := p.mutation.Mutate(base.UnsafeNodeToMutable(node))
+	newNode := base.UnsafeNodeToMutable(node).Mutate()
 	if newNode.IsEmpty() {
 		return node
 	}
@@ -54,6 +53,6 @@ func (p Program) WithAfterMutationHook(f func(node base.Node)) Program {
 	return p
 }
 
-func (p Program) AddRule(rule mutator.NamedObjectMutator) {
-	p.mutation.AppendNormalRule(rule)
+func (p Program) MainPackage() coreMutation.Package {
+	return p.mainPackage
 }

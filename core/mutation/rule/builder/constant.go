@@ -36,7 +36,7 @@ func (f constantBuilderFactory) NewBuilder(r stResult.Node) optional.Of[mutator.
 	return optional.Empty[mutator.Builder]()
 }
 
-func (f constantBuilderFactory) newClassBuilder(x stBase.Class) constantWrapper[base.Class] {
+func (f constantBuilderFactory) newClassBuilder(x stBase.Class) constantWrapper[*base.Class] {
 	return newConstantWrapper(f.class.GetClass(x.Name()))
 }
 

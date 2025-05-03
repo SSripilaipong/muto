@@ -1,6 +1,7 @@
 package mutator
 
 import (
+	"iter"
 	"maps"
 	"slices"
 
@@ -48,7 +49,7 @@ func (c RuleCollection) Normal(name string, obj base.Object) optional.Of[base.No
 	return m.Normal(obj)
 }
 
-func (c RuleCollection) AppendNormalRule(mutator NamedObjectMutator) {
+func (c RuleCollection) AppendNormalRule(mutator NamedObjectMutator) AppendableNamedRuleMutator {
 	name := mutator.Name()
 	sw := NewSwitchFromSingleObjectMutator(mutator)
 	m, exists := c.mutators[name]
@@ -56,6 +57,17 @@ func (c RuleCollection) AppendNormalRule(mutator NamedObjectMutator) {
 		c.mutators[name] = NewAppendableNamedRuleMutator(name, sw, NewSwitch(nil))
 	} else {
 		c.mutators[name] = m.ConcatNormal(sw)
+	}
+	return c.mutators[name]
+}
+
+func (c RuleCollection) IterMutators() iter.Seq2[string, AppendableNamedRuleMutator] {
+	return func(yield func(string, AppendableNamedRuleMutator) bool) {
+		for name, mutator := range c.mutators {
+			if !yield(name, mutator) {
+				return
+			}
+		}
 	}
 }
 

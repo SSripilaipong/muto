@@ -19,8 +19,8 @@ func NewStructureFromRecords(records []StructureRecord) Structure {
 
 func (Structure) NodeType() NodeType { return NodeTypeStructure }
 
-func (s Structure) MutateAsHead(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
-	newChildren := mutateParamChain(params, mutation)
+func (s Structure) MutateAsHead(params ParamChain) optional.Of[Node] {
+	newChildren := mutateParamChain(params)
 	if newChildren.IsNotEmpty() {
 		return optional.Value[Node](NewCompoundObject(s, newChildren.Value()))
 	}
@@ -49,11 +49,11 @@ func (s Structure) processTag(tag Tag, params []Node) optional.Of[Node] {
 	return optional.Empty[Node]()
 }
 
-func (s Structure) Mutate(mutation NameWiseMutation) optional.Of[Node] {
+func (s Structure) Mutate() optional.Of[Node] {
 	var records []StructureRecord
 	isMutated := false
 	for _, record := range s.records {
-		newRecord := record.Mutate(mutation)
+		newRecord := record.Mutate()
 		if newRecord.IsNotEmpty() {
 			isMutated = true
 			record = newRecord.Value()
@@ -128,10 +128,10 @@ func NewStructureRecord(key Node, value Node) StructureRecord {
 	return StructureRecord{key: key, value: value}
 }
 
-func (r StructureRecord) Mutate(mutation NameWiseMutation) optional.Of[StructureRecord] {
+func (r StructureRecord) Mutate() optional.Of[StructureRecord] {
 	value := r.Value()
 	if IsMutableNode(value) {
-		newValue := UnsafeNodeToMutable(value).Mutate(mutation)
+		newValue := UnsafeNodeToMutable(value).Mutate()
 		if newValue.IsNotEmpty() {
 			return optional.Value(r.replaceValue(newValue.Value()))
 		}

@@ -9,8 +9,8 @@ func NewStaticClassCollection() StaticClassCollection {
 	return StaticClassCollection{}
 }
 
-func (StaticClassCollection) GetClass(name string) base.Class {
-	return base.NewClass(name)
+func (StaticClassCollection) GetClass(name string) *base.Class {
+	return base.NewUnlinkedClass(name)
 }
 
 var _ ClassCollection = StaticClassCollection{}

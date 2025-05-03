@@ -6,11 +6,11 @@ import (
 	"github.com/SSripilaipong/muto/common/optional"
 )
 
-func mutateParamChain(params ParamChain, mutation NameWiseMutation) optional.Of[ParamChain] {
+func mutateParamChain(params ParamChain) optional.Of[ParamChain] {
 	nodesList := params.All()
 
 	for i := range nodesList {
-		newNodes, ok := mutateChildren(nodesList[i], mutation).Return()
+		newNodes, ok := mutateChildren(nodesList[i]).Return()
 		if ok {
 			nodesList[i] = newNodes
 			return optional.Value(NewParamChain(nodesList))
@@ -19,12 +19,12 @@ func mutateParamChain(params ParamChain, mutation NameWiseMutation) optional.Of[
 	return optional.Empty[ParamChain]()
 }
 
-func mutateChildren(children []Node, mutation NameWiseMutation) optional.Of[[]Node] {
+func mutateChildren(children []Node) optional.Of[[]Node] {
 	children = slices.Clone(children)
 	for i, child := range children {
 		if IsMutableNode(child) {
 			childObj := UnsafeNodeToMutable(child)
-			if newChild := childObj.Mutate(mutation); newChild.IsNotEmpty() {
+			if newChild := childObj.Mutate(); newChild.IsNotEmpty() {
 				children[i] = newChild.Value()
 				return optional.Value(children)
 			}

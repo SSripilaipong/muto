@@ -6,17 +6,17 @@ import (
 )
 
 type normalMutationFunc struct {
-	normal func(name string, obj base.Object) optional.Of[base.Node]
+	normal func(obj base.Object) optional.Of[base.Node]
 }
 
-func newNormalMutationFunc(f func(name string, obj base.Object) optional.Of[base.Node]) normalMutationFunc {
+func newNormalMutationFunc(f func(obj base.Object) optional.Of[base.Node]) normalMutationFunc {
 	return normalMutationFunc{normal: f}
 }
 
-func (m normalMutationFunc) Active(_ string, _ base.Object) optional.Of[base.Node] {
+func (m normalMutationFunc) Active(_ base.Object) optional.Of[base.Node] {
 	return optional.Empty[base.Node]()
 }
 
-func (m normalMutationFunc) Normal(name string, obj base.Object) optional.Of[base.Node] {
-	return m.normal(name, obj)
+func (m normalMutationFunc) Normal(obj base.Object) optional.Of[base.Node] {
+	return m.normal(obj)
 }

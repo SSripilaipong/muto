@@ -37,14 +37,6 @@ func (s Switch) Mutators() []ObjectMutator {
 	return s.mutators
 }
 
-func (s Switch) SetGlobalMutator(gm NameBasedMutator) {
-	for _, m := range s.mutators {
-		if r, isGlobalAware := m.(GlobalMutatorAware); isGlobalAware {
-			r.SetGlobalMutator(gm)
-		}
-	}
-}
-
 func (s Switch) Concat(t Switch) Switch {
 	return NewSwitch(slc.CloneConcat(s.mutators, t.mutators))
 }

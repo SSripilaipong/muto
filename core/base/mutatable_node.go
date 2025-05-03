@@ -4,7 +4,7 @@ import "github.com/SSripilaipong/muto/common/optional"
 
 type MutableNode interface {
 	Node
-	Mutate(mutation NameWiseMutation) optional.Of[Node]
+	Mutate() optional.Of[Node]
 }
 
 func IsMutableNode(node Node) bool {

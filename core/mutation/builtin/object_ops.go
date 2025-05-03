@@ -10,13 +10,10 @@ import (
 const tryMutatorName = "try"
 
 type tryMutator struct {
-	globalMutator mutator.NameBasedMutator
 }
 
 func newTryMutator() *tryMutator {
-	return &tryMutator{
-		globalMutator: nil, // assigned later
-	}
+	return &tryMutator{}
 }
 
 func (t *tryMutator) Name() string { return tryMutatorName }
@@ -41,15 +38,11 @@ func (t *tryMutator) Mutate(obj base.Object) optional.Of[base.Node] { // TODO ch
 			panic("unexpected error")
 		}
 	}
-	result := subject.Mutate(newNormalMutationFunc(t.globalMutator.MutateByName))
+	result := subject.Mutate()
 	if result.IsEmpty() {
 		return optional.Value[base.Node](base.NewCompoundObject(base.EmptyTag, base.NewParamChain(slc.Pure([]base.Node{}))))
 	}
 	return optional.Value[base.Node](base.NewCompoundObject(base.ValueTag, base.NewParamChain(slc.Pure([]base.Node{result.Value()}))))
-}
-
-func (t *tryMutator) SetGlobalMutator(m mutator.NameBasedMutator) {
-	t.globalMutator = m
 }
 
 var _ mutator.NameBounded = (*tryMutator)(nil)

@@ -4,59 +4,81 @@ import (
 	"github.com/SSripilaipong/muto/common/optional"
 )
 
-type Class struct {
-	name string
+type Mutator interface {
+	Active(obj Object) optional.Of[Node]
+	Normal(obj Object) optional.Of[Node]
 }
 
-func (c Class) Children() []Node {
+type Class struct {
+	name    string
+	mutator Mutator
+}
+
+func (c *Class) Children() []Node {
 	return nil
 }
 
-func (c Class) NodeType() NodeType {
+func (c *Class) NodeType() NodeType {
 	return NodeTypeClass
 }
 
-func (c Class) MutateAsHead(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
-	if result, ok := c.ActivelyMutateWithObjMutateFunc(params, mutation).Return(); ok {
+func (c *Class) MutateAsHead(params ParamChain) optional.Of[Node] {
+	if result, ok := c.ActivelyMutateWithObjMutateFunc(params).Return(); ok {
 		return optional.Value(result)
 	}
-	return c.MutateWithObjMutateFunc(params, mutation)
+	return c.MutateWithObjMutateFunc(params)
 }
 
-func (c Class) ActivelyMutateWithObjMutateFunc(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
-	return mutation.Active(c.Name(), NewCompoundObject(c, params))
+func (c *Class) ActivelyMutateWithObjMutateFunc(params ParamChain) optional.Of[Node] {
+	if c.mutator == nil {
+		return optional.Empty[Node]()
+	}
+	return c.mutator.Active(NewCompoundObject(c, params))
 }
 
-func (c Class) MutateWithObjMutateFunc(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
-	newChildren := mutateParamChain(params, mutation)
+func (c *Class) MutateWithObjMutateFunc(params ParamChain) optional.Of[Node] {
+	newChildren := mutateParamChain(params)
 	if newChildren.IsNotEmpty() {
 		return optional.Value[Node](NewCompoundObject(c, newChildren.Value()))
 	}
-	return mutation.Normal(c.Name(), NewCompoundObject(c, params))
+	if c.mutator == nil {
+		return optional.Empty[Node]()
+	}
+	return c.mutator.Normal(NewCompoundObject(c, params))
 }
 
-func (c Class) Name() string {
+func (c *Class) Link(mutator Mutator) {
+	c.mutator = mutator
+}
+
+func (c *Class) Name() string {
 	return c.name
 }
 
-func (c Class) TopLevelString() string {
+func (c *Class) TopLevelString() string {
 	return c.String()
 }
 
-func (c Class) String() string {
+func (c *Class) String() string {
 	return c.Name()
 }
 
-func (c Class) MutoString() string {
+func (c *Class) MutoString() string {
 	return c.String()
 }
 
-func NewClass(name string) Class {
-	return Class{name: name}
+func (c *Class) Equals(d *Class) bool { return c.Name() == d.Name() }
+
+func NewClass(name string, mutator Mutator) *Class {
+	return &Class{name: name, mutator: mutator}
 }
 
-func UnsafeNodeToClass(obj Node) Class {
-	return obj.(Class)
+func NewUnlinkedClass(name string) *Class {
+	return NewClass(name, nil)
 }
 
-var _ Node = Class{}
+func UnsafeNodeToClass(obj Node) *Class {
+	return obj.(*Class)
+}
+
+var _ Node = &Class{}

@@ -80,7 +80,8 @@ main = g (f)
 		program := BuildProgramFromString(`g (f 1) = 555
 main = g (f 1 2)
 `).Value()
-		assert.Equal(t, base.NewNamedOneLayerObject("g", []base.Node{base.NewNamedOneLayerObject("f", []base.Node{base.NewNumberFromString("1"), base.NewNumberFromString("2")})}), execute(program))
+		assert.True(t, base.NewNamedOneLayerObject("g", []base.Node{base.NewNamedOneLayerObject("f", []base.Node{base.NewNumberFromString("1"), base.NewNumberFromString("2")})}).
+			Equals(base.UnsafeNodeToObject(execute(program))))
 	})
 
 	t.Run("should resolve to object with data head when there are children left", func(t *testing.T) {
@@ -108,14 +109,15 @@ main = f (h "1" "2")
 		program := BuildProgramFromString(`f (G S... 0) = 0
 main = f $
 `).Value()
-		assert.Equal(t, base.NewNamedOneLayerObject("f", []base.Node{base.NewClass("$")}), execute(program))
+		assert.True(t, base.NewNamedOneLayerObject("f", []base.Node{base.NewUnlinkedClass("$")}).
+			Equals(base.UnsafeNodeToObject(execute(program))))
 	})
 
 	t.Run("should not fail when variadic right param part tries to match with no children", func(t *testing.T) {
 		program := BuildProgramFromString(`f 0 S... = 0
 (main) = f
 `).Value()
-		assert.Equal(t, base.NewClass("f"), execute(program))
+		assert.True(t, base.NewUnlinkedClass("f").Equals(base.UnsafeNodeToClass(execute(program))))
 	})
 
 	t.Run("should apply active mutation before normal mutation", func(t *testing.T) {
@@ -194,7 +196,8 @@ main = f g
 		program := BuildProgramFromString(`f X = X
 main = f (g 1)
 `).Value()
-		assert.Equal(t, base.NewNamedOneLayerObject("f", []base.Node{base.NewNamedOneLayerObject("g", []base.Node{base.NewNumberFromString("1")})}), mutateOnce(program))
+		assert.True(t, base.NewNamedOneLayerObject("f", []base.Node{base.NewNamedOneLayerObject("g", []base.Node{base.NewNumberFromString("1")})}).Equals(
+			base.UnsafeNodeToObject(mutateOnce(program))))
 	})
 
 	t.Run("should mutate children after bubbling up to data object", func(t *testing.T) {

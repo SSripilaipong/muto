@@ -21,5 +21,5 @@ func BuildProgramFromSyntaxTree(p st.Package) rslt.Of[program.Program] {
 	if len(files) != 1 {
 		return rslt.Error[program.Program](errors.New("currently only support exactly 1 file"))
 	}
-	return rslt.Value(program.New(mutation.NewFromStatements(files[0].Statements(), builtin.NewBuiltinMutatorsForStdio())))
+	return rslt.Value(program.New(mutation.NewPackageFromStatements(files[0].Statements(), builtin.NewBuiltinMutatorsForStdio())))
 }

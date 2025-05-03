@@ -51,7 +51,7 @@ func TestTag(t *testing.T) {
 
 	t.Run("should not match a non-tag child", func(t *testing.T) {
 		pattern := stPattern.NewDeterminantObject(stBase.NewClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{stBase.NewTag("abc")}))
-		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewClass("abc")})
+		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewUnlinkedClass("abc")})
 
 		assert.False(t, New(pattern).Extract(obj).IsNotEmpty())
 	})
@@ -77,7 +77,7 @@ func TestTag(t *testing.T) {
 			})),
 		}))
 		// obj: f (g 1 .abc 2)
-		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewOneLayerObject(base.NewClass("g"), []base.Node{base.NewNumberFromString("1"), base.NewTag("abc"), base.NewNumberFromString("2")})})
+		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewOneLayerObject(base.NewUnlinkedClass("g"), []base.Node{base.NewNumberFromString("1"), base.NewTag("abc"), base.NewNumberFromString("2")})})
 
 		assert.True(t, New(pattern).Extract(obj).IsNotEmpty())
 	})
@@ -90,7 +90,7 @@ func TestNestedObject(t *testing.T) {
 			stPattern.NewDeterminantObject(stBase.NewClass("g"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{})),
 		}))
 		// obj: f g
-		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewClass("g")})
+		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewUnlinkedClass("g")})
 
 		assert.True(t, New(pattern).Extract(obj).IsEmpty())
 	})
@@ -117,7 +117,7 @@ func TestVariadicParam(t *testing.T) {
 		}))
 		// obj: g (f x y)
 		obj := base.NewNamedOneLayerObject("g", []base.Node{
-			base.NewNamedOneLayerObject("f", []base.Node{base.NewClass("x"), base.NewClass("y")}),
+			base.NewNamedOneLayerObject("f", []base.Node{base.NewUnlinkedClass("x"), base.NewUnlinkedClass("y")}),
 		})
 
 		p := New(pattern).Extract(obj)
@@ -134,7 +134,7 @@ func TestVariableParam(t *testing.T) {
 		}))
 		// obj: g (f x)
 		obj := base.NewNamedOneLayerObject("g", []base.Node{
-			base.NewNamedOneLayerObject("f", []base.Node{base.NewClass("x"), base.NewClass("y")}),
+			base.NewNamedOneLayerObject("f", []base.Node{base.NewUnlinkedClass("x"), base.NewUnlinkedClass("y")}),
 		})
 
 		p := New(pattern).Extract(obj)

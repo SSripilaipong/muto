@@ -12,15 +12,13 @@ import (
 func TestStructure_Mutate(t *testing.T) {
 	t.Run("should mutate value", func(t *testing.T) {
 		// subject: {.hello: "world", .abc: (f)}
+		f := NewClass("f", newNormalMutationForTest(func(object Object) optional.Of[Node] {
+			return optional.Value[Node](NewNumberFromString("123"))
+		}))
 		result := NewStructureFromRecords([]StructureRecord{
 			NewStructureRecord(NewTag("hello"), NewString("world")),
-			NewStructureRecord(NewTag("abc"), WrapWithObject(NewClass("f"))),
-		}).Mutate(newNormalMutationForTest(func(s string, object Object) optional.Of[Node] {
-			if s == "f" {
-				return optional.Value[Node](NewNumberFromString("123"))
-			}
-			return optional.Empty[Node]()
-		})).Value()
+			NewStructureRecord(NewTag("abc"), WrapWithObject(f)),
+		}).Mutate().Value()
 
 		assert.Equal(t, NewStructureFromRecords([]StructureRecord{
 			NewStructureRecord(NewTag("hello"), NewString("world")),
@@ -29,20 +27,18 @@ func TestStructure_Mutate(t *testing.T) {
 	})
 
 	t.Run("should not mutate if all values are already stable", func(t *testing.T) {
-		mutation := newNormalMutationForTest(func(s string, object Object) optional.Of[Node] {
-			if s == "f" {
-				return optional.Value[Node](NewNumberFromString("123"))
-			}
-			return optional.Empty[Node]()
-		})
+		f := NewClass("f", newNormalMutationForTest(func(object Object) optional.Of[Node] {
+			return optional.Value[Node](NewNumberFromString("123"))
+		}))
 
 		// subject: {.hello: "world", .abc: (f)}
 		result := NewStructureFromRecords([]StructureRecord{
 			NewStructureRecord(NewTag("hello"), NewString("world")),
-			NewStructureRecord(NewTag("abc"), WrapWithObject(NewClass("f"))),
-		}).Mutate(mutation). // stable after the first time
-					Value().(Structure).
-					Mutate(mutation)
+			NewStructureRecord(NewTag("abc"), WrapWithObject(f)),
+		}).
+			Mutate(). // stable after the first time
+			Value().(Structure).
+			Mutate()
 
 		assert.True(t, result.IsEmpty())
 	})
@@ -50,16 +46,13 @@ func TestStructure_Mutate(t *testing.T) {
 
 func TestStructure_MutateAsHead(t *testing.T) {
 	t.Run("should mutate children first", func(t *testing.T) {
-		mutation := newNormalMutationForTest(func(s string, object Object) optional.Of[Node] {
-			if s == "f" {
-				return optional.Value[Node](NewNumberFromString("123"))
-			}
-			return optional.Empty[Node]()
-		})
+		f := NewClass("f", newNormalMutationForTest(func(object Object) optional.Of[Node] {
+			return optional.Value[Node](NewNumberFromString("123"))
+		}))
 
 		// subject: {} (f) 456
 		result := NewStructureFromRecords([]StructureRecord{}).
-			MutateAsHead(NewParamChain(slc.Pure([]Node{WrapWithObject(NewClass("f")), NewNumberFromString("456")})), mutation).Value()
+			MutateAsHead(NewParamChain(slc.Pure([]Node{WrapWithObject(f), NewNumberFromString("456")}))).Value()
 
 		expected := NewOneLayerObject(NewStructureFromRecords([]StructureRecord{}), []Node{NewNumberFromString("123"), NewNumberFromString("456")})
 		assert.Equal(t, expected, result)
@@ -69,7 +62,7 @@ func TestStructure_MutateAsHead(t *testing.T) {
 		// result: {123: "hello"} (.get 123)
 		result := NewStructureFromRecords([]StructureRecord{
 			NewStructureRecord(NewNumberFromString("123"), NewString("hello")),
-		}).MutateAsHead(NewParamChain(slc.Pure([]Node{NewOneLayerObject(NewTag("get"), []Node{NewNumberFromString("123")})})), nil).Value()
+		}).MutateAsHead(NewParamChain(slc.Pure([]Node{NewOneLayerObject(NewTag("get"), []Node{NewNumberFromString("123")})}))).Value()
 
 		expected := NewString("hello")
 		assert.Equal(t, expected, result)
@@ -78,7 +71,7 @@ func TestStructure_MutateAsHead(t *testing.T) {
 	t.Run("should not mutate when get with unknown key", func(t *testing.T) {
 		result := NewStructureFromRecords([]StructureRecord{
 			NewStructureRecord(NewNumberFromString("123"), NewString("hello")),
-		}).MutateAsHead(NewParamChain(slc.Pure([]Node{NewOneLayerObject(NewTag("get"), []Node{NewNumberFromString("999")})})), nil)
+		}).MutateAsHead(NewParamChain(slc.Pure([]Node{NewOneLayerObject(NewTag("get"), []Node{NewNumberFromString("999")})})))
 
 		assert.True(t, result.IsEmpty())
 	})
@@ -86,7 +79,7 @@ func TestStructure_MutateAsHead(t *testing.T) {
 	t.Run("should process set tag", func(t *testing.T) {
 		result := NewStructureFromRecords([]StructureRecord{
 			NewStructureRecord(NewNumberFromString("123"), NewString("hello")),
-		}).MutateAsHead(NewParamChain(slc.Pure([]Node{NewOneLayerObject(NewTag("set"), []Node{NewNumberFromString("123"), NewString("f")})})), nil).Value()
+		}).MutateAsHead(NewParamChain(slc.Pure([]Node{NewOneLayerObject(NewTag("set"), []Node{NewNumberFromString("123"), NewString("f")})}))).Value()
 
 		expected := NewStructureFromRecords([]StructureRecord{
 			NewStructureRecord(NewNumberFromString("123"), NewString("f")),
@@ -97,7 +90,7 @@ func TestStructure_MutateAsHead(t *testing.T) {
 	t.Run("should not mutate when set with unknown key", func(t *testing.T) {
 		result := NewStructureFromRecords([]StructureRecord{
 			NewStructureRecord(NewNumberFromString("123"), NewString("hello")),
-		}).MutateAsHead(NewParamChain(slc.Pure([]Node{NewOneLayerObject(NewTag("set"), []Node{NewNumberFromString("999"), NewString("f")})})), nil)
+		}).MutateAsHead(NewParamChain(slc.Pure([]Node{NewOneLayerObject(NewTag("set"), []Node{NewNumberFromString("999"), NewString("f")})})))
 
 		assert.True(t, result.IsEmpty())
 	})

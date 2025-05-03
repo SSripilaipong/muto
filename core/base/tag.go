@@ -17,8 +17,8 @@ func NewTag(name string) Node {
 
 func (Tag) NodeType() NodeType { return NodeTypeTag }
 
-func (t Tag) MutateAsHead(params ParamChain, mutation NameWiseMutation) optional.Of[Node] {
-	newChildren := mutateParamChain(params, mutation)
+func (t Tag) MutateAsHead(params ParamChain) optional.Of[Node] {
+	newChildren := mutateParamChain(params)
 	if newChildren.IsNotEmpty() {
 		return optional.Value[Node](NewCompoundObject(t, newChildren.Value()))
 	}

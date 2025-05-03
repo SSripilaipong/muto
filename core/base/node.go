@@ -4,7 +4,7 @@ import "github.com/SSripilaipong/muto/common/optional"
 
 type Node interface {
 	NodeType() NodeType
-	MutateAsHead(params ParamChain, mutation NameWiseMutation) optional.Of[Node]
+	MutateAsHead(params ParamChain) optional.Of[Node]
 	TopLevelString() string
 }
 

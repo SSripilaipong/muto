@@ -11,5 +11,5 @@ type nodeBuilderFactory interface {
 }
 
 type ClassCollection interface {
-	GetClass(name string) base.Class
+	GetClass(name string) *base.Class
 }

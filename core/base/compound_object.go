@@ -17,15 +17,15 @@ func (CompoundObject) NodeType() NodeType { return NodeTypeObject }
 
 func (CompoundObject) ObjectType() ObjectType { return ObjectTypeCompound }
 
-func (obj CompoundObject) Mutate(mutation NameWiseMutation) optional.Of[Node] {
-	return obj.Head().MutateAsHead(obj.ParamChain(), mutation)
+func (obj CompoundObject) Mutate() optional.Of[Node] {
+	return obj.Head().MutateAsHead(obj.ParamChain())
 }
 
 func (obj CompoundObject) ParamChain() ParamChain {
 	return obj.paramChain
 }
 
-func (obj CompoundObject) MutateAsHead(ParamChain, NameWiseMutation) optional.Of[Node] {
+func (obj CompoundObject) MutateAsHead(ParamChain) optional.Of[Node] {
 	panic("deprecated")
 }
 
@@ -131,7 +131,7 @@ func WrapWithObject(n Node) Object {
 }
 
 func NewNamedOneLayerObject(name string, children []Node) Object {
-	return NewOneLayerObject(NewClass(name), children)
+	return NewOneLayerObject(NewUnlinkedClass(name), children)
 }
 
 func objectChildrenToString(children []Node) string {
