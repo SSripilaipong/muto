@@ -6,7 +6,7 @@ import (
 	"github.com/SSripilaipong/muto/common/optional"
 )
 
-func mutateParamChain(params ParamChain) optional.Of[ParamChain] {
+func MutateParamChain(params ParamChain) optional.Of[ParamChain] {
 	nodesList := params.All()
 
 	for i := range nodesList {

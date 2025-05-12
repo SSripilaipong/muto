@@ -29,7 +29,7 @@ func Object() func(xs []psBase.Character) []tuple.Of2[stPattern.NonDeterminantOb
 		)
 
 		return psBase.InParentheses(ps.First(
-			ps.Map(castObject, psBase.SpaceSeparated2(head, paramPart())),
+			ps.Map(castObject, psBase.SpaceSeparated2(head, ParamPart())),
 			ps.Map(castHead, head),
 		))(xs)
 	}

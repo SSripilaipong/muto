@@ -22,7 +22,7 @@ func NewNumberFromString(s string) Node {
 func (Number) NodeType() NodeType { return NodeTypeNumber }
 
 func (n Number) MutateAsHead(params ParamChain) optional.Of[Node] {
-	newChildren := mutateParamChain(params)
+	newChildren := MutateParamChain(params)
 	if newChildren.IsNotEmpty() {
 		return optional.Value[Node](NewCompoundObject(n, newChildren.Value()))
 	}

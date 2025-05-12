@@ -30,13 +30,13 @@ func (f ObjectBuilderFactory) NewBuilder(obj stResult.Object) mutator.Builder {
 }
 
 type coreObjectBuilderFactory struct {
-	head       headBuilderFactory
+	head       coreNonObjectBuilderFactory
 	paramChain paramChainBuilderFactory
 }
 
 func newCoreObjectBuilderFactory(nodeFactory nodeBuilderFactory, classCollection ClassCollection) coreObjectBuilderFactory {
 	return coreObjectBuilderFactory{
-		head:       newHeadBuilderFactory(nodeFactory, classCollection),
+		head:       newCoreNonObjectBuilderFactory(nodeFactory, classCollection),
 		paramChain: newParamChainBuilderFactory(nodeFactory),
 	}
 }
@@ -51,7 +51,11 @@ func (f coreObjectBuilderFactory) NewBuilder(obj stResult.Object) optional.Of[ob
 	}
 	slices.Reverse(params)
 
-	return optional.Value(newObjectBuilder(f.head.HeadBuilder(head), f.paramChain.NewBuilder(params)))
+	headBuilder, headBuilderOk := f.head.NewBuilder(head).Return()
+	if !headBuilderOk {
+		return optional.Empty[objectBuilder]()
+	}
+	return optional.Value(newObjectBuilder(headBuilder, f.paramChain.NewBuilder(params)))
 }
 
 type objectBuilder struct {

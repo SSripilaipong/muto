@@ -55,7 +55,7 @@ func (m *Parameter) mergeVariableMappings(mapping map[string]VariableMapping) op
 	return optional.Value(newM)
 }
 
-func (m *Parameter) WithVariableMappings(x VariableMapping) optional.Of[*Parameter] {
+func (m *Parameter) WithVariableMapping(x VariableMapping) optional.Of[*Parameter] {
 	newM := m.Clone()
 	k := x.name
 	if y, exists := newM.variableMapping[k]; !exists || y == x {
@@ -63,6 +63,18 @@ func (m *Parameter) WithVariableMappings(x VariableMapping) optional.Of[*Paramet
 		return optional.Value(newM)
 	}
 	return optional.Empty[*Parameter]()
+}
+
+func (m *Parameter) WithVariableMappings(xs []VariableMapping) optional.Of[*Parameter] {
+	p := m.Clone()
+	for _, vm := range xs {
+		q, ok := p.WithVariableMapping(vm).Return()
+		if !ok {
+			return optional.Empty[*Parameter]()
+		}
+		p = q
+	}
+	return optional.Value(p)
 }
 
 func (m *Parameter) mergeVariadicVarMappings(mapping map[string]VariadicVarMapping) optional.Of[*Parameter] {
@@ -83,7 +95,7 @@ func (m *Parameter) mergeRemainingParamChain(paramChain base.ParamChain) optiona
 	return optional.Value(newM)
 }
 
-func (m *Parameter) WithVariadicVarMappings(x VariadicVarMapping) optional.Of[*Parameter] {
+func (m *Parameter) WithVariadicVarMapping(x VariadicVarMapping) optional.Of[*Parameter] {
 	newM := m.Clone()
 	k := x.name
 	if y, exists := newM.variadicVarMapping[k]; !exists || x.Equal(y) {
@@ -93,12 +105,40 @@ func (m *Parameter) WithVariadicVarMappings(x VariadicVarMapping) optional.Of[*P
 	return optional.Empty[*Parameter]()
 }
 
+func (m *Parameter) WithVariadicVarMappings(xs []VariadicVarMapping) optional.Of[*Parameter] {
+	p := m.Clone()
+	for _, vm := range xs {
+		q, ok := p.WithVariadicVarMapping(vm).Return()
+		if !ok {
+			return optional.Empty[*Parameter]()
+		}
+		p = q
+	}
+	return optional.Value(p)
+}
+
 func (m *Parameter) Clone() *Parameter {
 	return &Parameter{
 		variableMapping:     maps.Clone(m.variableMapping),
 		variadicVarMapping:  maps.Clone(m.variadicVarMapping),
 		remainingParamChain: m.remainingParamChain.Clone(),
 	}
+}
+
+func (m *Parameter) VariableMappings() []VariableMapping {
+	var result []VariableMapping
+	for _, v := range m.variableMapping {
+		result = append(result, v)
+	}
+	return result
+}
+
+func (m *Parameter) VariadicVarMappings() []VariadicVarMapping {
+	var result []VariadicVarMapping
+	for _, v := range m.variadicVarMapping {
+		result = append(result, v)
+	}
+	return result
 }
 
 func (m *Parameter) SetRemainingParamChain(params base.ParamChain) *Parameter {
@@ -145,7 +185,7 @@ func AddRemainingParamChain(nodes []base.Node) func(*Parameter) *Parameter {
 
 func WithVariadicVarMappings(x VariadicVarMapping) func(parameter *Parameter) optional.Of[*Parameter] {
 	return func(parameter *Parameter) optional.Of[*Parameter] {
-		return parameter.WithVariadicVarMappings(x)
+		return parameter.WithVariadicVarMapping(x)
 	}
 }
 

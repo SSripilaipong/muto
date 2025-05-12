@@ -7,7 +7,7 @@ import (
 type DeterminantObject struct {
 	head          base.Pattern
 	params        ParamPart
-	nonNestedHead base.Class
+	nonNestedHead base.Determinant
 }
 
 func (DeterminantObject) DeterminantType() base.DeterminantType { return base.DeterminantTypeObject }
@@ -22,8 +22,8 @@ func (p DeterminantObject) ParamPart() ParamPart {
 	return p.params
 }
 
-func (p DeterminantObject) ObjectName() string {
-	return p.nonNestedHead.Name()
+func (p DeterminantObject) DeterminantName() string {
+	return p.nonNestedHead.DeterminantName()
 }
 
 func NewDeterminantObject(head base.Determinant, params ParamPart) DeterminantObject {
@@ -34,6 +34,6 @@ func NewDeterminantObject(head base.Determinant, params ParamPart) DeterminantOb
 	return DeterminantObject{
 		head:          head,
 		params:        params,
-		nonNestedHead: base.UnsafePatternToClass(nonNestedHead),
+		nonNestedHead: base.UnsafePatternToDeterminant(nonNestedHead),
 	}
 }

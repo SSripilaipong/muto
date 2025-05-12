@@ -1,6 +1,7 @@
-package base
+package syntaxtree
 
 import (
+	"github.com/SSripilaipong/muto/syntaxtree/base"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
@@ -12,7 +13,7 @@ func NewVariable(name string) Variable {
 	return Variable{name: name}
 }
 
-func (Variable) PatternType() PatternType { return PatternTypeVariable }
+func (Variable) PatternType() base.PatternType { return base.PatternTypeVariable }
 
 func (Variable) RuleResultNodeType() stResult.NodeType {
 	return stResult.NodeTypeVariable
@@ -30,6 +31,6 @@ func UnsafeRuleResultToVariable(p stResult.Node) Variable {
 	return p.(Variable)
 }
 
-func UnsafePatternToVariable(p Pattern) Variable {
+func UnsafePatternToVariable(p base.Pattern) Variable {
 	return p.(Variable)
 }

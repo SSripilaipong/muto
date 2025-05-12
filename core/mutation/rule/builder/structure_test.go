@@ -7,7 +7,7 @@ import (
 
 	"github.com/SSripilaipong/muto/core/base"
 	"github.com/SSripilaipong/muto/core/pattern/parameter"
-	stBase "github.com/SSripilaipong/muto/syntaxtree/base"
+	"github.com/SSripilaipong/muto/syntaxtree"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
@@ -23,7 +23,7 @@ func TestBuildStructure(t *testing.T) {
 
 	t.Run("should build string key and value", func(t *testing.T) {
 		tree := stResult.NewStructure([]stResult.StructureRecord{
-			stResult.NewStructureRecord(stBase.NewString(`"abc"`), stBase.NewString(`"def"`)),
+			stResult.NewStructureRecord(syntaxtree.NewString(`"abc"`), syntaxtree.NewString(`"def"`)),
 		})
 		mutationData := parameter.New()
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
@@ -34,7 +34,7 @@ func TestBuildStructure(t *testing.T) {
 
 	t.Run("should build class key", func(t *testing.T) {
 		tree := stResult.NewStructure([]stResult.StructureRecord{
-			stResult.NewStructureRecord(stBase.NewClass("f"), stBase.NewString(`"def"`)),
+			stResult.NewStructureRecord(syntaxtree.NewClass("f"), syntaxtree.NewString(`"def"`)),
 		})
 		mutationData := parameter.New()
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
@@ -45,10 +45,10 @@ func TestBuildStructure(t *testing.T) {
 
 	t.Run("should build variable value", func(t *testing.T) {
 		tree := stResult.NewStructure([]stResult.StructureRecord{
-			stResult.NewStructureRecord(stBase.NewBoolean("true"), stBase.NewVariable("A")),
+			stResult.NewStructureRecord(syntaxtree.NewBoolean("true"), syntaxtree.NewVariable("A")),
 		})
 		mutationData := parameter.New().
-			WithVariableMappings(parameter.NewVariableMapping("A", base.NewOneLayerObject(base.NewUnlinkedClass("f"), []base.Node{base.NewNumberFromString("123")}))).
+			WithVariableMapping(parameter.NewVariableMapping("A", base.NewOneLayerObject(base.NewUnlinkedClass("f"), []base.Node{base.NewNumberFromString("123")}))).
 			Value()
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
 			base.NewStructureRecord(base.NewBoolean(true), base.NewOneLayerObject(base.NewUnlinkedClass("f"), []base.Node{base.NewNumberFromString("123")})),
@@ -59,16 +59,16 @@ func TestBuildStructure(t *testing.T) {
 	t.Run("should build object value with variables", func(t *testing.T) {
 		tree := stResult.NewStructure([]stResult.StructureRecord{
 			stResult.NewStructureRecord(
-				stBase.NewTag(".e"),
+				syntaxtree.NewTag(".e"),
 				stResult.NewObject(
-					stBase.NewVariable("A"),
-					stResult.ParamsToFixedParamPart([]stResult.Param{stBase.NewNumber("123"), stBase.NewVariable("B")}),
+					syntaxtree.NewVariable("A"),
+					stResult.ParamsToFixedParamPart([]stResult.Param{syntaxtree.NewNumber("123"), syntaxtree.NewVariable("B")}),
 				),
 			),
 		})
 		mutationData := parameter.New().
-			WithVariableMappings(parameter.NewVariableMapping("A", base.NewUnlinkedClass("f"))).Value().
-			WithVariableMappings(parameter.NewVariableMapping("B", base.NewTag("t"))).Value()
+			WithVariableMapping(parameter.NewVariableMapping("A", base.NewUnlinkedClass("f"))).Value().
+			WithVariableMapping(parameter.NewVariableMapping("B", base.NewTag("t"))).Value()
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
 			base.NewStructureRecord(
 				base.NewTag("e"),
@@ -84,7 +84,7 @@ func TestBuildStructure(t *testing.T) {
 	t.Run("should not carry remaining children to inner record object", func(t *testing.T) {
 		// tree: {.k: .v}
 		tree := stResult.NewStructure([]stResult.StructureRecord{
-			stResult.NewStructureRecord(stBase.NewTag(".k"), stBase.NewTag(".v")),
+			stResult.NewStructureRecord(syntaxtree.NewTag(".k"), syntaxtree.NewTag(".v")),
 		})
 		mutationData := parameter.New().
 			SetRemainingParamChain(base.NewParamChain([][]base.Node{{base.NewTag("xxx")}}))

@@ -9,11 +9,7 @@ import (
 )
 
 func structure(xs []psBase.Character) []tuple.Of2[stResult.Structure, []psBase.Character] {
-	structureValue := ps.Or(
-		nonNestedNode,
-		ps.Map(castObjectNode, psBase.InParenthesesWhiteSpaceAllowed(NakedObjectMultilines)),
-		ps.Map(stResult.ToNode, structure),
-	)
+	structureValue := ps.Or(nonNestedNode, nestedNode())
 	record := ps.Map(mergeStructureRecord, psBase.IgnoreSpaceBetween3(structureKey, psBase.Colon, structureValue))
 
 	structureRecordWithComma := psBase.EndingWithCommaSpaceAllowed(record)

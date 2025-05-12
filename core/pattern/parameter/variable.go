@@ -11,6 +11,8 @@ func (m VariableMapping) Equals(n VariableMapping) bool {
 	return m.name == n.name && base.NodeEqual(m.node, n.node)
 }
 
+func (m VariableMapping) Name() string { return m.name }
+
 func NewVariableMapping(name string, node base.Node) VariableMapping {
 	return VariableMapping{
 		name: name,

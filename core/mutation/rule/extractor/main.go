@@ -28,14 +28,14 @@ func newForParamChainPartial(chain []stPattern.ParamPart) extractor.ParamChainPa
 	extractors = slc.Map(newForParamPartNested)(chain)
 	if len(chain) > 0 {
 		extractors = slc.Map(newForParamPartNested)(chain[:slc.LastIndex(chain)])
-		if rightMostExtractor, ok := newForParamPartTopLevel(slc.LastDefaultZero(chain)).Return(); ok {
+		if rightMostExtractor, ok := NewForParamPartTopLevel(slc.LastDefaultZero(chain)).Return(); ok {
 			extractors = append(extractors, rightMostExtractor)
 		}
 	}
 	return extractor.NewParamChainPartial(extractors)
 }
 
-func newForParamPartTopLevel(paramPart stPattern.ParamPart) optional.Of[extractor.NodeListExtractor] {
+func NewForParamPartTopLevel(paramPart stPattern.ParamPart) optional.Of[extractor.NodeListExtractor] {
 	switch {
 	case stPattern.IsParamPartTypeFixed(paramPart):
 		return optional.Fmap(extractor.ToNodeListExtractor[extractor.ImplicitRightVariadic])(

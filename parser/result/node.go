@@ -13,11 +13,14 @@ var RsSimplifiedNode = ps.Map(rslt.Value, SimplifiedNode())
 
 func SimplifiedNode() func([]psBase.Character) []tuple.Of2[stResult.SimplifiedNode, []psBase.Character] {
 	return ps.Or(
-		ps.Map(castObjectNodeSimplified, psBase.InParenthesesWhiteSpaceAllowed(NakedObjectMultilines)),
+		ps.Map(castObjectNodeSimplified, psBase.InParenthesesWhiteSpaceAllowed(nakedObjectMultilines)),
 		ps.Map(castObjectNodeNaked, nakedObjectWithChildren()),
-		ps.Map(wrapNodeWithNakedObject, nonNestedNode),
-		ps.Map(fn.Compose(wrapNodeWithNakedObject, stResult.ToNode[stResult.Structure]), structure),
+		ps.Map(wrapNodeWithNakedObject, ps.Or(nonNestedNode, nonObjectNestedNode())),
 	)
+}
+
+func anyNode() func([]psBase.Character) []tuple.Of2[stResult.Node, []psBase.Character] {
+	return ps.Or(nonNestedNode, nestedNode())
 }
 
 var nonNestedNode = ps.Or(
@@ -34,15 +37,19 @@ func castNakedObjectNode(obj objectNode) stResult.SimplifiedNode {
 }
 
 func castObjectNode(obj objectNode) stResult.Node {
-	return stResult.NewObject(obj.Head(), obj.ParamPart())
+	return castObjectResult(obj)
 }
 
 func castObjectNodeSimplified(obj objectNode) stResult.SimplifiedNode {
-	return stResult.NewObject(obj.Head(), obj.ParamPart())
+	return castObjectResult(obj)
 }
 
 func castObjectNodeNaked(obj objectNode) stResult.SimplifiedNode {
 	return stResult.NewNakedObject(obj.Head(), obj.ParamPart())
+}
+
+func castObjectResult(obj objectNode) stResult.Object {
+	return stResult.NewObject(obj.Head(), obj.ParamPart())
 }
 
 var wrapNodeWithNakedObject = fn.Compose(stResult.ToSimplifiedNode, stResult.SingleNodeToNakedObject)

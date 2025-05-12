@@ -37,7 +37,7 @@ func (c *Class) ActivelyMutateWithObjMutateFunc(params ParamChain) optional.Of[N
 }
 
 func (c *Class) MutateWithObjMutateFunc(params ParamChain) optional.Of[Node] {
-	newChildren := mutateParamChain(params)
+	newChildren := MutateParamChain(params)
 	if newChildren.IsNotEmpty() {
 		return optional.Value[Node](NewCompoundObject(c, newChildren.Value()))
 	}

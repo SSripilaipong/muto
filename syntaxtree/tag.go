@@ -1,8 +1,9 @@
-package base
+package syntaxtree
 
 import (
 	"strings"
 
+	"github.com/SSripilaipong/muto/syntaxtree/base"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
@@ -14,7 +15,7 @@ func NewTag(value string) Tag {
 	return Tag{value: value}
 }
 
-func (Tag) PatternType() PatternType { return PatternTypeTag }
+func (Tag) PatternType() base.PatternType { return base.PatternTypeTag }
 
 func (Tag) RuleResultNodeType() stResult.NodeType { return stResult.NodeTypeTag }
 
@@ -33,6 +34,6 @@ func (t Tag) Name() string {
 
 func UnsafeRuleResultToTag(x stResult.Node) Tag { return x.(Tag) }
 
-func UnsafePatternToTag(p Pattern) Tag {
+func UnsafePatternToTag(p base.Pattern) Tag {
 	return p.(Tag)
 }

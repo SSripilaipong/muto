@@ -20,12 +20,12 @@ func NewStructureFromRecords(records []StructureRecord) Structure {
 func (Structure) NodeType() NodeType { return NodeTypeStructure }
 
 func (s Structure) MutateAsHead(params ParamChain) optional.Of[Node] {
-	newChildren := mutateParamChain(params)
+	newChildren := MutateParamChain(params)
 	if newChildren.IsNotEmpty() {
 		return optional.Value[Node](NewCompoundObject(s, newChildren.Value()))
 	}
 
-	return strictUnaryOp(func(x Node) optional.Of[Node] {
+	return StrictUnaryOp(func(x Node) optional.Of[Node] {
 		if !IsObjectNode(x) {
 			return optional.Empty[Node]()
 		}

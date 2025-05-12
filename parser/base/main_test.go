@@ -5,12 +5,12 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	stBase "github.com/SSripilaipong/muto/syntaxtree/base"
+	"github.com/SSripilaipong/muto/syntaxtree"
 )
 
 func TestString(t *testing.T) {
 	r := String(StringToCharTokens(`"abc\n123\""abc`))
-	expectedResult := stBase.NewString(`"abc\n123\""`)
+	expectedResult := syntaxtree.NewString(`"abc\n123\""`)
 	expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`abc`))
 	assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 }
@@ -18,21 +18,21 @@ func TestString(t *testing.T) {
 func TestNumber(t *testing.T) {
 	t.Run("should parse positive number", func(t *testing.T) {
 		r := Number(StringToCharTokens(`123abc`))
-		expectedResult := stBase.NewNumber(`123`)
+		expectedResult := syntaxtree.NewNumber(`123`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`abc`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should parse positive float number", func(t *testing.T) {
 		r := Number(StringToCharTokens(`123.456abc`))
-		expectedResult := stBase.NewNumber(`123.456`)
+		expectedResult := syntaxtree.NewNumber(`123.456`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`abc`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should parse negative number", func(t *testing.T) {
 		r := Number(StringToCharTokens(`-123abc`))
-		expectedResult := stBase.NewNumber(`-123`)
+		expectedResult := syntaxtree.NewNumber(`-123`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`abc`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
@@ -41,14 +41,14 @@ func TestNumber(t *testing.T) {
 func TestBoolean(t *testing.T) {
 	t.Run("should parse true", func(t *testing.T) {
 		r := Boolean(StringToCharTokens(`trueabc`))
-		expectedResult := stBase.NewBoolean(`true`)
+		expectedResult := syntaxtree.NewBoolean(`true`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`abc`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should parse false", func(t *testing.T) {
 		r := Boolean(StringToCharTokens(`falseabc`))
-		expectedResult := stBase.NewBoolean(`false`)
+		expectedResult := syntaxtree.NewBoolean(`false`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`abc`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
@@ -57,26 +57,26 @@ func TestBoolean(t *testing.T) {
 func TestFixedVar(t *testing.T) {
 	t.Run("should parse single letter variable", func(t *testing.T) {
 		r := FixedVarWithUnderscore(StringToCharTokens(`X.123`))
-		expectedResult := stBase.NewVariable(`X`)
+		expectedResult := syntaxtree.NewVariable(`X`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`.123`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should parse multiple letters variable", func(t *testing.T) {
 		r := FixedVarWithUnderscore(StringToCharTokens(`XYabc-123!'?-1s.123`))
-		expectedResult := stBase.NewVariable(`XYabc-123!'?-1s`)
+		expectedResult := syntaxtree.NewVariable(`XYabc-123!'?-1s`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`.123`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should not parse identifier starting with small case", func(t *testing.T) {
 		r := FixedVarWithUnderscore(StringToCharTokens(`xy`))
-		assert.Equal(t, EmptyResult[stBase.Variable](), AsParserResult(IgnoreLineAndColumnInResult(r)))
+		assert.Equal(t, EmptyResult[syntaxtree.Variable](), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should not parse variadic var", func(t *testing.T) {
 		r := FixedVarWithUnderscore(IgnoreLineAndColumn(StringToCharTokens(`X...`)))
-		assert.Equal(t, EmptyResult[stBase.Variable](), AsParserResult(IgnoreLineAndColumnInResult(r)))
+		assert.Equal(t, EmptyResult[syntaxtree.Variable](), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 }
 
@@ -114,46 +114,46 @@ func TestVariadicVar(t *testing.T) {
 func TestClass(t *testing.T) {
 	t.Run("should parse class", func(t *testing.T) {
 		r := Class(StringToCharTokens(`a_bc-'!'.123`))
-		expectedResult := stBase.NewClass(`a_bc-'!'`)
+		expectedResult := syntaxtree.NewClass(`a_bc-'!'`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`.123`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should not parse space", func(t *testing.T) {
 		r := Class(StringToCharTokens(`a b`))
-		expectedResult := stBase.NewClass(`a`)
+		expectedResult := syntaxtree.NewClass(`a`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(` b`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should not parse variable", func(t *testing.T) {
 		r := Class(StringToCharTokens(`X`))
-		assert.Equal(t, EmptyResult[stBase.Class](), AsParserResult(IgnoreLineAndColumnInResult(r)))
+		assert.Equal(t, EmptyResult[syntaxtree.Class](), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should parse symbol", func(t *testing.T) {
 		r := Class(StringToCharTokens(`-->.! @`))
-		expectedResult := stBase.NewClass(`-->.!`)
+		expectedResult := syntaxtree.NewClass(`-->.!`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(` @`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should not match name starting with underscore", func(t *testing.T) {
 		r := Class(StringToCharTokens(`_`))
-		assert.Equal(t, EmptyResult[stBase.Class](), AsParserResult(IgnoreLineAndColumnInResult(r)))
+		assert.Equal(t, EmptyResult[syntaxtree.Class](), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 }
 
 func TestTag(t *testing.T) {
 	t.Run("should parse tag like class with dot prefix", func(t *testing.T) {
 		r := Tag(StringToCharTokens(`.a_bc-'!'.123`))
-		expectedResult := stBase.NewTag(`.a_bc-'!'`)
+		expectedResult := syntaxtree.NewTag(`.a_bc-'!'`)
 		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`.123`))
 		assert.Equal(t, SingleResult(expectedResult, expectedRemainder), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 
 	t.Run("should not parse class", func(t *testing.T) {
 		r := Tag(StringToCharTokens(`abc`))
-		assert.Equal(t, EmptyResult[stBase.Tag](), AsParserResult(IgnoreLineAndColumnInResult(r)))
+		assert.Equal(t, EmptyResult[syntaxtree.Tag](), AsParserResult(IgnoreLineAndColumnInResult(r)))
 	})
 }

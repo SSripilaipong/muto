@@ -17,7 +17,7 @@ func NewBoolean(x bool) Boolean {
 func (Boolean) NodeType() NodeType { return NodeTypeBoolean }
 
 func (b Boolean) MutateAsHead(params ParamChain) optional.Of[Node] {
-	newChildren := mutateParamChain(params)
+	newChildren := MutateParamChain(params)
 	if newChildren.IsNotEmpty() {
 		return optional.Value[Node](NewCompoundObject(b, newChildren.Value()))
 	}

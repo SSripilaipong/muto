@@ -12,8 +12,6 @@ func (Structure) RuleResultNodeType() NodeType { return NodeTypeStructure }
 
 func (Structure) ObjectParamType() ParamType { return ParamTypeSingle }
 
-func (Structure) NonObjectNode() {}
-
 func (s Structure) Records() []StructureRecord {
 	return s.records
 }

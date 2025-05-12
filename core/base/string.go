@@ -17,7 +17,7 @@ func NewString(value string) String {
 func (String) NodeType() NodeType { return NodeTypeString }
 
 func (s String) MutateAsHead(params ParamChain) optional.Of[Node] {
-	newParams := mutateParamChain(params)
+	newParams := MutateParamChain(params)
 	if newParams.IsNotEmpty() {
 		return optional.Value[Node](NewCompoundObject(s, newParams.Value()))
 	}

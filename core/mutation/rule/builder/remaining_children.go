@@ -44,13 +44,21 @@ func (x appendRemainingChildren) Build(mutation *parameter.Parameter) optional.O
 	if !ok {
 		return optional.Empty[base.Node]()
 	}
-	if mutation == nil || mutation.RemainingParamChain().Size() == 0 {
+	if mutation == nil {
 		return optional.Value(node)
 	}
+	return appendRemainingParamToNode(mutation.RemainingParamChain())(node)
+}
 
-	if !base.IsObjectNode(node) {
-		node = base.NewOneLayerObject(node, []base.Node{})
+func appendRemainingParamToNode(paramChain base.ParamChain) func(base.Node) optional.Of[base.Node] {
+	return func(node base.Node) optional.Of[base.Node] {
+		if paramChain.Size() == 0 {
+			return optional.Value(node)
+		}
+		if !base.IsObjectNode(node) {
+			node = base.NewOneLayerObject(node, []base.Node{})
+		}
+
+		return optional.Value[base.Node](base.UnsafeNodeToObject(node).AppendParams(paramChain))
 	}
-
-	return optional.Value[base.Node](base.UnsafeNodeToObject(node).AppendParams(mutation.RemainingParamChain()))
 }

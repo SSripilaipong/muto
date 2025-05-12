@@ -61,6 +61,13 @@ func InBracesWhiteSpacesAllowed[R any](x Parser[R]) Parser[R] {
 	return ps.Map(withoutBrace, IgnoreWhiteSpaceBetween3(OpenBrace, x, CloseBrace))
 }
 
+func InSquareBracketsWhiteSpacesAllowed[R any](x Parser[R]) Parser[R] {
+	withoutBrace := func(x tuple.Of3[Character, R, Character]) R {
+		return x.X2()
+	}
+	return ps.Map(withoutBrace, IgnoreWhiteSpaceBetween3(OpenSquareBracket, x, CloseSquareBracket))
+}
+
 func InDoubleQuotes[R any](x Parser[R]) Parser[R] {
 	withoutQuotes := func(x tuple.Of3[Character, R, Character]) R {
 		return x.X2()

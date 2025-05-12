@@ -4,6 +4,7 @@ import (
 	"github.com/SSripilaipong/muto/common/fn"
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/strutil"
+	"github.com/SSripilaipong/muto/syntaxtree"
 	stBase "github.com/SSripilaipong/muto/syntaxtree/base"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
@@ -14,4 +15,4 @@ var TagResultNode = ps.Map(stResult.ToNode, Tag)
 
 var TagPattern = ps.Map(stBase.ToPattern, Tag)
 
-var classToTag = fn.Compose3(stBase.NewTag, strutil.WithPrefix("."), stBase.ClassToName)
+var classToTag = fn.Compose3(syntaxtree.NewTag, strutil.WithPrefix("."), syntaxtree.ClassToName)
