@@ -23,7 +23,7 @@ func (r Rule) Result() stResult.SimplifiedNode { return r.result }
 
 func (r Rule) Pattern() stPattern.DeterminantObject { return r.pattern }
 
-func (r Rule) PatternName() string { return r.Pattern().ObjectName() }
+func (r Rule) PatternName() string { return r.Pattern().DeterminantName() }
 
 func RuleToStatement(r Rule) base.Statement { return r }
 

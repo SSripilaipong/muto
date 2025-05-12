@@ -5,12 +5,13 @@ import (
 
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/tuple"
+	"github.com/SSripilaipong/muto/syntaxtree"
 	st "github.com/SSripilaipong/muto/syntaxtree/base"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
 var Number = ps.Or(
-	ps.Map(st.NewNumber, unsignedNumber),
+	ps.Map(syntaxtree.NewNumber, unsignedNumber),
 	ps.Map(digitsWithMinusSign, ps.Sequence2(MinusSign, unsignedNumber)),
 )
 
@@ -18,8 +19,8 @@ var NumberResultNode = ps.Map(stResult.ToNode, Number)
 
 var NumberPattern = ps.Map(st.ToPattern, Number)
 
-var digitsWithMinusSign = tuple.Fn2(func(ms Character, x string) st.Number {
-	return st.NewNumber("-" + x)
+var digitsWithMinusSign = tuple.Fn2(func(ms Character, x string) syntaxtree.Number {
+	return syntaxtree.NewNumber("-" + x)
 })
 
 var unsignedNumber = ps.First(

@@ -11,13 +11,14 @@ type Node interface {
 type NodeType string
 
 const (
-	NodeTypeString    NodeType = "STRING"
-	NodeTypeNumber    NodeType = "NUMBER"
-	NodeTypeBoolean   NodeType = "BOOLEAN"
-	NodeTypeObject    NodeType = "OBJECT"
-	NodeTypeClass     NodeType = "CLASS"
-	NodeTypeTag       NodeType = "TAG"
-	NodeTypeStructure NodeType = "STRUCTURE"
+	NodeTypeString        NodeType = "STRING"
+	NodeTypeNumber        NodeType = "NUMBER"
+	NodeTypeBoolean       NodeType = "BOOLEAN"
+	NodeTypeObject        NodeType = "OBJECT"
+	NodeTypeClass         NodeType = "CLASS"
+	NodeTypeTag           NodeType = "TAG"
+	NodeTypeStructure     NodeType = "STRUCTURE"
+	NodeTypeReconstructor NodeType = "RECONSTRUCTOR"
 )
 
 func IsObjectNode(node Node) bool {

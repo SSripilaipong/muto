@@ -29,3 +29,7 @@ func IsPrimitiveObject(x Object) bool {
 func IsCompoundObject(x Object) bool {
 	return x.ObjectType() == ObjectTypeCompound
 }
+
+func AppendParams(params ParamChain) func(Object) Object {
+	return func(x Object) Object { return x.AppendParams(params) }
+}

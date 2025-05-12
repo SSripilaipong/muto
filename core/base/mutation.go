@@ -9,7 +9,7 @@ type NameWiseMutation interface {
 	Normal(name string, obj Object) optional.Of[Node]
 }
 
-func strictUnaryOp(f func(x Node) optional.Of[Node]) func(params ParamChain) optional.Of[Node] {
+func StrictUnaryOp(f func(x Node) optional.Of[Node]) func(params ParamChain) optional.Of[Node] {
 	return func(params ParamChain) optional.Of[Node] {
 		innerChildren := params.DirectParams()
 		if len(innerChildren) != 1 {

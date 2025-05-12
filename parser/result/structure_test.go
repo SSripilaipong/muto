@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	psBase "github.com/SSripilaipong/muto/parser/base"
-	"github.com/SSripilaipong/muto/syntaxtree/base"
+	"github.com/SSripilaipong/muto/syntaxtree"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
@@ -39,7 +39,7 @@ func TestStructure(t *testing.T) {
   "xxx": 123
 }abc`))
 		expectedResult := stResult.NewStructure([]stResult.StructureRecord{
-			stResult.NewStructureRecord(base.NewString(`"xxx"`), base.NewNumber("123")),
+			stResult.NewStructureRecord(syntaxtree.NewString(`"xxx"`), syntaxtree.NewNumber("123")),
 		})
 		expectedRemainder := psBase.IgnoreLineAndColumn(psBase.StringToCharTokens("abc"))
 		assert.Equal(t, psBase.SingleResult(expectedResult, expectedRemainder), psBase.AsParserResult(psBase.IgnoreLineAndColumnInResult(result)))
@@ -50,7 +50,7 @@ func TestStructure(t *testing.T) {
   "xxx": 123,
 }abc`))
 		expectedResult := stResult.NewStructure([]stResult.StructureRecord{
-			stResult.NewStructureRecord(base.NewString(`"xxx"`), base.NewNumber("123")),
+			stResult.NewStructureRecord(syntaxtree.NewString(`"xxx"`), syntaxtree.NewNumber("123")),
 		})
 		expectedRemainder := psBase.IgnoreLineAndColumn(psBase.StringToCharTokens("abc"))
 		assert.Equal(t, psBase.SingleResult(expectedResult, expectedRemainder), psBase.AsParserResult(psBase.IgnoreLineAndColumnInResult(result)))
@@ -61,7 +61,7 @@ func TestStructure(t *testing.T) {
  f: ""
 }abc`))
 		expectedResult := stResult.NewStructure([]stResult.StructureRecord{
-			stResult.NewStructureRecord(base.NewClass("f"), base.NewString(`""`)),
+			stResult.NewStructureRecord(syntaxtree.NewClass("f"), syntaxtree.NewString(`""`)),
 		})
 		expectedRemainder := psBase.IgnoreLineAndColumn(psBase.StringToCharTokens("abc"))
 		assert.Equal(t, psBase.SingleResult(expectedResult, expectedRemainder), psBase.AsParserResult(psBase.IgnoreLineAndColumnInResult(result)))
@@ -72,7 +72,7 @@ func TestStructure(t *testing.T) {
  "": (g 555)
 }abc`))
 		expectedResult := stResult.NewStructure([]stResult.StructureRecord{
-			stResult.NewStructureRecord(base.NewString(`""`), stResult.NewObject(base.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{base.NewNumber("555")}))),
+			stResult.NewStructureRecord(syntaxtree.NewString(`""`), stResult.NewObject(syntaxtree.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{syntaxtree.NewNumber("555")}))),
 		})
 		expectedRemainder := psBase.IgnoreLineAndColumn(psBase.StringToCharTokens("abc"))
 		assert.Equal(t, psBase.SingleResult(expectedResult, expectedRemainder), psBase.AsParserResult(psBase.IgnoreLineAndColumnInResult(result)))
@@ -85,9 +85,9 @@ func TestStructure(t *testing.T) {
 5: 6
 }abc`))
 		expectedResult := stResult.NewStructure([]stResult.StructureRecord{
-			stResult.NewStructureRecord(base.NewNumber("1"), base.NewNumber("2")),
-			stResult.NewStructureRecord(base.NewNumber("3"), base.NewNumber("4")),
-			stResult.NewStructureRecord(base.NewNumber("5"), base.NewNumber("6")),
+			stResult.NewStructureRecord(syntaxtree.NewNumber("1"), syntaxtree.NewNumber("2")),
+			stResult.NewStructureRecord(syntaxtree.NewNumber("3"), syntaxtree.NewNumber("4")),
+			stResult.NewStructureRecord(syntaxtree.NewNumber("5"), syntaxtree.NewNumber("6")),
 		})
 		expectedRemainder := psBase.IgnoreLineAndColumn(psBase.StringToCharTokens("abc"))
 		assert.Equal(t, psBase.SingleResult(expectedResult, expectedRemainder), psBase.AsParserResult(psBase.IgnoreLineAndColumnInResult(result)))

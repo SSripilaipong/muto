@@ -28,21 +28,27 @@ func nakedObjectWithChildren() func(xs []psBase.Character) []tuple.Of2[objectNod
 	paramLinesInBlockStartingWithLineBreak := ps.Map(mergeParamIgnoreNewLine, ps.Sequence2(psBase.LineBreak, paramLinesInBlock))
 	paramLineFollowedByParamBlock := ps.Map(mergeParamWithFirstParam, ps.Sequence3(paramLine, psBase.LineBreak, paramLinesInBlock))
 
+	head := objectHead()
 	return ps.Or(
-		ps.Map(mergeObject, ps.Sequence2(objectHead, paramLinesInBlockStartingWithLineBreak)),
-		ps.Map(mergeObject, psBase.SpaceSeparated2(objectHead, paramLineFollowedByParamBlock)),
-		ps.Map(mergeObject, psBase.SpaceSeparated2(objectHead, paramLine)),
+		ps.Map(mergeObject, ps.Sequence2(head, paramLinesInBlockStartingWithLineBreak)),
+		ps.Map(mergeObject, psBase.SpaceSeparated2(head, paramLineFollowedByParamBlock)),
+		ps.Map(mergeObject, psBase.SpaceSeparated2(head, paramLine)),
 	)
 }
 
 var ParseNakedObjectMultilines = fn.Compose3(psBase.FilterStatement, RsNakedObjectMultilines, psBase.StringToCharTokens)
 
-var RsNakedObjectMultilines = ps.Map(fn.Compose(rslt.Value, castObjectNode), NakedObjectMultilines)
+var RsNakedObjectMultilines = ps.Map(rslt.Value, NakedObjectMultilines)
 
-func NakedObjectMultilines(xs []psBase.Character) []tuple.Of2[objectNode, []psBase.Character] {
+func NakedObjectMultilines(xs []psBase.Character) []tuple.Of2[stResult.Node, []psBase.Character] {
+	return ps.Map(castObjectNode, nakedObjectMultilines)(xs)
+}
+
+func nakedObjectMultilines(xs []psBase.Character) []tuple.Of2[objectNode, []psBase.Character] {
+	head := objectHead()
 	return ps.Or(
-		ps.Map(mergeObject, psBase.WhiteSpaceSeparated2(objectHead, objectParamPartMultilines)),
-		ps.Map(nodeToObject, objectHead),
+		ps.Map(mergeObject, psBase.WhiteSpaceSeparated2(head, objectParamPartMultilines)),
+		ps.Map(nodeToObject, head),
 	)(xs)
 }
 
@@ -54,10 +60,6 @@ var nodeToObject = func(head stResult.Node) objectNode {
 	return objectNode{head: head, paramPart: stResult.ParamsToFixedParamPart([]stResult.Param{})}
 }
 
-func objectHead(xs []psBase.Character) []tuple.Of2[stResult.Node, []psBase.Character] {
-	return ps.Or(
-		nonNestedNode,
-		ps.Map(castObjectNode, psBase.InParenthesesWhiteSpaceAllowed(NakedObjectMultilines)),
-		ps.Map(stResult.ToNode, structure),
-	)(xs)
+func objectHead() func([]psBase.Character) []tuple.Of2[stResult.Node, []psBase.Character] {
+	return anyNode()
 }

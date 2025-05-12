@@ -1,6 +1,7 @@
-package base
+package syntaxtree
 
 import (
+	"github.com/SSripilaipong/muto/syntaxtree/base"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
@@ -12,7 +13,7 @@ func NewBoolean(value string) Boolean {
 	return Boolean{value: value}
 }
 
-func (Boolean) PatternType() PatternType { return PatternTypeBoolean }
+func (Boolean) PatternType() base.PatternType { return base.PatternTypeBoolean }
 
 func (Boolean) RuleResultNodeType() stResult.NodeType { return stResult.NodeTypeBoolean }
 
@@ -32,6 +33,6 @@ func UnsafeRuleResultToBoolean(r stResult.Node) Boolean {
 	return r.(Boolean)
 }
 
-func UnsafePatternToBoolean(p Pattern) Boolean {
+func UnsafePatternToBoolean(p base.Pattern) Boolean {
 	return p.(Boolean)
 }

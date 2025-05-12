@@ -8,7 +8,7 @@ import (
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
-func paramPart() func([]psBase.Character) []tuple.Of2[stPattern.ParamPart, []psBase.Character] {
+func ParamPart() func([]psBase.Character) []tuple.Of2[stPattern.ParamPart, []psBase.Character] {
 
 	fixedParam := ps.Or(
 		psBase.FixedVarWithUnderscorePattern,
@@ -31,8 +31,8 @@ func paramPart() func([]psBase.Character) []tuple.Of2[stPattern.ParamPart, []psB
 	})
 
 	return ps.Or(
-		ps.Map(castVariadic, psBase.VariadicVarWithUnderscore), // not redundant to left-var because left-var consumes space!
-		ps.Map(castLeftVariadic, psBase.SpaceSeparated2(psBase.VariadicVarWithUnderscore, psBase.OptionalGreedyRepeatSpaceSeparated(fixedParam))),
+		ps.Map(castVariadic, psBase.VariadicVarWithUnderscore),
+		ps.Map(castLeftVariadic, psBase.SpaceSeparated2(psBase.VariadicVarWithUnderscore, psBase.GreedyRepeatAtLeastOnceSpaceSeparated(fixedParam))),
 		ps.Map(castRightVariadic, psBase.SpaceSeparated2(psBase.GreedyRepeatAtLeastOnceSpaceSeparated(fixedParam), psBase.VariadicVarWithUnderscore)),
 		ps.Map(stPattern.PatternsToParamPart, psBase.GreedyRepeatAtLeastOnceSpaceSeparated(fixedParam)),
 	)

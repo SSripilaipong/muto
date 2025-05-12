@@ -7,12 +7,13 @@ import (
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/common/tuple"
+	"github.com/SSripilaipong/muto/syntaxtree"
 	st "github.com/SSripilaipong/muto/syntaxtree/base"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
 var String = ps.Map(
-	fn.Compose(st.NewString, stringWithQuotes), InDoubleQuotes(innerString),
+	fn.Compose(syntaxtree.NewString, stringWithQuotes), InDoubleQuotes(innerString),
 )
 
 var StringResultNode = ps.Map(stResult.ToNode, String)

@@ -1,7 +1,8 @@
-package base
+package syntaxtree
 
 import (
 	"github.com/SSripilaipong/muto/core/base/datatype"
+	"github.com/SSripilaipong/muto/syntaxtree/base"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
@@ -9,7 +10,7 @@ type Number struct {
 	value string
 }
 
-func (Number) PatternType() PatternType { return PatternTypeNumber }
+func (Number) PatternType() base.PatternType { return base.PatternTypeNumber }
 
 func (Number) RuleResultNodeType() stResult.NodeType { return stResult.NodeTypeNumber }
 
@@ -33,6 +34,6 @@ func UnsafeRuleResultToNumber(p stResult.Node) Number {
 	return p.(Number)
 }
 
-func UnsafePatternToNumber(p Pattern) Number {
+func UnsafePatternToNumber(p base.Pattern) Number {
 	return p.(Number)
 }

@@ -18,6 +18,7 @@ const (
 	NodeTypeVariable         NodeType = "VARIABLE"
 	NodeTypeVariadicVariable NodeType = "VARIADIC_VARIABLE"
 	NodeTypeStructure        NodeType = "STRUCTURE"
+	NodeTypeReconstructor    NodeType = "RECONSTRUCTOR"
 )
 
 func IsNodeTypeBoolean(r Node) bool {
@@ -54,6 +55,10 @@ func IsNodeTypeVariable(r Node) bool {
 
 func IsNodeTypeStructure(r Node) bool {
 	return r.RuleResultNodeType() == NodeTypeStructure
+}
+
+func IsNodeTypeReconstructor(r Node) bool {
+	return r.RuleResultNodeType() == NodeTypeReconstructor
 }
 
 func ToNode[T Node](x T) Node { return x }

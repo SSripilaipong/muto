@@ -1,9 +1,10 @@
-package base
+package syntaxtree
 
 import (
 	"fmt"
 	"strconv"
 
+	"github.com/SSripilaipong/muto/syntaxtree/base"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
@@ -15,7 +16,7 @@ func NewString(value string) String {
 	return String{value: value}
 }
 
-func (String) PatternType() PatternType { return PatternTypeString }
+func (String) PatternType() base.PatternType { return base.PatternTypeString }
 
 func (String) RuleResultNodeType() stResult.NodeType { return stResult.NodeTypeString }
 
@@ -39,6 +40,6 @@ func UnsafeRuleResultToString(r stResult.Node) String {
 	return r.(String)
 }
 
-func UnsafePatternToString(p Pattern) String {
+func UnsafePatternToString(p base.Pattern) String {
 	return p.(String)
 }

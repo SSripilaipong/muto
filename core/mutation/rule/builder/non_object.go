@@ -3,19 +3,21 @@ package builder
 import (
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
-	stBase "github.com/SSripilaipong/muto/syntaxtree/base"
+	stBase "github.com/SSripilaipong/muto/syntaxtree"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
 type coreNonObjectBuilderFactory struct {
-	constant  constantBuilderFactory
-	structure structureBuilderFactory
+	constant      constantBuilderFactory
+	structure     structureBuilderFactory
+	reconstructor reconstructorBuilderFactory
 }
 
 func newCoreNonObjectBuilderFactory(nodeFactory nodeBuilderFactory, classCollection ClassCollection) coreNonObjectBuilderFactory {
 	return coreNonObjectBuilderFactory{
-		constant:  newConstantBuilderFactory(classCollection),
-		structure: newStructureBuilderFactory(nodeFactory),
+		constant:      newConstantBuilderFactory(classCollection),
+		structure:     newStructureBuilderFactory(nodeFactory),
+		reconstructor: newReconstructorBuilderFactory(nodeFactory, classCollection),
 	}
 }
 
@@ -26,6 +28,8 @@ func (f coreNonObjectBuilderFactory) NewBuilder(r stResult.Node) optional.Of[mut
 	switch {
 	case stResult.IsNodeTypeStructure(r):
 		return optional.Value[mutator.Builder](f.structure.NewBuilder(stResult.UnsafeNodeToStructure(r)))
+	case stResult.IsNodeTypeReconstructor(r):
+		return f.reconstructor.NewBuilder(stResult.UnsafeNodeToReconstructor(r))
 	case stResult.IsNodeTypeVariable(r):
 		return optional.Value[mutator.Builder](newParamVariableBuilder(stBase.UnsafeRuleResultToVariable(r)))
 	}
