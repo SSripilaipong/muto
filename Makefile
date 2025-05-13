@@ -16,6 +16,9 @@ repl-tmp-main:
 run-tmp-main:
 	muto run tmp/main.mu
 
+example-tictactoe: build
+	muto run examples/tictactoe.mu
+
 build: build-cli
 
 build-cli:
