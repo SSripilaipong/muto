@@ -56,7 +56,7 @@ func appendRemainingParamToNode(paramChain base.ParamChain) func(base.Node) opti
 			return optional.Value(node)
 		}
 		if !base.IsObjectNode(node) {
-			node = base.NewOneLayerObject(node, []base.Node{})
+			return optional.Value[base.Node](base.NewCompoundObject(node, paramChain))
 		}
 
 		return optional.Value[base.Node](base.UnsafeNodeToObject(node).AppendParams(paramChain))

@@ -7,14 +7,14 @@ import (
 
 type SimplifiedNodeBuilderFactory struct {
 	object  coreObjectBuilderFactory
-	literal LiteralBuilderFactory
+	literal nodeBuilderFactory
 }
 
 func NewSimplifiedNodeBuilderFactory(classCollection ClassCollection) SimplifiedNodeBuilderFactory {
 	coreLiteral := newCoreLiteralBuilderFactory(classCollection)
 	return SimplifiedNodeBuilderFactory{
 		object:  newCoreObjectBuilderFactory(coreLiteral, classCollection),
-		literal: NewLiteralBuilderFactory(coreLiteral),
+		literal: coreLiteral,
 	}
 }
 
@@ -27,7 +27,7 @@ func (f SimplifiedNodeBuilderFactory) NewBuilder(r stResult.SimplifiedNode) muta
 		obj := stResult.UnsafeSimplifiedNodeToNakedObject(r)
 		fixedParams := obj.ParamPart()
 		if fixedParams.Size() == 0 {
-			return f.literal.NewBuilder(obj.Head())
+			return wrapAppendRemainingChildren(f.literal.NewBuilder(obj.Head()))
 		}
 		if builder, ok := f.object.NewBuilder(obj.AsObject()).Return(); ok {
 			return wrapChainRemainingChildren(builder)
