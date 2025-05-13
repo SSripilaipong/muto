@@ -25,7 +25,7 @@ func (x chainRemainingChildren) Build(mutation *parameter.Parameter) optional.Of
 	}
 
 	if !base.IsObjectNode(node) {
-		node = base.NewOneLayerObject(node, []base.Node{})
+		return optional.Value[base.Node](base.NewCompoundObject(node, mutation.RemainingParamChain()))
 	}
 
 	return optional.Value[base.Node](base.UnsafeNodeToObject(node).ChainParams(mutation.RemainingParamChain()))

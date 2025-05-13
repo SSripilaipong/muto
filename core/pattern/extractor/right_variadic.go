@@ -26,9 +26,8 @@ func (p RightVariadic) Extract(nodes []base.Node) optional.Of[*parameter.Paramet
 		return optional.Empty[*parameter.Parameter]()
 	}
 
-	return optional.JoinFmap(parameter.WithVariadicVarMappings(parameter.NewVariadicVarMapping(p.Name(), nodes[nLeft:])))(
-		p.ExactLeftPattern().Extract(nodes[:nLeft]),
-	)
+	attachVar := parameter.WithVariadicVarMappings(parameter.NewVariadicVarMapping(p.Name(), nodes[nLeft:]))
+	return optional.JoinFmap(attachVar)(p.ExactLeftPattern().Extract(nodes[:nLeft]))
 }
 
 func (p RightVariadic) Name() string {
@@ -62,6 +61,7 @@ func (p IgnoredRightVariadic) Extract(nodes []base.Node) optional.Of[*parameter.
 	if len(nodes) < nLeft {
 		return optional.Empty[*parameter.Parameter]()
 	}
+
 	return p.ExactLeftPattern().Extract(nodes[:nLeft])
 }
 

@@ -25,7 +25,6 @@ func (t topLevelNamedRule) Extract(x base.Object) optional.Of[*parameter.Paramet
 
 func newForParamChainPartial(chain []stPattern.ParamPart) extractor.ParamChainPartial {
 	var extractors []extractor.NodeListExtractor
-	extractors = slc.Map(newForParamPartNested)(chain)
 	if len(chain) > 0 {
 		extractors = slc.Map(newForParamPartNested)(chain[:slc.LastIndex(chain)])
 		if rightMostExtractor, ok := NewForParamPartTopLevel(slc.LastDefaultZero(chain)).Return(); ok {
@@ -42,7 +41,7 @@ func NewForParamPartTopLevel(paramPart stPattern.ParamPart) optional.Of[extracto
 			newForFixedParamPartTopLevel(stPattern.UnsafeParamPartToPatterns(paramPart)),
 		)
 	case stPattern.IsParamPartTypeVariadic(paramPart):
-		return optional.Value(newForVariadicParamPart(stPattern.UnsafeParamPartToVariadicParamPart(paramPart)))
+		return optional.Value(newForVariadicParamPartTopLevel(stPattern.UnsafeParamPartToVariadicParamPart(paramPart)))
 	}
 	panic("not implemented")
 }
@@ -55,6 +54,10 @@ func newForParamPartNested(paramPart stPattern.ParamPart) extractor.NodeListExtr
 		return newForVariadicParamPart(stPattern.UnsafeParamPartToVariadicParamPart(paramPart))
 	}
 	panic("not implemented")
+}
+
+func newForVariadicParamPartTopLevel(paramPart stPattern.VariadicParamPart) extractor.NodeListExtractor {
+	return extractor.NewParamChainSeparator(newForVariadicParamPart(paramPart))
 }
 
 func newForVariadicParamPart(paramPart stPattern.VariadicParamPart) extractor.NodeListExtractor {
