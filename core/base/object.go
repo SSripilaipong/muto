@@ -1,7 +1,5 @@
 package base
 
-import "github.com/SSripilaipong/muto/common/optional"
-
 type Object interface {
 	MutableNode
 	ObjectType() ObjectType
@@ -11,7 +9,6 @@ type Object interface {
 	Children() []Node
 	Head() Node
 	Equals(x Object) bool
-	BubbleUp() optional.Of[Node]
 	AppendParams(params ParamChain) Object
 }
 

@@ -31,16 +31,9 @@ func (t *tryMutator) Mutate(obj base.Object) optional.Of[base.Node] { // TODO ch
 		return optional.Empty[base.Node]()
 	}
 	subject := base.NewCompoundObject(children[0], base.NewParamChain(slc.Pure(children[1:])))
-	if bb, ok := subject.BubbleUp().Return(); ok { // why it uses bubble up here?
-		if base.IsObjectNode(bb) {
-			subject = base.UnsafeNodeToObject(bb)
-		} else {
-			panic("unexpected error")
-		}
-	}
 	result := subject.Mutate()
 	if result.IsEmpty() {
-		return optional.Value[base.Node](base.NewCompoundObject(base.EmptyTag, base.NewParamChain(slc.Pure([]base.Node{}))))
+		return optional.Value[base.Node](base.EmptyTag)
 	}
 	return optional.Value[base.Node](base.NewCompoundObject(base.ValueTag, base.NewParamChain(slc.Pure([]base.Node{result.Value()}))))
 }

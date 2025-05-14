@@ -127,7 +127,7 @@ string-concat X = ret X
 first-match _ ($) = ret .empty
 first-match P ($ X Xs...) = (match
     \(.value R) [.value R]
-    \(.empty)   [first-match P ($ Xs...)]
+    \.empty   [first-match P ($ Xs...)]
 ) (try P X)
 
 (arr S...) M = (match
@@ -167,7 +167,7 @@ sum X Y = sum (+ X Y)
 sum X = ret X
 
 (match Case Cases...) X Xs... = (match' (try Case X Xs...) Cases...) X Xs...
-(match' (.empty) Cases...) = (match Cases...)
+(match' .empty Cases...) = (match Cases...)
 ((match' (.value R) Cases...) Xs...) = R
 (match) = .not-match
 

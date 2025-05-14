@@ -92,21 +92,6 @@ func (obj CompoundObject) MutoString() string {
 	return obj.String()
 }
 
-func (obj CompoundObject) BubbleUp() optional.Of[Node] {
-	children := obj.Children()
-
-	if len(children) == 0 {
-		return optional.Value(obj.Head())
-	}
-
-	head := obj.Head()
-	if IsObjectNode(head) {
-		return optional.Value[Node](UnsafeNodeToObject(head).AppendChildren(children))
-	}
-
-	return optional.Empty[Node]()
-}
-
 func (obj CompoundObject) AppendParams(params ParamChain) Object {
 	return NewCompoundObject(obj.Head(), obj.paramChain.AppendAll(params))
 }

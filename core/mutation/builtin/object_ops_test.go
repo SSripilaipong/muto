@@ -37,7 +37,7 @@ func TestObjectOps_try(t *testing.T) {
 
 	t.Run("should become empty if mutation does not occur", func(t *testing.T) {
 		result := try.MutateByName(tryMutatorName, base.NewNamedOneLayerObject(tryMutatorName, []base.Node{base.NewUnlinkedClass("f"), base.NewString("abc")}))
-		assert.Equal(t, base.NewOneLayerObject(base.EmptyTag, []base.Node{}), result.Value())
+		assert.Equal(t, base.EmptyTag, result.Value())
 	})
 
 	t.Run("should not mutate if the number of children less than 2", func(t *testing.T) {
