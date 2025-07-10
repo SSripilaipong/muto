@@ -14,6 +14,10 @@ func NewVariadicVarMapping(name string, nodes []base.Node) VariadicVarMapping {
 	}
 }
 
+func (x VariadicVarMapping) Name() string { return x.name }
+
+func (x VariadicVarMapping) Nodes() []base.Node { return x.nodes }
+
 func (x VariadicVarMapping) Equal(y VariadicVarMapping) bool {
 	if y.name != x.name {
 		return false

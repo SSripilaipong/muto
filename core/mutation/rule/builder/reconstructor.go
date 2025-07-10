@@ -7,6 +7,7 @@ import (
 	ruleMutator "github.com/SSripilaipong/muto/core/mutation/rule/mutator"
 	"github.com/SSripilaipong/muto/core/pattern/extractor"
 	"github.com/SSripilaipong/muto/core/pattern/parameter"
+	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
@@ -20,24 +21,36 @@ func newReconstructorBuilderFactory(nodeFactory nodeBuilderFactory, classCollect
 }
 
 func (f reconstructorBuilderFactory) NewBuilder(recon stResult.Reconstructor) optional.Of[ruleMutator.Builder] { // TODO unit test
-	ext, isExtractorOk := ruleExtractor.NewTopLevelFactory(extractor.NewVariableFactory()).TopLevel(recon.Extractor()).Return() // TODO* inject new variable factory
-	if !isExtractorOk {
+	isValidExtractor := newExtractorWithVariableFactory(recon.Extractor(), extractor.NewVariableFactory()).IsNotEmpty()
+	if !isValidExtractor {
 		return optional.Empty[ruleMutator.Builder]()
 	}
+
 	return optional.Value[ruleMutator.Builder](reconstructorBuilder{
-		extractor: ext,
+		extractor: recon.Extractor(),
 		builder:   NewObjectBuilderFactory(f.classCollection).NewBuilder(recon.Builder()),
 	})
 }
 
 type reconstructorBuilder struct {
-	extractor extractor.NodeListExtractor
+	extractor stPattern.ParamPart
 	builder   ruleMutator.Builder
 }
 
 func (r reconstructorBuilder) Build(parameter *parameter.Parameter) optional.Of[base.Node] {
+	variableFactory := extractor.NewEmbeddedVariableFactory(parameter.VariableMap(), parameter.VariadicVarMap())
+	ext, isValidExtractor := newExtractorWithVariableFactory(r.extractor, variableFactory).Return()
+	if !isValidExtractor {
+		return optional.Empty[base.Node]()
+	}
+
 	embeddedBuilder := withVariablesEmbedded(parameter.VariableMappings(), parameter.VariadicVarMappings(), r.builder)
-	return optional.Value[base.Node](NewReconstructor(r.extractor, embeddedBuilder))
+	return optional.Value[base.Node](NewReconstructor(ext, embeddedBuilder))
+}
+
+func newExtractorWithVariableFactory(pattern stPattern.ParamPart, variableFactory ruleExtractor.VariableFactory) optional.Of[extractor.NodeListExtractor] {
+	extractorFactory := ruleExtractor.NewTopLevelFactory(variableFactory)
+	return extractorFactory.TopLevel(pattern)
 }
 
 type Reconstructor struct {

@@ -6,17 +6,17 @@ import (
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
-type variableFactory interface {
+type VariableFactory interface {
 	FixedVariable(name string) extractor.NodeExtractor
 	VariadicVariable(name string) extractor.NodeListExtractor
 }
 
 type variableParamPartFactory struct {
-	variable variableFactory
+	variable VariableFactory
 	core     corePatternFactory
 }
 
-func newVariableParamPartFactory(core corePatternFactory, variable variableFactory) variableParamPartFactory {
+func newVariableParamPartFactory(core corePatternFactory, variable VariableFactory) variableParamPartFactory {
 	return variableParamPartFactory{
 		variable: variable,
 		core:     core,

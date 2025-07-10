@@ -12,7 +12,7 @@ type TopLevelFactory struct {
 	variable variableParamPartFactory
 }
 
-func NewTopLevelFactory(variable variableFactory) TopLevelFactory {
+func NewTopLevelFactory(variable VariableFactory) TopLevelFactory {
 	core := newCorePatternFactory(variable)
 	return TopLevelFactory{
 		core:     core,

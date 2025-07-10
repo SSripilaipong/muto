@@ -17,7 +17,7 @@ type corePatternFactoryImpl struct {
 	nonObject nonObjectFactory
 }
 
-func newCorePatternFactory(variable variableFactory) corePatternFactoryImpl {
+func newCorePatternFactory(variable VariableFactory) corePatternFactoryImpl {
 	core := corePatternFactoryImpl{}
 	core.variable = newVariableParamPartFactory(&core, variable)
 	core.nonObject = newNonObjectFactory(core.variable)

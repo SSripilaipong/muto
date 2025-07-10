@@ -13,6 +13,8 @@ func (m VariableMapping) Equals(n VariableMapping) bool {
 
 func (m VariableMapping) Name() string { return m.name }
 
+func (m VariableMapping) Node() base.Node { return m.node }
+
 func NewVariableMapping(name string, node base.Node) VariableMapping {
 	return VariableMapping{
 		name: name,

@@ -4,6 +4,7 @@ import (
 	"maps"
 
 	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/muto/common/rods"
 	"github.com/SSripilaipong/muto/core/base"
 )
 
@@ -133,12 +134,28 @@ func (m *Parameter) VariableMappings() []VariableMapping {
 	return result
 }
 
+func (m *Parameter) VariableMap() rods.Map[string, base.Node] {
+	result := make(map[string]base.Node)
+	for _, v := range m.variableMapping {
+		result[v.Name()] = v.Node()
+	}
+	return rods.NewMap(result)
+}
+
 func (m *Parameter) VariadicVarMappings() []VariadicVarMapping {
 	var result []VariadicVarMapping
 	for _, v := range m.variadicVarMapping {
 		result = append(result, v)
 	}
 	return result
+}
+
+func (m *Parameter) VariadicVarMap() rods.Map[string, []base.Node] {
+	result := make(map[string][]base.Node)
+	for _, v := range m.variadicVarMapping {
+		result[v.Name()] = v.Nodes()
+	}
+	return rods.NewMap(result)
 }
 
 func (m *Parameter) SetRemainingParamChain(params base.ParamChain) *Parameter {
