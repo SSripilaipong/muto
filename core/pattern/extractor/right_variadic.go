@@ -10,13 +10,15 @@ type RightVariadic struct {
 	name             string
 	nLeft            int
 	exactLeftPattern ExactNodeList
+	variadicVar      NodeListExtractor
 }
 
-func NewRightVariadic(name string, patternsFromLeft []NodeExtractor) RightVariadic {
+func NewRightVariadic(name string, variadicVar NodeListExtractor, patternsFromLeft []NodeExtractor) RightVariadic {
 	return RightVariadic{
 		name:             name,
 		nLeft:            len(patternsFromLeft),
 		exactLeftPattern: NewExactNodeList(patternsFromLeft),
+		variadicVar:      variadicVar,
 	}
 }
 
@@ -26,8 +28,9 @@ func (p RightVariadic) Extract(nodes []base.Node) optional.Of[*parameter.Paramet
 		return optional.Empty[*parameter.Parameter]()
 	}
 
-	attachVar := parameter.WithVariadicVarMappings(parameter.NewVariadicVarMapping(p.Name(), nodes[nLeft:]))
-	return optional.JoinFmap(attachVar)(p.ExactLeftPattern().Extract(nodes[:nLeft]))
+	variadicParams := p.variadicVar.Extract(nodes[nLeft:])
+	fixedParams := p.ExactLeftPattern().Extract(nodes[:nLeft])
+	return optional.MergeFn(parameter.Merge)(variadicParams, fixedParams)
 }
 
 func (p RightVariadic) Name() string {
@@ -43,34 +46,3 @@ func (p RightVariadic) ExactLeftPattern() ExactNodeList {
 }
 
 var _ NodeListExtractor = RightVariadic{}
-
-type IgnoredRightVariadic struct {
-	nLeft            int
-	exactLeftPattern ExactNodeList
-}
-
-func NewIgnoredRightVariadic(patternsFromLeft []NodeExtractor) IgnoredRightVariadic {
-	return IgnoredRightVariadic{
-		nLeft:            len(patternsFromLeft),
-		exactLeftPattern: NewExactNodeList(patternsFromLeft),
-	}
-}
-
-func (p IgnoredRightVariadic) Extract(nodes []base.Node) optional.Of[*parameter.Parameter] {
-	nLeft := p.NLeft()
-	if len(nodes) < nLeft {
-		return optional.Empty[*parameter.Parameter]()
-	}
-
-	return p.ExactLeftPattern().Extract(nodes[:nLeft])
-}
-
-func (p IgnoredRightVariadic) NLeft() int {
-	return p.nLeft
-}
-
-func (p IgnoredRightVariadic) ExactLeftPattern() ExactNodeList {
-	return p.exactLeftPattern
-}
-
-var _ NodeListExtractor = IgnoredRightVariadic{}

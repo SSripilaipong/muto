@@ -171,6 +171,14 @@ func NewParameterWithVariableMapping(mapping VariableMapping) *Parameter {
 	return m.Value()
 }
 
+func NewParameterWithVariadicVarMapping(mapping VariadicVarMapping) *Parameter {
+	m := New().mergeVariadicVarMappings(map[string]VariadicVarMapping{mapping.name: mapping})
+	if m.IsEmpty() {
+		panic("wtf")
+	}
+	return m.Value()
+}
+
 func SetRemainingParamChain(params base.ParamChain) func(*Parameter) *Parameter {
 	return func(parameter *Parameter) *Parameter {
 		return parameter.SetRemainingParamChain(params)

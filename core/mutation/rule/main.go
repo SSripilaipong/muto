@@ -23,7 +23,7 @@ func (b RuleBuilder) Build(rule st.Rule) mutator.NameWrapper {
 	nodeBuilder := fixFreeObject(rule.Pattern(), rule.Result(), coreBuilder)
 	return mutator.NewNameWrapper(
 		rule.PatternName(),
-		mutator.NewReconstructor(ruleExtractor.New(rule.Pattern()), nodeBuilder),
+		mutator.NewReconstructor(ruleExtractor.NewNamedRule(rule.Pattern()), nodeBuilder),
 	)
 }
 

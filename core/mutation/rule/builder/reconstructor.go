@@ -20,7 +20,7 @@ func newReconstructorBuilderFactory(nodeFactory nodeBuilderFactory, classCollect
 }
 
 func (f reconstructorBuilderFactory) NewBuilder(recon stResult.Reconstructor) optional.Of[ruleMutator.Builder] { // TODO unit test
-	ext, isExtractorOk := ruleExtractor.NewForParamPartTopLevel(recon.Extractor()).Return()
+	ext, isExtractorOk := ruleExtractor.NewTopLevelFactory(extractor.NewVariableFactory()).TopLevel(recon.Extractor()).Return() // TODO* inject new variable factory
 	if !isExtractorOk {
 		return optional.Empty[ruleMutator.Builder]()
 	}

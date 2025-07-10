@@ -10,13 +10,15 @@ type LeftVariadic struct {
 	name              string
 	nRight            int
 	exactRightPattern ExactNodeList
+	variadicVar       NodeListExtractor
 }
 
-func NewLeftVariadic(name string, rightPatterns []NodeExtractor) LeftVariadic {
+func NewLeftVariadic(name string, variadicVar NodeListExtractor, rightPatterns []NodeExtractor) LeftVariadic {
 	return LeftVariadic{
 		name:              name,
 		nRight:            len(rightPatterns),
 		exactRightPattern: NewExactNodeList(rightPatterns),
+		variadicVar:       variadicVar,
 	}
 }
 
@@ -26,8 +28,9 @@ func (p LeftVariadic) Extract(nodes []base.Node) optional.Of[*parameter.Paramete
 		return optional.Empty[*parameter.Parameter]()
 	}
 
-	attachVar := parameter.WithVariadicVarMappings(parameter.NewVariadicVarMapping(p.Name(), nodes[:nVariadic]))
-	return optional.JoinFmap(attachVar)(p.ExactRightPattern().Extract(nodes[nVariadic:]))
+	variadicParams := p.variadicVar.Extract(nodes[:nVariadic])
+	fixedParams := p.ExactRightPattern().Extract(nodes[nVariadic:])
+	return optional.MergeFn(parameter.Merge)(variadicParams, fixedParams)
 }
 
 func (p LeftVariadic) Name() string {
@@ -43,34 +46,3 @@ func (p LeftVariadic) ExactRightPattern() ExactNodeList {
 }
 
 var _ NodeListExtractor = LeftVariadic{}
-
-type IgnoredLeftVariadic struct {
-	nRight            int
-	exactRightPattern ExactNodeList
-}
-
-func NewIgnoredLeftVariadic(rightPatterns []NodeExtractor) IgnoredLeftVariadic {
-	return IgnoredLeftVariadic{
-		nRight:            len(rightPatterns),
-		exactRightPattern: NewExactNodeList(rightPatterns),
-	}
-}
-
-func (p IgnoredLeftVariadic) Extract(nodes []base.Node) optional.Of[*parameter.Parameter] {
-	nVariadic := len(nodes) - p.NRight()
-	if nVariadic < 0 {
-		return optional.Empty[*parameter.Parameter]()
-	}
-
-	return p.ExactRightPattern().Extract(nodes[nVariadic:])
-}
-
-func (p IgnoredLeftVariadic) NRight() int {
-	return p.nRight
-}
-
-func (p IgnoredLeftVariadic) ExactRightPattern() ExactNodeList {
-	return p.exactRightPattern
-}
-
-var _ NodeListExtractor = IgnoredLeftVariadic{}

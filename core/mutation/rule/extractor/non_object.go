@@ -2,35 +2,20 @@ package extractor
 
 import (
 	"github.com/SSripilaipong/muto/common/optional"
-	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/core/pattern/extractor"
 	"github.com/SSripilaipong/muto/syntaxtree"
 	"github.com/SSripilaipong/muto/syntaxtree/base"
-	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
-func newParamExtractors(params []base.Pattern) []extractor.NodeExtractor {
-	return slc.Map(newPatternExtractor)(params)
+type nonObjectFactory struct {
+	variable variableParamPartFactory
 }
 
-func newPatternExtractor(p base.Pattern) extractor.NodeExtractor {
-	if r, ok := tryNonObjectPatternExtractor(p).Return(); ok {
-		return r
-	}
-	if base.IsPatternTypeObject(p) {
-		return newObjectExtractor(stPattern.UnsafePatternToObject(p))
-	}
-	panic("not implemented")
+func newNonObjectFactory(variable variableParamPartFactory) nonObjectFactory {
+	return nonObjectFactory{variable: variable}
 }
 
-func newNonObjectPatternExtractor(p base.Pattern) extractor.NodeExtractor {
-	if r, ok := tryNonObjectPatternExtractor(p).Return(); ok {
-		return r
-	}
-	panic("not implemented")
-}
-
-func tryNonObjectPatternExtractor(p base.Pattern) optional.Of[extractor.NodeExtractor] {
+func (f nonObjectFactory) TryNonObject(p base.Pattern) optional.Of[extractor.NodeExtractor] {
 	switch {
 	case base.IsPatternTypeBoolean(p):
 		return optional.Value(newBooleanParamExtractor(syntaxtree.UnsafePatternToBoolean(p)))
@@ -43,19 +28,16 @@ func tryNonObjectPatternExtractor(p base.Pattern) optional.Of[extractor.NodeExtr
 	case base.IsPatternTypeClass(p):
 		return optional.Value(newClassParamExtractor(syntaxtree.UnsafePatternToClass(p)))
 	case base.IsPatternTypeVariable(p):
-		return optional.Value(newVariableParamExtractor(syntaxtree.UnsafePatternToVariable(p)))
+		return optional.Value(f.variable.Variable(syntaxtree.UnsafePatternToVariable(p)))
 	}
 	return optional.Empty[extractor.NodeExtractor]()
 }
 
-func newVariableParamExtractor(v syntaxtree.Variable) extractor.NodeExtractor {
-	if len(v.Name()) == 0 {
-		panic("variable name should not be empty")
+func (f nonObjectFactory) NonObject(p base.Pattern) extractor.NodeExtractor {
+	if r, ok := f.TryNonObject(p).Return(); ok {
+		return r
 	}
-	if v.Name()[0] == '_' {
-		return extractor.NewIgnoredParamVariable()
-	}
-	return extractor.NewParamVariable(v.Name())
+	panic("not implemented")
 }
 
 func newBooleanParamExtractor(v syntaxtree.Boolean) extractor.NodeExtractor {
