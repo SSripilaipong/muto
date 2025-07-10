@@ -1,6 +1,8 @@
 package extractor
 
 import (
+	"fmt"
+
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
 	"github.com/SSripilaipong/muto/core/pattern/parameter"
@@ -43,6 +45,10 @@ func (p LeftVariadic) NRight() int {
 
 func (p LeftVariadic) ExactRightPattern() ExactNodeList {
 	return p.exactRightPattern
+}
+
+func (p LeftVariadic) DisplayString() string {
+	return fmt.Sprintf("%s %s", DisplayString(p.variadicVar), DisplayString(p.ExactRightPattern()))
 }
 
 var _ NodeListExtractor = LeftVariadic{}

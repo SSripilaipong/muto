@@ -29,4 +29,5 @@ func extractNodeList(extractor NodeListExtractor) func(nodes []base.Node) option
 type ParamChainExtractor interface {
 	Extract(paramChain base.ParamChain) optional.Of[*parameter.Parameter]
 	Size() int
+	WrapDisplayString(head string) string
 }

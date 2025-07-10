@@ -38,7 +38,7 @@ func (f variableParamPartFactory) Variable(v syntaxtree.Variable) extractor.Node
 		panic("variable name should not be empty")
 	}
 	if v.Name()[0] == '_' {
-		return extractor.NewIgnoredParamVariable()
+		return extractor.NewIgnoredParamVariable(v.Name())
 	}
 	return f.variable.FixedVariable(v.Name())
 }
@@ -59,7 +59,7 @@ func (f variableParamPartFactory) leftVariadic(pp stPattern.LeftVariadicParamPar
 
 func (f variableParamPartFactory) variadic(name string) extractor.NodeListExtractor {
 	if name[0] == '_' {
-		return extractor.NewContextFreeIgnoreVariadic()
+		return extractor.NewContextFreeIgnoreVariadic(name)
 	}
 	return f.variable.VariadicVariable(name)
 }

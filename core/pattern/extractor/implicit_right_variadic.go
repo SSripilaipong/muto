@@ -39,4 +39,8 @@ func (p ImplicitRightVariadic) NLeft() int {
 	return p.nLeft
 }
 
+func (p ImplicitRightVariadic) DisplayString() string {
+	return DisplayString(p.exactLeftPattern)
+}
+
 var _ NodeListExtractor = ImplicitRightVariadic{}

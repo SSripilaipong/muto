@@ -1,6 +1,8 @@
 package extractor
 
 import (
+	"fmt"
+
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
 	"github.com/SSripilaipong/muto/core/pattern/parameter"
@@ -37,6 +39,10 @@ func (v Variable) Name() string {
 	return v.name
 }
 
+func (v Variable) DisplayString() string {
+	return v.Name()
+}
+
 var _ NodeExtractor = Variable{}
 
 type ContextFreeVariadic struct {
@@ -55,17 +61,26 @@ func (v ContextFreeVariadic) Name() string {
 	return v.name
 }
 
+func (v ContextFreeVariadic) DisplayString() string {
+	return fmt.Sprintf("%s...", v.Name())
+}
+
 var _ NodeListExtractor = ContextFreeVariadic{}
 
 type ContextFreeIgnoreVariadic struct {
+	name string
 }
 
-func NewContextFreeIgnoreVariadic() ContextFreeIgnoreVariadic {
-	return ContextFreeIgnoreVariadic{}
+func NewContextFreeIgnoreVariadic(name string) ContextFreeIgnoreVariadic {
+	return ContextFreeIgnoreVariadic{name: name}
 }
 
 func (v ContextFreeIgnoreVariadic) Extract([]base.Node) optional.Of[*parameter.Parameter] {
 	return optional.Value(parameter.New())
+}
+
+func (v ContextFreeIgnoreVariadic) DisplayString() string {
+	return fmt.Sprintf("%s...", v.name)
 }
 
 var _ NodeListExtractor = ContextFreeVariadic{}

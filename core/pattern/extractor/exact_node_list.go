@@ -1,6 +1,8 @@
 package extractor
 
 import (
+	"strings"
+
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
 	"github.com/SSripilaipong/muto/core/pattern/parameter"
@@ -42,6 +44,14 @@ func (p ExactNodeList) PatternsFromLeft() []NodeExtractor {
 
 func (p ExactNodeList) NConsumed() int {
 	return len(p.PatternsFromLeft())
+}
+
+func (p ExactNodeList) DisplayString() string {
+	var result []string
+	for _, n := range p.PatternsFromLeft() {
+		result = append(result, DisplayString(n))
+	}
+	return strings.Join(result, " ")
 }
 
 var _ NodeListExtractor = ExactNodeList{}

@@ -1,6 +1,8 @@
 package extractor
 
 import (
+	"fmt"
+
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/core/base"
@@ -27,6 +29,19 @@ func (p ParamChainPartial) Extract(x base.ParamChain) optional.Of[*parameter.Par
 
 func (p ParamChainPartial) Size() int {
 	return len(p.extractors)
+}
+
+func (p ParamChainPartial) WrapDisplayString(head string) string {
+	result := head
+	for i, extractor := range p.extractors {
+		if i > 0 {
+			result = fmt.Sprintf("(%s)", result)
+		}
+		if s := DisplayString(extractor); len(s) > 0 {
+			result += " " + s
+		}
+	}
+	return result
 }
 
 func (p ParamChainPartial) chainRemainingParams(patternParam optional.Of[*parameter.Parameter], paramChain base.ParamChain) optional.Of[*parameter.Parameter] {
@@ -59,6 +74,19 @@ func (p ParamChain) Extract(x base.ParamChain) optional.Of[*parameter.Parameter]
 
 func (p ParamChain) Size() int {
 	return len(p.extractors)
+}
+
+func (p ParamChain) WrapDisplayString(head string) string {
+	result := head
+	for i, extractor := range p.extractors {
+		if i > 0 {
+			result = fmt.Sprintf("(%s)", result)
+		}
+		if s := DisplayString(extractor); len(s) > 0 {
+			result += " " + s
+		}
+	}
+	return result
 }
 
 var _ ParamChainExtractor = ParamChain{}

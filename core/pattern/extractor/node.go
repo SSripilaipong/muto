@@ -1,6 +1,8 @@
 package extractor
 
 import (
+	"strings"
+
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
 	"github.com/SSripilaipong/muto/core/pattern/parameter"
@@ -19,6 +21,10 @@ func (m MatchSameNode) Extract(node base.Node) optional.Of[*parameter.Parameter]
 		return optional.Value(parameter.New())
 	}
 	return optional.Empty[*parameter.Parameter]()
+}
+
+func (m MatchSameNode) DisplayString() string {
+	return m.node.TopLevelString()
 }
 
 type MatchSameNodeList struct {
@@ -44,4 +50,12 @@ func (m MatchSameNodeList) Extract(nodes []base.Node) optional.Of[*parameter.Par
 		return optional.Value(parameter.New())
 	}
 	return optional.Empty[*parameter.Parameter]()
+}
+
+func (m MatchSameNodeList) DisplayString() string {
+	var result []string
+	for _, node := range m.nodes {
+		result = append(result, node.TopLevelString())
+	}
+	return strings.Join(result, " ")
 }

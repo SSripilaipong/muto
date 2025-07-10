@@ -1,6 +1,8 @@
 package extractor
 
 import (
+	"fmt"
+
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
 	"github.com/SSripilaipong/muto/core/pattern/parameter"
@@ -44,6 +46,11 @@ func (t Object) extractObject(obj base.Object) optional.Of[*parameter.Parameter]
 	headParam := t.headExtractor.Extract(head)
 	paramChainParam := t.paramExtractor.Extract(splitParamChain)
 	return optionalMergeParam(paramChainParam, headParam)
+}
+
+func (t Object) DisplayString() string {
+	headString := DisplayString(t.headExtractor)
+	return fmt.Sprintf("(%s)", t.paramExtractor.WrapDisplayString(headString))
 }
 
 var _ NodeExtractor = Object{}

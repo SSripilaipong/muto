@@ -60,6 +60,13 @@ func (n Number) ToInt() int32 {
 	return n.intValue
 }
 
+func (n Number) SimpleString() string {
+	if n.IsFloat() {
+		return fmt.Sprint(n.ToFloat())
+	}
+	return fmt.Sprint(n.ToInt())
+}
+
 func newNumberFloat(x float64) Number {
 	return Number{
 		isFloat:    true,

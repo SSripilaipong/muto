@@ -34,10 +34,7 @@ func (n Number) Value() datatype.Number {
 }
 
 func (n Number) MutoString() string {
-	if n.value.IsFloat() {
-		return fmt.Sprint(n.value.ToFloat())
-	}
-	return fmt.Sprint(n.value.ToInt())
+	return n.Value().SimpleString()
 }
 
 func (n Number) TopLevelString() string {

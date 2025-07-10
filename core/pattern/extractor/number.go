@@ -26,4 +26,8 @@ func (n Number) Value() datatype.Number {
 	return n.value
 }
 
+func (n Number) DisplayString() string {
+	return n.value.SimpleString()
+}
+
 var _ NodeExtractor = Number{}

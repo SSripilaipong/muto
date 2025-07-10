@@ -1,6 +1,8 @@
 package builder
 
 import (
+	"fmt"
+
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
 	ruleExtractor "github.com/SSripilaipong/muto/core/mutation/rule/extractor"
@@ -81,7 +83,7 @@ func (s Reconstructor) TopLevelString() string {
 }
 
 func (s Reconstructor) String() string {
-	return "[WIP reconstructor]"
+	return fmt.Sprintf("\\%s [%s]", extractor.DisplayString(s.extractor), "WIP builder")
 }
 
 var _ base.Node = Reconstructor{}

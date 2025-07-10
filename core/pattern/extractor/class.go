@@ -25,4 +25,8 @@ func (t Class) Name() string {
 	return t.name
 }
 
+func (t Class) DisplayString() string {
+	return t.Name()
+}
+
 var _ NodeExtractor = Class{}

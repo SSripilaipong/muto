@@ -18,4 +18,8 @@ func (p ParamChainSeparator) Extract(nodes []base.Node) optional.Of[*parameter.P
 	return optional.Fmap(parameter.AddRemainingParamChain([]base.Node{}))(p.wrapped.Extract(nodes))
 }
 
+func (p ParamChainSeparator) DisplayString() string {
+	return DisplayString(p.wrapped)
+}
+
 var _ NodeListExtractor = ParamChainSeparator{}

@@ -1,6 +1,8 @@
 package extractor
 
 import (
+	"fmt"
+
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
 	"github.com/SSripilaipong/muto/core/pattern/parameter"
@@ -23,6 +25,10 @@ func (t Tag) Extract(node base.Node) optional.Of[*parameter.Parameter] {
 
 func (t Tag) Name() string {
 	return t.name
+}
+
+func (t Tag) DisplayString() string {
+	return fmt.Sprintf(".%s", t.Name())
 }
 
 var _ NodeExtractor = Tag{}
