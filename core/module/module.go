@@ -59,8 +59,8 @@ func (p Module) BuildRule(rule st.Rule) mutator.NamedObjectMutator {
 	return p.builder.Build(rule)
 }
 
-func (p Module) BuildNode(obj stResult.Object) optional.Of[base.Node] {
-	return p.builder.NewResultBuilder(obj).Build(parameter.New())
+func (p Module) BuildNode(node stResult.SimplifiedNode) optional.Of[base.Node] {
+	return p.builder.NewResultBuilder(node).Build(parameter.New())
 }
 
 func (p Module) ClonedLinker() ClassLinker {

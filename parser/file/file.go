@@ -1,6 +1,7 @@
 package file
 
 import (
+	"github.com/SSripilaipong/muto/common/fn"
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/rslt"
 	"github.com/SSripilaipong/muto/common/tuple"
@@ -13,7 +14,9 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-var file = ps.RsMap(base.NewFile, psBase.IgnoreLeadingLineBreak(psBase.IgnoreTrailingLineBreak(rsStatements)))
+var ParseFileFromString = fn.Compose3(FilterResult, File, psBase.StringToCharTokens)
+
+var File = ps.RsMap(base.NewFile, psBase.IgnoreLeadingLineBreak(psBase.IgnoreTrailingLineBreak(rsStatements)))
 
 var Rule = ps.Map(rslt.Fmap(mergeRule), psBase.RsSpaceSeparated3(psPattern.RsDeterminant, psBase.RsEqualSign, psResult.RsSimplifiedNode))
 

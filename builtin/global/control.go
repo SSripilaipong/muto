@@ -1,13 +1,26 @@
 package global
 
-import (
-	"github.com/SSripilaipong/muto/common/optional"
-	"github.com/SSripilaipong/muto/common/slc"
-	"github.com/SSripilaipong/muto/core/base"
-)
+const doCode = `
+do X Y = do Y
+(do X) = X
+`
 
-const doMutatorName = "do"
+const matchCode = `
+(match Case Cases...) X Xs...          = (match' (try Case X Xs...) Cases...) X Xs...
+((match) X Xs...)                      = .not-match
+((match' (.value Y) Cases...) X Xs...) = Y
+(match' .empty Cases...)               = (match Cases...)
+`
 
-var doMutator = NewRuleBasedMutatorFromFunctions(doMutatorName, slc.Pure(leftVariadicUnaryOp(func(xs []base.Node, x base.Node) optional.Of[base.Node] {
-	return optional.Value(x)
-})))
+const retCode = `
+(ret X) = X
+`
+
+const composeCode = `
+((compose) X)       = X
+(compose Fs... F) X = (compose Fs...) (F X)
+`
+
+const curryCode = `
+(curry F S...) X... = F S... X...
+`

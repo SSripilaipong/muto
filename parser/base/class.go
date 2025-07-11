@@ -20,7 +20,7 @@ var ClassRulePattern = ps.Map(st.ToPattern, ClassRule)
 var ClassDeterminant = ps.Map(st.ToDeterminant, ClassRule)
 
 func validClassRule(class syntaxtree.Class) bool {
-	return !slices.Contains([]string{"try", "do"}, class.Name())
+	return !slices.Contains([]string{"try"}, class.Name())
 }
 
 var ClassResultNode = ps.Map(classToResultNode, Class)

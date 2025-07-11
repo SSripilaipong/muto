@@ -12,17 +12,17 @@ import (
 	"github.com/SSripilaipong/muto/syntaxtree/base"
 )
 
-var ParsePackageFromString = fn.Compose(FilterPackage, ParsePackageCombinationFromString)
+var ParsePackageFromString = fn.Compose(FilterResult, ParsePackageCombinationFromString)
 
 var ParsePackageCombinationFromString = fn.Compose(package_, psBase.StringToCharTokens)
 
-var package_ = ps.RsMap(newPackage, file)
+var package_ = ps.RsMap(newPackage, File)
 
 func newPackage(f base.File) base.Package {
 	return base.NewPackage([]base.File{f})
 }
 
-func FilterPackage(raw []tuple.Of2[rslt.Of[base.Package], []psBase.Character]) rslt.Of[base.Package] {
+func FilterResult[T any](raw []tuple.Of2[rslt.Of[T], []psBase.Character]) rslt.Of[T] {
 	s := ps.FilterResult(raw)
 	if len(s) == 0 {
 		var err error
@@ -32,7 +32,7 @@ func FilterPackage(raw []tuple.Of2[rslt.Of[base.Package], []psBase.Character]) r
 			c := raw[0].X2()[0]
 			err = fmt.Errorf("parsing error at line %d, column %d: unexpected token '%c'", c.LineNumber(), c.ColumnNumber(), c.Value())
 		}
-		return rslt.Error[base.Package](err)
+		return rslt.Error[T](err)
 	}
 	r, k := s[0].Return()
 	if len(k) > 0 {
@@ -41,10 +41,10 @@ func FilterPackage(raw []tuple.Of2[rslt.Of[base.Package], []psBase.Character]) r
 			err = r.Error()
 		}
 		c := k[0]
-		return rslt.Error[base.Package](fmt.Errorf("parsing error at line %d, column %d: %w", c.LineNumber(), c.ColumnNumber(), err))
+		return rslt.Error[T](fmt.Errorf("parsing error at line %d, column %d: %w", c.LineNumber(), c.ColumnNumber(), err))
 	}
 	if r.IsErr() {
-		return rslt.Error[base.Package](fmt.Errorf("parsing error: %w", r.Error()))
+		return rslt.Error[T](fmt.Errorf("parsing error: %w", r.Error()))
 	}
 	return r
 }
