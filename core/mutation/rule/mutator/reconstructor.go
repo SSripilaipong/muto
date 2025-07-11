@@ -26,6 +26,14 @@ type Builder interface {
 	Build(*parameter.Parameter) optional.Of[base.Node]
 }
 
+type ListBuilder interface {
+	Build(*parameter.Parameter) optional.Of[[]base.Node]
+}
+
+func ListBuilderToFunc(builder ListBuilder) func(*parameter.Parameter) optional.Of[[]base.Node] {
+	return builder.Build
+}
+
 type Extractor interface {
 	Extract(base.Object) optional.Of[*parameter.Parameter]
 }

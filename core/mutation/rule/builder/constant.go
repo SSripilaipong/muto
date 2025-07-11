@@ -72,3 +72,7 @@ func newConstantWrapper[T base.Node](value T) constantWrapper[T] {
 func (b constantWrapper[T]) Build(_ *parameter.Parameter) optional.Of[base.Node] {
 	return optional.Value[base.Node](b.value)
 }
+
+func (b constantWrapper[T]) DisplayString() string {
+	return b.value.TopLevelString()
+}

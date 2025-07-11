@@ -31,6 +31,14 @@ func (v variableEmbedded) overrideParameter(p *parameter.Parameter) optional.Of[
 	return q.WithVariadicVarMappings(v.variadicVarMappings)
 }
 
+func (v variableEmbedded) DisplayString() string {
+	return DisplayString(v.builder)
+}
+
+func (v variableEmbedded) NakedDisplayString() string {
+	return NakedDisplayString(v.builder)
+}
+
 func withVariablesEmbedded(
 	variableMappings []parameter.VariableMapping,
 	variadicVarMappings []parameter.VariadicVarMapping,

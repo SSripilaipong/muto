@@ -18,3 +18,7 @@ func newParamVariableBuilder(variable st.Variable) paramVariableBuilder {
 func (b paramVariableBuilder) Build(mutation *parameter.Parameter) optional.Of[base.Node] {
 	return mutation.VariableValue(b.name)
 }
+
+func (b paramVariableBuilder) DisplayString() string {
+	return b.name
+}

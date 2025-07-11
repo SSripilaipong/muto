@@ -23,20 +23,22 @@ func newReconstructorBuilderFactory(nodeFactory nodeBuilderFactory, classCollect
 }
 
 func (f reconstructorBuilderFactory) NewBuilder(recon stResult.Reconstructor) optional.Of[ruleMutator.Builder] { // TODO unit test
-	isValidExtractor := newExtractorWithVariableFactory(recon.Extractor(), extractor.NewVariableFactory()).IsNotEmpty()
+	extractorSample, isValidExtractor := newExtractorWithVariableFactory(recon.Extractor(), extractor.NewVariableFactory()).Return()
 	if !isValidExtractor {
 		return optional.Empty[ruleMutator.Builder]()
 	}
 
 	return optional.Value[ruleMutator.Builder](reconstructorBuilder{
-		extractor: recon.Extractor(),
-		builder:   NewObjectBuilderFactory(f.classCollection).NewBuilder(recon.Builder()),
+		extractor:       recon.Extractor(),
+		builder:         NewObjectBuilderFactory(f.classCollection).NewBuilder(recon.Builder()),
+		extractorSample: extractorSample,
 	})
 }
 
 type reconstructorBuilder struct {
-	extractor stPattern.ParamPart
-	builder   ruleMutator.Builder
+	extractor       stPattern.ParamPart
+	builder         ruleMutator.Builder
+	extractorSample extractor.NodeListExtractor
 }
 
 func (r reconstructorBuilder) Build(parameter *parameter.Parameter) optional.Of[base.Node] {
@@ -48,6 +50,10 @@ func (r reconstructorBuilder) Build(parameter *parameter.Parameter) optional.Of[
 
 	embeddedBuilder := withVariablesEmbedded(parameter.VariableMappings(), parameter.VariadicVarMappings(), r.builder)
 	return optional.Value[base.Node](NewReconstructor(ext, embeddedBuilder))
+}
+
+func (r reconstructorBuilder) DisplayString() string {
+	return fmt.Sprintf("\\%s [%s]", extractor.DisplayString(r.extractorSample), NakedDisplayString(r.builder))
 }
 
 func newExtractorWithVariableFactory(pattern stPattern.ParamPart, variableFactory ruleExtractor.VariableFactory) optional.Of[extractor.NodeListExtractor] {
@@ -83,7 +89,7 @@ func (s Reconstructor) TopLevelString() string {
 }
 
 func (s Reconstructor) String() string {
-	return fmt.Sprintf("\\%s [%s]", extractor.DisplayString(s.extractor), "WIP builder")
+	return fmt.Sprintf("\\%s [%s]", extractor.DisplayString(s.extractor), NakedDisplayString(s.builder))
 }
 
 var _ base.Node = Reconstructor{}

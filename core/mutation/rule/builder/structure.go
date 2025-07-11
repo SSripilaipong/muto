@@ -1,7 +1,9 @@
 package builder
 
 import (
-	"github.com/SSripilaipong/muto/common/fn"
+	"fmt"
+	"strings"
+
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/core/base"
@@ -19,46 +21,61 @@ func newStructureBuilderFactory(nodeFactory nodeBuilderFactory) structureBuilder
 }
 
 func (f structureBuilderFactory) NewBuilder(structure stResult.Structure) mutator.Builder {
-	return structureBuilder{recordsBuilder: f.buildStructureRecords(structure)}
+	return structureBuilder{recordBuilders: f.buildStructureRecords(structure)}
 }
 
-func (f structureBuilderFactory) buildStructureRecords(structure stResult.Structure) func(mutation *parameter.Parameter) optional.Of[[]base.StructureRecord] {
-	recordBuilders := slc.Map(f.buildStructureRecord)(structure.Records())
-	return func(mutation *parameter.Parameter) optional.Of[[]base.StructureRecord] {
-		var records []base.StructureRecord
-		for _, build := range recordBuilders {
-			record := build(mutation)
-			if record.IsEmpty() {
-				return optional.Empty[[]base.StructureRecord]()
-			}
-			records = append(records, record.Value())
-		}
-		return optional.Value(records)
-	}
+func (f structureBuilderFactory) buildStructureRecords(structure stResult.Structure) []recordBuilder {
+	return slc.Map(f.buildStructureRecord)(structure.Records())
 }
 
-func (f structureBuilderFactory) buildStructureRecord(record stResult.StructureRecord) func(mutation *parameter.Parameter) optional.Of[base.StructureRecord] {
+func (f structureBuilderFactory) buildStructureRecord(record stResult.StructureRecord) recordBuilder {
 	keyBuilder := f.node.NewBuilder(record.Key())
 	valueBuilder := f.node.NewBuilder(record.Value())
 
-	return func(mutation *parameter.Parameter) optional.Of[base.StructureRecord] {
-		key := keyBuilder.Build(mutation)
-		if key.IsEmpty() {
-			return optional.Empty[base.StructureRecord]()
-		}
-		value := valueBuilder.Build(mutation)
-		if value.IsEmpty() {
-			return optional.Empty[base.StructureRecord]()
-		}
-		return optional.Value(base.NewStructureRecord(key.Value(), value.Value()))
-	}
+	return recordBuilder{keyBuilder: keyBuilder, valueBuilder: valueBuilder}
 }
 
 type structureBuilder struct {
-	recordsBuilder func(mutation *parameter.Parameter) optional.Of[[]base.StructureRecord]
+	recordBuilders []recordBuilder
 }
 
 func (b structureBuilder) Build(param *parameter.Parameter) optional.Of[base.Node] {
-	records := b.recordsBuilder(param)
-	return optional.Fmap(fn.Compose(base.ToNode, base.NewStructureFromRecords))(records)
+	var records []base.StructureRecord
+	for _, builder := range b.recordBuilders {
+		record, ok := builder.Build(param).Return()
+		if !ok {
+			return optional.Empty[base.Node]()
+		}
+		records = append(records, record)
+	}
+	return optional.Value[base.Node](base.NewStructureFromRecords(records))
+}
+
+func (b structureBuilder) DisplayString() string {
+	var records []string
+	for _, x := range b.recordBuilders {
+		records = append(records, DisplayString(x)+",")
+	}
+	return fmt.Sprintf("{%s}", strings.Trim(strings.Join(records, " "), ","))
+}
+
+type recordBuilder struct {
+	keyBuilder   mutator.Builder
+	valueBuilder mutator.Builder
+}
+
+func (b recordBuilder) Build(param *parameter.Parameter) optional.Of[base.StructureRecord] {
+	key := b.keyBuilder.Build(param)
+	if key.IsEmpty() {
+		return optional.Empty[base.StructureRecord]()
+	}
+	value := b.valueBuilder.Build(param)
+	if value.IsEmpty() {
+		return optional.Empty[base.StructureRecord]()
+	}
+	return optional.Value(base.NewStructureRecord(key.Value(), value.Value()))
+}
+
+func (b recordBuilder) DisplayString() string {
+	return fmt.Sprintf("%s: %s", DisplayString(b.keyBuilder), DisplayString(b.valueBuilder))
 }

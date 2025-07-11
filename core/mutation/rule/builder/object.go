@@ -1,6 +1,7 @@
 package builder
 
 import (
+	"fmt"
 	"slices"
 
 	"github.com/SSripilaipong/muto/common/optional"
@@ -59,24 +60,24 @@ func (f coreObjectBuilderFactory) NewBuilder(obj stResult.Object) optional.Of[ob
 }
 
 type objectBuilder struct {
-	buildHead       mutator.Builder
-	buildParamChain func(mapping *parameter.Parameter) optional.Of[base.ParamChain]
+	head       mutator.Builder
+	paramChain paramChainBuilder
 }
 
-func newObjectBuilder(head mutator.Builder, paramChain func(mapping *parameter.Parameter) optional.Of[base.ParamChain]) objectBuilder {
+func newObjectBuilder(head mutator.Builder, paramChain paramChainBuilder) objectBuilder {
 	return objectBuilder{
-		buildHead:       head,
-		buildParamChain: paramChain,
+		head:       head,
+		paramChain: paramChain,
 	}
 }
 
 func (b objectBuilder) Build(param *parameter.Parameter) optional.Of[base.Node] {
-	head, hasHead := b.buildHead.Build(param).Return()
+	head, hasHead := b.head.Build(param).Return()
 	if !hasHead {
 		return optional.Empty[base.Node]()
 	}
 
-	paramChain, ok := b.buildParamChain(param).Return()
+	paramChain, ok := b.paramChain.Build(param).Return()
 	if !ok {
 		return optional.Empty[base.Node]()
 	}
@@ -88,4 +89,13 @@ func (b objectBuilder) Build(param *parameter.Parameter) optional.Of[base.Node] 
 		panic("not implemented")
 	}
 	return optional.Value[base.Node](base.NewCompoundObject(head, paramChain))
+}
+
+func (b objectBuilder) DisplayString() string {
+	return fmt.Sprintf("(%s)", b.NakedDisplayString())
+}
+
+func (b objectBuilder) NakedDisplayString() string {
+	headString := DisplayString(b.head)
+	return b.paramChain.WrapDisplayString(headString)
 }
