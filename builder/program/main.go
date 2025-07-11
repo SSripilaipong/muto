@@ -6,7 +6,7 @@ import (
 	"github.com/SSripilaipong/muto/builtin/global"
 	"github.com/SSripilaipong/muto/common/fn"
 	"github.com/SSripilaipong/muto/common/rslt"
-	"github.com/SSripilaipong/muto/core/mutation"
+	"github.com/SSripilaipong/muto/core/module"
 	fileParser "github.com/SSripilaipong/muto/parser/file"
 	"github.com/SSripilaipong/muto/program"
 	st "github.com/SSripilaipong/muto/syntaxtree/base"
@@ -21,5 +21,7 @@ func BuildProgramFromSyntaxTree(p st.Package) rslt.Of[program.Program] {
 	if len(files) != 1 {
 		return rslt.Error[program.Program](errors.New("currently only support exactly 1 file"))
 	}
-	return rslt.Value(program.New(mutation.NewPackageFromStatements(files[0].Statements(), global.NewBuiltinMutatorsForStdio())))
+
+	builtinModule := global.NewBuiltinModuleForStdio()
+	return rslt.Value(program.New(module.BuildModuleFromStatements(files[0].Statements(), builtinModule)))
 }

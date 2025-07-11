@@ -37,7 +37,7 @@ func (f constantBuilderFactory) NewBuilder(r stResult.Node) optional.Of[mutator.
 }
 
 func (f constantBuilderFactory) newClassBuilder(x syntaxtree.Class) constantWrapper[*base.Class] {
-	return newConstantWrapper(f.class.GetClass(x.Name()))
+	return newConstantWrapper(f.class.GetOrCreateClass(x.Name()))
 }
 
 func newBooleanBuilder(x syntaxtree.Boolean) constantWrapper[base.Boolean] {

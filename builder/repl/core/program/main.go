@@ -3,7 +3,7 @@ package program
 import (
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
-	coreMutation "github.com/SSripilaipong/muto/core/mutation"
+	coreMutation "github.com/SSripilaipong/muto/core/module"
 	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
 	"github.com/SSripilaipong/muto/program"
 	"github.com/SSripilaipong/muto/syntaxtree"
@@ -38,6 +38,6 @@ func (w Wrapper) BuildNode(object stResult.Object) optional.Of[base.Node] {
 	return w.mainPackage().BuildNode(object)
 }
 
-func (w Wrapper) mainPackage() coreMutation.Package {
+func (w Wrapper) mainPackage() coreMutation.Module {
 	return w.program.MainPackage()
 }

@@ -6,7 +6,7 @@ import (
 	replProgram "github.com/SSripilaipong/muto/builder/repl/core/program"
 	replReader "github.com/SSripilaipong/muto/builder/repl/core/reader"
 	"github.com/SSripilaipong/muto/builtin/global"
-	"github.com/SSripilaipong/muto/core/mutation"
+	"github.com/SSripilaipong/muto/core/module"
 	"github.com/SSripilaipong/muto/program"
 )
 
@@ -16,7 +16,8 @@ type Repl struct {
 }
 
 func New(lineReader replReader.LineReader, printer replProgram.Printer) Repl {
-	pkg := mutation.NewPackageFromStatements(nil, global.NewBuiltinMutatorsForStdio())
+	builtinModule := global.NewBuiltinModuleForStdio()
+	pkg := module.BuildModuleFromStatements(nil, builtinModule)
 	prog := replProgram.New(program.New(pkg), printer)
 
 	return Repl{

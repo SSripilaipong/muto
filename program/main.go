@@ -2,20 +2,20 @@ package program
 
 import (
 	"github.com/SSripilaipong/muto/core/base"
-	coreMutation "github.com/SSripilaipong/muto/core/mutation"
+	coreMutation "github.com/SSripilaipong/muto/core/module"
 )
 
 type Program struct {
-	mainPackage       coreMutation.Package
+	mainPackage       coreMutation.Module
 	afterMutationHook func(node base.Node)
 }
 
-func New(pkg coreMutation.Package) Program {
+func New(pkg coreMutation.Module) Program {
 	return Program{mainPackage: pkg}
 }
 
 func (p Program) InitialObject() base.Object {
-	return base.NewOneLayerObject(p.mainPackage.GetClass("main"), nil)
+	return base.NewOneLayerObject(p.mainPackage.GetOrCreateClass("main"), nil)
 }
 
 func (p Program) MutateUntilTerminated(node base.Node) base.Node {
@@ -53,6 +53,6 @@ func (p Program) WithAfterMutationHook(f func(node base.Node)) Program {
 	return p
 }
 
-func (p Program) MainPackage() coreMutation.Package {
+func (p Program) MainPackage() coreMutation.Module {
 	return p.mainPackage
 }
