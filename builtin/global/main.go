@@ -1,4 +1,4 @@
-package builtin
+package global
 
 import (
 	"github.com/SSripilaipong/muto/common/cliio"
