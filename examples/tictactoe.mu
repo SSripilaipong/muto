@@ -157,20 +157,7 @@ count N = \($ Rest...)[$ Rest... N] (count (- N 1))
 append-all (T Xs...) (_ Ys...) = append-all (T Xs... Ys...)
 append-all R = ret R
 
-map F T = (map' ($)) F T
-(map' R) F T = (match
-    \R ($)                 [ret R]
-    \($ Ys...) (_ X Xs...) [(map' ($ Ys... (F X))) F ($ Xs...)]
-) R T
-
 sum X Y = sum (+ X Y)
 sum X = ret X
-
-(match Case Cases...) X Xs... = (match' (try Case X Xs...) Cases...) X Xs...
-(match' .empty Cases...) = (match Cases...)
-((match' (.value R) Cases...) Xs...) = R
-(match) = .not-match
-
-(ret X) = X
 
 (let X... F) = F X...
