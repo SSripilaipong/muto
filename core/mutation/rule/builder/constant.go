@@ -1,8 +1,6 @@
 package builder
 
 import (
-	"fmt"
-
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
 	"github.com/SSripilaipong/muto/core/base/datatype"
@@ -26,6 +24,8 @@ func (f constantBuilderFactory) NewBuilder(r stResult.Node) optional.Of[mutator.
 		return optional.Value[mutator.Builder](newBooleanBuilder(syntaxtree.UnsafeRuleResultToBoolean(r)))
 	case stResult.IsNodeTypeString(r):
 		return optional.Value[mutator.Builder](newStringBuilder(syntaxtree.UnsafeRuleResultToString(r)))
+	case stResult.IsNodeTypeRune(r):
+		return optional.Value[mutator.Builder](newRuneBuilder(syntaxtree.UnsafeRuleResultToRune(r)))
 	case stResult.IsNodeTypeNumber(r):
 		return optional.Value[mutator.Builder](newNumberBuilder(syntaxtree.UnsafeRuleResultToNumber(r)))
 	case stResult.IsNodeTypeClass(r):
@@ -49,12 +49,11 @@ func newNumberBuilder(x syntaxtree.Number) constantWrapper[base.Node] {
 }
 
 func newStringBuilder(s syntaxtree.String) constantWrapper[base.String] {
-	var value string
-	_, err := fmt.Sscanf(s.Value(), "%q", &value)
-	if err != nil {
-		panic(err)
-	}
-	return newConstantWrapper(base.NewString(value))
+	return newConstantWrapper(base.NewString(s.StringValue()))
+}
+
+func newRuneBuilder(s syntaxtree.Rune) constantWrapper[base.Rune] {
+	return newConstantWrapper(base.NewRune(s.RuneValue()))
 }
 
 func newTagBuilder(x syntaxtree.Tag) constantWrapper[base.Node] {

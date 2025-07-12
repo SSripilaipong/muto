@@ -14,8 +14,9 @@ func StringToCharTokens(s string) []Character {
 	var lineNumber uint = 1
 	var columnNumber uint = 1
 
-	r := make([]Character, len(s))
-	for i, x := range []rune(s) {
+	runes := []rune(s)
+	r := make([]Character, len(runes))
+	for i, x := range runes {
 		r[i] = NewCharacter(x, lineNumber, columnNumber)
 
 		columnNumber++

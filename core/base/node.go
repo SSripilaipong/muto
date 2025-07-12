@@ -12,6 +12,7 @@ type NodeType string
 
 const (
 	NodeTypeString        NodeType = "STRING"
+	NodeTypeRune          NodeType = "RUNE"
 	NodeTypeNumber        NodeType = "NUMBER"
 	NodeTypeBoolean       NodeType = "BOOLEAN"
 	NodeTypeObject        NodeType = "OBJECT"
@@ -39,6 +40,10 @@ func IsNumberNode(node Node) bool {
 
 func IsStringNode(node Node) bool {
 	return node.NodeType() == NodeTypeString
+}
+
+func IsRuneNode(node Node) bool {
+	return node.NodeType() == NodeTypeRune
 }
 
 func IsTagNode(node Node) bool {

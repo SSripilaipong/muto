@@ -68,6 +68,13 @@ func InSquareBracketsWhiteSpacesAllowed[R any](x Parser[R]) Parser[R] {
 	return ps.Map(withoutBrace, IgnoreWhiteSpaceBetween3(OpenSquareBracket, x, CloseSquareBracket))
 }
 
+func InSingleQuotes[R any](x Parser[R]) Parser[R] {
+	withoutQuotes := func(x tuple.Of3[Character, R, Character]) R {
+		return x.X2()
+	}
+	return ps.Map(withoutQuotes, ps.Sequence3(SingleQuote, x, SingleQuote))
+}
+
 func InDoubleQuotes[R any](x Parser[R]) Parser[R] {
 	withoutQuotes := func(x tuple.Of3[Character, R, Character]) R {
 		return x.X2()

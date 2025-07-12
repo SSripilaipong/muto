@@ -10,6 +10,7 @@ const (
 	PatternTypeVariable PatternType = "VARIABLE"
 	PatternTypeBoolean  PatternType = "BOOLEAN"
 	PatternTypeString   PatternType = "STRING"
+	PatternTypeRune     PatternType = "RUNE"
 	PatternTypeNumber   PatternType = "NUMBER"
 	PatternTypeClass    PatternType = "CLASS"
 	PatternTypeTag      PatternType = "TAG"
@@ -26,6 +27,10 @@ func IsPatternTypeBoolean(p Pattern) bool {
 
 func IsPatternTypeString(p Pattern) bool {
 	return p.PatternType() == PatternTypeString
+}
+
+func IsPatternTypeRune(p Pattern) bool {
+	return p.PatternType() == PatternTypeRune
 }
 
 func IsPatternTypeNumber(p Pattern) bool {

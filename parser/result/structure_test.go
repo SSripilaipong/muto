@@ -96,4 +96,13 @@ func TestStructure(t *testing.T) {
 	t.Run("should not parse records with duplicate key", func(t *testing.T) {
 		assert.Empty(t, structure(psBase.StringToCharTokens(`{1: 2,1:4, }abc`)))
 	})
+
+	t.Run("should parse rune as key", func(t *testing.T) {
+		result := structure(psBase.StringToCharTokens(`{'4': 2}xxx`))
+		expectedResult := stResult.NewStructure([]stResult.StructureRecord{
+			stResult.NewStructureRecord(syntaxtree.NewRune("'4'"), syntaxtree.NewNumber("2")),
+		})
+		expectedRemainder := psBase.IgnoreLineAndColumn(psBase.StringToCharTokens("xxx"))
+		assert.Equal(t, psBase.SingleResult(expectedResult, expectedRemainder), psBase.AsParserResult(psBase.IgnoreLineAndColumnInResult(result)))
+	})
 }

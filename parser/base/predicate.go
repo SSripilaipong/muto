@@ -13,6 +13,10 @@ func IsDoubleQuote(x rune) bool {
 	return x == '"'
 }
 
+func IsSingleQuote(x rune) bool {
+	return x == '\''
+}
+
 func IsDigit(x rune) bool {
 	return unicode.IsDigit(x)
 }

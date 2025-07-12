@@ -10,6 +10,7 @@ type NodeType string
 const (
 	NodeTypeBoolean          NodeType = "BOOLEAN"
 	NodeTypeString           NodeType = "STRING"
+	NodeTypeRune             NodeType = "RUNE"
 	NodeTypeNumber           NodeType = "NUMBER"
 	NodeTypeClass            NodeType = "CLASS"
 	NodeTypeTag              NodeType = "TAG"
@@ -27,6 +28,10 @@ func IsNodeTypeBoolean(r Node) bool {
 
 func IsNodeTypeString(r Node) bool {
 	return r.RuleResultNodeType() == NodeTypeString
+}
+
+func IsNodeTypeRune(r Node) bool {
+	return r.RuleResultNodeType() == NodeTypeRune
 }
 
 func IsNodeTypeNumber(r Node) bool {

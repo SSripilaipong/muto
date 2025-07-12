@@ -14,6 +14,7 @@ func ParamPart() func([]psBase.Character) []tuple.Of2[stPattern.ParamPart, []psB
 		psBase.FixedVarWithUnderscorePattern,
 		psBase.BooleanPattern,
 		psBase.StringPattern,
+		psBase.RunePattern,
 		psBase.NumberPattern,
 		psBase.TagPattern,
 		psBase.ClassRulePattern,

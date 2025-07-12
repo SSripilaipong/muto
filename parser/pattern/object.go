@@ -22,6 +22,7 @@ func Object() func(xs []psBase.Character) []tuple.Of2[stPattern.NonDeterminantOb
 			psBase.FixedVarWithUnderscorePattern,
 			psBase.BooleanPattern,
 			psBase.StringPattern,
+			psBase.RunePattern,
 			psBase.NumberPattern,
 			psBase.TagPattern,
 			psBase.ClassRulePattern,

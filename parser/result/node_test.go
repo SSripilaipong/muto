@@ -194,3 +194,13 @@ func TestNode_Reconstructor(t *testing.T) {
 		assert.Equal(t, psBase.SingleResult(expectedResult, []psBase.Character{}), psBase.AsParserResult(parsing.FilterSuccess(r)))
 	})
 }
+
+func TestNode_nonNestedNode(t *testing.T) {
+	node := SimplifiedNode()
+
+	t.Run("should parse rune", func(t *testing.T) {
+		r := node(psBase.StringToCharTokens(`'t'`))
+		expectedResult := stResult.ToSimplifiedNode(stResult.SingleNodeToNakedObject(st.NewRune(`'t'`)))
+		assert.Equal(t, psBase.SingleResult(expectedResult, []psBase.Character{}), psBase.AsParserResult(parsing.FilterSuccess(r)))
+	})
+}

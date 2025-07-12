@@ -26,15 +26,12 @@ func anyNode() func([]psBase.Character) []tuple.Of2[stResult.Node, []psBase.Char
 var nonNestedNode = ps.Or(
 	psBase.BooleanResultNode,
 	psBase.StringResultNode,
+	psBase.RuneResultNode,
 	psBase.NumberResultNode,
 	psBase.ClassResultNode,
 	psBase.TagResultNode,
 	psBase.FixedVarResultNode,
 )
-
-func castNakedObjectNode(obj objectNode) stResult.SimplifiedNode {
-	return stResult.NewNakedObject(obj.Head(), obj.ParamPart())
-}
 
 func castObjectNode(obj objectNode) stResult.Node {
 	return castObjectResult(obj)

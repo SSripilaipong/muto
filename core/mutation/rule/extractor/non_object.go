@@ -21,6 +21,8 @@ func (f nonObjectFactory) TryNonObject(p base.Pattern) optional.Of[extractor.Nod
 		return optional.Value(newBooleanParamExtractor(syntaxtree.UnsafePatternToBoolean(p)))
 	case base.IsPatternTypeString(p):
 		return optional.Value(newStringParamExtractor(syntaxtree.UnsafePatternToString(p)))
+	case base.IsPatternTypeRune(p):
+		return optional.Value(newRuneParamExtractor(syntaxtree.UnsafePatternToRune(p)))
 	case base.IsPatternTypeNumber(p):
 		return optional.Value(newNumberParamExtractor(syntaxtree.UnsafePatternToNumber(p)))
 	case base.IsPatternTypeTag(p):
@@ -46,6 +48,10 @@ func newBooleanParamExtractor(v syntaxtree.Boolean) extractor.NodeExtractor {
 
 func newStringParamExtractor(v syntaxtree.String) extractor.NodeExtractor {
 	return extractor.NewString(v.StringValue())
+}
+
+func newRuneParamExtractor(v syntaxtree.Rune) extractor.NodeExtractor {
+	return extractor.NewRune(v.RuneValue())
 }
 
 func newNumberParamExtractor(v syntaxtree.Number) extractor.NodeExtractor {

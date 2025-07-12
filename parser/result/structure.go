@@ -24,6 +24,7 @@ var structureKey = ps.Or(
 	psBase.BooleanResultNode,
 	psBase.NumberResultNode,
 	psBase.StringResultNode,
+	psBase.RuneResultNode,
 	psBase.ClassResultNode,
 	psBase.TagResultNode,
 )
