@@ -8,10 +8,18 @@ import (
 	"github.com/SSripilaipong/muto/core/base"
 )
 
-func TestStringOps(t *testing.T) {
+func TestStringOps_stringToRunes(t *testing.T) {
+	t.Run("should convert string to runes", func(t *testing.T) {
+		x := base.NewNamedOneLayerObject(stringToRunesMutator.Name(), []base.Node{base.NewString("a\nμ")})
+		y := stringToRunesMutator.Mutate(x)
+		assert.Equal(t, base.NewConventionalList([]base.Node{base.NewRune('a'), base.NewRune('\n'), base.NewRune('μ')}), y.Value())
+	})
+}
+
+func TestStringOps_string(t *testing.T) {
 	t.Run("should convert number to string", func(t *testing.T) {
-		x := base.NewNamedOneLayerObject("string", []base.Node{base.NewNumberFromString("123")})
-		y := stringMutator.MutateByName("string", x)
+		x := base.NewNamedOneLayerObject(stringMutator.Name(), []base.Node{base.NewNumberFromString("123")})
+		y := stringMutator.Mutate(x)
 		assert.Equal(t, base.NewString("123"), y.Value())
 	})
 }

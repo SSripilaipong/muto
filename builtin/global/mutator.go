@@ -9,6 +9,8 @@ func newForeignNormalMutators(cliReader CliReader, cliPrinter CliPrinter) []muta
 		stringMutator,
 		addMutator,
 		subtractMutator,
+		stringToRunesMutator,
+		parseRunesToStringMutator,
 		concatMutator,
 		isStringMutator,
 		isNumberMutator,

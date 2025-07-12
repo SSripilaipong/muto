@@ -39,3 +39,12 @@ func (t *tryMutator) Mutate(obj base.Object) optional.Of[base.Node] { // TODO ch
 }
 
 var _ mutator.NameBounded = (*tryMutator)(nil)
+
+func objectStrictUnaryOp(f func(x base.Object) optional.Of[base.Node]) func(t base.Object) optional.Of[base.Node] {
+	return strictUnaryOp(func(x base.Node) optional.Of[base.Node] {
+		if !base.IsObjectNode(x) {
+			return optional.Empty[base.Node]()
+		}
+		return f(base.UnsafeNodeToObject(x))
+	})
+}
