@@ -6,23 +6,23 @@ import (
 	"github.com/SSripilaipong/muto/core/pattern/parameter"
 )
 
-type Reconstructor struct {
+type Rule struct {
 	Extractor
 	Builder
 }
 
-func NewReconstructor(extractor Extractor, builder Builder) Reconstructor {
-	return Reconstructor{
+func NewRule(extractor Extractor, builder Builder) Rule {
+	return Rule{
 		Extractor: extractor,
 		Builder:   builder,
 	}
 }
 
-func (m Reconstructor) Mutate(x base.Object) optional.Of[base.Node] {
+func (m Rule) Mutate(x base.Object) optional.Of[base.Node] {
 	return optional.JoinFmap(m.Build)(m.Extract(x))
 }
 
-func (m Reconstructor) LinkClass(linker ClassLinker) {
+func (m Rule) LinkClass(linker ClassLinker) {
 	VisitClass(linker.LinkClass, m.Builder)
 }
 

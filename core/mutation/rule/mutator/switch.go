@@ -9,15 +9,15 @@ import (
 )
 
 type Switch struct {
-	mutators []ObjectMutator
+	mutators []Unit
 }
 
-func NewSwitch(mutators []ObjectMutator) Switch {
+func NewSwitch(mutators []Unit) Switch {
 	return Switch{mutators: slices.Clone(mutators)}
 }
 
-func NewSwitchFromSingleObjectMutator(mutator ObjectMutator) Switch {
-	return NewSwitch(slc.Pure[ObjectMutator](mutator))
+func NewSwitchFromSingleObjectMutator(mutator Unit) Switch {
+	return NewSwitch(slc.Pure[Unit](mutator))
 }
 
 func (s Switch) Mutate(obj base.Object) optional.Of[base.Node] {
@@ -29,11 +29,11 @@ func (s Switch) Mutate(obj base.Object) optional.Of[base.Node] {
 	return optional.Empty[base.Node]()
 }
 
-func (s Switch) Append(mutator ObjectMutator) Switch {
+func (s Switch) Append(mutator Unit) Switch {
 	return NewSwitch(slc.CloneAppend(s.mutators, mutator))
 }
 
-func (s Switch) Mutators() []ObjectMutator {
+func (s Switch) Mutators() []Unit {
 	return s.mutators
 }
 
@@ -47,4 +47,37 @@ func (s Switch) LinkClass(linker ClassLinker) {
 	}
 }
 
-var _ ObjectMutator = Switch{}
+func MergeSwitches(switches ...Switch) Switch {
+	var result []Unit
+	for _, sw := range switches {
+		result = append(result, sw.Mutators()...)
+	}
+	return NewSwitch(result)
+}
+
+var _ Unit = Switch{}
+
+type NamedSwitch struct {
+	Switch
+	name string
+}
+
+func NewNamedSwitch(name string, sw Switch) NamedSwitch {
+	return NamedSwitch{Switch: sw, name: name}
+}
+
+func (t NamedSwitch) Name() string {
+	return t.name
+}
+
+func MergeNamedSwitches(mutators ...NamedSwitch) NamedSwitch {
+	name := mutators[0].name
+	var switches []Switch
+	for _, mutator := range mutators {
+		if mutator.Name() != name {
+			panic("mutator name mismatched")
+		}
+		switches = append(switches, mutator.Switch)
+	}
+	return NewNamedSwitch(name, MergeSwitches(switches...))
+}

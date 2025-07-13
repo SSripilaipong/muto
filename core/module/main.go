@@ -11,12 +11,12 @@ import (
 )
 
 func BuildModuleFromStatements(ss []stBase.Statement) Module {
-	builder := ruleMutation.NewRuleBuilder(ruleMutationBuilder.NewSimplifiedNodeBuilderFactory())
+	ruleBuilder := ruleMutation.NewRuleBuilder(ruleMutationBuilder.NewSimplifiedNodeBuilderFactory())
 
-	buildAll := slc.Map(fn.Compose(mutator.ToNamedObjectMutator, builder.Build))
+	buildAll := slc.Map(fn.Compose(mutator.ToNamedUnit, ruleBuilder.Build))
 	active := buildAll(st.FilterActiveRuleFromStatement(ss))
 	normal := buildAll(st.FilterRuleFromStatement(ss))
 
-	ruleCollection := mutator.NewRuleCollection(normal, active)
-	return NewModule(ruleCollection, builder)
+	collection := mutator.NewCollection(normal, active)
+	return NewModule(collection, ruleBuilder)
 }

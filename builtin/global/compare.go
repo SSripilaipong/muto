@@ -15,7 +15,7 @@ var notEqualMutator = NewRuleBasedMutatorFromFunctions("!=", slc.Pure(strictBina
 	return optional.Value[base.Node](base.NewBoolean(base.NodeNotEqual(x, y)))
 })))
 
-var greaterThanMutator = mutator.MergeClassMutators(numberGreaterThanMutator, stringGreaterThanMutator)
-var greaterThanOrEqualMutator = mutator.MergeClassMutators(numberGreaterThanOrEqualMutator, stringGreaterThanOrEqualMutator)
-var lessThanMutator = mutator.MergeClassMutators(numberLessThanMutator, stringLessThanMutator)
-var lessThanOrEqualMutator = mutator.MergeClassMutators(numberLessThanOrEqualMutator, stringLessThanOrEqualMutator)
+var greaterThanMutator = mutator.MergeNamedSwitches(numberGreaterThanMutator, stringGreaterThanMutator)
+var greaterThanOrEqualMutator = mutator.MergeNamedSwitches(numberGreaterThanOrEqualMutator, stringGreaterThanOrEqualMutator)
+var lessThanMutator = mutator.MergeNamedSwitches(numberLessThanMutator, stringLessThanMutator)
+var lessThanOrEqualMutator = mutator.MergeNamedSwitches(numberLessThanOrEqualMutator, stringLessThanOrEqualMutator)

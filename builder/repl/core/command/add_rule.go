@@ -6,14 +6,14 @@ import (
 
 type AddRuleCommand struct {
 	TypeMixin
-	mutator ruleMutator.NamedObjectMutator
+	mutator ruleMutator.NamedUnit
 }
 
-func (c AddRuleCommand) Rule() ruleMutator.NamedObjectMutator {
+func (c AddRuleCommand) Rule() ruleMutator.NamedUnit {
 	return c.mutator
 }
 
-func NewAddRule(mutator ruleMutator.NamedObjectMutator) *AddRuleCommand {
+func NewAddRule(mutator ruleMutator.NamedUnit) *AddRuleCommand {
 	return &AddRuleCommand{
 		TypeMixin: NewTypeMixin(TypeAddRule),
 		mutator:   mutator,

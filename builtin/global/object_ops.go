@@ -18,13 +18,6 @@ func newTryMutator() *tryMutator {
 
 func (t *tryMutator) Name() string { return tryMutatorName }
 
-func (t *tryMutator) MutateByName(name string, obj base.Object) optional.Of[base.Node] {
-	if name != tryMutatorName {
-		return optional.Empty[base.Node]()
-	}
-	return t.Mutate(obj)
-}
-
 func (t *tryMutator) Mutate(obj base.Object) optional.Of[base.Node] { // TODO check if it still works with param chain
 	children := obj.Children()
 	if len(children) < 2 {
@@ -39,8 +32,6 @@ func (t *tryMutator) Mutate(obj base.Object) optional.Of[base.Node] { // TODO ch
 }
 
 func (t *tryMutator) LinkClass(mutator.ClassLinker) {}
-
-var _ mutator.NameBounded = (*tryMutator)(nil)
 
 func objectStrictUnaryOp(f func(x base.Object) optional.Of[base.Node]) func(t base.Object) optional.Of[base.Node] {
 	return strictUnaryOp(func(x base.Node) optional.Of[base.Node] {

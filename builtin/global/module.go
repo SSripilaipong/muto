@@ -14,15 +14,15 @@ import (
 func NewModule(cliReader CliReader, cliPrinter CliPrinter) module.Module {
 	builder := mutation.NewRuleBuilder(ruleBuilder.NewSimplifiedNodeBuilderFactory())
 
-	buildAll := slc.Map(fn.Compose(mutator.ToNamedObjectMutator, builder.Build))
+	buildAll := slc.Map(fn.Compose(mutator.ToNamedUnit, builder.Build))
 	active := buildAll(st.FilterActiveRuleFromStatement(rawStatements))
 	normal := append(
 		buildAll(st.FilterRuleFromStatement(rawStatements)),
 		newForeignNormalMutators(cliReader, cliPrinter)...,
 	)
 
-	ruleCollection := mutator.NewRuleCollection(normal, active)
-	return module.NewModule(ruleCollection, builder)
+	collection := mutator.NewCollection(normal, active)
+	return module.NewModule(collection, builder)
 }
 
 func NewModuleForStdio() module.Module {

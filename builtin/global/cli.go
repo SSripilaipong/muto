@@ -24,7 +24,7 @@ type CliPrinterFunc func(string)
 
 func (p CliPrinterFunc) Print(s string) { p(s) }
 
-func cliPrintMutator(printer CliPrinter) mutator.ClassMutator {
+func cliPrintMutator(printer CliPrinter) mutator.NamedSwitch {
 	return NewRuleBasedMutatorFromFunctions("print!", slc.Pure(strictUnaryOp(func(x base.Node) optional.Of[base.Node] {
 		if base.IsStringNode(x) {
 			printer.Print(base.UnsafeNodeToString(x).Value())
@@ -34,7 +34,7 @@ func cliPrintMutator(printer CliPrinter) mutator.ClassMutator {
 	})))
 }
 
-func cliInputMutator(reader CliReader) mutator.ClassMutator {
+func cliInputMutator(reader CliReader) mutator.NamedSwitch {
 	return NewRuleBasedMutatorFromFunctions("input!", slc.Pure(strictUnaryOp(func(x base.Node) optional.Of[base.Node] {
 		if base.IsClassNode(x) && base.UnsafeNodeToClass(x).Name() == "$" {
 			s, err := reader.Read().Return()

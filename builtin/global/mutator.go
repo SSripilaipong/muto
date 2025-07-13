@@ -4,8 +4,8 @@ import (
 	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
 )
 
-func newForeignNormalMutators(cliReader CliReader, cliPrinter CliPrinter) []mutator.NamedObjectMutator {
-	return []mutator.NamedObjectMutator{
+func newForeignNormalMutators(cliReader CliReader, cliPrinter CliPrinter) []mutator.NamedUnit {
+	return []mutator.NamedUnit{
 		stringMutator,
 		addMutator,
 		subtractMutator,

@@ -4,11 +4,6 @@ import (
 	"github.com/SSripilaipong/muto/common/optional"
 )
 
-type NameWiseMutation interface {
-	Active(name string, obj Object) optional.Of[Node]
-	Normal(name string, obj Object) optional.Of[Node]
-}
-
 func StrictUnaryOp(f func(x Node) optional.Of[Node]) func(params ParamChain) optional.Of[Node] {
 	return func(params ParamChain) optional.Of[Node] {
 		innerChildren := params.DirectParams()

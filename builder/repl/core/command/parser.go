@@ -14,7 +14,7 @@ import (
 )
 
 type Builder interface {
-	BuildRule(syntaxtree.Rule) ruleMutator.NamedObjectMutator
+	BuildRule(syntaxtree.Rule) ruleMutator.NamedUnit
 	BuildNode(stResult.Object) optional.Of[base.Node]
 }
 

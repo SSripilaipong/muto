@@ -16,15 +16,28 @@ func NewRuleBuilder(builderFactory builder.SimplifiedNodeBuilderFactory) RuleBui
 	return RuleBuilder{builderFactory: builderFactory}
 }
 
-func (b RuleBuilder) Build(rule st.Rule) mutator.NameWrapper {
+func (b RuleBuilder) Build(rule st.Rule) NameWrapper {
 	coreBuilder := b.NewResultBuilder(rule.Result())
 	nodeBuilder := fixFreeObject(rule.Pattern(), rule.Result(), coreBuilder)
-	return mutator.NewNameWrapper(
+	return NewNameWrapper(
 		rule.PatternName(),
-		mutator.NewReconstructor(ruleExtractor.NewNamedRule(rule.Pattern()), nodeBuilder),
+		mutator.NewRule(ruleExtractor.NewNamedRule(rule.Pattern()), nodeBuilder),
 	)
 }
 
 func (b RuleBuilder) NewResultBuilder(rule stResult.SimplifiedNode) mutator.Builder {
 	return b.builderFactory.NewBuilder(rule)
+}
+
+type NameWrapper struct {
+	mutator.Unit
+	name string
+}
+
+func NewNameWrapper(name string, x mutator.Unit) NameWrapper {
+	return NameWrapper{Unit: x, name: name}
+}
+
+func (n NameWrapper) Name() string {
+	return n.name
 }

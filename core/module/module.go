@@ -11,31 +11,31 @@ import (
 )
 
 type Module struct {
-	ruleCollection mutator.RuleCollection
-	builder        ruleMutation.RuleBuilder
+	mutatorCollection mutator.Collection
+	builder           ruleMutation.RuleBuilder
 }
 
-func NewModule(ruleCollection mutator.RuleCollection, builder ruleMutation.RuleBuilder) Module {
+func NewModule(mutatorCollection mutator.Collection, builder ruleMutation.RuleBuilder) Module {
 	return Module{
-		ruleCollection: ruleCollection,
-		builder:        builder,
+		mutatorCollection: mutatorCollection,
+		builder:           builder,
 	}
 }
 
 func (p Module) GetClass(name string) *base.Class {
-	m, exists := p.ruleCollection.GetMutator(name).Return()
+	m, exists := p.mutatorCollection.GetMutator(name).Return()
 	if !exists {
 		return base.NewUnlinkedClass(name)
 	}
 	return base.NewClass(name, m)
 }
 
-func (p Module) AppendNormalRule(mutator mutator.NamedObjectMutator) {
-	p.ruleCollection.AppendNormalRule(mutator)
-	mutator.LinkClass(p.ruleCollection)
+func (p Module) AppendNormal(mutator mutator.NamedUnit) {
+	p.mutatorCollection.AppendNormal(mutator)
+	mutator.LinkClass(p.mutatorCollection)
 }
 
-func (p Module) BuildRule(rule st.Rule) mutator.NamedObjectMutator {
+func (p Module) BuildRule(rule st.Rule) mutator.NamedUnit {
 	return p.builder.Build(rule)
 }
 
@@ -49,6 +49,6 @@ func (p Module) LoadGlobal(builtin Module) {
 	p.RuleCollection().LoadGlobal(builtin.RuleCollection())
 }
 
-func (p Module) RuleCollection() mutator.RuleCollection {
-	return p.ruleCollection
+func (p Module) RuleCollection() mutator.Collection {
+	return p.mutatorCollection
 }
