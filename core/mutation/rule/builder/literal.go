@@ -9,8 +9,8 @@ type LiteralBuilderFactory struct {
 	coreLiteral nodeBuilderFactory
 }
 
-func NewLiteralBuilderFactoryWithClassCollection(classCollection ClassCollection) LiteralBuilderFactory {
-	coreLiteral := newCoreLiteralBuilderFactory(classCollection)
+func NewLiteralBuilderFactoryWithClassCollection() LiteralBuilderFactory {
+	coreLiteral := newCoreLiteralBuilderFactory()
 	return NewLiteralBuilderFactory(coreLiteral)
 }
 
@@ -27,10 +27,10 @@ type coreLiteralBuilderFactory struct {
 	object    coreObjectBuilderFactory
 }
 
-func newCoreLiteralBuilderFactory(classCollection ClassCollection) *coreLiteralBuilderFactory {
+func newCoreLiteralBuilderFactory() *coreLiteralBuilderFactory {
 	f := &coreLiteralBuilderFactory{}
-	f.nonObject = newCoreNonObjectBuilderFactory(f, classCollection)
-	f.object = newCoreObjectBuilderFactory(f, classCollection)
+	f.nonObject = newCoreNonObjectBuilderFactory(f)
+	f.object = newCoreObjectBuilderFactory(f)
 	return f
 }
 

@@ -66,6 +66,12 @@ func (b paramChainBuilder) Build(mapping *parameter.Parameter) optional.Of[base.
 	return optional.Value(base.NewParamChain(chain))
 }
 
+func (b paramChainBuilder) VisitClass(f func(*base.Class)) {
+	for _, builder := range b.childrenBuilders {
+		mutator.VisitClass(f, builder)
+	}
+}
+
 func (b paramChainBuilder) WrapDisplayString(head string) string {
 	result := head
 	for i, builder := range b.childrenBuilders {
@@ -88,6 +94,12 @@ func (b fixedParamPartBuilder) Build(mapping *parameter.Parameter) optional.Of[[
 		slc.Fold(aggregateNodes)(optional.Value[[]base.Node](nil)),
 		slc.Map(fn.CallWith[optional.Of[[]base.Node]](mapping)),
 	)(slc.Map(mutator.ListBuilderToFunc)(b.buildParams))
+}
+
+func (b fixedParamPartBuilder) VisitClass(f func(*base.Class)) {
+	for _, builder := range b.buildParams {
+		mutator.VisitClass(f, builder)
+	}
 }
 
 func (b fixedParamPartBuilder) DisplayString() string {
@@ -114,6 +126,10 @@ type singleObjectParamBuilder struct {
 
 func (b singleObjectParamBuilder) Build(mapping *parameter.Parameter) optional.Of[[]base.Node] {
 	return optional.Fmap(slc.Pure[base.Node])(b.builder.Build(mapping))
+}
+
+func (b singleObjectParamBuilder) VisitClass(f func(*base.Class)) {
+	mutator.VisitClass(f, b.builder)
 }
 
 func (b singleObjectParamBuilder) DisplayString() string {

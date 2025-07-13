@@ -11,7 +11,7 @@ import (
 
 func TestConstantBuilderFactory_NewBuilder(t *testing.T) {
 	t.Run("should build rune", func(t *testing.T) {
-		result := newConstantBuilderFactory(nil).
+		result := newConstantBuilderFactory().
 			NewBuilder(syntaxtree.NewRune("'\\n'")).
 			Value().
 			Build(nil)

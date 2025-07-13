@@ -14,12 +14,11 @@ import (
 )
 
 type reconstructorBuilderFactory struct {
-	node            nodeBuilderFactory
-	classCollection ClassCollection
+	node nodeBuilderFactory
 }
 
-func newReconstructorBuilderFactory(nodeFactory nodeBuilderFactory, classCollection ClassCollection) reconstructorBuilderFactory {
-	return reconstructorBuilderFactory{node: nodeFactory, classCollection: classCollection}
+func newReconstructorBuilderFactory(nodeFactory nodeBuilderFactory) reconstructorBuilderFactory {
+	return reconstructorBuilderFactory{node: nodeFactory}
 }
 
 func (f reconstructorBuilderFactory) NewBuilder(recon stResult.Reconstructor) optional.Of[ruleMutator.Builder] { // TODO unit test
@@ -30,7 +29,7 @@ func (f reconstructorBuilderFactory) NewBuilder(recon stResult.Reconstructor) op
 
 	return optional.Value[ruleMutator.Builder](reconstructorBuilder{
 		extractor:       recon.Extractor(),
-		builder:         NewObjectBuilderFactory(f.classCollection).NewBuilder(recon.Builder()),
+		builder:         NewObjectBuilderFactory().NewBuilder(recon.Builder()),
 		extractorSample: extractorSample,
 	})
 }
@@ -50,6 +49,10 @@ func (r reconstructorBuilder) Build(parameter *parameter.Parameter) optional.Of[
 
 	embeddedBuilder := withVariablesEmbedded(parameter.VariableMappings(), parameter.VariadicVarMappings(), r.builder)
 	return optional.Value[base.Node](NewReconstructor(ext, embeddedBuilder))
+}
+
+func (r reconstructorBuilder) VisitClass(f func(*base.Class)) {
+	ruleMutator.VisitClass(f, r.builder)
 }
 
 func (r reconstructorBuilder) DisplayString() string {

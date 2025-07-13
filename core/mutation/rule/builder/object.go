@@ -15,9 +15,9 @@ type ObjectBuilderFactory struct {
 	object coreObjectBuilderFactory
 }
 
-func NewObjectBuilderFactory(classCollection ClassCollection) ObjectBuilderFactory {
+func NewObjectBuilderFactory() ObjectBuilderFactory {
 	return ObjectBuilderFactory{
-		object: newCoreObjectBuilderFactory(newCoreLiteralBuilderFactory(classCollection), classCollection),
+		object: newCoreObjectBuilderFactory(newCoreLiteralBuilderFactory()),
 	}
 }
 
@@ -35,9 +35,9 @@ type coreObjectBuilderFactory struct {
 	paramChain paramChainBuilderFactory
 }
 
-func newCoreObjectBuilderFactory(nodeFactory nodeBuilderFactory, classCollection ClassCollection) coreObjectBuilderFactory {
+func newCoreObjectBuilderFactory(nodeFactory nodeBuilderFactory) coreObjectBuilderFactory {
 	return coreObjectBuilderFactory{
-		head:       newCoreNonObjectBuilderFactory(nodeFactory, classCollection),
+		head:       newCoreNonObjectBuilderFactory(nodeFactory),
 		paramChain: newParamChainBuilderFactory(nodeFactory),
 	}
 }
@@ -89,6 +89,11 @@ func (b objectBuilder) Build(param *parameter.Parameter) optional.Of[base.Node] 
 		panic("not implemented")
 	}
 	return optional.Value[base.Node](base.NewCompoundObject(head, paramChain))
+}
+
+func (b objectBuilder) VisitClass(f func(*base.Class)) {
+	mutator.VisitClass(f, b.head)
+	mutator.VisitClass(f, b.paramChain)
 }
 
 func (b objectBuilder) DisplayString() string {

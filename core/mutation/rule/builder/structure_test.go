@@ -12,7 +12,7 @@ import (
 )
 
 func TestBuildStructure(t *testing.T) {
-	builder := newStructureBuilderFactory(newCoreLiteralBuilderFactory(NewStaticClassCollection()))
+	builder := newStructureBuilderFactory(newCoreLiteralBuilderFactory())
 
 	t.Run("should build empty structure", func(t *testing.T) {
 		tree := stResult.NewStructure([]stResult.StructureRecord{})

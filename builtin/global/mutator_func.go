@@ -13,6 +13,8 @@ func (f objectMutatorFunc) Mutate(obj base.Object) optional.Of[base.Node] {
 	return f(obj)
 }
 
+func (f objectMutatorFunc) LinkClass(mutator.ClassLinker) {}
+
 func NewRuleBasedMutatorFromFunctions(name string, mutationRules []func(t base.Object) optional.Of[base.Node]) mutator.ClassMutator {
 	mutators := slc.Map(func(f func(t base.Object) optional.Of[base.Node]) mutator.ObjectMutator {
 		return objectMutatorFunc(f)

@@ -10,12 +10,10 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-type constantBuilderFactory struct {
-	class ClassCollection
-}
+type constantBuilderFactory struct{}
 
-func newConstantBuilderFactory(classCollection ClassCollection) constantBuilderFactory {
-	return constantBuilderFactory{class: classCollection}
+func newConstantBuilderFactory() constantBuilderFactory {
+	return constantBuilderFactory{}
 }
 
 func (f constantBuilderFactory) NewBuilder(r stResult.Node) optional.Of[mutator.Builder] {
@@ -36,8 +34,8 @@ func (f constantBuilderFactory) NewBuilder(r stResult.Node) optional.Of[mutator.
 	return optional.Empty[mutator.Builder]()
 }
 
-func (f constantBuilderFactory) newClassBuilder(x syntaxtree.Class) constantWrapper[*base.Class] {
-	return newConstantWrapper(f.class.GetOrCreateClass(x.Name()))
+func (f constantBuilderFactory) newClassBuilder(x syntaxtree.Class) Class {
+	return newClass(base.NewUnlinkedClass(x.Name()))
 }
 
 func newBooleanBuilder(x syntaxtree.Boolean) constantWrapper[base.Boolean] {

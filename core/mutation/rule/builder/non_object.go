@@ -13,11 +13,11 @@ type coreNonObjectBuilderFactory struct {
 	reconstructor reconstructorBuilderFactory
 }
 
-func newCoreNonObjectBuilderFactory(nodeFactory nodeBuilderFactory, classCollection ClassCollection) coreNonObjectBuilderFactory {
+func newCoreNonObjectBuilderFactory(nodeFactory nodeBuilderFactory) coreNonObjectBuilderFactory {
 	return coreNonObjectBuilderFactory{
-		constant:      newConstantBuilderFactory(classCollection),
+		constant:      newConstantBuilderFactory(),
 		structure:     newStructureBuilderFactory(nodeFactory),
-		reconstructor: newReconstructorBuilderFactory(nodeFactory, classCollection),
+		reconstructor: newReconstructorBuilderFactory(nodeFactory),
 	}
 }
 

@@ -30,7 +30,20 @@ func NewRuleCollection(normalMutators, activeMutators []NamedObjectMutator) Rule
 		mutators[name] = m.ConcatActive(active[name].ActiveSwitch())
 	}
 
-	return RuleCollection{mutators: mutators}
+	rc := RuleCollection{mutators: mutators}
+	rc.selfLink()
+	return rc
+}
+
+func (c RuleCollection) GetMutator(name string) optional.Of[base.Mutator] {
+	m, exists := c.mutators[name]
+	return optional.New[base.Mutator](m, exists)
+}
+
+func (c RuleCollection) LinkClass(class *base.Class) {
+	if mutator, exists := c.mutators[class.Name()]; exists {
+		class.Link(mutator)
+	}
 }
 
 func (c RuleCollection) Active(name string, obj base.Object) optional.Of[base.Node] {
@@ -68,6 +81,19 @@ func (c RuleCollection) IterMutators() iter.Seq2[string, AppendableNamedRuleMuta
 				return
 			}
 		}
+	}
+}
+
+func (c RuleCollection) LoadGlobal(builtin RuleCollection) {
+	for _, mutator := range c.mutators {
+		mutator.LinkClass(builtin)
+	}
+	maps.Copy(c.mutators, builtin.mutators)
+}
+
+func (c RuleCollection) selfLink() {
+	for _, mutator := range c.mutators {
+		mutator.LinkClass(c)
 	}
 }
 

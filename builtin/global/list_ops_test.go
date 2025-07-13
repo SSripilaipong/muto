@@ -11,8 +11,8 @@ import (
 
 func TestList_map(t *testing.T) {
 	module := NewModuleForStdio()
-	class := module.GetOrCreateClass("map")
-	stringClass := module.GetOrCreateClass("string")
+	class := module.GetClass("map")
+	stringClass := module.GetClass("string")
 
 	t.Run("should return empty list", func(t *testing.T) {
 		result := mutateUntilTerminated(base.NewOneLayerObject(class, []base.Node{
@@ -31,8 +31,8 @@ func TestList_map(t *testing.T) {
 
 func TestList_filter(t *testing.T) {
 	module := NewModuleForStdio()
-	class := module.GetOrCreateClass("filter")
-	isStringClass := module.GetOrCreateClass("string?")
+	class := module.GetClass("filter")
+	isStringClass := module.GetClass("string?")
 
 	t.Run("should return empty list", func(t *testing.T) {
 		result := mutateUntilTerminated(base.NewOneLayerObject(class, []base.Node{

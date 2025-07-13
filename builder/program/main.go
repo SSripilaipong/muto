@@ -22,6 +22,7 @@ func BuildProgramFromSyntaxTree(p st.Package) rslt.Of[program.Program] {
 		return rslt.Error[program.Program](errors.New("currently only support exactly 1 file"))
 	}
 
-	builtinModule := global.NewModuleForStdio()
-	return rslt.Value(program.New(module.BuildModuleFromStatements(files[0].Statements(), builtinModule)))
+	mod := module.BuildModuleFromStatements(files[0].Statements())
+	mod.LoadGlobal(global.NewModuleForStdio())
+	return rslt.Value(program.New(mod))
 }

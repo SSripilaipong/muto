@@ -11,6 +11,7 @@ type RuleMutator interface {
 }
 
 type ObjectMutator interface {
+	LinkClass(ClassLinker)
 	Mutate(obj base.Object) optional.Of[base.Node]
 }
 
@@ -47,4 +48,8 @@ func ToNamedObjectMutator[T NamedObjectMutator](x T) NamedObjectMutator { return
 type NamedRuleMutator interface {
 	Named
 	RuleMutator
+}
+
+type ClassLinker interface {
+	LinkClass(*base.Class)
 }

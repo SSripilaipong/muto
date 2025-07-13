@@ -15,6 +15,11 @@ func NewAppendableNamedRuleMutator(name string, normal, active Switch) Appendabl
 	return AppendableNamedRuleMutator{name: name, normal: normal, active: active}
 }
 
+func (m AppendableNamedRuleMutator) LinkClass(linker ClassLinker) {
+	m.normal.LinkClass(linker)
+	m.active.LinkClass(linker)
+}
+
 func (m AppendableNamedRuleMutator) Active(obj base.Object) optional.Of[base.Node] {
 	return m.active.Mutate(obj)
 }

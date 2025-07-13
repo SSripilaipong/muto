@@ -41,4 +41,10 @@ func (s Switch) Concat(t Switch) Switch {
 	return NewSwitch(slc.CloneConcat(s.mutators, t.mutators))
 }
 
+func (s Switch) LinkClass(linker ClassLinker) {
+	for _, mutator := range s.mutators {
+		mutator.LinkClass(linker)
+	}
+}
+
 var _ ObjectMutator = Switch{}

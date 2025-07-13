@@ -207,6 +207,15 @@ main = f (g 1)
 `).Value()
 		assert.Equal(t, base.NewOneLayerObject(base.NewNumberFromString("1"), []base.Node{base.NewNumberFromString("2")}), execute(program))
 	})
+
+	t.Run("should match cases", func(t *testing.T) {
+		program := BuildProgramFromString(`main = (match
+  \1 [.ok]
+  \X [+ 40 X]
+) 2
+`).Value()
+		assert.Equal(t, base.NewNumberFromString("42"), execute(program))
+	})
 }
 
 func mutateOnce(program program2.Program) base.Node {

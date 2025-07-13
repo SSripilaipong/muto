@@ -12,7 +12,7 @@ import (
 )
 
 func TestBuildBoolean(t *testing.T) {
-	factory := NewLiteralBuilderFactory(newCoreLiteralBuilderFactory(NewStaticClassCollection()))
+	factory := NewLiteralBuilderFactory(newCoreLiteralBuilderFactory())
 	t.Run("should build true", func(t *testing.T) {
 		assert.Equal(t, base.NewBoolean(true), factory.NewBuilder(syntaxtree.NewBoolean("true")).Build(nil).Value())
 	})
@@ -23,14 +23,14 @@ func TestBuildBoolean(t *testing.T) {
 }
 
 func TestBuildTag(t *testing.T) {
-	factory := NewLiteralBuilderFactory(newCoreLiteralBuilderFactory(NewStaticClassCollection()))
+	factory := NewLiteralBuilderFactory(newCoreLiteralBuilderFactory())
 	t.Run("should build tag", func(t *testing.T) {
 		assert.Equal(t, base.NewTag("abc"), factory.NewBuilder(syntaxtree.NewTag(".abc")).Build(nil).Value())
 	})
 }
 
 func TestNew_Structure(t *testing.T) {
-	factory := NewLiteralBuilderFactory(newCoreLiteralBuilderFactory(NewStaticClassCollection()))
+	factory := NewLiteralBuilderFactory(newCoreLiteralBuilderFactory())
 	t.Run("should build structure", func(t *testing.T) {
 		assert.Equal(t, base.NewStructureFromRecords(nil), factory.NewBuilder(stResult.NewStructure([]stResult.StructureRecord{})).Build(nil).Value())
 	})
@@ -38,14 +38,14 @@ func TestNew_Structure(t *testing.T) {
 
 func TestNew_Object(t *testing.T) {
 	t.Run("should build nested object with no params", func(t *testing.T) {
-		factory := NewSimplifiedNodeBuilderFactory(NewStaticClassCollection())
+		factory := NewSimplifiedNodeBuilderFactory()
 		template := stResult.NewObject(syntaxtree.NewClass("f"), stResult.FixedParamPart{})
 		expectedResult := base.NewNamedOneLayerObject("f", nil)
 		assert.Equal(t, expectedResult, factory.NewBuilder(template).Build(parameter.New()).Value())
 	})
 
 	t.Run("should not carry remaining children to param object", func(t *testing.T) {
-		factory := NewSimplifiedNodeBuilderFactory(NewStaticClassCollection())
+		factory := NewSimplifiedNodeBuilderFactory()
 		template := stResult.NewNakedObject(
 			syntaxtree.NewClass("f"),
 			stResult.FixedParamPart{syntaxtree.NewClass("a")},

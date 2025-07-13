@@ -10,10 +10,10 @@ type SimplifiedNodeBuilderFactory struct {
 	literal nodeBuilderFactory
 }
 
-func NewSimplifiedNodeBuilderFactory(classCollection ClassCollection) SimplifiedNodeBuilderFactory {
-	coreLiteral := newCoreLiteralBuilderFactory(classCollection)
+func NewSimplifiedNodeBuilderFactory() SimplifiedNodeBuilderFactory {
+	coreLiteral := newCoreLiteralBuilderFactory()
 	return SimplifiedNodeBuilderFactory{
-		object:  newCoreObjectBuilderFactory(coreLiteral, classCollection),
+		object:  newCoreObjectBuilderFactory(coreLiteral),
 		literal: coreLiteral,
 	}
 }

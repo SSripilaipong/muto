@@ -16,10 +16,10 @@ type Repl struct {
 }
 
 func New(lineReader replReader.LineReader, printer replProgram.Printer) Repl {
-	builtinModule := global.NewModuleForStdio()
-	pkg := module.BuildModuleFromStatements(nil, builtinModule)
-	prog := replProgram.New(program.New(pkg), printer)
+	mod := module.BuildModuleFromStatements(nil)
+	mod.LoadGlobal(global.NewModuleForStdio())
 
+	prog := replProgram.New(program.New(mod), printer)
 	return Repl{
 		Reader:   replReader.New(command.NewParser(prog), lineReader, printer),
 		Executor: replExecutor.New(prog),

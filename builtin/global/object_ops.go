@@ -38,6 +38,8 @@ func (t *tryMutator) Mutate(obj base.Object) optional.Of[base.Node] { // TODO ch
 	return optional.Value[base.Node](base.NewCompoundObject(base.ValueTag, base.NewParamChain(slc.Pure([]base.Node{result.Value()}))))
 }
 
+func (t *tryMutator) LinkClass(mutator.ClassLinker) {}
+
 var _ mutator.NameBounded = (*tryMutator)(nil)
 
 func objectStrictUnaryOp(f func(x base.Object) optional.Of[base.Node]) func(t base.Object) optional.Of[base.Node] {

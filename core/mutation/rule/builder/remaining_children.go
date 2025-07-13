@@ -31,6 +31,10 @@ func (x chainRemainingChildren) Build(mutation *parameter.Parameter) optional.Of
 	return optional.Value[base.Node](base.UnsafeNodeToObject(node).ChainParams(mutation.RemainingParamChain()))
 }
 
+func (x chainRemainingChildren) VisitClass(f func(*base.Class)) {
+	mutator.VisitClass(f, x.wrapped)
+}
+
 func (x chainRemainingChildren) DisplayString() string {
 	return DisplayString(x.wrapped)
 }
@@ -56,6 +60,10 @@ func (x appendRemainingChildren) Build(mutation *parameter.Parameter) optional.O
 		return optional.Value(node)
 	}
 	return appendRemainingParamToNode(mutation.RemainingParamChain())(node)
+}
+
+func (x appendRemainingChildren) VisitClass(f func(*base.Class)) {
+	mutator.VisitClass(f, x.wrapped)
 }
 
 func (x appendRemainingChildren) DisplayString() string {

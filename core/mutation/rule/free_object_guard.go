@@ -42,3 +42,7 @@ func (g freeObjectBuilderGuard) Build(params *parameter.Parameter) optional.Of[b
 	}
 	return g.builder.Build(params)
 }
+
+func (g freeObjectBuilderGuard) VisitClass(f func(*base.Class)) {
+	mutator.VisitClass(f, g.builder)
+}

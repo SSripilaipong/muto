@@ -22,6 +22,10 @@ func (m Reconstructor) Mutate(x base.Object) optional.Of[base.Node] {
 	return optional.JoinFmap(m.Build)(m.Extract(x))
 }
 
+func (m Reconstructor) LinkClass(linker ClassLinker) {
+	VisitClass(linker.LinkClass, m.Builder)
+}
+
 type Builder interface {
 	Build(*parameter.Parameter) optional.Of[base.Node]
 }

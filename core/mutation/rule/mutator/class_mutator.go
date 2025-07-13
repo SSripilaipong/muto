@@ -45,6 +45,10 @@ func (t ClassMutator) Append(mutator ObjectMutator) ClassMutator {
 	return t
 }
 
+func (t ClassMutator) LinkClass(linker ClassLinker) {
+	t.mutations.LinkClass(linker)
+}
+
 func (t ClassMutator) Name() string {
 	return t.name
 }

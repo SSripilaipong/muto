@@ -13,7 +13,8 @@ import (
 )
 
 func TestControl_do(t *testing.T) {
-	class := NewModuleForStdio().GetOrCreateClass("do")
+	class := NewModuleForStdio().GetClass("do")
+
 	t.Run("should become last node", func(t *testing.T) {
 		result := mutateUntilTerminated(base.NewOneLayerObject(class, []base.Node{
 			base.NewNumberFromString("123"), base.NewNumberFromString("456"),
@@ -42,8 +43,9 @@ func TestControl_do(t *testing.T) {
 }
 
 func TestControl_match(t *testing.T) {
-	class := NewModuleForStdio().GetOrCreateClass("match")
-	literal := builder.NewLiteralBuilderFactoryWithClassCollection(builder.NewStaticClassCollection())
+	module := NewModuleForStdio()
+	class := module.GetClass("match")
+	literal := builder.NewLiteralBuilderFactoryWithClassCollection()
 
 	t.Run("should apply first case", func(t *testing.T) {
 		result := mutateUntilTerminated(base.NewCompoundObject(class, base.NewParamChain([][]base.Node{
@@ -75,7 +77,7 @@ func TestControl_match(t *testing.T) {
 }
 
 func TestControl_ret(t *testing.T) {
-	class := NewModuleForStdio().GetOrCreateClass("ret")
+	class := NewModuleForStdio().GetClass("ret")
 
 	t.Run("should apply first case", func(t *testing.T) {
 		result := mutateUntilTerminated(base.NewOneLayerObject(class, []base.Node{
@@ -87,9 +89,9 @@ func TestControl_ret(t *testing.T) {
 
 func TestControl_compose(t *testing.T) {
 	module := NewModuleForStdio()
-	class := module.GetOrCreateClass("compose")
-	stringClass := module.GetOrCreateClass("string")
-	isStringClass := module.GetOrCreateClass("string?")
+	class := module.GetClass("compose")
+	stringClass := module.GetClass("string")
+	isStringClass := module.GetClass("string?")
 
 	t.Run("should compose 2 functions", func(t *testing.T) {
 		result := mutateUntilTerminated(base.NewCompoundObject(class, base.NewParamChain([][]base.Node{
@@ -102,8 +104,8 @@ func TestControl_compose(t *testing.T) {
 
 func TestControl_curry(t *testing.T) {
 	module := NewModuleForStdio()
-	class := module.GetOrCreateClass("curry")
-	addClass := module.GetOrCreateClass("+")
+	class := module.GetClass("curry")
+	addClass := module.GetClass("+")
 
 	t.Run("should curry add function", func(t *testing.T) {
 		result := mutateUntilTerminated(base.NewCompoundObject(class, base.NewParamChain([][]base.Node{
