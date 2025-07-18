@@ -50,3 +50,13 @@ func TestNodeEqual_Tag(t *testing.T) {
 		assert.True(t, NodeEqual(NewTag("a"), NewTag("a")))
 	})
 }
+
+func TestNodeEqual_Rune(t *testing.T) {
+	t.Run("should not be equal to other type", func(t *testing.T) {
+		assert.False(t, NodeEqual(NewRune('a'), NewTag("a")))
+	})
+
+	t.Run("should be equal to same rune", func(t *testing.T) {
+		assert.True(t, NodeEqual(NewRune('a'), NewRune('a')))
+	})
+}

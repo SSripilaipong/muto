@@ -41,6 +41,10 @@ func (s Rune) MutoString() string {
 	return fmt.Sprintf("%c", s.Value())
 }
 
+func (s Rune) Equals(t Rune) bool {
+	return s.Value() == t.Value()
+}
+
 func UnsafeNodeToRune(n Node) Rune {
 	return n.(Rune)
 }

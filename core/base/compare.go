@@ -22,6 +22,8 @@ func NodeEqual(x, y Node) bool {
 		return objectEqual(UnsafeNodeToObject(x), y)
 	case IsBooleanNode(x):
 		return booleanEqual(UnsafeNodeToBoolean(x), y)
+	case IsRuneNode(x):
+		return runeEqual(UnsafeNodeToRune(x), y)
 	}
 	return false
 }
@@ -54,6 +56,13 @@ func classEqual(x *Class, y Node) bool {
 		return false
 	}
 	return x.Equals(UnsafeNodeToClass(y))
+}
+
+func runeEqual(x Rune, y Node) bool {
+	if !IsRuneNode(y) {
+		return false
+	}
+	return x.Equals(UnsafeNodeToRune(y))
 }
 
 func objectChildrenEqual(xs []Node, ys []Node) bool {
