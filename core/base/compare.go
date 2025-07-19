@@ -51,7 +51,7 @@ func objectEqual(x Object, y Node) bool {
 	return x.Equals(UnsafeNodeToObject(y))
 }
 
-func classEqual(x *Class, y Node) bool {
+func classEqual(x Class, y Node) bool {
 	if !IsClassNode(y) {
 		return false
 	}

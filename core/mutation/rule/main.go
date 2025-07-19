@@ -25,6 +25,10 @@ func (b RuleBuilder) Build(rule st.Rule) NameWrapper {
 	)
 }
 
+func (b RuleBuilder) BuildNamedUnit(rule st.Rule) mutator.NamedUnit {
+	return b.Build(rule)
+}
+
 func (b RuleBuilder) NewResultBuilder(rule stResult.SimplifiedNode) mutator.Builder {
 	return b.builderFactory.NewBuilder(rule)
 }

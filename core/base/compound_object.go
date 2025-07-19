@@ -39,10 +39,6 @@ func (obj CompoundObject) ChainParams(params ParamChain) Object {
 	return obj
 }
 
-func (obj CompoundObject) Children() []Node {
-	return obj.ParamChain().DirectParams()
-}
-
 func (obj CompoundObject) Head() Node {
 	return obj.class
 }
@@ -54,7 +50,7 @@ func (obj CompoundObject) Equals(x Object) bool {
 	if obj.ParamChain().TotalNodes()+x.ParamChain().TotalNodes() == 0 {
 		return true
 	}
-	return objectChildrenEqual(obj.Children(), x.Children())
+	return objectChildrenEqual(obj.ParamChain().DirectParams(), x.ParamChain().DirectParams())
 }
 
 func (obj CompoundObject) String() string {
@@ -116,7 +112,7 @@ func WrapWithObject(n Node) Object {
 }
 
 func NewNamedOneLayerObject(name string, children []Node) Object {
-	return NewOneLayerObject(NewUnlinkedClass(name), children)
+	return NewOneLayerObject(NewUnlinkedRuleBasedClass(name), children)
 }
 
 func objectChildrenToString(children []Node) string {

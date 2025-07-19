@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/SSripilaipong/muto/builtin/global"
+	"github.com/SSripilaipong/muto/builtin/portal"
 	"github.com/SSripilaipong/muto/common/fn"
 	"github.com/SSripilaipong/muto/common/rslt"
 	"github.com/SSripilaipong/muto/core/module"
@@ -22,7 +23,7 @@ func BuildProgramFromSyntaxTree(p st.Package) rslt.Of[program.Program] {
 		return rslt.Error[program.Program](errors.New("currently only support exactly 1 file"))
 	}
 
-	mod := module.BuildModuleFromStatements(files[0].Statements())
-	mod.LoadGlobal(global.NewModuleForStdio())
+	mod := module.BuildModuleFromStatements(files[0].Statements()).
+		Init(global.NewModule(), portal.NewDefaultPortal())
 	return rslt.Value(program.New(mod))
 }

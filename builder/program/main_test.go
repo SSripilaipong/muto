@@ -109,7 +109,7 @@ main = f (h "1" "2")
 		program := BuildProgramFromString(`f (G S... 0) = 0
 main = f $
 `).Value()
-		assert.True(t, base.NewNamedOneLayerObject("f", []base.Node{base.NewUnlinkedClass("$")}).
+		assert.True(t, base.NewNamedOneLayerObject("f", []base.Node{base.NewUnlinkedRuleBasedClass("$")}).
 			Equals(base.UnsafeNodeToObject(execute(program))))
 	})
 
@@ -117,7 +117,7 @@ main = f $
 		program := BuildProgramFromString(`f 0 S... = 0
 (main) = f
 `).Value()
-		assert.True(t, base.NewUnlinkedClass("f").Equals(base.UnsafeNodeToClass(execute(program))))
+		assert.True(t, base.NewUnlinkedRuleBasedClass("f").Equals(base.UnsafeNodeToClass(execute(program))))
 	})
 
 	t.Run("should apply active mutation before normal mutation", func(t *testing.T) {

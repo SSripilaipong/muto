@@ -13,7 +13,7 @@ import (
 )
 
 func TestControl_do(t *testing.T) {
-	class := NewModuleForStdio().GetClass("do")
+	class := NewModule().GetClass("do")
 
 	t.Run("should become last node", func(t *testing.T) {
 		result := mutateUntilTerminated(base.NewOneLayerObject(class, []base.Node{
@@ -43,7 +43,7 @@ func TestControl_do(t *testing.T) {
 }
 
 func TestControl_match(t *testing.T) {
-	module := NewModuleForStdio()
+	module := NewModule()
 	class := module.GetClass("match")
 	literal := builder.NewLiteralBuilderFactoryWithClassCollection()
 
@@ -77,7 +77,7 @@ func TestControl_match(t *testing.T) {
 }
 
 func TestControl_ret(t *testing.T) {
-	class := NewModuleForStdio().GetClass("ret")
+	class := NewModule().GetClass("ret")
 
 	t.Run("should apply first case", func(t *testing.T) {
 		result := mutateUntilTerminated(base.NewOneLayerObject(class, []base.Node{
@@ -88,7 +88,7 @@ func TestControl_ret(t *testing.T) {
 }
 
 func TestControl_compose(t *testing.T) {
-	module := NewModuleForStdio()
+	module := NewModule()
 	class := module.GetClass("compose")
 	stringClass := module.GetClass("string")
 	isStringClass := module.GetClass("string?")
@@ -103,7 +103,7 @@ func TestControl_compose(t *testing.T) {
 }
 
 func TestControl_curry(t *testing.T) {
-	module := NewModuleForStdio()
+	module := NewModule()
 	class := module.GetClass("curry")
 	addClass := module.GetClass("+")
 

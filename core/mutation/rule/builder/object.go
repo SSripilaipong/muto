@@ -91,7 +91,7 @@ func (b objectBuilder) Build(param *parameter.Parameter) optional.Of[base.Node] 
 	return optional.Value[base.Node](base.NewCompoundObject(head, paramChain))
 }
 
-func (b objectBuilder) VisitClass(f func(*base.Class)) {
+func (b objectBuilder) VisitClass(f func(base.Class)) {
 	mutator.VisitClass(f, b.head)
 	mutator.VisitClass(f, b.paramChain)
 }

@@ -6,7 +6,6 @@ type Object interface {
 	ParamChain() ParamChain
 	AppendChildren(children []Node) Object
 	ChainParams(params ParamChain) Object
-	Children() []Node
 	Head() Node
 	Equals(x Object) bool
 	AppendParams(params ParamChain) Object

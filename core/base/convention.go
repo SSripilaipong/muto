@@ -7,3 +7,11 @@ var EmptyTag = UnsafeNodeToTag(NewTag("empty"))
 
 var ResultTag = UnsafeNodeToTag(NewTag("result"))
 var RemainderTag = UnsafeNodeToTag(NewTag("remainder"))
+
+func NewConventionalList(nodes []Node) Object {
+	return NewNamedOneLayerObject("$", nodes)
+}
+
+func Null() Class {
+	return NewUnlinkedRuleBasedClass("$")
+}

@@ -22,8 +22,8 @@ func (m Rule) Mutate(x base.Object) optional.Of[base.Node] {
 	return optional.JoinFmap(m.Build)(m.Extract(x))
 }
 
-func (m Rule) LinkClass(linker ClassLinker) {
-	VisitClass(linker.LinkClass, m.Builder)
+func (m Rule) VisitClass(visitor ClassVisitor) {
+	VisitClass(visitor.Visit, m.Builder)
 }
 
 type Builder interface {

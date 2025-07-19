@@ -38,7 +38,7 @@ func TestBuildStructure(t *testing.T) {
 		})
 		mutationData := parameter.New()
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
-			base.NewStructureRecord(base.NewUnlinkedClass("f"), base.NewString("def")),
+			base.NewStructureRecord(base.NewUnlinkedRuleBasedClass("f"), base.NewString("def")),
 		})
 		assert.Equal(t, expectedObject, builder.NewBuilder(tree).Build(mutationData).Value())
 	})
@@ -48,10 +48,10 @@ func TestBuildStructure(t *testing.T) {
 			stResult.NewStructureRecord(syntaxtree.NewBoolean("true"), syntaxtree.NewVariable("A")),
 		})
 		mutationData := parameter.New().
-			WithVariableMapping(parameter.NewVariableMapping("A", base.NewOneLayerObject(base.NewUnlinkedClass("f"), []base.Node{base.NewNumberFromString("123")}))).
+			WithVariableMapping(parameter.NewVariableMapping("A", base.NewOneLayerObject(base.NewUnlinkedRuleBasedClass("f"), []base.Node{base.NewNumberFromString("123")}))).
 			Value()
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
-			base.NewStructureRecord(base.NewBoolean(true), base.NewOneLayerObject(base.NewUnlinkedClass("f"), []base.Node{base.NewNumberFromString("123")})),
+			base.NewStructureRecord(base.NewBoolean(true), base.NewOneLayerObject(base.NewUnlinkedRuleBasedClass("f"), []base.Node{base.NewNumberFromString("123")})),
 		})
 		assert.Equal(t, expectedObject, builder.NewBuilder(tree).Build(mutationData).Value())
 	})
@@ -67,13 +67,13 @@ func TestBuildStructure(t *testing.T) {
 			),
 		})
 		mutationData := parameter.New().
-			WithVariableMapping(parameter.NewVariableMapping("A", base.NewUnlinkedClass("f"))).Value().
+			WithVariableMapping(parameter.NewVariableMapping("A", base.NewUnlinkedRuleBasedClass("f"))).Value().
 			WithVariableMapping(parameter.NewVariableMapping("B", base.NewTag("t"))).Value()
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
 			base.NewStructureRecord(
 				base.NewTag("e"),
 				base.NewOneLayerObject(
-					base.NewUnlinkedClass("f"),
+					base.NewUnlinkedRuleBasedClass("f"),
 					[]base.Node{base.NewNumberFromString("123"), base.NewTag("t")},
 				),
 			),

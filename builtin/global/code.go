@@ -15,6 +15,8 @@ var rawStatements = codesToStatements([]string{
 	curryCode,
 	mapCode,
 	filterCode,
+	printCode,
+	inputCode,
 })
 
 func codesToStatements(codes []string) []stBase.Statement {

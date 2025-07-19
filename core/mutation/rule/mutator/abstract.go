@@ -7,7 +7,7 @@ import (
 
 type Unit interface {
 	Mutate(obj base.Object) optional.Of[base.Node]
-	LinkClass(ClassLinker)
+	VisitClass(ClassVisitor)
 }
 
 type NamedUnit interface {
@@ -17,6 +17,10 @@ type NamedUnit interface {
 
 func ToNamedUnit[T NamedUnit](x T) NamedUnit { return x }
 
-type ClassLinker interface {
-	LinkClass(*base.Class)
+type ClassVisitor interface {
+	Visit(base.Class)
 }
+
+type ClassVisitorFunc func(base.Class)
+
+func (f ClassVisitorFunc) Visit(c base.Class) { f(c) }

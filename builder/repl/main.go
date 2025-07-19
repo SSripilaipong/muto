@@ -6,6 +6,7 @@ import (
 	replProgram "github.com/SSripilaipong/muto/builder/repl/core/program"
 	replReader "github.com/SSripilaipong/muto/builder/repl/core/reader"
 	"github.com/SSripilaipong/muto/builtin/global"
+	"github.com/SSripilaipong/muto/builtin/portal"
 	"github.com/SSripilaipong/muto/core/module"
 	"github.com/SSripilaipong/muto/program"
 )
@@ -16,8 +17,8 @@ type Repl struct {
 }
 
 func New(lineReader replReader.LineReader, printer replProgram.Printer) Repl {
-	mod := module.BuildModuleFromStatements(nil)
-	mod.LoadGlobal(global.NewModuleForStdio())
+	mod := module.BuildModuleFromStatements(nil).
+		Init(global.NewModule(), portal.NewDefaultPortal())
 
 	prog := replProgram.New(program.New(mod), printer)
 	return Repl{

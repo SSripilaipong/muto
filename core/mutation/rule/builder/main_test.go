@@ -51,7 +51,7 @@ func TestNew_Object(t *testing.T) {
 			stResult.FixedParamPart{syntaxtree.NewClass("a")},
 		)
 		param := parameter.New().SetRemainingParamChain(base.NewParamChain([][]base.Node{{base.NewString("xxx")}}))
-		expectedResult := base.NewNamedOneLayerObject("f", []base.Node{base.NewUnlinkedClass("a"), base.NewString("xxx")})
+		expectedResult := base.NewNamedOneLayerObject("f", []base.Node{base.NewUnlinkedRuleBasedClass("a"), base.NewString("xxx")})
 		assert.Equal(t, expectedResult, factory.NewBuilder(template).Build(param).Value())
 	})
 }

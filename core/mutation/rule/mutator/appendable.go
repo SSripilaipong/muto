@@ -3,6 +3,7 @@ package mutator
 import (
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
+	"github.com/SSripilaipong/muto/core/portal"
 )
 
 type Appendable struct {
@@ -13,11 +14,6 @@ type Appendable struct {
 
 func NewAppendable(name string, normal, active Switch) Appendable {
 	return Appendable{name: name, normal: normal, active: active}
-}
-
-func (m Appendable) LinkClass(linker ClassLinker) {
-	m.normal.LinkClass(linker)
-	m.active.LinkClass(linker)
 }
 
 func (m Appendable) Active(obj base.Object) optional.Of[base.Node] {
@@ -46,4 +42,14 @@ func (m Appendable) ConcatActive(sw Switch) Appendable {
 
 func (m Appendable) ActiveSwitch() Switch {
 	return m.active
+}
+
+func (m Appendable) VisitClass(visitor ClassVisitor) {
+	m.normal.VisitClass(visitor)
+	m.active.VisitClass(visitor)
+}
+
+func (m Appendable) MountPortal(p *portal.Portal) {
+	portal.MountPortalToMutator(p, m.normal)
+	portal.MountPortalToMutator(p, m.active)
 }

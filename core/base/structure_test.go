@@ -12,7 +12,7 @@ import (
 func TestStructure_Mutate(t *testing.T) {
 	t.Run("should mutate value", func(t *testing.T) {
 		// subject: {.hello: "world", .abc: (f)}
-		f := NewClass("f", newNormalMutationForTest(func(object Object) optional.Of[Node] {
+		f := NewRuleBasedClass("f", newNormalMutationForTest(func(object Object) optional.Of[Node] {
 			return optional.Value[Node](NewNumberFromString("123"))
 		}))
 		result := NewStructureFromRecords([]StructureRecord{
@@ -27,7 +27,7 @@ func TestStructure_Mutate(t *testing.T) {
 	})
 
 	t.Run("should not mutate if all values are already stable", func(t *testing.T) {
-		f := NewClass("f", newNormalMutationForTest(func(object Object) optional.Of[Node] {
+		f := NewRuleBasedClass("f", newNormalMutationForTest(func(object Object) optional.Of[Node] {
 			return optional.Value[Node](NewNumberFromString("123"))
 		}))
 
@@ -46,7 +46,7 @@ func TestStructure_Mutate(t *testing.T) {
 
 func TestStructure_MutateAsHead(t *testing.T) {
 	t.Run("should mutate children first", func(t *testing.T) {
-		f := NewClass("f", newNormalMutationForTest(func(object Object) optional.Of[Node] {
+		f := NewRuleBasedClass("f", newNormalMutationForTest(func(object Object) optional.Of[Node] {
 			return optional.Value[Node](NewNumberFromString("123"))
 		}))
 

@@ -51,7 +51,7 @@ func (r reconstructorBuilder) Build(parameter *parameter.Parameter) optional.Of[
 	return optional.Value[base.Node](NewReconstructor(ext, embeddedBuilder))
 }
 
-func (r reconstructorBuilder) VisitClass(f func(*base.Class)) {
+func (r reconstructorBuilder) VisitClass(f func(base.Class)) {
 	ruleMutator.VisitClass(f, r.builder)
 }
 

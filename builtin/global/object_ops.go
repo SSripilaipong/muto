@@ -19,7 +19,7 @@ func newTryMutator() *tryMutator {
 func (t *tryMutator) Name() string { return tryMutatorName }
 
 func (t *tryMutator) Mutate(obj base.Object) optional.Of[base.Node] { // TODO check if it still works with param chain
-	children := obj.Children()
+	children := obj.ParamChain().DirectParams()
 	if len(children) < 2 {
 		return optional.Empty[base.Node]()
 	}
@@ -31,7 +31,7 @@ func (t *tryMutator) Mutate(obj base.Object) optional.Of[base.Node] { // TODO ch
 	return optional.Value[base.Node](base.NewCompoundObject(base.ValueTag, base.NewParamChain(slc.Pure([]base.Node{result.Value()}))))
 }
 
-func (t *tryMutator) LinkClass(mutator.ClassLinker) {}
+func (t *tryMutator) VisitClass(mutator.ClassVisitor) {}
 
 func objectStrictUnaryOp(f func(x base.Object) optional.Of[base.Node]) func(t base.Object) optional.Of[base.Node] {
 	return strictUnaryOp(func(x base.Node) optional.Of[base.Node] {

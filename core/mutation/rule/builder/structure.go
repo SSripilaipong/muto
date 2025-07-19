@@ -51,7 +51,7 @@ func (b structureBuilder) Build(param *parameter.Parameter) optional.Of[base.Nod
 	return optional.Value[base.Node](base.NewStructureFromRecords(records))
 }
 
-func (x structureBuilder) VisitClass(f func(*base.Class)) {
+func (x structureBuilder) VisitClass(f func(base.Class)) {
 	for _, record := range x.recordBuilders {
 		mutator.VisitClass(f, record)
 	}
@@ -82,7 +82,7 @@ func (b recordBuilder) Build(param *parameter.Parameter) optional.Of[base.Struct
 	return optional.Value(base.NewStructureRecord(key.Value(), value.Value()))
 }
 
-func (b recordBuilder) VisitClass(f func(*base.Class)) {
+func (b recordBuilder) VisitClass(f func(base.Class)) {
 	mutator.VisitClass(f, b.keyBuilder)
 	mutator.VisitClass(f, b.valueBuilder)
 }

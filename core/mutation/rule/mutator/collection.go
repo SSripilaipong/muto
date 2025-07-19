@@ -8,13 +8,14 @@ import (
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/core/base"
+	"github.com/SSripilaipong/muto/core/portal"
 )
 
 type Collection struct {
 	mutators map[string]Appendable
 }
 
-func NewCollection(normalMutators, activeMutators []NamedUnit) Collection {
+func NewCollectionFromMutators(normalMutators, activeMutators []NamedUnit) Collection {
 	normal := makeNormalMutatorMap(normalMutators)
 	active := makeActiveMutatorMap(activeMutators)
 
@@ -30,19 +31,23 @@ func NewCollection(normalMutators, activeMutators []NamedUnit) Collection {
 		mutators[name] = m.ConcatActive(active[name].ActiveSwitch())
 	}
 
-	rc := Collection{mutators: mutators}
+	rc := newCollection(mutators)
 	rc.selfLink()
 	return rc
 }
 
-func (c Collection) GetMutator(name string) optional.Of[base.Mutator] {
-	m, exists := c.mutators[name]
-	return optional.New[base.Mutator](m, exists)
+func newCollection(mutators map[string]Appendable) Collection {
+	return Collection{mutators: mutators}
 }
 
-func (c Collection) LinkClass(class *base.Class) {
+func (c Collection) GetMutator(name string) optional.Of[base.Rule] {
+	m, exists := c.mutators[name]
+	return optional.New[base.Rule](m, exists)
+}
+
+func (c Collection) LinkClass(class base.Class) {
 	if mutator, exists := c.mutators[class.Name()]; exists {
-		class.Link(mutator)
+		base.LinkClassRule(class, mutator)
 	}
 }
 
@@ -69,16 +74,24 @@ func (c Collection) IterMutators() iter.Seq2[string, Appendable] {
 }
 
 func (c Collection) LoadGlobal(builtin Collection) {
-	for _, mutator := range c.mutators {
-		mutator.LinkClass(builtin)
-	}
+	c.VisitClass(ClassVisitorFunc(builtin.LinkClass))
 	maps.Copy(c.mutators, builtin.mutators)
 }
 
-func (c Collection) selfLink() {
-	for _, mutator := range c.mutators {
-		mutator.LinkClass(c)
+func (c Collection) VisitClass(v ClassVisitor) {
+	for _, mutator := range c.IterMutators() {
+		mutator.VisitClass(v)
 	}
+}
+
+func (c Collection) MountPortal(p *portal.Portal) {
+	for _, mutator := range c.IterMutators() {
+		portal.MountPortalToMutator(p, mutator)
+	}
+}
+
+func (c Collection) selfLink() {
+	c.VisitClass(ClassVisitorFunc(c.LinkClass))
 }
 
 func makeNormalMutatorMap(ms []NamedUnit) map[string]Appendable {

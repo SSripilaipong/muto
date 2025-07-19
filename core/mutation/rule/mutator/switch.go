@@ -6,6 +6,7 @@ import (
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/core/base"
+	"github.com/SSripilaipong/muto/core/portal"
 )
 
 type Switch struct {
@@ -41,9 +42,15 @@ func (s Switch) Concat(t Switch) Switch {
 	return NewSwitch(slc.CloneConcat(s.mutators, t.mutators))
 }
 
-func (s Switch) LinkClass(linker ClassLinker) {
+func (s Switch) VisitClass(linker ClassVisitor) {
 	for _, mutator := range s.mutators {
-		mutator.LinkClass(linker)
+		mutator.VisitClass(linker)
+	}
+}
+
+func (s Switch) MountPortal(p *portal.Portal) {
+	for _, mutator := range s.mutators {
+		portal.MountPortalToMutator(p, mutator)
 	}
 }
 

@@ -35,7 +35,7 @@ func (s Structure) MutateAsHead(params ParamChain) optional.Of[Node] {
 			return optional.Empty[Node]()
 		}
 
-		return s.processTag(UnsafeNodeToTag(head), obj.Children())
+		return s.processTag(UnsafeNodeToTag(head), obj.ParamChain().DirectParams())
 	})(params)
 }
 

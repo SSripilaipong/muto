@@ -1,8 +1,8 @@
 package global
 
 import (
-	"github.com/SSripilaipong/muto/common/cliio"
-	"github.com/SSripilaipong/muto/common/fn"
+	"slices"
+
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/core/module"
 	"github.com/SSripilaipong/muto/core/mutation/rule"
@@ -11,23 +11,16 @@ import (
 	st "github.com/SSripilaipong/muto/syntaxtree"
 )
 
-func NewModule(cliReader CliReader, cliPrinter CliPrinter) module.Module {
+func NewModule() module.Module {
 	builder := mutation.NewRuleBuilder(ruleBuilder.NewSimplifiedNodeBuilderFactory())
 
-	buildAll := slc.Map(fn.Compose(mutator.ToNamedUnit, builder.Build))
+	buildAll := slc.Map(builder.BuildNamedUnit)
 	active := buildAll(st.FilterActiveRuleFromStatement(rawStatements))
-	normal := append(
+	normal := slices.Concat(
 		buildAll(st.FilterRuleFromStatement(rawStatements)),
-		newForeignNormalMutators(cliReader, cliPrinter)...,
+		newForeignNormalMutators(),
 	)
 
-	collection := mutator.NewCollection(normal, active)
+	collection := mutator.NewCollectionFromMutators(normal, active)
 	return module.NewModule(collection, builder)
-}
-
-func NewModuleForStdio() module.Module {
-	return NewModule(
-		CliReaderFunc(cliio.ReadInputOneLine),
-		CliPrinterFunc(cliio.PrintStringWithNewLine),
-	)
 }

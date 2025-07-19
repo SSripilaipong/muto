@@ -10,7 +10,7 @@ import (
 )
 
 func TestList_map(t *testing.T) {
-	module := NewModuleForStdio()
+	module := NewModule()
 	class := module.GetClass("map")
 	stringClass := module.GetClass("string")
 
@@ -18,7 +18,7 @@ func TestList_map(t *testing.T) {
 		result := mutateUntilTerminated(base.NewOneLayerObject(class, []base.Node{
 			stringClass, base.WrapWithObject(base.NewTag("my-data")),
 		})) // map string ($)
-		assert.Equal(t, base.WrapWithObject(base.NewUnlinkedClass("$")), result)
+		assert.Equal(t, base.WrapWithObject(base.NewUnlinkedRuleBasedClass("$")), result)
 	})
 
 	t.Run("should apply to each data", func(t *testing.T) {
@@ -30,7 +30,7 @@ func TestList_map(t *testing.T) {
 }
 
 func TestList_filter(t *testing.T) {
-	module := NewModuleForStdio()
+	module := NewModule()
 	class := module.GetClass("filter")
 	isStringClass := module.GetClass("string?")
 

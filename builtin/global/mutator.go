@@ -4,7 +4,7 @@ import (
 	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
 )
 
-func newForeignNormalMutators(cliReader CliReader, cliPrinter CliPrinter) []mutator.NamedUnit {
+func newForeignNormalMutators() []mutator.NamedUnit {
 	return []mutator.NamedUnit{
 		stringMutator,
 		addMutator,
@@ -25,11 +25,11 @@ func newForeignNormalMutators(cliReader CliReader, cliPrinter CliPrinter) []muta
 		greaterThanOrEqualMutator,
 		lessThanMutator,
 		lessThanOrEqualMutator,
-		cliInputMutator(cliReader),
-		cliPrintMutator(cliPrinter),
+		//cliInputMutator(cliReader),
 		andMutator,
 		orMutator,
 		notMutator,
 		newTryMutator(),
+		newPortalMutator(),
 	}
 }

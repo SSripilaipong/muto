@@ -66,7 +66,7 @@ func (b paramChainBuilder) Build(mapping *parameter.Parameter) optional.Of[base.
 	return optional.Value(base.NewParamChain(chain))
 }
 
-func (b paramChainBuilder) VisitClass(f func(*base.Class)) {
+func (b paramChainBuilder) VisitClass(f func(base.Class)) {
 	for _, builder := range b.childrenBuilders {
 		mutator.VisitClass(f, builder)
 	}
@@ -96,7 +96,7 @@ func (b fixedParamPartBuilder) Build(mapping *parameter.Parameter) optional.Of[[
 	)(slc.Map(mutator.ListBuilderToFunc)(b.buildParams))
 }
 
-func (b fixedParamPartBuilder) VisitClass(f func(*base.Class)) {
+func (b fixedParamPartBuilder) VisitClass(f func(base.Class)) {
 	for _, builder := range b.buildParams {
 		mutator.VisitClass(f, builder)
 	}
@@ -128,7 +128,7 @@ func (b singleObjectParamBuilder) Build(mapping *parameter.Parameter) optional.O
 	return optional.Fmap(slc.Pure[base.Node])(b.builder.Build(mapping))
 }
 
-func (b singleObjectParamBuilder) VisitClass(f func(*base.Class)) {
+func (b singleObjectParamBuilder) VisitClass(f func(base.Class)) {
 	mutator.VisitClass(f, b.builder)
 }
 

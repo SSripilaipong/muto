@@ -10,11 +10,11 @@ import (
 
 func TestObject_WithObjectHead(t *testing.T) {
 	t.Run("should mutate from mutation function", func(t *testing.T) {
-		hello := NewClass("hello", newNormalMutationForTest(func(object Object) optional.Of[Node] {
+		hello := NewRuleBasedClass("hello", newNormalMutationForTest(func(object Object) optional.Of[Node] {
 			return optional.Value[Node](NewNamedOneLayerObject("world", nil))
 		}))
 		result := WrapWithObject(hello).Mutate()
-		assert.Equal(t, NewCompoundObject(NewUnlinkedClass("world"), NewParamChain([][]Node{nil})), result.Value())
+		assert.Equal(t, NewCompoundObject(NewUnlinkedRuleBasedClass("world"), NewParamChain([][]Node{nil})), result.Value())
 	})
 
 	t.Run("should bubble up data to head to data node when children not exist", func(t *testing.T) {

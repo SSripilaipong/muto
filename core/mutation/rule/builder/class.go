@@ -7,10 +7,10 @@ import (
 )
 
 type Class struct {
-	value *base.Class
+	value base.Class
 }
 
-func newClass(value *base.Class) Class {
+func newClass(value base.Class) Class {
 	return Class{value: value}
 }
 
@@ -18,7 +18,7 @@ func (c Class) Build(_ *parameter.Parameter) optional.Of[base.Node] {
 	return optional.Value[base.Node](c.value)
 }
 
-func (c Class) VisitClass(f func(class *base.Class)) {
+func (c Class) VisitClass(f func(class base.Class)) {
 	f(c.value)
 }
 
