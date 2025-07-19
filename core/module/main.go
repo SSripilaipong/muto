@@ -9,7 +9,16 @@ import (
 	stBase "github.com/SSripilaipong/muto/syntaxtree/base"
 )
 
-func BuildModuleFromStatements(ss []stBase.Statement) Uninitialized {
+func BuildModule(syntaxTree stBase.Module) Uninitialized {
+	files := syntaxTree.Files()
+	if len(files) > 1 {
+		panic("currently only support at most 1 file")
+	}
+	var ss []stBase.Statement
+	if len(files) == 1 {
+		ss = files[0].Statements()
+	}
+
 	ruleBuilder := ruleMutation.NewRuleBuilder(ruleMutationBuilder.NewSimplifiedNodeBuilderFactory())
 
 	buildAll := slc.Map(ruleBuilder.BuildNamedUnit)
@@ -17,5 +26,5 @@ func BuildModuleFromStatements(ss []stBase.Statement) Uninitialized {
 	normal := buildAll(st.FilterRuleFromStatement(ss))
 
 	collection := mutator.NewCollectionFromMutators(normal, active)
-	return AsUninitialized(NewModule(collection, ruleBuilder))
+	return AsUninitialized(NewExportable(NewBase(collection, ruleBuilder), syntaxTree))
 }

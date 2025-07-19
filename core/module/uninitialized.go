@@ -10,7 +10,7 @@ func AsUninitialized(module Module) Uninitialized {
 	return Uninitialized{module: module}
 }
 
-func (m Uninitialized) Init(builtin Module, q *portal.Portal) Module {
+func (m Uninitialized) Init(builtin Base, q *portal.Portal) Module {
 	m.module.LoadGlobal(builtin)
 	m.module.MountPortal(q)
 	return m.module

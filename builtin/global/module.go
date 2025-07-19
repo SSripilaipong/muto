@@ -11,7 +11,7 @@ import (
 	st "github.com/SSripilaipong/muto/syntaxtree"
 )
 
-func NewModule() module.Module {
+func NewModule() module.Base {
 	builder := mutation.NewRuleBuilder(ruleBuilder.NewSimplifiedNodeBuilderFactory())
 
 	buildAll := slc.Map(builder.BuildNamedUnit)
@@ -22,5 +22,5 @@ func NewModule() module.Module {
 	)
 
 	collection := mutator.NewCollectionFromMutators(normal, active)
-	return module.NewModule(collection, builder)
+	return module.NewBase(collection, builder)
 }

@@ -11,19 +11,19 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-type Module struct {
+type Base struct {
 	mutatorCollection mutator.Collection
 	builder           ruleMutation.RuleBuilder
 }
 
-func NewModule(mutatorCollection mutator.Collection, builder ruleMutation.RuleBuilder) Module {
-	return Module{
+func NewBase(mutatorCollection mutator.Collection, builder ruleMutation.RuleBuilder) Base {
+	return Base{
 		mutatorCollection: mutatorCollection,
 		builder:           builder,
 	}
 }
 
-func (p Module) GetClass(name string) base.Class {
+func (p Base) GetClass(name string) base.Class {
 	m, exists := p.MutatorCollection().GetMutator(name).Return()
 	if !exists {
 		return base.NewUnlinkedRuleBasedClass(name)
@@ -31,29 +31,29 @@ func (p Module) GetClass(name string) base.Class {
 	return base.NewRuleBasedClass(name, m)
 }
 
-func (p Module) AppendNormal(m mutator.NamedUnit) {
+func (p Base) AppendNormal(m mutator.NamedUnit) {
 	p.MutatorCollection().AppendNormal(m)
 	m.VisitClass(mutator.ClassVisitorFunc(p.MutatorCollection().LinkClass))
 }
 
-func (p Module) BuildRule(rule st.Rule) mutator.NamedUnit {
+func (p Base) BuildRule(rule st.Rule) mutator.NamedUnit {
 	return p.builder.Build(rule)
 }
 
-func (p Module) BuildNode(node stResult.SimplifiedNode) optional.Of[base.Node] {
+func (p Base) BuildNode(node stResult.SimplifiedNode) optional.Of[base.Node] {
 	builder := p.builder.NewResultBuilder(node)
 	mutator.VisitClass(p.MutatorCollection().LinkClass, builder)
 	return builder.Build(parameter.New())
 }
 
-func (p Module) LoadGlobal(builtin Module) {
+func (p Base) LoadGlobal(builtin Module) {
 	p.MutatorCollection().LoadGlobal(builtin.MutatorCollection())
 }
 
-func (p Module) MountPortal(q *portal.Portal) {
+func (p Base) MountPortal(q *portal.Portal) {
 	p.MutatorCollection().MountPortal(q)
 }
 
-func (p Module) MutatorCollection() mutator.Collection {
+func (p Base) MutatorCollection() mutator.Collection {
 	return p.mutatorCollection
 }

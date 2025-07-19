@@ -9,6 +9,7 @@ import (
 	"github.com/SSripilaipong/muto/builtin/portal"
 	"github.com/SSripilaipong/muto/core/module"
 	"github.com/SSripilaipong/muto/program"
+	stBase "github.com/SSripilaipong/muto/syntaxtree/base"
 )
 
 type Repl struct {
@@ -17,7 +18,7 @@ type Repl struct {
 }
 
 func New(lineReader replReader.LineReader, printer replProgram.Printer) Repl {
-	mod := module.BuildModuleFromStatements(nil).
+	mod := module.BuildModule(stBase.NewModule(nil)).
 		Init(global.NewModule(), portal.NewDefaultPortal())
 
 	prog := replProgram.New(program.New(mod), printer)
