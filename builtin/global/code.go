@@ -13,6 +13,8 @@ var rawStatements = codesToStatements([]string{
 	retCode,
 	composeCode,
 	curryCode,
+	withCode,
+	useCode,
 	mapCode,
 	filterCode,
 	printCode,

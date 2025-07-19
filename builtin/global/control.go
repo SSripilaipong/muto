@@ -24,3 +24,11 @@ const composeCode = `
 const curryCode = `
 (curry F S...) X... = F S... X...
 `
+
+const withCode = `
+(with X...) F = F X...
+`
+
+const useCode = `
+(use S) (_ X...) = S X...
+`

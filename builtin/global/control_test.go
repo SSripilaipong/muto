@@ -115,3 +115,33 @@ func TestControl_curry(t *testing.T) {
 		assert.Equal(t, base.NewNumberFromString("25"), result)
 	})
 }
+
+func TestControl_with(t *testing.T) {
+	module := NewModule()
+	class := module.GetClass("with")
+	literal := builder.NewLiteralBuilderFactoryWithClassCollection()
+
+	t.Run("should match variables", func(t *testing.T) {
+		result := mutateUntilTerminated(base.NewCompoundObject(class, base.NewParamChain([][]base.Node{
+			{base.NewString("abc"), base.NewTag("xxx")},
+			{builder.NewReconstructor(
+				extractor.NewExactNodeList([]extractor.NodeExtractor{extractor.NewVariable("A"), extractor.NewTag("xxx")}),
+				literal.NewBuilder(stResult.NewObject(st.NewTag(".ok"), []stResult.Param{st.NewVariable("A")})),
+			)},
+		}))) // (with "abc" .xxx) \A .xxx [.ok A]
+		assert.Equal(t, base.NewOneLayerObject(base.NewTag("ok"), base.NewString("abc")), result)
+	})
+}
+
+func TestControl_use(t *testing.T) {
+	module := NewModule()
+	class := module.GetClass("use")
+
+	t.Run("should match variables", func(t *testing.T) {
+		result := mutateUntilTerminated(base.NewCompoundObject(class, base.NewParamChain([][]base.Node{
+			{base.NewTag("ok")},
+			{base.NewConventionalList(base.NewRune('a'), base.NewRune('b'))},
+		}))) // (use .ok) ($ 'a' 'b')
+		assert.Equal(t, base.NewOneLayerObject(base.NewTag("ok"), base.NewRune('a'), base.NewRune('b')), result)
+	})
+}

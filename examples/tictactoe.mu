@@ -52,12 +52,14 @@ validate-input Board Input = (match
     \.unknown [ret .invalid]
     \X        [Board (.validate-availability (num-to-pos X))]
 ) (string-to-num Input)
-num-to-pos X = (let (- X 1) \Y [$ (+ 1 (div Y 3)) (+ 1 (mod Y 3))])
+num-to-pos X = (with (- X 1)) \Y [
+    $ (+ 1 (div Y 3)) (+ 1 (mod Y 3))
+]
 
 
 empty-board = board (arr (arr 1 2 3) (arr 4 5 6) (arr 7 8 9))
-(board Arr) M = (let (board Arr) \Self
-    [(match
+(board Arr) M = (with (board Arr)) \Self [
+    (match
         \(.row N)   [(use row) (Arr (.get N))]
         \(.col N)   [(use col) (map \X[X (.get N)] Arr)]
         \.rows      [map (use row) Arr]
@@ -66,15 +68,15 @@ empty-board = board (arr (arr 1 2 3) (arr 4 5 6) (arr 7 8 9))
 
         \(.set-row N Rx) [board (Arr (.set N Rx))]
         \(.set R C X)    [
-            (let ((Self (.row R)) (.set C X)) \NewR
-                [Self (.set-row R NewR)]
-            )
+            (with ((Self (.row R)) (.set C X))) \NewR [
+                Self (.set-row R NewR)
+            ]
         ]
 
-        \.diags [(let (Arr .length) \Length
-            [arr ((use arr) (map \N[Self (.get N N)] (count Length)))
-                 ((use arr) (map \N[Self (.get N (+ 1 (- Length N)))] (count Length)))]
-        )]
+        \.diags [(with (Arr .length)) \Length [
+            arr ((use arr) (map \N[Self (.get N N)] (count Length)))
+                ((use arr) (map \N[Self (.get N (+ 1 (- Length N)))] (count Length)))
+        ]]
         \(.validate-availability ($ R C)) [(match
             \"o" [ret .invalid]
             \"x" [ret .invalid]
@@ -83,8 +85,8 @@ empty-board = board (arr (arr 1 2 3) (arr 4 5 6) (arr 7 8 9))
         \.is-full? [== 0
             ((use sum) (map (match \"o"[ret 0] \"x"[ret 0] \_[ret 1]) ((use append-all) Arr)))
         ]
-    ) M]
-)
+    ) M
+]
 
 (row S...) X Xs... = (arr S...) X Xs...
 (col S...) X Xs... = (arr S...) X Xs...
@@ -152,12 +154,8 @@ first-match P ($ X Xs...) = (match
 count 1 = $ 1
 count N = \($ Rest...)[$ Rest... N] (count (- N 1))
 
-(use S) (T X...) = S X...
-
 append-all (T Xs...) (_ Ys...) = append-all (T Xs... Ys...)
 append-all R = ret R
 
 sum X Y = sum (+ X Y)
 sum X = ret X
-
-(let X... F) = F X...
