@@ -24,7 +24,7 @@ func TestBuildFromString(t *testing.T) {
 
 	t.Run("should resolve to object", func(t *testing.T) {
 		program := BuildProgramFromString(`main = hello "world" 123`).Value()
-		assert.Equal(t, base.NewNamedOneLayerObject("hello", []base.Node{base.NewString("world"), base.NewNumberFromString("123")}), execute(program))
+		assert.Equal(t, base.NewNamedOneLayerObject("hello", base.NewString("world"), base.NewNumberFromString("123")), execute(program))
 	})
 
 	t.Run("should resolve variable", func(t *testing.T) {
@@ -66,21 +66,21 @@ main = hello (f "abc" 123)
 		program := BuildProgramFromString(`f X Xs... = g Xs...
 main = f 1 2 3
 `).Value()
-		assert.Equal(t, base.NewNamedOneLayerObject("g", []base.Node{base.NewNumberFromString("2"), base.NewNumberFromString("3")}), execute(program))
+		assert.Equal(t, base.NewNamedOneLayerObject("g", base.NewNumberFromString("2"), base.NewNumberFromString("3")), execute(program))
 	})
 
 	t.Run("should match nested variadic variable with size 0", func(t *testing.T) {
 		program := BuildProgramFromString(`g (f Xs...) = h Xs...
 main = g (f)
 `).Value()
-		assert.Equal(t, base.NewNamedOneLayerObject("h", nil), execute(program))
+		assert.Equal(t, base.NewNamedOneLayerObject("h"), execute(program))
 	})
 
 	t.Run("should match children strictly for nested pattern", func(t *testing.T) {
 		program := BuildProgramFromString(`g (f 1) = 555
 main = g (f 1 2)
 `).Value()
-		assert.True(t, base.NewNamedOneLayerObject("g", []base.Node{base.NewNamedOneLayerObject("f", []base.Node{base.NewNumberFromString("1"), base.NewNumberFromString("2")})}).
+		assert.True(t, base.NewNamedOneLayerObject("g", base.NewNamedOneLayerObject("f", base.NewNumberFromString("1"), base.NewNumberFromString("2"))).
 			Equals(base.UnsafeNodeToObject(execute(program))))
 	})
 
@@ -88,28 +88,28 @@ main = g (f 1 2)
 		program := BuildProgramFromString(`f X = 999
 main = f 1 2
 `).Value()
-		assert.Equal(t, base.NewOneLayerObject(base.NewNumberFromString("999"), []base.Node{base.NewNumberFromString("2")}), execute(program))
+		assert.Equal(t, base.NewOneLayerObject(base.NewNumberFromString("999"), base.NewNumberFromString("2")), execute(program))
 	})
 
 	t.Run("should extract nested object with variable object name pattern", func(t *testing.T) {
 		program := BuildProgramFromString(`f (G X) = h (G X)
 main = f (hello "world")
 `).Value()
-		assert.Equal(t, base.NewNamedOneLayerObject("h", []base.Node{base.NewNamedOneLayerObject("hello", []base.Node{base.NewString("world")})}), execute(program))
+		assert.Equal(t, base.NewNamedOneLayerObject("h", base.NewNamedOneLayerObject("hello", base.NewString("world"))), execute(program))
 	})
 
 	t.Run("should build nested variable object with variadic params", func(t *testing.T) {
 		program := BuildProgramFromString(`f (H X...) = g (H X...)
 main = f (h "1" "2")
 `).Value()
-		assert.Equal(t, base.NewNamedOneLayerObject("g", []base.Node{base.NewNamedOneLayerObject("h", []base.Node{base.NewString("1"), base.NewString("2")})}), execute(program))
+		assert.Equal(t, base.NewNamedOneLayerObject("g", base.NewNamedOneLayerObject("h", base.NewString("1"), base.NewString("2"))), execute(program))
 	})
 
 	t.Run("should not fail when variadic param part tries to match with no children", func(t *testing.T) {
 		program := BuildProgramFromString(`f (G S... 0) = 0
 main = f $
 `).Value()
-		assert.True(t, base.NewNamedOneLayerObject("f", []base.Node{base.NewUnlinkedRuleBasedClass("$")}).
+		assert.True(t, base.NewNamedOneLayerObject("f", base.NewUnlinkedRuleBasedClass("$")).
 			Equals(base.UnsafeNodeToObject(execute(program))))
 	})
 
@@ -153,10 +153,10 @@ main = f ((g 456) 123)
 		program := BuildProgramFromString(`f Xs... = $ Xs... Xs...
 main = f 1 2 3
 `).Value()
-		assert.Equal(t, base.NewNamedOneLayerObject("$", []base.Node{
+		assert.Equal(t, base.NewConventionalList(
 			base.NewNumberFromString("1"), base.NewNumberFromString("2"), base.NewNumberFromString("3"),
 			base.NewNumberFromString("1"), base.NewNumberFromString("2"), base.NewNumberFromString("3"),
-		}), execute(program))
+		), execute(program))
 	})
 
 	t.Run("should match nested anonymous object", func(t *testing.T) {
@@ -196,7 +196,7 @@ main = f g
 		program := BuildProgramFromString(`f X = X
 main = f (g 1)
 `).Value()
-		assert.True(t, base.NewNamedOneLayerObject("f", []base.Node{base.NewNamedOneLayerObject("g", []base.Node{base.NewNumberFromString("1")})}).Equals(
+		assert.True(t, base.NewNamedOneLayerObject("f", base.NewNamedOneLayerObject("g", base.NewNumberFromString("1"))).Equals(
 			base.UnsafeNodeToObject(mutateOnce(program))))
 	})
 
@@ -205,7 +205,7 @@ main = f (g 1)
 (f X) = X
 (g) = 2
 `).Value()
-		assert.Equal(t, base.NewOneLayerObject(base.NewNumberFromString("1"), []base.Node{base.NewNumberFromString("2")}), execute(program))
+		assert.Equal(t, base.NewOneLayerObject(base.NewNumberFromString("1"), base.NewNumberFromString("2")), execute(program))
 	})
 
 	t.Run("should match cases", func(t *testing.T) {

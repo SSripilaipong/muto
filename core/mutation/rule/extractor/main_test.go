@@ -18,7 +18,7 @@ func TestNew_ObjectWithValueHead(t *testing.T) {
 			stPattern.NewNonDeterminantObject(syntaxtree.NewBoolean("true"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewNumber("456")})),
 		}))
 		// obj: f (true 456)
-		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewOneLayerObject(base.NewBoolean(true), []base.Node{base.NewNumberFromString("456")})})
+		obj := base.NewNamedOneLayerObject("f", base.NewOneLayerObject(base.NewBoolean(true), base.NewNumberFromString("456")))
 
 		assert.True(t, NewNamedRule(pattern).Extract(obj).IsNotEmpty())
 	})
@@ -27,7 +27,7 @@ func TestNew_ObjectWithValueHead(t *testing.T) {
 		pattern := stPattern.NewDeterminantObject(syntaxtree.NewClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
 			stPattern.NewNonDeterminantObject(syntaxtree.NewString(`"a"`), stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewNumber("456")})),
 		}))
-		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewOneLayerObject(base.NewString(`a`), []base.Node{base.NewNumberFromString("456")})})
+		obj := base.NewNamedOneLayerObject("f", base.NewOneLayerObject(base.NewString(`a`), base.NewNumberFromString("456")))
 
 		assert.True(t, NewNamedRule(pattern).Extract(obj).IsNotEmpty())
 	})
@@ -36,7 +36,7 @@ func TestNew_ObjectWithValueHead(t *testing.T) {
 		pattern := stPattern.NewDeterminantObject(syntaxtree.NewClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
 			stPattern.NewNonDeterminantObject(syntaxtree.NewNumber("123"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewNumber("456")})),
 		}))
-		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewOneLayerObject(base.NewNumberFromString("123"), []base.Node{base.NewNumberFromString("456")})})
+		obj := base.NewNamedOneLayerObject("f", base.NewOneLayerObject(base.NewNumberFromString("123"), base.NewNumberFromString("456")))
 
 		assert.True(t, NewNamedRule(pattern).Extract(obj).IsNotEmpty())
 	})
@@ -45,14 +45,14 @@ func TestNew_ObjectWithValueHead(t *testing.T) {
 func TestTag(t *testing.T) {
 	t.Run("should match a tag child", func(t *testing.T) {
 		pattern := stPattern.NewDeterminantObject(syntaxtree.NewClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewTag("abc")}))
-		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewTag("abc")})
+		obj := base.NewNamedOneLayerObject("f", base.NewTag("abc"))
 
 		assert.True(t, NewNamedRule(pattern).Extract(obj).IsNotEmpty())
 	})
 
 	t.Run("should not match a non-tag child", func(t *testing.T) {
 		pattern := stPattern.NewDeterminantObject(syntaxtree.NewClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewTag("abc")}))
-		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewUnlinkedRuleBasedClass("abc")})
+		obj := base.NewNamedOneLayerObject("f", base.NewUnlinkedRuleBasedClass("abc"))
 
 		assert.False(t, NewNamedRule(pattern).Extract(obj).IsNotEmpty())
 	})
@@ -65,7 +65,7 @@ func TestTag(t *testing.T) {
 			})),
 		}))
 		// obj: f (.abc 1 2)
-		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewOneLayerObject(base.NewTag("abc"), []base.Node{base.NewNumberFromString("1"), base.NewNumberFromString("2")})})
+		obj := base.NewNamedOneLayerObject("f", base.NewOneLayerObject(base.NewTag("abc"), base.NewNumberFromString("1"), base.NewNumberFromString("2")))
 
 		assert.True(t, NewNamedRule(pattern).Extract(obj).IsNotEmpty())
 	})
@@ -78,7 +78,7 @@ func TestTag(t *testing.T) {
 			})),
 		}))
 		// obj: f (g 1 .abc 2)
-		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewOneLayerObject(base.NewUnlinkedRuleBasedClass("g"), []base.Node{base.NewNumberFromString("1"), base.NewTag("abc"), base.NewNumberFromString("2")})})
+		obj := base.NewNamedOneLayerObject("f", base.NewOneLayerObject(base.NewUnlinkedRuleBasedClass("g"), base.NewNumberFromString("1"), base.NewTag("abc"), base.NewNumberFromString("2")))
 
 		assert.True(t, NewNamedRule(pattern).Extract(obj).IsNotEmpty())
 	})
@@ -91,7 +91,7 @@ func TestNestedObject(t *testing.T) {
 			stPattern.NewDeterminantObject(syntaxtree.NewClass("g"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{})),
 		}))
 		// obj: f g
-		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewUnlinkedRuleBasedClass("g")})
+		obj := base.NewNamedOneLayerObject("f", base.NewUnlinkedRuleBasedClass("g"))
 
 		assert.True(t, NewNamedRule(pattern).Extract(obj).IsEmpty())
 	})
@@ -105,7 +105,7 @@ func TestVariadicParam(t *testing.T) {
 				stPattern.NewLeftVariadicParamPart("Xs", stPattern.FixedParamPart{})),
 		}))
 		// obj: g (f)
-		obj := base.NewNamedOneLayerObject("g", []base.Node{base.NewNamedOneLayerObject("f", nil)})
+		obj := base.NewNamedOneLayerObject("g", base.NewNamedOneLayerObject("f", nil))
 
 		assert.True(t, NewNamedRule(pattern).Extract(obj).IsNotEmpty())
 	})
@@ -117,9 +117,9 @@ func TestVariadicParam(t *testing.T) {
 				stPattern.NewLeftVariadicParamPart("_Bc", stPattern.FixedParamPart{})),
 		}))
 		// obj: g (f x y)
-		obj := base.NewNamedOneLayerObject("g", []base.Node{
-			base.NewNamedOneLayerObject("f", []base.Node{base.NewUnlinkedRuleBasedClass("x"), base.NewUnlinkedRuleBasedClass("y")}),
-		})
+		obj := base.NewNamedOneLayerObject("g",
+			base.NewNamedOneLayerObject("f", base.NewUnlinkedRuleBasedClass("x"), base.NewUnlinkedRuleBasedClass("y")),
+		)
 
 		p := NewNamedRule(pattern).Extract(obj)
 		assert.True(t, p.IsNotEmpty() && p.Value().VariadicVarValue("_Bc").IsEmpty())
@@ -134,9 +134,9 @@ func TestVariableParam(t *testing.T) {
 				stPattern.NewLeftVariadicParamPart("_Bc", stPattern.FixedParamPart{})),
 		}))
 		// obj: g (f x)
-		obj := base.NewNamedOneLayerObject("g", []base.Node{
-			base.NewNamedOneLayerObject("f", []base.Node{base.NewUnlinkedRuleBasedClass("x"), base.NewUnlinkedRuleBasedClass("y")}),
-		})
+		obj := base.NewNamedOneLayerObject("g",
+			base.NewNamedOneLayerObject("f", base.NewUnlinkedRuleBasedClass("x"), base.NewUnlinkedRuleBasedClass("y")),
+		)
 
 		p := NewNamedRule(pattern).Extract(obj)
 		assert.True(t, p.IsNotEmpty() && p.Value().VariableValue("_Bc").IsEmpty())
@@ -150,7 +150,7 @@ func TestRemainingChildren(t *testing.T) {
 			syntaxtree.NewNumber("1"),
 		}))
 		// obj: f 1 2 3
-		obj := base.NewNamedOneLayerObject("f", []base.Node{base.NewNumberFromString("1"), base.NewNumberFromString("2"), base.NewNumberFromString("3")})
+		obj := base.NewNamedOneLayerObject("f", base.NewNumberFromString("1"), base.NewNumberFromString("2"), base.NewNumberFromString("3"))
 
 		assert.Equal(t, []base.Node{base.NewNumberFromString("2"), base.NewNumberFromString("3")}, NewNamedRule(pattern).Extract(obj).Value().RemainingParamChain().All()[0])
 	})

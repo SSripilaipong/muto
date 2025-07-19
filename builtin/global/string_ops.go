@@ -11,7 +11,7 @@ var stringToRunesMutator = NewRuleBasedMutatorFromFunctions("string-to-runes", s
 	for _, r := range []rune(x) {
 		runes = append(runes, base.NewRune(r))
 	}
-	return optional.Value[base.Node](base.NewConventionalList(runes))
+	return optional.Value[base.Node](base.NewConventionalList(runes...))
 })))
 
 var concatMutator = NewRuleBasedMutatorFromFunctions("++", slc.Pure(stringStrictBinaryOp(func(x, y string) optional.Of[base.Node] {

@@ -103,16 +103,12 @@ func newCompoundObject(class Node, params ParamChain) Object {
 	return CompoundObject{class: class, paramChain: params}
 }
 
-func NewOneLayerObject(class Node, children []Node) Object {
+func NewOneLayerObject(class Node, children ...Node) Object {
 	return NewCompoundObject(class, NewParamChain(slc.Pure(children)))
 }
 
-func WrapWithObject(n Node) Object {
-	return NewOneLayerObject(n, nil)
-}
-
-func NewNamedOneLayerObject(name string, children []Node) Object {
-	return NewOneLayerObject(NewUnlinkedRuleBasedClass(name), children)
+func NewNamedOneLayerObject(name string, children ...Node) Object {
+	return NewOneLayerObject(NewUnlinkedRuleBasedClass(name), children...)
 }
 
 func objectChildrenToString(children []Node) string {

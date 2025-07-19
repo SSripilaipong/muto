@@ -41,6 +41,6 @@ var parseRunesToStringMutator = NewRuleBasedMutatorFromFunctions("parse-runes-to
 
 	return optional.Value[base.Node](base.NewStructureFromRecords([]base.StructureRecord{
 		base.NewStructureRecord(base.ResultTag, base.NewString(string(result))),
-		base.NewStructureRecord(base.RemainderTag, base.NewConventionalList(remainder)),
+		base.NewStructureRecord(base.RemainderTag, base.NewConventionalList(remainder...)),
 	}))
 })))

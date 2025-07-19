@@ -17,8 +17,8 @@ func TestNodeEqual_Boolean(t *testing.T) {
 	})
 
 	t.Run("should not be equal with object", func(t *testing.T) {
-		assert.False(t, NodeEqual(NewOneLayerObject(NewBoolean(true), nil), NewBoolean(true)))
-		assert.False(t, NodeEqual(NewBoolean(true), NewOneLayerObject(NewBoolean(true), nil)))
+		assert.False(t, NodeEqual(NewOneLayerObject(NewBoolean(true)), NewBoolean(true)))
+		assert.False(t, NodeEqual(NewBoolean(true), NewOneLayerObject(NewBoolean(true))))
 	})
 
 	t.Run("should not be equal with number", func(t *testing.T) {

@@ -48,10 +48,10 @@ func TestBuildStructure(t *testing.T) {
 			stResult.NewStructureRecord(syntaxtree.NewBoolean("true"), syntaxtree.NewVariable("A")),
 		})
 		mutationData := parameter.New().
-			WithVariableMapping(parameter.NewVariableMapping("A", base.NewOneLayerObject(base.NewUnlinkedRuleBasedClass("f"), []base.Node{base.NewNumberFromString("123")}))).
+			WithVariableMapping(parameter.NewVariableMapping("A", base.NewOneLayerObject(base.NewUnlinkedRuleBasedClass("f"), base.NewNumberFromString("123")))).
 			Value()
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{
-			base.NewStructureRecord(base.NewBoolean(true), base.NewOneLayerObject(base.NewUnlinkedRuleBasedClass("f"), []base.Node{base.NewNumberFromString("123")})),
+			base.NewStructureRecord(base.NewBoolean(true), base.NewOneLayerObject(base.NewUnlinkedRuleBasedClass("f"), base.NewNumberFromString("123"))),
 		})
 		assert.Equal(t, expectedObject, builder.NewBuilder(tree).Build(mutationData).Value())
 	})
@@ -74,7 +74,7 @@ func TestBuildStructure(t *testing.T) {
 				base.NewTag("e"),
 				base.NewOneLayerObject(
 					base.NewUnlinkedRuleBasedClass("f"),
-					[]base.Node{base.NewNumberFromString("123"), base.NewTag("t")},
+					base.NewNumberFromString("123"), base.NewTag("t"),
 				),
 			),
 		})

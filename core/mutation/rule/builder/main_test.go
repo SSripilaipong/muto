@@ -40,7 +40,7 @@ func TestNew_Object(t *testing.T) {
 	t.Run("should build nested object with no params", func(t *testing.T) {
 		factory := NewSimplifiedNodeBuilderFactory()
 		template := stResult.NewObject(syntaxtree.NewClass("f"), stResult.FixedParamPart{})
-		expectedResult := base.NewNamedOneLayerObject("f", nil)
+		expectedResult := base.NewNamedOneLayerObject("f")
 		assert.Equal(t, expectedResult, factory.NewBuilder(template).Build(parameter.New()).Value())
 	})
 
@@ -51,7 +51,7 @@ func TestNew_Object(t *testing.T) {
 			stResult.FixedParamPart{syntaxtree.NewClass("a")},
 		)
 		param := parameter.New().SetRemainingParamChain(base.NewParamChain([][]base.Node{{base.NewString("xxx")}}))
-		expectedResult := base.NewNamedOneLayerObject("f", []base.Node{base.NewUnlinkedRuleBasedClass("a"), base.NewString("xxx")})
+		expectedResult := base.NewNamedOneLayerObject("f", base.NewUnlinkedRuleBasedClass("a"), base.NewString("xxx"))
 		assert.Equal(t, expectedResult, factory.NewBuilder(template).Build(param).Value())
 	})
 }

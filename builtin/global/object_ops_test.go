@@ -18,9 +18,9 @@ func TestObjectOps_try(t *testing.T) {
 			calledObject = obj
 			return optional.Empty[base.Node]()
 		}))
-		try.Mutate(base.NewNamedOneLayerObject(tryMutatorName, []base.Node{f, base.NewString("abc"), base.NewString("def")}))
+		try.Mutate(base.NewNamedOneLayerObject(tryMutatorName, f, base.NewString("abc"), base.NewString("def")))
 		assert.True(t, base.NodeEqual(
-			base.NewOneLayerObject(base.NewUnlinkedRuleBasedClass("f"), []base.Node{base.NewString("abc"), base.NewString("def")}),
+			base.NewOneLayerObject(base.NewUnlinkedRuleBasedClass("f"), base.NewString("abc"), base.NewString("def")),
 			calledObject,
 		))
 	})
@@ -29,19 +29,19 @@ func TestObjectOps_try(t *testing.T) {
 		f := base.NewRuleBasedClass("f", newNormalMutationFunc(func(obj base.Object) optional.Of[base.Node] {
 			return optional.Value[base.Node](base.NewNumberFromString("123"))
 		}))
-		result := try.Mutate(base.NewNamedOneLayerObject(tryMutatorName, []base.Node{f, base.NewString("abc")}))
+		result := try.Mutate(base.NewNamedOneLayerObject(tryMutatorName, f, base.NewString("abc")))
 		assert.True(t, base.NodeEqual(
-			base.NewOneLayerObject(base.ValueTag, []base.Node{base.NewNumberFromString("123")}), result.Value()),
+			base.NewOneLayerObject(base.ValueTag, base.NewNumberFromString("123")), result.Value()),
 		)
 	})
 
 	t.Run("should become empty if mutation does not occur", func(t *testing.T) {
-		result := try.Mutate(base.NewNamedOneLayerObject(tryMutatorName, []base.Node{base.NewUnlinkedRuleBasedClass("f"), base.NewString("abc")}))
+		result := try.Mutate(base.NewNamedOneLayerObject(tryMutatorName, base.NewUnlinkedRuleBasedClass("f"), base.NewString("abc")))
 		assert.Equal(t, base.EmptyTag, result.Value())
 	})
 
 	t.Run("should not mutate if the number of children less than 2", func(t *testing.T) {
-		result := try.Mutate(base.NewNamedOneLayerObject(tryMutatorName, []base.Node{base.NewUnlinkedRuleBasedClass("f")}))
+		result := try.Mutate(base.NewNamedOneLayerObject(tryMutatorName, base.NewUnlinkedRuleBasedClass("f")))
 		assert.True(t, result.IsEmpty())
 	})
 }

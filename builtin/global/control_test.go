@@ -16,28 +16,28 @@ func TestControl_do(t *testing.T) {
 	class := NewModule().GetClass("do")
 
 	t.Run("should become last node", func(t *testing.T) {
-		result := mutateUntilTerminated(base.NewOneLayerObject(class, []base.Node{
+		result := mutateUntilTerminated(base.NewOneLayerObject(class,
 			base.NewNumberFromString("123"), base.NewNumberFromString("456"),
-		}))
+		))
 		assert.Equal(t, base.NewNumberFromString("456"), result)
 	})
 
 	t.Run("should mutate with one children", func(t *testing.T) {
-		result := mutateUntilTerminated(base.NewOneLayerObject(class, []base.Node{
+		result := mutateUntilTerminated(base.NewOneLayerObject(class,
 			base.NewNumberFromString("123"),
-		}))
+		))
 		assert.Equal(t, base.NewNumberFromString("123"), result)
 	})
 
 	t.Run("should mutate with more than 2 children", func(t *testing.T) {
-		result := mutateUntilTerminated(base.NewOneLayerObject(class, []base.Node{
+		result := mutateUntilTerminated(base.NewOneLayerObject(class,
 			base.NewNumberFromString("123"), base.NewNumberFromString("456"), base.NewNumberFromString("789"),
-		}))
+		))
 		assert.Equal(t, base.NewNumberFromString("789"), result)
 	})
 
 	t.Run("should not mutate when no children", func(t *testing.T) {
-		result := base.NewOneLayerObject(class, []base.Node{}).Mutate()
+		result := base.NewOneLayerObject(class).Mutate()
 		assert.True(t, result.IsEmpty())
 	})
 }
@@ -55,7 +55,7 @@ func TestControl_match(t *testing.T) {
 			)},
 			{base.NewNumberFromString("123")}, // 123
 		})))
-		assert.Equal(t, base.WrapWithObject(base.NewTag("ok")), result)
+		assert.Equal(t, base.NewOneLayerObject(base.NewTag("ok")), result)
 	})
 
 	t.Run("should apply second case", func(t *testing.T) {
@@ -72,7 +72,7 @@ func TestControl_match(t *testing.T) {
 			},
 			{base.NewString("yeah")}, // "yeah"
 		})))
-		assert.Equal(t, base.WrapWithObject(base.NewTag("second")), result)
+		assert.Equal(t, base.NewOneLayerObject(base.NewTag("second")), result)
 	})
 }
 
@@ -80,9 +80,9 @@ func TestControl_ret(t *testing.T) {
 	class := NewModule().GetClass("ret")
 
 	t.Run("should apply first case", func(t *testing.T) {
-		result := mutateUntilTerminated(base.NewOneLayerObject(class, []base.Node{
+		result := mutateUntilTerminated(base.NewOneLayerObject(class,
 			base.NewNumberFromString("123"),
-		}))
+		))
 		assert.Equal(t, base.NewNumberFromString("123"), result)
 	})
 }

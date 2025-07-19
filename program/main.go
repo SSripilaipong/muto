@@ -15,7 +15,7 @@ func New(pkg coreMutation.Module) Program {
 }
 
 func (p Program) InitialObject() base.Object {
-	return base.WrapWithObject(p.mainModule.GetClass("main"))
+	return base.NewOneLayerObject(p.mainModule.GetClass("main"))
 }
 
 func (p Program) MutateUntilTerminated(node base.Node) base.Node {
