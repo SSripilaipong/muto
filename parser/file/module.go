@@ -12,14 +12,14 @@ import (
 	"github.com/SSripilaipong/muto/syntaxtree/base"
 )
 
-var ParsePackageFromString = fn.Compose(FilterResult, ParsePackageCombinationFromString)
+var ParseModuleFromString = fn.Compose(FilterResult, ParseModuleCombinationFromString)
 
-var ParsePackageCombinationFromString = fn.Compose(package_, psBase.StringToCharTokens)
+var ParseModuleCombinationFromString = fn.Compose(module, psBase.StringToCharTokens)
 
-var package_ = ps.RsMap(newPackage, File)
+var module = ps.RsMap(newModule, File)
 
-func newPackage(f base.File) base.Package {
-	return base.NewPackage([]base.File{f})
+func newModule(f base.File) base.Module {
+	return base.NewModule([]base.File{f})
 }
 
 func FilterResult[T any](raw []tuple.Of2[rslt.Of[T], []psBase.Character]) rslt.Of[T] {

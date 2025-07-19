@@ -20,7 +20,7 @@ func New(prog program.Program, printer Printer) Wrapper {
 }
 
 func (w Wrapper) AddRule(rule mutator.NamedUnit) optional.Of[int] {
-	w.mainPackage().AppendNormal(rule)
+	w.mainModule().AppendNormal(rule)
 	return optional.Empty[int]()
 }
 
@@ -31,13 +31,13 @@ func (w Wrapper) MutateNode(node base.Node) optional.Of[int] {
 }
 
 func (w Wrapper) BuildRule(rule syntaxtree.Rule) mutator.NamedUnit {
-	return w.mainPackage().BuildRule(rule)
+	return w.mainModule().BuildRule(rule)
 }
 
 func (w Wrapper) BuildNode(object stResult.Object) optional.Of[base.Node] {
-	return w.mainPackage().BuildNode(object)
+	return w.mainModule().BuildNode(object)
 }
 
-func (w Wrapper) mainPackage() coreMutation.Module {
-	return w.program.MainPackage()
+func (w Wrapper) mainModule() coreMutation.Module {
+	return w.program.MainModule()
 }

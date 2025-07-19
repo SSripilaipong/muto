@@ -14,10 +14,10 @@ import (
 )
 
 var BuildProgramFromString = fn.Compose(
-	rslt.JoinFmap(BuildProgramFromSyntaxTree), fileParser.ParsePackageFromString,
+	rslt.JoinFmap(BuildProgramFromSyntaxTree), fileParser.ParseModuleFromString,
 )
 
-func BuildProgramFromSyntaxTree(p st.Package) rslt.Of[program.Program] {
+func BuildProgramFromSyntaxTree(p st.Module) rslt.Of[program.Program] {
 	files := p.Files()
 	if len(files) != 1 {
 		return rslt.Error[program.Program](errors.New("currently only support exactly 1 file"))

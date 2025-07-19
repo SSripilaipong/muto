@@ -6,16 +6,16 @@ import (
 )
 
 type Program struct {
-	mainPackage       coreMutation.Module
+	mainModule        coreMutation.Module
 	afterMutationHook func(node base.Node)
 }
 
 func New(pkg coreMutation.Module) Program {
-	return Program{mainPackage: pkg}
+	return Program{mainModule: pkg}
 }
 
 func (p Program) InitialObject() base.Object {
-	return base.WrapWithObject(p.mainPackage.GetClass("main"))
+	return base.WrapWithObject(p.mainModule.GetClass("main"))
 }
 
 func (p Program) MutateUntilTerminated(node base.Node) base.Node {
@@ -53,6 +53,6 @@ func (p Program) WithAfterMutationHook(f func(node base.Node)) Program {
 	return p
 }
 
-func (p Program) MainPackage() coreMutation.Module {
-	return p.mainPackage
+func (p Program) MainModule() coreMutation.Module {
+	return p.mainModule
 }
