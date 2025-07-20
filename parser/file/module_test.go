@@ -348,7 +348,7 @@ func TestNestedResult(t *testing.T) {
 	})
 }
 
-func expectedStatements(sts []base.Statement) []tuple.Of2[rslt.Of[base.Module], []tk.Character] {
-	pkg := base.NewModule([]base.File{base.NewFile(sts)})
+func expectedStatements(sts []base.Statement) []tuple.Of2[rslt.Of[syntaxtree.Module], []tk.Character] {
+	pkg := syntaxtree.NewModule([]syntaxtree.File{syntaxtree.NewFile(sts)})
 	return slc.Pure(tuple.New2(rslt.Value(pkg), []tk.Character{}))
 }

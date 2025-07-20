@@ -14,5 +14,5 @@ func New(ports rods.Map[string, Port]) *Portal {
 }
 
 func (p *Portal) Port(key string) optional.Of[Port] {
-	return p.ports.Get(key)
+	return p.ports.GetCollection(key)
 }

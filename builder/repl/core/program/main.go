@@ -38,6 +38,6 @@ func (w Wrapper) BuildNode(object stResult.Object) optional.Of[base.Node] {
 	return w.mainModule().BuildNode(object)
 }
 
-func (w Wrapper) mainModule() coreMutation.Module {
+func (w Wrapper) mainModule() coreMutation.Dynamic {
 	return w.program.MainModule()
 }

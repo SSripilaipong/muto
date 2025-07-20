@@ -8,7 +8,7 @@ import (
 
 	"github.com/SSripilaipong/muto/common/rslt"
 	psBase "github.com/SSripilaipong/muto/parser/base"
-	"github.com/SSripilaipong/muto/syntaxtree/base"
+	"github.com/SSripilaipong/muto/syntaxtree"
 )
 
 func TestCommand_importCommand(t *testing.T) {
@@ -17,7 +17,7 @@ func TestCommand_importCommand(t *testing.T) {
 		require.Len(t, result, 1)
 
 		r := result[0]
-		assert.Equal(t, rslt.Value(base.NewImport([]string{"abc-12_3"})), r.X1())
+		assert.Equal(t, rslt.Value(syntaxtree.NewImport([]string{"abc-12_3"})), r.X1())
 		assert.Equal(t, "+xxx", psBase.CharactersToString(r.X2()))
 	})
 
@@ -26,7 +26,7 @@ func TestCommand_importCommand(t *testing.T) {
 		require.Len(t, result, 1)
 
 		r := result[0]
-		assert.Equal(t, rslt.Value(base.NewImport([]string{"abc", "-12_3"})), r.X1())
+		assert.Equal(t, rslt.Value(syntaxtree.NewImport([]string{"abc", "-12_3"})), r.X1())
 		assert.Equal(t, "+xxx", psBase.CharactersToString(r.X2()))
 	})
 }

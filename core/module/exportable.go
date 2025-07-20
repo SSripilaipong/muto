@@ -1,26 +1,28 @@
 package module
 
-import stBase "github.com/SSripilaipong/muto/syntaxtree/base"
+import (
+	stBase "github.com/SSripilaipong/muto/syntaxtree"
+)
 
-type Exportable struct {
+type Serializable struct {
 	Base
 	syntaxTree stBase.Module
 }
 
-func NewExportable(module Base, syntaxTree stBase.Module) Exportable {
-	return Exportable{Base: module, syntaxTree: syntaxTree}
+func NewSerializable(module Base, syntaxTree stBase.Module) Serializable {
+	return Serializable{Base: module, syntaxTree: syntaxTree}
 }
 
-func (m Exportable) Export() Exported {
-	return Exported{
+func (m Serializable) Serializable() Serialized {
+	return Serialized{
 		mainModule: m.syntaxTree,
 	}
 }
 
-type Exported struct {
+type Serialized struct {
 	mainModule stBase.Module
 }
 
-func (m Exported) MainModule() stBase.Module {
+func (m Serialized) MainModule() stBase.Module {
 	return m.mainModule
 }

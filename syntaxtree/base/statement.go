@@ -19,3 +19,7 @@ func IsRuleStatement(s Statement) bool {
 func IsActiveRuleStatement(s Statement) bool {
 	return s.StatementType() == ActiveRuleStatement
 }
+
+func IsImportStatement(s Statement) bool {
+	return s.StatementType() == ImportStatement
+}

@@ -20,6 +20,8 @@ func (c *RuleBasedClass) NodeType() NodeType {
 	return NodeTypeClass
 }
 
+func (c *RuleBasedClass) ClassType() ClassType { return ClassTypeRuleBased }
+
 func (c *RuleBasedClass) MutateAsHead(params ParamChain) optional.Of[Node] {
 	if result, ok := c.ActivelyMutateWithObjMutateFunc(params).Return(); ok {
 		return optional.Value(result)

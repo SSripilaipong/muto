@@ -5,7 +5,7 @@ import (
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/common/tuple"
 	psBase "github.com/SSripilaipong/muto/parser/base"
-	"github.com/SSripilaipong/muto/syntaxtree/base"
+	"github.com/SSripilaipong/muto/syntaxtree"
 )
 
 var Command = ps.RsFirst(importCommand)
@@ -18,8 +18,8 @@ var importSubPathToken = ps.Prefix(psBase.Dot, importPathToken)
 
 var importPathToken = ps.RsMap(psBase.CharactersToString, ps.RsGreedyRepeatAtLeastOnce(psBase.Alpha))
 
-var parseImportCommand = tuple.Fn2(func(_ string, path []string) base.Import {
-	return base.NewImport(path)
+var parseImportCommand = tuple.Fn2(func(_ string, path []string) syntaxtree.Import {
+	return syntaxtree.NewImport(path)
 })
 
 var parseImportPath = tuple.Fn2(func(t string, ts []string) []string {

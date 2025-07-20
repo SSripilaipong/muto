@@ -46,12 +46,16 @@ func (p Base) BuildNode(node stResult.SimplifiedNode) optional.Of[base.Node] {
 	return builder.Build(parameter.New())
 }
 
-func (p Base) LoadGlobal(builtin Module) {
-	p.MutatorCollection().LoadGlobal(builtin.MutatorCollection())
+func (p Base) LoadGlobal(global Module) {
+	p.MutatorCollection().LoadGlobal(global.MutatorCollection())
 }
 
 func (p Base) MountPortal(q *portal.Portal) {
 	p.MutatorCollection().MountPortal(q)
+}
+
+func (p Base) MapImportedModules(mapping ImportMapping) {
+	p.MutatorCollection().MapImportedCollections(mapping)
 }
 
 func (p Base) MutatorCollection() mutator.Collection {

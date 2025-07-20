@@ -6,13 +6,12 @@ import (
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/core/module"
 	"github.com/SSripilaipong/muto/core/mutation/rule"
-	ruleBuilder "github.com/SSripilaipong/muto/core/mutation/rule/builder"
 	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
 	st "github.com/SSripilaipong/muto/syntaxtree"
 )
 
 func NewModule() module.Base {
-	builder := mutation.NewRuleBuilder(ruleBuilder.NewSimplifiedNodeBuilderFactory())
+	builder := mutation.NewRuleBuilder()
 
 	buildAll := slc.Map(builder.BuildNamedUnit)
 	active := buildAll(st.FilterActiveRuleFromStatement(rawStatements))

@@ -6,11 +6,11 @@ import (
 )
 
 type Program struct {
-	mainModule        coreMutation.Module
+	mainModule        coreMutation.Dynamic
 	afterMutationHook func(node base.Node)
 }
 
-func New(pkg coreMutation.Module) Program {
+func New(pkg coreMutation.Dynamic) Program {
 	return Program{mainModule: pkg}
 }
 
@@ -53,6 +53,6 @@ func (p Program) WithAfterMutationHook(f func(node base.Node)) Program {
 	return p
 }
 
-func (p Program) MainModule() coreMutation.Module {
+func (p Program) MainModule() coreMutation.Dynamic {
 	return p.mainModule
 }

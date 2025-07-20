@@ -9,7 +9,7 @@ import (
 	"github.com/SSripilaipong/muto/common/rslt"
 	"github.com/SSripilaipong/muto/common/tuple"
 	psBase "github.com/SSripilaipong/muto/parser/base"
-	"github.com/SSripilaipong/muto/syntaxtree/base"
+	"github.com/SSripilaipong/muto/syntaxtree"
 )
 
 var ParseModuleFromString = fn.Compose(FilterResult, ParseModuleCombinationFromString)
@@ -18,8 +18,8 @@ var ParseModuleCombinationFromString = fn.Compose(module, psBase.StringToCharTok
 
 var module = ps.RsMap(newModule, File)
 
-func newModule(f base.File) base.Module {
-	return base.NewModule([]base.File{f})
+func newModule(f syntaxtree.File) syntaxtree.Module {
+	return syntaxtree.NewModule([]syntaxtree.File{f})
 }
 
 func FilterResult[T any](raw []tuple.Of2[rslt.Of[T], []psBase.Character]) rslt.Of[T] {

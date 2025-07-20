@@ -20,14 +20,14 @@ func NewEmbeddedVariableFactory(embeddedNode rods.Map[string, base.Node], embedd
 }
 
 func (m EmbeddedVariableFactory) FixedVariable(name string) NodeExtractor {
-	if node, isEmbedded := m.embeddedNode.Get(name).Return(); isEmbedded {
+	if node, isEmbedded := m.embeddedNode.GetCollection(name).Return(); isEmbedded {
 		return NewMatchSameNode(node)
 	}
 	return m.variable.FixedVariable(name)
 }
 
 func (m EmbeddedVariableFactory) VariadicVariable(name string) NodeListExtractor {
-	if nodes, isEmbedded := m.embeddedNodeList.Get(name).Return(); isEmbedded {
+	if nodes, isEmbedded := m.embeddedNodeList.GetCollection(name).Return(); isEmbedded {
 		return NewMatchSameNodeList(nodes)
 	}
 	return m.variable.VariadicVariable(name)

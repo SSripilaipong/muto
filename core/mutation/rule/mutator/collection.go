@@ -1,6 +1,7 @@
 package mutator
 
 import (
+	"fmt"
 	"iter"
 	"maps"
 	"slices"
@@ -94,6 +95,10 @@ func (c Collection) selfLink() {
 	c.VisitClass(ClassVisitorFunc(c.LinkClass))
 }
 
+func (c Collection) MapImportedCollections(mapping CollectionMapping) {
+	c.VisitClass(ClassVisitorFunc(mapImportedModules(mapping)))
+}
+
 func makeNormalMutatorMap(ms []NamedUnit) map[string]Appendable {
 	switches := makeSwitchMapByName(ms)
 
@@ -121,4 +126,19 @@ func makeSwitchMapByName(ms []NamedUnit) map[string]Switch {
 		mutators[name] = mutators[name].Append(m)
 	}
 	return mutators
+}
+
+func mapImportedModules(mapping CollectionMapping) func(class base.Class) {
+	return func(class base.Class) {
+		if !base.IsImportedClass(class) {
+			return
+		}
+		target := base.UnsafeClassToImportedClass(class)
+		moduleName := target.Module()
+		importedCollection, exists := mapping.GetCollection(moduleName).Return()
+		if !exists {
+			panic(fmt.Sprintf("unimported module name %#v", moduleName))
+		}
+		importedCollection.LinkClass(target)
+	}
 }

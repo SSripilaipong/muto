@@ -12,8 +12,8 @@ type RuleBuilder struct {
 	builderFactory builder.SimplifiedNodeBuilderFactory
 }
 
-func NewRuleBuilder(builderFactory builder.SimplifiedNodeBuilderFactory) RuleBuilder {
-	return RuleBuilder{builderFactory: builderFactory}
+func NewRuleBuilder() RuleBuilder {
+	return RuleBuilder{builderFactory: builder.NewSimplifiedNodeBuilderFactory()}
 }
 
 func (b RuleBuilder) Build(rule st.Rule) NameWrapper {
