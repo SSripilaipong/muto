@@ -17,4 +17,5 @@ var aggregateStatements = tuple.Fn2(func(s base.Statement, ss []base.Statement) 
 var statement = ps.RsFirst(
 	ps.RsMap(syntaxtree.ActiveRuleToStatement, ActiveRule),
 	ps.RsMap(syntaxtree.RuleToStatement, Rule),
+	ps.RsMap(base.ImportToStatement, Command),
 )

@@ -48,3 +48,11 @@ func (t Character) ReplaceColumnNumber(i uint) Character {
 func CharacterToValue(t Character) rune {
 	return t.Value()
 }
+
+func CharactersToString(cs []Character) string {
+	var result []rune
+	for _, c := range cs {
+		result = append(result, c.Value())
+	}
+	return string(result)
+}

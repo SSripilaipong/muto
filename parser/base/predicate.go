@@ -56,3 +56,19 @@ func IsSpace(x rune) bool {
 func IsLineBreak(x rune) bool {
 	return x == '\n'
 }
+
+func IsUnderscore(x rune) bool {
+	return x == '_'
+}
+
+func IsHyphen(x rune) bool {
+	return x == '-'
+}
+
+func IsASCIILetter(r rune) bool {
+	return (r >= 'A' && r <= 'Z') || (r >= 'a' && r <= 'z')
+}
+
+func IsASCIIDigit(r rune) bool {
+	return r >= '0' && r <= '9'
+}
