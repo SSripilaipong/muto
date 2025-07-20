@@ -21,8 +21,6 @@ func (Tag) RuleResultNodeType() stResult.NodeType { return stResult.NodeTypeTag 
 
 func (Tag) ObjectParamType() stResult.ParamType { return stResult.ParamTypeSingle }
 
-func (Tag) NonObjectNode() {}
-
 func (t Tag) Value() string {
 	return t.value
 }

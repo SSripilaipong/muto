@@ -117,7 +117,7 @@ main = f $
 		program := BuildProgramFromString(`f 0 S... = 0
 (main) = f
 `).Value()
-		assert.True(t, base.NewUnlinkedRuleBasedClass("f").Equals(base.UnsafeNodeToClass(execute(program))))
+		assert.True(t, base.NewUnlinkedRuleBasedClass("f").Equals(base.UnsafeNodeToRuleBasedClass(execute(program))))
 	})
 
 	t.Run("should apply active mutation before normal mutation", func(t *testing.T) {

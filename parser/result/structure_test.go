@@ -61,7 +61,7 @@ func TestStructure(t *testing.T) {
  f: ""
 }abc`))
 		expectedResult := stResult.NewStructure([]stResult.StructureRecord{
-			stResult.NewStructureRecord(syntaxtree.NewClass("f"), syntaxtree.NewString(`""`)),
+			stResult.NewStructureRecord(syntaxtree.NewLocalClass("f"), syntaxtree.NewString(`""`)),
 		})
 		expectedRemainder := psBase.IgnoreLineAndColumn(psBase.StringToCharTokens("abc"))
 		assert.Equal(t, psBase.SingleResult(expectedResult, expectedRemainder), psBase.AsParserResult(psBase.IgnoreLineAndColumnInResult(result)))
@@ -72,7 +72,7 @@ func TestStructure(t *testing.T) {
  "": (g 555)
 }abc`))
 		expectedResult := stResult.NewStructure([]stResult.StructureRecord{
-			stResult.NewStructureRecord(syntaxtree.NewString(`""`), stResult.NewObject(syntaxtree.NewClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{syntaxtree.NewNumber("555")}))),
+			stResult.NewStructureRecord(syntaxtree.NewString(`""`), stResult.NewObject(syntaxtree.NewLocalClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{syntaxtree.NewNumber("555")}))),
 		})
 		expectedRemainder := psBase.IgnoreLineAndColumn(psBase.StringToCharTokens("abc"))
 		assert.Equal(t, psBase.SingleResult(expectedResult, expectedRemainder), psBase.AsParserResult(psBase.IgnoreLineAndColumnInResult(result)))

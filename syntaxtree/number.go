@@ -16,8 +16,6 @@ func (Number) RuleResultNodeType() stResult.NodeType { return stResult.NodeTypeN
 
 func (Number) ObjectParamType() stResult.ParamType { return stResult.ParamTypeSingle }
 
-func (Number) NonObjectNode() {}
-
 func (n Number) Value() string {
 	return n.value
 }

@@ -34,7 +34,7 @@ func TestBuildStructure(t *testing.T) {
 
 	t.Run("should build class key", func(t *testing.T) {
 		tree := stResult.NewStructure([]stResult.StructureRecord{
-			stResult.NewStructureRecord(syntaxtree.NewClass("f"), syntaxtree.NewString(`"def"`)),
+			stResult.NewStructureRecord(syntaxtree.NewLocalClass("f"), syntaxtree.NewString(`"def"`)),
 		})
 		mutationData := parameter.New()
 		expectedObject := base.NewStructureFromRecords([]base.StructureRecord{

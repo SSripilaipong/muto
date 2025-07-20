@@ -22,8 +22,6 @@ func (Rune) RuleResultNodeType() stResult.NodeType { return stResult.NodeTypeRun
 
 func (Rune) ObjectParamType() stResult.ParamType { return stResult.ParamTypeSingle }
 
-func (Rune) NonObjectNode() {}
-
 func (r Rune) Value() string {
 	return r.value
 }

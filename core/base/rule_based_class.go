@@ -63,7 +63,9 @@ func (c *RuleBasedClass) MutoString() string {
 	return c.String()
 }
 
-func (c *RuleBasedClass) Equals(d Class) bool { return c.Name() == d.Name() }
+func (c *RuleBasedClass) Equals(d *RuleBasedClass) bool {
+	return c.Name() == d.Name()
+}
 
 func (c *RuleBasedClass) LinkRule(mutator Rule) {
 	c.mutator = mutator
@@ -79,8 +81,10 @@ func NewUnlinkedRuleBasedClass(name string) *RuleBasedClass {
 
 var _ Node = &RuleBasedClass{}
 
-func LinkClassRule(class Class, rule Rule) {
-	if ruleBased, isRuleBased := class.(*RuleBasedClass); isRuleBased {
-		ruleBased.LinkRule(rule)
-	}
+func UnsafeNodeToRuleBasedClass(node Node) *RuleBasedClass {
+	return node.(*RuleBasedClass)
+}
+
+func UnsafeClassToRuleBasedClass(class Class) *RuleBasedClass {
+	return class.(*RuleBasedClass)
 }

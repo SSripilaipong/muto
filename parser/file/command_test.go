@@ -22,7 +22,7 @@ func TestCommand_importCommand(t *testing.T) {
 	})
 
 	t.Run("should parse multiple path token", func(t *testing.T) {
-		result := importCommand(psBase.StringToCharTokens(":import abc.-12_3+xxx"))
+		result := importCommand(psBase.StringToCharTokens(":import abc/-12_3+xxx"))
 		require.Len(t, result, 1)
 
 		r := result[0]

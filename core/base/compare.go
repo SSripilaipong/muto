@@ -55,7 +55,23 @@ func classEqual(x Class, y Node) bool {
 	if !IsClassNode(y) {
 		return false
 	}
-	return x.Equals(UnsafeNodeToClass(y))
+	yClass := UnsafeNodeToClass(y)
+
+	switch {
+	case IsImportedClass(x):
+		return importedClassEqual(UnsafeClassToImportedClass(x), yClass)
+	case IsRuleBasedClass(x):
+		return ruleBasedClassEqual(UnsafeClassToRuleBasedClass(x), yClass)
+	}
+	return false
+}
+
+func importedClassEqual(x ImportedClass, y Class) bool {
+	return IsImportedClass(y) && x.Equals(UnsafeClassToImportedClass(y))
+}
+
+func ruleBasedClassEqual(x *RuleBasedClass, y Class) bool {
+	return IsRuleBasedClass(y) && x.Equals(UnsafeClassToRuleBasedClass(y))
 }
 
 func runeEqual(x Rune, y Node) bool {

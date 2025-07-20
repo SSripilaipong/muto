@@ -1,8 +1,8 @@
 package result
 
 type Node interface {
+	Param
 	RuleResultNodeType() NodeType
-	ObjectParamType() ParamType
 }
 
 type NodeType string

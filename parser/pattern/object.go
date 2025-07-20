@@ -25,7 +25,7 @@ func Object() func(xs []psBase.Character) []tuple.Of2[stPattern.NonDeterminantOb
 			psBase.RunePattern,
 			psBase.NumberPattern,
 			psBase.TagPattern,
-			psBase.ClassRulePattern,
+			psBase.NonDeterminantClassRulePattern,
 			ps.Map(base.ToPattern, Object()),
 		)
 

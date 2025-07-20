@@ -22,7 +22,7 @@ func Determinant() func(xs []psBase.Character) []tuple.Of2[stPattern.Determinant
 
 	return func(xs []psBase.Character) []tuple.Of2[stPattern.DeterminantObject, []psBase.Character] {
 		head := ps.First(
-			psBase.ClassDeterminant,
+			psBase.DeterminantClass,
 			ps.Map(base.ToDeterminant, psBase.InParentheses(Determinant())),
 		)
 

@@ -17,7 +17,7 @@ func TestReconstructor(t *testing.T) {
 		result := reconstructor()(psBase.StringToCharTokens(`\A [$]abc`))
 		expectedResult := stResult.NewReconstructor(
 			stPattern.PatternsToFixedParamPart([]stBase.Pattern{st.NewVariable("A")}),
-			stResult.NewObject(st.NewClass("$"), stResult.FixedParamPart{}),
+			stResult.NewObject(st.NewLocalClass("$"), stResult.FixedParamPart{}),
 		)
 		expectedRemainder := psBase.IgnoreLineAndColumn(psBase.StringToCharTokens("abc"))
 		assert.Equal(t, psBase.SingleResult(expectedResult, expectedRemainder), psBase.AsParserResult(psBase.IgnoreLineAndColumnInResult(result)))

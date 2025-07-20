@@ -1,7 +1,7 @@
 package time
 
 import (
-	"fmt"
+	"time"
 
 	"github.com/SSripilaipong/muto/common/optional"
 	"github.com/SSripilaipong/muto/core/base"
@@ -19,9 +19,15 @@ func newSleepMutator() *sleepMutator {
 
 func (t *sleepMutator) Name() string { return sleepMutatorName }
 
-func (t *sleepMutator) Mutate(_ base.Object) optional.Of[base.Node] {
-	fmt.Println("sleeping")
-	return optional.Value[base.Node](base.Null())
+func (t *sleepMutator) Mutate(obj base.Object) optional.Of[base.Node] {
+	return base.StrictUnaryOp(func(x base.Node) optional.Of[base.Node] {
+		if !base.IsNumberNode(x) {
+			return optional.Empty[base.Node]()
+		}
+		num := base.UnsafeNodeToNumber(x)
+		time.Sleep(time.Duration(num.Value().ToFloat() * 1e9))
+		return optional.Value[base.Node](base.Null())
+	})(obj.ParamChain())
 }
 
 func (t *sleepMutator) VisitClass(mutator.ClassVisitor) {}

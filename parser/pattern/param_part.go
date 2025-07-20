@@ -17,7 +17,7 @@ func ParamPart() func([]psBase.Character) []tuple.Of2[stPattern.ParamPart, []psB
 		psBase.RunePattern,
 		psBase.NumberPattern,
 		psBase.TagPattern,
-		psBase.ClassRulePattern,
+		psBase.NonDeterminantClassRulePattern,
 		ps.Map(base.ToPattern, Object()),
 	)
 

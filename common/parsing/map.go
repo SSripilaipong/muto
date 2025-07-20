@@ -19,3 +19,18 @@ func Map[S, R1, R2 any](f func(R1) R2, p func([]S) []tuple.Of2[R1, []S]) func([]
 func RsMap[S, R1, R2 any](f func(R1) R2, p func([]S) []tuple.Of2[rslt.Of[R1], []S]) func([]S) []tuple.Of2[rslt.Of[R2], []S] {
 	return Map(rslt.Fmap(f), p)
 }
+
+func DeRs[S, R any](f func([]S) []tuple.Of2[rslt.Of[R], []S]) func([]S) []tuple.Of2[R, []S] {
+	return func(xs []S) []tuple.Of2[R, []S] {
+		ys := f(xs)
+
+		var result []tuple.Of2[R, []S]
+		for _, y := range ys {
+			r, k := y.Return()
+			if r.IsOk() {
+				result = append(result, tuple.New2(r.Value(), k))
+			}
+		}
+		return result
+	}
+}

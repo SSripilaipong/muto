@@ -14,7 +14,7 @@ import (
 func TestNew_ObjectWithValueHead(t *testing.T) {
 	t.Run("should match boolean as a nested object head", func(t *testing.T) {
 		// pattern: f (true 456)
-		pattern := stPattern.NewDeterminantObject(syntaxtree.NewClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
+		pattern := stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
 			stPattern.NewNonDeterminantObject(syntaxtree.NewBoolean("true"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewNumber("456")})),
 		}))
 		// obj: f (true 456)
@@ -24,7 +24,7 @@ func TestNew_ObjectWithValueHead(t *testing.T) {
 	})
 
 	t.Run("should match string as a nested object head", func(t *testing.T) {
-		pattern := stPattern.NewDeterminantObject(syntaxtree.NewClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
+		pattern := stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
 			stPattern.NewNonDeterminantObject(syntaxtree.NewString(`"a"`), stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewNumber("456")})),
 		}))
 		obj := base.NewNamedOneLayerObject("f", base.NewOneLayerObject(base.NewString(`a`), base.NewNumberFromString("456")))
@@ -33,7 +33,7 @@ func TestNew_ObjectWithValueHead(t *testing.T) {
 	})
 
 	t.Run("should match number as a nested object head", func(t *testing.T) {
-		pattern := stPattern.NewDeterminantObject(syntaxtree.NewClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
+		pattern := stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
 			stPattern.NewNonDeterminantObject(syntaxtree.NewNumber("123"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewNumber("456")})),
 		}))
 		obj := base.NewNamedOneLayerObject("f", base.NewOneLayerObject(base.NewNumberFromString("123"), base.NewNumberFromString("456")))
@@ -44,14 +44,14 @@ func TestNew_ObjectWithValueHead(t *testing.T) {
 
 func TestTag(t *testing.T) {
 	t.Run("should match a tag child", func(t *testing.T) {
-		pattern := stPattern.NewDeterminantObject(syntaxtree.NewClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewTag("abc")}))
+		pattern := stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewTag("abc")}))
 		obj := base.NewNamedOneLayerObject("f", base.NewTag("abc"))
 
 		assert.True(t, NewNamedRule(pattern).Extract(obj).IsNotEmpty())
 	})
 
 	t.Run("should not match a non-tag child", func(t *testing.T) {
-		pattern := stPattern.NewDeterminantObject(syntaxtree.NewClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewTag("abc")}))
+		pattern := stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewTag("abc")}))
 		obj := base.NewNamedOneLayerObject("f", base.NewUnlinkedRuleBasedClass("abc"))
 
 		assert.False(t, NewNamedRule(pattern).Extract(obj).IsNotEmpty())
@@ -59,7 +59,7 @@ func TestTag(t *testing.T) {
 
 	t.Run("should match a tag in a nested head", func(t *testing.T) {
 		// pattern: f (.abc 1 2)
-		pattern := stPattern.NewDeterminantObject(syntaxtree.NewClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
+		pattern := stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
 			stPattern.NewNonDeterminantObject(syntaxtree.NewTag("abc"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
 				syntaxtree.NewNumber("1"), syntaxtree.NewNumber("2"),
 			})),
@@ -72,8 +72,8 @@ func TestTag(t *testing.T) {
 
 	t.Run("should match a tag in a nested param", func(t *testing.T) {
 		// pattern: f (g 1 .abc 2)
-		pattern := stPattern.NewDeterminantObject(syntaxtree.NewClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
-			stPattern.NewDeterminantObject(syntaxtree.NewClass("g"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
+		pattern := stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
+			stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("g"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
 				syntaxtree.NewNumber("1"), syntaxtree.NewTag("abc"), syntaxtree.NewNumber("2"),
 			})),
 		}))
@@ -87,8 +87,8 @@ func TestTag(t *testing.T) {
 func TestNestedObject(t *testing.T) {
 	t.Run("should not match leaf object with simple node", func(t *testing.T) {
 		// pattern: f (g)
-		pattern := stPattern.NewDeterminantObject(syntaxtree.NewClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
-			stPattern.NewDeterminantObject(syntaxtree.NewClass("g"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{})),
+		pattern := stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
+			stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("g"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{})),
 		}))
 		// obj: f g
 		obj := base.NewNamedOneLayerObject("f", base.NewUnlinkedRuleBasedClass("g"))
@@ -100,8 +100,8 @@ func TestNestedObject(t *testing.T) {
 func TestVariadicParam(t *testing.T) {
 	t.Run("should match nested variadic param with size 0", func(t *testing.T) {
 		// pattern: g (f Xs...)
-		pattern := stPattern.NewDeterminantObject(syntaxtree.NewClass("g"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
-			stPattern.NewDeterminantObject(syntaxtree.NewClass("f"),
+		pattern := stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("g"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
+			stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("f"),
 				stPattern.NewLeftVariadicParamPart("Xs", stPattern.FixedParamPart{})),
 		}))
 		// obj: g (f)
@@ -112,8 +112,8 @@ func TestVariadicParam(t *testing.T) {
 
 	t.Run("should ignore underscore variadic variable", func(t *testing.T) {
 		// pattern: g (f _Bc...)
-		pattern := stPattern.NewDeterminantObject(syntaxtree.NewClass("g"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
-			stPattern.NewDeterminantObject(syntaxtree.NewClass("f"),
+		pattern := stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("g"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
+			stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("f"),
 				stPattern.NewLeftVariadicParamPart("_Bc", stPattern.FixedParamPart{})),
 		}))
 		// obj: g (f x y)
@@ -129,8 +129,8 @@ func TestVariadicParam(t *testing.T) {
 func TestVariableParam(t *testing.T) {
 	t.Run("should ignore underscore variable", func(t *testing.T) {
 		// pattern: g (f _Bc)
-		pattern := stPattern.NewDeterminantObject(syntaxtree.NewClass("g"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
-			stPattern.NewDeterminantObject(syntaxtree.NewClass("f"),
+		pattern := stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("g"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
+			stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("f"),
 				stPattern.NewLeftVariadicParamPart("_Bc", stPattern.FixedParamPart{})),
 		}))
 		// obj: g (f x)
@@ -146,7 +146,7 @@ func TestVariableParam(t *testing.T) {
 func TestRemainingChildren(t *testing.T) {
 	t.Run("should extract remaining children", func(t *testing.T) {
 		// pattern: f 1
-		pattern := stPattern.NewDeterminantObject(syntaxtree.NewClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
+		pattern := stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
 			syntaxtree.NewNumber("1"),
 		}))
 		// obj: f 1 2 3

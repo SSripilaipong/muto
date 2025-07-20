@@ -27,15 +27,11 @@ func (f constantBuilderFactory) NewBuilder(r stResult.Node) optional.Of[mutator.
 	case stResult.IsNodeTypeNumber(r):
 		return optional.Value[mutator.Builder](newNumberBuilder(syntaxtree.UnsafeRuleResultToNumber(r)))
 	case stResult.IsNodeTypeClass(r):
-		return optional.Value[mutator.Builder](f.newClassBuilder(syntaxtree.UnsafeRuleResultToClass(r)))
+		return optional.Value[mutator.Builder](newClassBuilder(syntaxtree.UnsafeRuleResultToClass(r)))
 	case stResult.IsNodeTypeTag(r):
 		return optional.Value[mutator.Builder](newTagBuilder(syntaxtree.UnsafeRuleResultToTag(r)))
 	}
 	return optional.Empty[mutator.Builder]()
-}
-
-func (f constantBuilderFactory) newClassBuilder(x syntaxtree.Class) Class {
-	return newClass(base.NewUnlinkedRuleBasedClass(x.Name()))
 }
 
 func newBooleanBuilder(x syntaxtree.Boolean) constantWrapper[base.Boolean] {

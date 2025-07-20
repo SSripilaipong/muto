@@ -5,44 +5,25 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-type Class struct {
-	name string
+type Class interface {
+	stResult.Node
+	base.Pattern
+	base.Determinant
+
+	Name() string
+	ClassType() ClassType
 }
 
-func (Class) PatternType() base.PatternType { return base.PatternTypeClass }
+type ClassType string
 
-func (Class) DeterminantType() base.DeterminantType { return base.DeterminantTypeClass }
+const (
+	ClassTypeLocal    ClassType = "LOCAL"
+	ClassTypeImported ClassType = "IMPORTED"
+)
 
-func (Class) RuleResultNodeType() stResult.NodeType { return stResult.NodeTypeClass }
+func IsClassTypeLocal(x Class) bool    { return x.ClassType() == ClassTypeLocal }
+func IsClassTypeImported(x Class) bool { return x.ClassType() == ClassTypeImported }
 
-func (Class) ObjectParamType() stResult.ParamType { return stResult.ParamTypeSingle }
+func UnsafeRuleResultToClass(p stResult.Node) Class { return p.(Class) }
 
-func (Class) NonObjectNode() {}
-
-func (c Class) Value() string {
-	return c.Name()
-}
-
-func (c Class) Name() string {
-	return c.name
-}
-
-func (c Class) DeterminantName() string {
-	return c.Name()
-}
-
-func NewClass(name string) Class {
-	return Class{name: name}
-}
-
-func ClassToName(c Class) string {
-	return c.Name()
-}
-
-func UnsafeRuleResultToClass(p stResult.Node) Class {
-	return p.(Class)
-}
-
-func UnsafePatternToClass(p base.Pattern) Class {
-	return p.(Class)
-}
+func UnsafePatternToClass(p base.Pattern) Class { return p.(Class) }

@@ -15,4 +15,4 @@ var TagResultNode = ps.Map(stResult.ToNode, Tag)
 
 var TagPattern = ps.Map(stBase.ToPattern, Tag)
 
-var classToTag = fn.Compose3(syntaxtree.NewTag, strutil.WithPrefix("."), syntaxtree.ClassToName)
+var classToTag = fn.Compose3(syntaxtree.NewTag, strutil.WithPrefix("."), syntaxtree.LocalClassToName)

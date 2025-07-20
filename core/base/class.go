@@ -6,13 +6,13 @@ import (
 
 type Class interface {
 	Node
+	LinkRule(mutator Rule)
 	ClassType() ClassType
 	Children() []Node
 	ActivelyMutateWithObjMutateFunc(params ParamChain) optional.Of[Node]
 	MutateWithObjMutateFunc(params ParamChain) optional.Of[Node]
 	Name() string
 	String() string
-	Equals(d Class) bool
 }
 
 type ClassType string
@@ -30,6 +30,6 @@ func IsImportedClass(class Class) bool {
 	return class.ClassType() == ClassTypeImported
 }
 
-func UnsafeNodeToClass(obj Node) Class {
-	return obj.(Class)
+func UnsafeNodeToClass(node Node) Class {
+	return node.(Class)
 }

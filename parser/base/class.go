@@ -4,26 +4,38 @@ import (
 	"slices"
 
 	ps "github.com/SSripilaipong/muto/common/parsing"
-	"github.com/SSripilaipong/muto/syntaxtree"
-	st "github.com/SSripilaipong/muto/syntaxtree/base"
+	"github.com/SSripilaipong/muto/common/tuple"
+	st "github.com/SSripilaipong/muto/syntaxtree"
+	stBase "github.com/SSripilaipong/muto/syntaxtree/base"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-var Class = ps.Map(syntaxtree.NewClass, ps.Or(
+var DeterminantClass = ps.Map(stBase.ToDeterminant, ps.Filter(validDeterminantClass, Class))
+
+var NonDeterminantClassRulePattern = ps.Or(
+	ps.Map(stBase.ToPattern, Class),
+	ps.Map(stBase.ToPattern, ImportedClass),
+)
+
+var ClassResultNode = ps.Or(
+	ps.Map(stResult.ToNode, Class),
+	ps.Map(stResult.ToNode, ImportedClass),
+)
+
+var ImportedClass = ps.Map(parseImportedClass, ps.Sequence3(ImportPathToken, Dot, Class))
+
+var Class = ps.Map(st.NewLocalClass, ps.Or(
 	ps.Filter(validClassName, identifierStartingWithNonUpperCase),
 	ps.Filter(classSymbol, symbol),
 ))
 
-var ClassRule = ps.Filter(validClassRule, Class)
+var parseImportedClass = tuple.Fn3(func(module string, _ Character, class st.LocalClass) st.ImportedClass {
+	return st.NewImportedClass(module, class.Name())
+})
 
-var ClassRulePattern = ps.Map(st.ToPattern, ClassRule)
-var ClassDeterminant = ps.Map(st.ToDeterminant, ClassRule)
-
-func validClassRule(class syntaxtree.Class) bool {
+func validDeterminantClass(class st.LocalClass) bool {
 	return !slices.Contains([]string{"try"}, class.Name())
 }
-
-var ClassResultNode = ps.Map(classToResultNode, Class)
 
 func validClassName(x string) bool {
 	return !IsBooleanValue(x)
@@ -32,5 +44,3 @@ func validClassName(x string) bool {
 func classSymbol(x string) bool {
 	return x != "=" && x[0] != '.' && x[0] != '"' && x[0] != '\''
 }
-
-func classToResultNode(x syntaxtree.Class) stResult.Node { return x }

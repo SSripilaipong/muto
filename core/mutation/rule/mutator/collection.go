@@ -48,7 +48,7 @@ func (c Collection) GetMutator(name string) optional.Of[base.Rule] {
 
 func (c Collection) LinkClass(class base.Class) {
 	if mutator, exists := c.mutators[class.Name()]; exists {
-		base.LinkClassRule(class, mutator)
+		class.LinkRule(mutator)
 	}
 }
 
