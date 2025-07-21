@@ -3,8 +3,9 @@ package reader
 import (
 	"fmt"
 
+	"github.com/SSripilaipong/go-common/optional"
+
 	"github.com/SSripilaipong/muto/builder/repl/core/command"
-	"github.com/SSripilaipong/muto/common/optional"
 )
 
 type Reader struct {

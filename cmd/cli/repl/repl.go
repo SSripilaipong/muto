@@ -1,7 +1,7 @@
 package repl
 
 import (
-	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/go-common/optional"
 )
 
 type repl[Cmd any] interface {

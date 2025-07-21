@@ -5,10 +5,11 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/SSripilaipong/go-common/rslt"
+	"github.com/SSripilaipong/go-common/tuple"
+
 	"github.com/SSripilaipong/muto/common/parsing"
-	"github.com/SSripilaipong/muto/common/rslt"
 	"github.com/SSripilaipong/muto/common/slc"
-	"github.com/SSripilaipong/muto/common/tuple"
 	tk "github.com/SSripilaipong/muto/parser/base"
 	"github.com/SSripilaipong/muto/syntaxtree"
 	"github.com/SSripilaipong/muto/syntaxtree/base"

@@ -4,11 +4,12 @@ import (
 	"math"
 	"slices"
 
+	"github.com/SSripilaipong/go-common/rslt"
+	"github.com/SSripilaipong/go-common/tuple"
+
 	"github.com/SSripilaipong/muto/common/fn"
 	ps "github.com/SSripilaipong/muto/common/parsing"
-	"github.com/SSripilaipong/muto/common/rslt"
 	"github.com/SSripilaipong/muto/common/slc"
-	"github.com/SSripilaipong/muto/common/tuple"
 )
 
 func WithTrailingLineBreak[R any](p Parser[R]) Parser[R] {

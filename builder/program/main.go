@@ -1,11 +1,12 @@
 package program
 
 import (
+	"github.com/SSripilaipong/go-common/rslt"
+
 	"github.com/SSripilaipong/muto/builtin"
 	"github.com/SSripilaipong/muto/builtin/global"
 	"github.com/SSripilaipong/muto/builtin/portal"
 	"github.com/SSripilaipong/muto/common/fn"
-	"github.com/SSripilaipong/muto/common/rslt"
 	"github.com/SSripilaipong/muto/core/module"
 	fileParser "github.com/SSripilaipong/muto/parser/file"
 	"github.com/SSripilaipong/muto/program"

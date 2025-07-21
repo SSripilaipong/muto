@@ -3,9 +3,10 @@ package parsing
 import (
 	"fmt"
 
-	"github.com/SSripilaipong/muto/common/rslt"
+	"github.com/SSripilaipong/go-common/rslt"
+	"github.com/SSripilaipong/go-common/tuple"
+
 	"github.com/SSripilaipong/muto/common/slc"
-	"github.com/SSripilaipong/muto/common/tuple"
 )
 
 func RsConsumeIf[S any](f func(S) bool) func([]S) []tuple.Of2[rslt.Of[S], []S] {

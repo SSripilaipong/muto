@@ -1,8 +1,8 @@
 package parsing
 
 import (
-	"github.com/SSripilaipong/muto/common/rslt"
-	"github.com/SSripilaipong/muto/common/tuple"
+	"github.com/SSripilaipong/go-common/rslt"
+	"github.com/SSripilaipong/go-common/tuple"
 )
 
 func Map[S, R1, R2 any](f func(R1) R2, p func([]S) []tuple.Of2[R1, []S]) func([]S) []tuple.Of2[R2, []S] {

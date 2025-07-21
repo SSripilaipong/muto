@@ -1,7 +1,8 @@
 package extractor
 
 import (
-	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/go-common/optional"
+
 	"github.com/SSripilaipong/muto/core/base"
 	"github.com/SSripilaipong/muto/core/pattern/parameter"
 )

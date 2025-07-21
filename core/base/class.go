@@ -1,7 +1,7 @@
 package base
 
 import (
-	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/go-common/optional"
 )
 
 type Class interface {

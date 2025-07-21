@@ -1,9 +1,10 @@
 package base
 
 import (
+	"github.com/SSripilaipong/go-common/tuple"
+
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/slc"
-	"github.com/SSripilaipong/muto/common/tuple"
 )
 
 var RsImportPath = ps.RsMap(parseImportPath, ps.RsSequence2(RsImportPathToken, ps.RsOptionalGreedyRepeat(importSubPathToken)))

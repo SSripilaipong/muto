@@ -5,8 +5,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/SSripilaipong/muto/common/optional"
-	"github.com/SSripilaipong/muto/common/rslt"
+	"github.com/SSripilaipong/go-common/optional"
+
+	"github.com/SSripilaipong/go-common/rslt"
+
 	"github.com/SSripilaipong/muto/core/base"
 	"github.com/SSripilaipong/muto/core/portal"
 )

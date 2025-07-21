@@ -3,8 +3,9 @@ package builtin
 import (
 	"fmt"
 
+	"github.com/SSripilaipong/go-common/rods"
+
 	timeMod "github.com/SSripilaipong/muto/builtin/time"
-	"github.com/SSripilaipong/muto/common/rods"
 	"github.com/SSripilaipong/muto/core/module"
 )
 

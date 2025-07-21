@@ -6,7 +6,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/SSripilaipong/muto/common/rslt"
+	"github.com/SSripilaipong/go-common/rslt"
+
 	psBase "github.com/SSripilaipong/muto/parser/base"
 	"github.com/SSripilaipong/muto/syntaxtree"
 )

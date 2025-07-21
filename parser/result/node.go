@@ -1,10 +1,11 @@
 package result
 
 import (
+	"github.com/SSripilaipong/go-common/rslt"
+	"github.com/SSripilaipong/go-common/tuple"
+
 	"github.com/SSripilaipong/muto/common/fn"
 	ps "github.com/SSripilaipong/muto/common/parsing"
-	"github.com/SSripilaipong/muto/common/rslt"
-	"github.com/SSripilaipong/muto/common/tuple"
 	psBase "github.com/SSripilaipong/muto/parser/base"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )

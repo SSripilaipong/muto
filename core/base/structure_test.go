@@ -5,7 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/go-common/optional"
+
 	"github.com/SSripilaipong/muto/common/slc"
 )
 

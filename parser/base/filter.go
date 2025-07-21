@@ -4,9 +4,10 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/SSripilaipong/go-common/rslt"
+	"github.com/SSripilaipong/go-common/tuple"
+
 	"github.com/SSripilaipong/muto/common/parsing"
-	"github.com/SSripilaipong/muto/common/rslt"
-	"github.com/SSripilaipong/muto/common/tuple"
 )
 
 func FilterStatement[T any](raw []tuple.Of2[rslt.Of[T], []Character]) rslt.Of[T] {

@@ -1,8 +1,9 @@
 package base
 
 import (
+	"github.com/SSripilaipong/go-common/tuple"
+
 	ps "github.com/SSripilaipong/muto/common/parsing"
-	"github.com/SSripilaipong/muto/common/tuple"
 )
 
 var identifierStartingWithNonUpperCase = ps.Map(

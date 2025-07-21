@@ -1,8 +1,9 @@
 package parsing
 
 import (
+	"github.com/SSripilaipong/go-common/tuple"
+
 	"github.com/SSripilaipong/muto/common/slc"
-	"github.com/SSripilaipong/muto/common/tuple"
 )
 
 func One[S any](xs []S) []tuple.Of2[S, []S] {

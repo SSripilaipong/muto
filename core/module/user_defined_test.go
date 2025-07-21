@@ -5,7 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/SSripilaipong/muto/common/rods"
+	"github.com/SSripilaipong/go-common/rods"
+
 	"github.com/SSripilaipong/muto/core/base"
 	mutation "github.com/SSripilaipong/muto/core/mutation/rule"
 	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"

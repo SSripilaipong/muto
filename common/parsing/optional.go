@@ -1,9 +1,11 @@
 package parsing
 
 import (
-	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/go-common/optional"
+
+	"github.com/SSripilaipong/go-common/tuple"
+
 	"github.com/SSripilaipong/muto/common/slc"
-	"github.com/SSripilaipong/muto/common/tuple"
 )
 
 func GreedyOptional[S, R any](p func([]S) []tuple.Of2[R, []S]) func([]S) []tuple.Of2[optional.Of[R], []S] {

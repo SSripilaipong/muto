@@ -1,9 +1,10 @@
 package pattern
 
 import (
+	"github.com/SSripilaipong/go-common/rslt"
+	"github.com/SSripilaipong/go-common/tuple"
+
 	ps "github.com/SSripilaipong/muto/common/parsing"
-	"github.com/SSripilaipong/muto/common/rslt"
-	"github.com/SSripilaipong/muto/common/tuple"
 	psBase "github.com/SSripilaipong/muto/parser/base"
 	"github.com/SSripilaipong/muto/syntaxtree/base"
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"

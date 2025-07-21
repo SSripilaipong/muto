@@ -3,8 +3,9 @@ package parsing
 import (
 	"errors"
 
-	"github.com/SSripilaipong/muto/common/rslt"
-	"github.com/SSripilaipong/muto/common/tuple"
+	"github.com/SSripilaipong/go-common/rslt"
+
+	"github.com/SSripilaipong/go-common/tuple"
 )
 
 func Sequence2[S, R1, R2 any](

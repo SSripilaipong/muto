@@ -3,7 +3,7 @@ package base
 import (
 	"slices"
 
-	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/go-common/optional"
 )
 
 func MutateParamChain(params ParamChain) optional.Of[ParamChain] {

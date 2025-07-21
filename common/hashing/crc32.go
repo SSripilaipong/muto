@@ -5,7 +5,7 @@ import (
 	"hash/crc32"
 	"math"
 
-	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/go-common/optional"
 )
 
 func CRC32(value any) optional.Of[uint32] {

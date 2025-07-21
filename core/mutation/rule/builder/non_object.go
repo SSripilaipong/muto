@@ -1,7 +1,8 @@
 package builder
 
 import (
-	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/go-common/optional"
+
 	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
 	stBase "github.com/SSripilaipong/muto/syntaxtree"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"

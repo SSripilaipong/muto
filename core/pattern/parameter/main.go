@@ -3,8 +3,10 @@ package parameter
 import (
 	"maps"
 
-	"github.com/SSripilaipong/muto/common/optional"
-	"github.com/SSripilaipong/muto/common/rods"
+	"github.com/SSripilaipong/go-common/optional"
+
+	"github.com/SSripilaipong/go-common/rods"
+
 	"github.com/SSripilaipong/muto/core/base"
 )
 

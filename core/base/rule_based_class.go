@@ -1,6 +1,6 @@
 package base
 
-import "github.com/SSripilaipong/muto/common/optional"
+import "github.com/SSripilaipong/go-common/optional"
 
 type Rule interface {
 	Active(obj Object) optional.Of[Node]

@@ -3,9 +3,10 @@ package base
 import (
 	"strings"
 
+	"github.com/SSripilaipong/go-common/tuple"
+
 	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/common/strutil"
-	"github.com/SSripilaipong/muto/common/tuple"
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 

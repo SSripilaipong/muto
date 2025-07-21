@@ -3,7 +3,8 @@ package builder
 import (
 	"fmt"
 
-	"github.com/SSripilaipong/muto/common/optional"
+	"github.com/SSripilaipong/go-common/optional"
+
 	"github.com/SSripilaipong/muto/core/base"
 	ruleExtractor "github.com/SSripilaipong/muto/core/mutation/rule/extractor"
 	ruleMutator "github.com/SSripilaipong/muto/core/mutation/rule/mutator"

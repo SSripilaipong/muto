@@ -1,9 +1,10 @@
 package parsing
 
 import (
-	"github.com/SSripilaipong/muto/common/rslt"
+	"github.com/SSripilaipong/go-common/rslt"
+	"github.com/SSripilaipong/go-common/tuple"
+
 	"github.com/SSripilaipong/muto/common/slc"
-	"github.com/SSripilaipong/muto/common/tuple"
 )
 
 func OptionalGreedyRepeat[S, R any](p func([]S) []tuple.Of2[R, []S]) func([]S) []tuple.Of2[[]R, []S] {

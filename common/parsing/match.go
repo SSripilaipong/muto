@@ -1,6 +1,6 @@
 package parsing
 
-import "github.com/SSripilaipong/muto/common/tuple"
+import "github.com/SSripilaipong/go-common/tuple"
 
 func Matches[S, R any](f func([]S) []tuple.Of2[R, []S]) func([]S) bool {
 	return func(s []S) bool {

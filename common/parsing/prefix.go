@@ -1,7 +1,7 @@
 package parsing
 
 import (
-	"github.com/SSripilaipong/muto/common/tuple"
+	"github.com/SSripilaipong/go-common/tuple"
 )
 
 func Prefix[S, P, R any](

@@ -1,7 +1,8 @@
 package portal
 
 import (
-	"github.com/SSripilaipong/muto/common/rods"
+	"github.com/SSripilaipong/go-common/rods"
+
 	"github.com/SSripilaipong/muto/core/portal"
 )
 
