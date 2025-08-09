@@ -1,12 +1,16 @@
 package module
 
 import (
+	"github.com/SSripilaipong/go-common/optional"
+
 	"github.com/SSripilaipong/muto/core/base"
 	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
 	"github.com/SSripilaipong/muto/core/portal"
+	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
 type Module interface {
+	BuildNode(node stResult.SimplifiedNode) optional.Of[base.Node]
 	GetClass(name string) base.Class
 	LoadGlobal(global Module)
 	MountPortal(q *portal.Portal)
