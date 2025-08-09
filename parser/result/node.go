@@ -10,6 +10,8 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
+var ParseSimplifiedNode = fn.Compose3(psBase.FilterStatement, RsSimplifiedNode, psBase.StringToCharTokens)
+
 var RsSimplifiedNode = ps.Map(rslt.Value, SimplifiedNode())
 
 func SimplifiedNode() func([]psBase.Character) []tuple.Of2[stResult.SimplifiedNode, []psBase.Character] {
