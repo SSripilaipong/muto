@@ -3,7 +3,7 @@ module github.com/SSripilaipong/muto
 go 1.23.8
 
 require (
-	github.com/SSripilaipong/go-common v0.0.0-20250721050324-23fc7cf74ac5
+	github.com/SSripilaipong/go-common v0.0.0-20250813151214-1d471e1eba5c
 	github.com/chzyer/readline v1.5.1
 	github.com/stretchr/testify v1.9.0
 	github.com/urfave/cli/v2 v2.27.4

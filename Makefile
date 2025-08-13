@@ -23,3 +23,6 @@ build: build-cli
 
 build-cli:
 	go build -o build/muto ./cmd/cli
+
+go-get-common:
+	go get github.com/SSripilaipong/go-common@$(shell curl -s https://api.github.com/repos/SSripilaipong/go-common/commits/main | jq -r .sha)
