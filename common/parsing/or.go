@@ -44,12 +44,13 @@ func RsFirst[S, R any](ps ...func([]S) []tuple.Of2[rslt.Of[R], []S]) func([]S) [
 	}
 	alternatives := RsFirst[S, R](ps[1:]...)
 	return func(s []S) []tuple.Of2[rslt.Of[R], []S] {
-		first := ps[0](s)
-		for _, x := range first {
-			if x.X1().IsOk() {
-				return first
-			}
+		first := CollapseMultiResult(ps[0](s))
+		if r, ok := first.Return(); ok && r.X1().IsOk() {
+			return ExpandSingleResult(r)
 		}
-		return alternatives(s)
+		if r, ok := CollapseMultiResult(alternatives(s)).Return(); ok {
+			return ExpandSingleResult(r)
+		}
+		return nil
 	}
 }
