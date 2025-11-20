@@ -11,15 +11,24 @@ import (
 )
 
 var Rune = ps.Map(
-	fn.Compose(syntaxtree.NewRune, stringWithSingleQuotes), InSingleQuotes(innerRune),
+	fn.Compose(syntaxtree.NewRune, stringWithSingleQuotes),
+	InSingleQuotes(innerRune),
 )
 
 var RuneResultNode = ps.Map(stResult.ToNode, Rune)
 
 var RunePattern = ps.Map(st.ToPattern, Rune)
 
-var innerRune = ps.First(escapedRune, nonEscapedRune)
-var escapedRune = ps.Map(escapeStringToRunes, ps.Sequence2(BackSlash, ps.ConsumeIf(fn.Const[Character](true))))
+var innerRune = ps.First(
+	escapedRune,
+	nonEscapedRune,
+)
+var escapedRune = ps.Map(escapeStringToRunes,
+	ps.Sequence2(
+		BackSlash,
+		ps.ConsumeIf(fn.Const[Character](true)),
+	),
+)
 var nonEscapedRune = ps.Map(tokenToRunes, NotSingleQuote)
 
 func stringWithSingleQuotes(x []rune) string {

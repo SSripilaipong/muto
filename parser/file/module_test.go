@@ -6,11 +6,8 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/SSripilaipong/go-common/rslt"
-	"github.com/SSripilaipong/go-common/tuple"
 
-	"github.com/SSripilaipong/muto/common/parsing"
-	"github.com/SSripilaipong/muto/common/slc"
-	tk "github.com/SSripilaipong/muto/parser/base"
+	psBase "github.com/SSripilaipong/muto/parser/base"
 	"github.com/SSripilaipong/muto/syntaxtree"
 	"github.com/SSripilaipong/muto/syntaxtree/base"
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
@@ -26,7 +23,7 @@ func TestParseString(t *testing.T) {
 				stResult.SingleNodeToNakedObject(syntaxtree.NewString(`"hello world"`)),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterResult(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 
 	t.Run("should parse with pattern param", func(t *testing.T) {
@@ -37,7 +34,7 @@ func TestParseString(t *testing.T) {
 				stResult.NewNakedObject(syntaxtree.NewLocalClass("+"), stResult.FixedParamPart([]stResult.Param{syntaxtree.NewNumber("1"), syntaxtree.NewString("\"abc\"")})),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 }
 
@@ -50,7 +47,7 @@ func TestParseVariable(t *testing.T) {
 				stResult.SingleNodeToNakedObject(syntaxtree.NewNumber("1")),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 }
 
@@ -65,7 +62,7 @@ func TestParseObjectParam(t *testing.T) {
 				stResult.SingleNodeToNakedObject(syntaxtree.NewNumber("789")),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterResult(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 
 	t.Run("should parse string as anonymous head", func(t *testing.T) {
@@ -78,7 +75,7 @@ func TestParseObjectParam(t *testing.T) {
 				stResult.SingleNodeToNakedObject(syntaxtree.NewNumber("789")),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 
 	t.Run("should parse number as anonymous head", func(t *testing.T) {
@@ -91,7 +88,7 @@ func TestParseObjectParam(t *testing.T) {
 				stResult.SingleNodeToNakedObject(syntaxtree.NewNumber("789")),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 
 	t.Run("should parse number as anonymous head without children", func(t *testing.T) {
@@ -104,7 +101,7 @@ func TestParseObjectParam(t *testing.T) {
 				stResult.SingleNodeToNakedObject(syntaxtree.NewNumber("789")),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 }
 
@@ -117,7 +114,7 @@ func TestParseObject(t *testing.T) {
 				stResult.NewNakedObject(syntaxtree.NewLocalClass("a"), stResult.FixedParamPart([]stResult.Param{syntaxtree.NewLocalClass("b")})),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterResult(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 
 	t.Run("should parse nested object", func(t *testing.T) {
@@ -133,7 +130,7 @@ func TestParseObject(t *testing.T) {
 				stResult.SingleNodeToNakedObject(syntaxtree.NewNumber("999")),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 	t.Run("should parse object", func(t *testing.T) {
 		s := `main A = (+ 1 2) 3 4`
@@ -146,7 +143,7 @@ func TestParseObject(t *testing.T) {
 				),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 
 	t.Run("should parse nested anonymous object", func(t *testing.T) {
@@ -160,7 +157,7 @@ func TestParseObject(t *testing.T) {
 				),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 
 	t.Run("should parse number as a head", func(t *testing.T) {
@@ -174,7 +171,7 @@ func TestParseObject(t *testing.T) {
 				),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 }
 
@@ -187,7 +184,7 @@ func TestParseVariadicVarPattern(t *testing.T) {
 				stResult.NewNakedObject(syntaxtree.NewLocalClass("g"), stResult.FixedParamPart([]stResult.Param{syntaxtree.NewVariable("X")})),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 
 	t.Run("should parse right variadic var", func(t *testing.T) {
@@ -198,7 +195,7 @@ func TestParseVariadicVarPattern(t *testing.T) {
 				stResult.NewNakedObject(syntaxtree.NewLocalClass("g"), stResult.FixedParamPart([]stResult.Param{syntaxtree.NewVariable("X")})),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 
 	t.Run("should parse nested variadic var", func(t *testing.T) {
@@ -215,7 +212,7 @@ func TestParseVariadicVarPattern(t *testing.T) {
 				stResult.NewNakedObject(syntaxtree.NewLocalClass("g"), stResult.FixedParamPart([]stResult.Param{syntaxtree.NewVariable("Y")})),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 }
 
@@ -228,7 +225,7 @@ func TestParseVariadicParamPart(t *testing.T) {
 				stResult.NewNakedObject(syntaxtree.NewLocalClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{stResult.NewVariadicVariable("Xs"), syntaxtree.NewVariable("X")})),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 
 	t.Run("should parse right variadic param part", func(t *testing.T) {
@@ -239,7 +236,7 @@ func TestParseVariadicParamPart(t *testing.T) {
 				stResult.NewNakedObject(syntaxtree.NewLocalClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{syntaxtree.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 
 	t.Run("should parse result with multiple variadic variables in param part", func(t *testing.T) {
@@ -250,7 +247,7 @@ func TestParseVariadicParamPart(t *testing.T) {
 				stResult.NewNakedObject(syntaxtree.NewLocalClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{stResult.NewVariadicVariable("Xs"), syntaxtree.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 }
 
@@ -270,7 +267,7 @@ func TestVariableRulePattern(t *testing.T) {
 				stResult.SingleNodeToNakedObject(syntaxtree.NewNumber("1")),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 }
 
@@ -283,7 +280,7 @@ func TestActiveRule(t *testing.T) {
 				stResult.NewNakedObject(syntaxtree.NewLocalClass("g"), stResult.ParamsToFixedParamPart([]stResult.Param{syntaxtree.NewVariable("X"), stResult.NewVariadicVariable("Xs")})),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 }
 
@@ -296,7 +293,7 @@ func TestBoolean(t *testing.T) {
 				stResult.SingleNodeToNakedObject(syntaxtree.NewBoolean("true")),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 
 	t.Run("should parse boolean as a rule param", func(t *testing.T) {
@@ -307,7 +304,7 @@ func TestBoolean(t *testing.T) {
 				stResult.NewNakedObject(syntaxtree.NewLocalClass("f"), stResult.ParamsToFixedParamPart([]stResult.Param{syntaxtree.NewBoolean("true")})),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 
 	t.Run("should parse boolean as a rule pattern param", func(t *testing.T) {
@@ -318,7 +315,7 @@ func TestBoolean(t *testing.T) {
 				stResult.SingleNodeToNakedObject(syntaxtree.NewString("\"a\"")),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 
 	t.Run("should parse boolean as an object head", func(t *testing.T) {
@@ -329,7 +326,7 @@ func TestBoolean(t *testing.T) {
 				stResult.NewNakedObject(syntaxtree.NewBoolean("true"), stResult.ParamsToFixedParamPart([]stResult.Param{syntaxtree.NewString("\"a\"")})),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 }
 
@@ -345,11 +342,11 @@ func TestNestedResult(t *testing.T) {
 				),
 			),
 		})
-		assert.Equal(t, expected, parsing.FilterSuccess(ParseModuleCombinationFromString(s)))
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 }
 
-func expectedStatements(sts []base.Statement) []tuple.Of2[rslt.Of[syntaxtree.Module], []tk.Character] {
+func expectedStatements(sts []base.Statement) rslt.Of[syntaxtree.Module] {
 	pkg := syntaxtree.NewModule([]syntaxtree.File{syntaxtree.NewFile(sts)})
-	return slc.Pure(tuple.New2(rslt.Value(pkg), []tk.Character{}))
+	return rslt.Value(pkg)
 }

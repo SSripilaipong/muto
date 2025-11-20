@@ -7,15 +7,27 @@ import (
 )
 
 var identifierStartingWithNonUpperCase = ps.Map(
-	tuple.Fn2(joinTokenString), ps.Sequence2(char(IsIdentifierFirstLetterNonUpperCase), identifierFollowingLetters),
+	tuple.Fn2(joinTokenString),
+	ps.Sequence2(
+		char("identifier first letter non upper case", IsIdentifierFirstLetterNonUpperCase),
+		identifierFollowingLetters,
+	),
 )
 
 var identifierStartingWithUpperCaseAndUnderscore = ps.Map(
-	tuple.Fn2(joinTokenString), ps.Sequence2(char(IsIdentifierFirstLetterUpperCaseAndUnderscore), identifierFollowingLetters),
+	tuple.Fn2(joinTokenString),
+	ps.Sequence2(
+		char("identifier first letter upper case or underscore", IsIdentifierFirstLetterUpperCaseAndUnderscore),
+		identifierFollowingLetters,
+	),
 )
 
 var identifierStartingWithUpperCase = ps.Map(
-	tuple.Fn2(joinTokenString), ps.Sequence2(char(IsIdentifierFirstLetterUpperCase), identifierFollowingLetters),
+	tuple.Fn2(joinTokenString),
+	ps.Sequence2(
+		char("identifier first letter upper case", IsIdentifierFirstLetterUpperCase),
+		identifierFollowingLetters,
+	),
 )
 
-var identifierFollowingLetters = ps.Map(tokensToString, ps.OptionalGreedyRepeat(char(IsIdentifierFollowingLetter)))
+var identifierFollowingLetters = ps.Map(tokensToString, ps.OptionalGreedyRepeat(char("identifier following letter", IsIdentifierFollowingLetter)))

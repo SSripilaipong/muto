@@ -10,7 +10,7 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-func nakedObjectWithChildren() func(xs []psBase.Character) []tuple.Of2[objectNode, []psBase.Character] {
+func nakedObjectWithChildren() func(xs []psBase.Character) tuple.Of2[rslt.Of[objectNode], []psBase.Character] {
 	mergeParam := func(ps []stResult.FixedParamPart) (r stResult.FixedParamPart) {
 		for _, p := range ps {
 			r = r.Append(p)
@@ -26,29 +26,56 @@ func nakedObjectWithChildren() func(xs []psBase.Character) []tuple.Of2[objectNod
 
 	paramLine := objectParamPart()
 	paramLinesInBlock := psBase.GreedyRepeatedLinesInAutoIndentBlockAtLeastOnce(paramLine)
-	paramLinesInBlockStartingWithLineBreak := ps.Map(mergeParamIgnoreNewLine, ps.Sequence2(psBase.LineBreak, paramLinesInBlock))
-	paramLineFollowedByParamBlock := ps.Map(mergeParamWithFirstParam, ps.Sequence3(paramLine, psBase.LineBreak, paramLinesInBlock))
+	paramLinesInBlockStartingWithLineBreak := ps.Map(
+		mergeParamIgnoreNewLine,
+		ps.Sequence2(
+			psBase.LineBreak,
+			paramLinesInBlock,
+		),
+	)
+	paramLineFollowedByParamBlock := ps.Map(
+		mergeParamWithFirstParam,
+		ps.Sequence3(
+			paramLine,
+			psBase.LineBreak,
+			paramLinesInBlock,
+		),
+	)
 
-	head := objectHead()
-	return ps.Or(
-		ps.Map(mergeObject, ps.Sequence2(head, paramLinesInBlockStartingWithLineBreak)),
-		ps.Map(mergeObject, psBase.SpaceSeparated2(head, paramLineFollowedByParamBlock)),
-		ps.Map(mergeObject, psBase.SpaceSeparated2(head, paramLine)),
+	head := anyNode()
+	return ps.First(
+		ps.Map(mergeObject, ps.Sequence2(
+			head,
+			paramLinesInBlockStartingWithLineBreak,
+		)),
+		ps.Map(
+			mergeObject,
+			psBase.SpaceSeparated2(
+				head,
+				paramLineFollowedByParamBlock,
+			),
+		),
+		ps.Map(
+			mergeObject,
+			psBase.SpaceSeparated2(
+				head,
+				paramLine,
+			),
+		),
 	)
 }
 
-var ParseNakedObjectMultilines = fn.Compose3(psBase.FilterStatement, RsNakedObjectMultilines, psBase.StringToCharTokens)
+var ParseNakedObjectMultilines = fn.Compose3(psBase.FilterResult, NakedObjectMultilines, psBase.StringToCharTokens)
 
-var RsNakedObjectMultilines = ps.Map(rslt.Value, NakedObjectMultilines)
-
-func NakedObjectMultilines(xs []psBase.Character) []tuple.Of2[stResult.Node, []psBase.Character] {
+func NakedObjectMultilines(xs []psBase.Character) tuple.Of2[rslt.Of[stResult.Node], []psBase.Character] {
 	return ps.Map(castObjectNode, nakedObjectMultilines)(xs)
 }
 
-func nakedObjectMultilines(xs []psBase.Character) []tuple.Of2[objectNode, []psBase.Character] {
-	head := objectHead()
-	return ps.Or(
-		ps.Map(mergeObject, psBase.WhiteSpaceSeparated2(head, objectParamPartMultilines)),
+func nakedObjectMultilines(xs []psBase.Character) tuple.Of2[rslt.Of[objectNode], []psBase.Character] {
+	head := anyNode()
+	params := objectParamPartMultilines()
+	return ps.First(
+		ps.Map(mergeObject, psBase.WhiteSpaceSeparated2(head, params)),
 		ps.Map(nodeToObject, head),
 	)(xs)
 }
@@ -59,8 +86,4 @@ var mergeObject = tuple.Fn2(func(head stResult.Node, params stResult.FixedParamP
 
 var nodeToObject = func(head stResult.Node) objectNode {
 	return objectNode{head: head, paramPart: stResult.ParamsToFixedParamPart([]stResult.Param{})}
-}
-
-func objectHead() func([]psBase.Character) []tuple.Of2[stResult.Node, []psBase.Character] {
-	return anyNode()
 }

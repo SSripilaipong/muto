@@ -13,19 +13,21 @@ import (
 
 var DeterminantClass = ps.Map(stBase.ToDeterminant, ps.Filter(validDeterminantClass, Class))
 
-var NonDeterminantClassRulePattern = ps.Or(
+var NonDeterminantClassRulePattern = ps.First(
 	ps.Map(stBase.ToPattern, Class),
 	ps.Map(stBase.ToPattern, ImportedClass),
 )
 
-var ClassResultNode = ps.Or(
+var ClassResultNode = ps.First(
 	ps.Map(stResult.ToNode, Class),
 	ps.Map(stResult.ToNode, ImportedClass),
 )
 
-var ImportedClass = ps.Map(parseImportedClass, ps.Sequence3(ImportPathToken, Dot, Class))
+var ImportedClass = ps.Map(parseImportedClass, ps.Sequence3(
+	ImportPathToken, Dot, Class,
+))
 
-var Class = ps.Map(st.NewLocalClass, ps.Or(
+var Class = ps.Map(st.NewLocalClass, ps.First(
 	ps.Filter(validClassName, identifierStartingWithNonUpperCase),
 	ps.Filter(classSymbol, symbol),
 ))
@@ -43,5 +45,5 @@ func validClassName(x string) bool {
 }
 
 func classSymbol(x string) bool {
-	return x != "=" && x[0] != '.' && x[0] != '"' && x[0] != '\''
+	return x != "=" && x[0] != '.' && x[0] != '"' && x[0] != '\'' && x[0] != '\\' && x[0] != '('
 }

@@ -7,7 +7,10 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-var Boolean = ps.Map(syntaxtree.NewBoolean, ps.Or(fixedChars("true"), fixedChars("false")))
+var Boolean = ps.Map(
+	syntaxtree.NewBoolean,
+	ps.First(FixedChars("true"), FixedChars("false")),
+)
 
 var BooleanPattern = ps.Map(st.ToPattern, Boolean)
 

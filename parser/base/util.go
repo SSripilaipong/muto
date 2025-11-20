@@ -29,61 +29,34 @@ func StringToCharTokens(s string) []Character {
 	return r
 }
 
-func Prefix[P, T any](pf Parser[P], x Parser[T]) Parser[T] {
-	var merge = tuple.Fn2(func(_ P, x T) T {
-		return x
-	})
-	return ps.Map(merge, ps.Sequence2(pf, x))
-}
-
-func fixedChars(s string) Parser[string] {
+func FixedChars(s string) func([]Character) tuple.Of2[rslt.Of[string], []Character] {
 	rs := []rune(s)
 	n := len(rs)
-	return func(xs []Character) []tuple.Of2[string, []Character] {
+	return func(xs []Character) tuple.Of2[rslt.Of[string], []Character] {
 		if len(xs) < n {
-			return nil
+			return tuple.New2(rslt.Error[string](fmt.Errorf("expected %s", s)), xs)
 		}
 		for i := range rs {
-			x := xs[i]
-			if x.Value() != rs[i] {
-				return nil
+			if xs[i].Value() != rs[i] {
+				return tuple.New2(rslt.Error[string](fmt.Errorf("expected %s", s)), xs)
 			}
 		}
-		return slc.Pure(tuple.New2(s, xs[n:]))
+		return tuple.New2(rslt.Value(s), xs[n:])
 	}
 }
 
-func RsFixedChars(x string) RsParser[string] {
-	return ps.RsFirst(
-		ps.Map(rslt.Value, fixedChars(x)),
-		ps.Result[Character](rslt.Error[string](fmt.Errorf("expected %s", x))),
-	)
+func char(name string, g func(s rune) bool) func([]Character) tuple.Of2[rslt.Of[Character], []Character] {
+	return func(xs []Character) tuple.Of2[rslt.Of[Character], []Character] {
+		r := ps.ConsumeIf(func(x Character) bool { return g(x.Value()) })(xs)
+		if r.X1().IsOk() {
+			return r
+		}
+		return tuple.New2(rslt.Error[Character](fmt.Errorf("expected %s", name)), xs)
+	}
 }
 
-func char(g func(s rune) bool) Parser[Character] {
-	return ps.ConsumeIf(func(x Character) bool {
-		return g(x.Value())
-	})
-}
-
-func rsChar(name string, g func(s rune) bool) RsParser[Character] {
-	return ps.RsFirst(
-		ps.Map(rslt.Value, char(g)),
-		ps.Result[Character](rslt.Error[Character](fmt.Errorf("expected %s", name))),
-	)
-}
-
-func chRune(x rune) Parser[Character] {
-	return char(func(s rune) bool {
-		return x == s
-	})
-}
-
-func rsChRune(x rune) RsParser[Character] {
-	return ps.RsFirst(
-		ps.Map(rslt.Value, chRune(x)),
-		ps.Result[Character](rslt.Error[Character](fmt.Errorf("expected %s", strconv.QuoteRune(x)))),
-	)
+func chRune(x rune) func([]Character) tuple.Of2[rslt.Of[Character], []Character] {
+	return char(strconv.QuoteRune(x), func(s rune) bool { return x == s })
 }
 
 func tokensToString(xs []Character) string {

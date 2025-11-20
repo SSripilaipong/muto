@@ -1,6 +1,7 @@
 package pattern
 
 import (
+	"github.com/SSripilaipong/go-common/rslt"
 	"github.com/SSripilaipong/go-common/tuple"
 
 	ps "github.com/SSripilaipong/muto/common/parsing"
@@ -9,8 +10,7 @@ import (
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
-func Object() func(xs []psBase.Character) []tuple.Of2[stPattern.NonDeterminantObject, []psBase.Character] {
-
+func Object() func(xs []psBase.Character) tuple.Of2[rslt.Of[stPattern.NonDeterminantObject], []psBase.Character] {
 	castHead := func(head base.Pattern) stPattern.NonDeterminantObject {
 		return stPattern.NewNonDeterminantObject(head, stPattern.PatternsToFixedParamPart([]base.Pattern{}))
 	}
@@ -18,8 +18,9 @@ func Object() func(xs []psBase.Character) []tuple.Of2[stPattern.NonDeterminantOb
 		return stPattern.NewNonDeterminantObject(head, paramPart)
 	})
 
-	return func(xs []psBase.Character) []tuple.Of2[stPattern.NonDeterminantObject, []psBase.Character] {
-		head := ps.First(
+	var parser func(xs []psBase.Character) tuple.Of2[rslt.Of[stPattern.NonDeterminantObject], []psBase.Character]
+	parser = func(xs []psBase.Character) tuple.Of2[rslt.Of[stPattern.NonDeterminantObject], []psBase.Character] {
+		headParser := ps.First(
 			psBase.FixedVarWithUnderscorePattern,
 			psBase.BooleanPattern,
 			psBase.StringPattern,
@@ -27,12 +28,16 @@ func Object() func(xs []psBase.Character) []tuple.Of2[stPattern.NonDeterminantOb
 			psBase.NumberPattern,
 			psBase.TagPattern,
 			psBase.NonDeterminantClassRulePattern,
-			ps.Map(base.ToPattern, Object()),
+			ps.Map(base.ToPattern, parser),
 		)
 
 		return psBase.InParentheses(ps.First(
-			ps.Map(castObject, psBase.SpaceSeparated2(head, ParamPart())),
-			ps.Map(castHead, head),
+			ps.Map(castObject, psBase.SpaceSeparated2(
+				headParser,
+				ParamPart(),
+			)),
+			ps.Map(castHead, headParser),
 		))(xs)
 	}
+	return parser
 }

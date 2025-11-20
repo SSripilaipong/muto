@@ -2,7 +2,7 @@ package result
 
 import (
 	"github.com/SSripilaipong/go-common/optional"
-
+	"github.com/SSripilaipong/go-common/rslt"
 	"github.com/SSripilaipong/go-common/tuple"
 
 	ps "github.com/SSripilaipong/muto/common/parsing"
@@ -10,19 +10,28 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-func structure(xs []psBase.Character) []tuple.Of2[stResult.Structure, []psBase.Character] {
-	structureValue := ps.Or(nonNestedNode, nestedNode())
-	record := ps.Map(mergeStructureRecord, psBase.IgnoreSpaceBetween3(structureKey, psBase.Colon, structureValue))
+func structure(xs []psBase.Character) tuple.Of2[rslt.Of[stResult.Structure], []psBase.Character] {
+	structureValue := ps.First(nonNestedNode, nestedNode())
+	recordTuple := ps.Map(
+		mergeStructureRecord,
+		psBase.IgnoreSpaceBetween3(structureKey, psBase.Colon, structureValue),
+	)
 
-	structureRecordWithComma := psBase.EndingWithCommaSpaceAllowed(record)
+	structureRecordWithComma := psBase.EndingWithCommaSpaceAllowed(recordTuple)
 	optionalCommaSeparatedRecords := psBase.OptionalGreedyRepeatIgnoreWhiteSpaceBetween(structureRecordWithComma)
 
-	return ps.Filter(noRepeatStructureKeys, ps.Map(mergeStructure, psBase.InBracesWhiteSpacesAllowed(ps.Sequence2(
-		optionalCommaSeparatedRecords, ps.GreedyOptional(psBase.OptionalLeadingWhiteSpace(record)),
-	))))(xs)
+	optionalTrailingRecord := ps.GreedyOptional(psBase.OptionalLeadingWhiteSpace(recordTuple))
+	parser := ps.Map(
+		mergeStructure,
+		psBase.InBracesWhiteSpacesAllowed(ps.Sequence2(
+			optionalCommaSeparatedRecords,
+			optionalTrailingRecord,
+		)),
+	)
+	return ps.Filter(noRepeatStructureKeys, parser)(xs)
 }
 
-var structureKey = ps.Or(
+var structureKey = ps.First(
 	psBase.BooleanResultNode,
 	psBase.NumberResultNode,
 	psBase.StringResultNode,

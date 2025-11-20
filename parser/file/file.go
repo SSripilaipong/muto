@@ -7,6 +7,9 @@ import (
 	"github.com/SSripilaipong/muto/syntaxtree"
 )
 
-var ParseFileFromString = fn.Compose3(FilterResult, File, psBase.StringToCharTokens)
+var ParseFileFromString = fn.Compose3(psBase.FilterResult, File, psBase.StringToCharTokens)
 
-var File = ps.RsMap(syntaxtree.NewFile, psBase.IgnoreLeadingLineBreak(psBase.IgnoreTrailingLineBreak(rsStatements)))
+var File = ps.Map(
+	syntaxtree.NewFile,
+	psBase.IgnoreLeadingLineBreak(psBase.IgnoreTrailingLineBreak(statements)),
+)

@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/parser/base"
 	"github.com/SSripilaipong/muto/syntaxtree"
 	stBase "github.com/SSripilaipong/muto/syntaxtree/base"
@@ -19,6 +20,7 @@ func TestParamPart_fixedParam(t *testing.T) {
 		expectedResult := stPattern.PatternsToParamPart([]stBase.Pattern{
 			syntaxtree.NewRune(`'x'`),
 		})
-		assert.Equal(t, base.SingleResult(expectedResult, []base.Character{}), base.AsParserResult(r))
+		assert.Equal(t, expectedResult, ps.ResultValue(r))
+		assert.Empty(t, r.X2())
 	})
 }

@@ -9,7 +9,10 @@ import (
 )
 
 var FixedVarWithUnderscore = ps.Map(syntaxtree.NewVariable, ps.Lookahead(not3Dots, identifierStartingWithUpperCaseAndUnderscore))
-var FixedVar = ps.Map(syntaxtree.NewVariable, ps.Lookahead(not3Dots, identifierStartingWithUpperCase))
+var FixedVar = ps.Map(
+	syntaxtree.NewVariable,
+	ps.Lookahead(not3Dots, identifierStartingWithUpperCase),
+)
 
 var FixedVarWithUnderscorePattern = ps.Map(st.ToPattern, FixedVarWithUnderscore)
 

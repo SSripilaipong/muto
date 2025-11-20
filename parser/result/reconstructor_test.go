@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	ps "github.com/SSripilaipong/muto/common/parsing"
 	psBase "github.com/SSripilaipong/muto/parser/base"
 	st "github.com/SSripilaipong/muto/syntaxtree"
 	stBase "github.com/SSripilaipong/muto/syntaxtree/base"
@@ -20,6 +21,7 @@ func TestReconstructor(t *testing.T) {
 			stResult.NewObject(st.NewLocalClass("$"), stResult.FixedParamPart{}),
 		)
 		expectedRemainder := psBase.IgnoreLineAndColumn(psBase.StringToCharTokens("abc"))
-		assert.Equal(t, psBase.SingleResult(expectedResult, expectedRemainder), psBase.AsParserResult(psBase.IgnoreLineAndColumnInResult(result)))
+		assert.Equal(t, expectedResult, ps.ResultValue(result))
+		assert.Equal(t, expectedRemainder, psBase.IgnoreLineAndColumn(result.X2()))
 	})
 }

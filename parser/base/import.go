@@ -7,11 +7,13 @@ import (
 	"github.com/SSripilaipong/muto/common/slc"
 )
 
-var RsImportPath = ps.RsMap(parseImportPath, ps.RsSequence2(RsImportPathToken, ps.RsOptionalGreedyRepeat(importSubPathToken)))
-var importSubPathToken = ps.Prefix(Slash, RsImportPathToken)
+var ImportPath = ps.Map(parseImportPath, ps.Sequence2(
+	ImportPathToken,
+	ps.OptionalGreedyRepeat(importSubPathToken),
+))
+var importSubPathToken = ps.Prefix(Slash, ImportPathToken)
 
-var ImportPathToken = ps.DeRs(RsImportPathToken)
-var RsImportPathToken = ps.RsMap(CharactersToString, ps.RsGreedyRepeatAtLeastOnce(Alpha))
+var ImportPathToken = ps.Map(CharactersToString, ps.GreedyRepeatAtLeastOnce(Alpha))
 
 var parseImportPath = tuple.Fn2(func(t string, ts []string) []string {
 	return append(slc.Pure(t), ts...)

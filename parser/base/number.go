@@ -11,9 +11,12 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-var Number = ps.Or(
+var Number = ps.First(
 	ps.Map(syntaxtree.NewNumber, unsignedNumber),
-	ps.Map(digitsWithMinusSign, ps.Sequence2(MinusSign, unsignedNumber)),
+	ps.Map(digitsWithMinusSign, ps.Sequence2(
+		MinusSign,
+		unsignedNumber,
+	)),
 )
 
 var NumberResultNode = ps.Map(stResult.ToNode, Number)
@@ -25,7 +28,11 @@ var digitsWithMinusSign = tuple.Fn2(func(ms Character, x string) syntaxtree.Numb
 })
 
 var unsignedNumber = ps.First(
-	ps.Map(floatingNumber, ps.Sequence3(digits, Dot, digits)),
+	ps.Map(floatingNumber, ps.Sequence3(
+		digits,
+		Dot,
+		digits,
+	)),
 	digits,
 )
 

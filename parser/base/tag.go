@@ -9,7 +9,7 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-var Tag = ps.Map(classToTag, Prefix(Dot, Class))
+var Tag = ps.Map(classToTag, ps.Prefix(Dot, Class))
 
 var TagResultNode = ps.Map(stResult.ToNode, Tag)
 

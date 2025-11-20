@@ -21,8 +21,16 @@ var StringResultNode = ps.Map(stResult.ToNode, String)
 
 var StringPattern = ps.Map(st.ToPattern, String)
 
-var innerString = ps.Map(slc.Flatten, ps.OptionalGreedyRepeat(ps.First(escapedStringCharacter, nonEscapedStringCharacter)))
-var escapedStringCharacter = ps.Map(escapeStringToRunes, ps.Sequence2(BackSlash, ps.ConsumeIf(fn.Const[Character](true))))
+var innerString = ps.Map(slc.Flatten, ps.OptionalGreedyRepeat(ps.First(
+	escapedStringCharacter,
+	nonEscapedStringCharacter,
+)))
+var escapedStringCharacter = ps.Map(escapeStringToRunes,
+	ps.Sequence2(
+		BackSlash,
+		ps.ConsumeIf(fn.Const[Character](true)),
+	),
+)
 var nonEscapedStringCharacter = ps.Map(tokenToRunes, NotDoubleQuote)
 
 func stringWithQuotes(x []rune) string {

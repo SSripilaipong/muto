@@ -11,13 +11,13 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-var ParseStatement = fn.Compose3(psBase.FilterStatement, statement, psBase.StringToCharTokens)
+var ParseStatement = fn.Compose3(psBase.FilterResult, statement, psBase.StringToCharTokens)
 
-var statement = ps.Or(
-	ps.RsMap(replSt.ToStatement, command),
-	ps.RsMap(mergeRule, fileParser.Rule),
-	ps.RsMap(mergeActiveRule, fileParser.ActiveRule),
-	ps.RsMap(mergeNode, psResult.RsSimplifiedNode),
+var statement = ps.First(
+	ps.Map(replSt.ToStatement, command),
+	ps.Map(mergeRule, fileParser.Rule),
+	ps.Map(mergeActiveRule, fileParser.ActiveRule),
+	ps.Map(mergeNode, psResult.SimplifiedNodeInstant),
 )
 
 func mergeRule(r syntaxtree.Rule) replSt.Statement {

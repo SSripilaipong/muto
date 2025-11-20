@@ -10,23 +10,38 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-var ParseSimplifiedNode = fn.Compose3(psBase.FilterStatement, RsSimplifiedNode, psBase.StringToCharTokens)
+var ParseSimplifiedNode = fn.Compose3(psBase.FilterResult, SimplifiedNodeInstant, psBase.StringToCharTokens)
 
-var RsSimplifiedNode = ps.Map(rslt.Value, SimplifiedNode())
+var SimplifiedNodeInstant = SimplifiedNode()
 
-func SimplifiedNode() func([]psBase.Character) []tuple.Of2[stResult.SimplifiedNode, []psBase.Character] {
-	return ps.Or(
-		ps.Map(castObjectNodeSimplified, psBase.InParenthesesWhiteSpaceAllowed(nakedObjectMultilines)),
-		ps.Map(castObjectNodeNaked, nakedObjectWithChildren()),
-		ps.Map(wrapNodeWithNakedObject, ps.Or(nonNestedNode, nonObjectNestedNode())),
+func SimplifiedNode() func([]psBase.Character) tuple.Of2[rslt.Of[stResult.SimplifiedNode], []psBase.Character] {
+	return ps.First(
+		ps.Map(
+			castObjectNodeSimplified,
+			EOL(psBase.InParenthesesWhiteSpaceAllowed(nakedObjectMultilines)),
+		),
+		ps.Map(
+			castObjectNodeNaked,
+			nakedObjectWithChildren(),
+		),
+		ps.Map(
+			wrapNodeWithNakedObject,
+			ps.First(
+				nonNestedNode,
+				nonObjectNestedNode(),
+			),
+		),
 	)
 }
 
-func anyNode() func([]psBase.Character) []tuple.Of2[stResult.Node, []psBase.Character] {
-	return ps.Or(nonNestedNode, nestedNode())
+func anyNode() func([]psBase.Character) tuple.Of2[rslt.Of[stResult.Node], []psBase.Character] {
+	return ps.First(
+		nonNestedNode,
+		nestedNode(),
+	)
 }
 
-var nonNestedNode = ps.Or(
+var nonNestedNode = ps.First(
 	psBase.BooleanResultNode,
 	psBase.StringResultNode,
 	psBase.RuneResultNode,

@@ -1,9 +1,12 @@
 package parsing
 
-import "github.com/SSripilaipong/go-common/tuple"
+import (
+	"github.com/SSripilaipong/go-common/rslt"
+	"github.com/SSripilaipong/go-common/tuple"
+)
 
-func Matches[S, R any](f func([]S) []tuple.Of2[R, []S]) func([]S) bool {
+func Matches[S, R any](p func([]S) tuple.Of2[rslt.Of[R], []S]) func([]S) bool {
 	return func(s []S) bool {
-		return len(f(s)) > 0
+		return IsResultOk(p(s))
 	}
 }

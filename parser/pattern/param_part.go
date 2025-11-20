@@ -1,6 +1,7 @@
 package pattern
 
 import (
+	"github.com/SSripilaipong/go-common/rslt"
 	"github.com/SSripilaipong/go-common/tuple"
 
 	ps "github.com/SSripilaipong/muto/common/parsing"
@@ -9,9 +10,9 @@ import (
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
-func ParamPart() func([]psBase.Character) []tuple.Of2[stPattern.ParamPart, []psBase.Character] {
+func ParamPart() func([]psBase.Character) tuple.Of2[rslt.Of[stPattern.ParamPart], []psBase.Character] {
 
-	fixedParam := ps.Or(
+	fixedParamParser := ps.First(
 		psBase.FixedVarWithUnderscorePattern,
 		psBase.BooleanPattern,
 		psBase.StringPattern,
@@ -32,10 +33,28 @@ func ParamPart() func([]psBase.Character) []tuple.Of2[stPattern.ParamPart, []psB
 		return stPattern.NewRightVariadicParamPart(v.Name(), p)
 	})
 
-	return ps.Or(
-		ps.Map(castVariadic, psBase.VariadicVarWithUnderscore),
-		ps.Map(castLeftVariadic, psBase.SpaceSeparated2(psBase.VariadicVarWithUnderscore, psBase.GreedyRepeatAtLeastOnceSpaceSeparated(fixedParam))),
-		ps.Map(castRightVariadic, psBase.SpaceSeparated2(psBase.GreedyRepeatAtLeastOnceSpaceSeparated(fixedParam), psBase.VariadicVarWithUnderscore)),
-		ps.Map(stPattern.PatternsToParamPart, psBase.GreedyRepeatAtLeastOnceSpaceSeparated(fixedParam)),
+	return ps.First(
+		ps.Map(
+			castLeftVariadic,
+			psBase.SpaceSeparated2(
+				psBase.VariadicVarWithUnderscore,
+				psBase.GreedyRepeatAtLeastOnceSpaceSeparated(fixedParamParser),
+			),
+		),
+		ps.Map(
+			castVariadic,
+			psBase.VariadicVarWithUnderscore,
+		),
+		ps.Map(
+			castRightVariadic,
+			psBase.SpaceSeparated2(
+				psBase.GreedyRepeatAtLeastOnceSpaceSeparated(fixedParamParser),
+				psBase.VariadicVarWithUnderscore,
+			),
+		),
+		ps.Map(
+			stPattern.PatternsToParamPart,
+			psBase.GreedyRepeatAtLeastOnceSpaceSeparated(fixedParamParser),
+		),
 	)
 }

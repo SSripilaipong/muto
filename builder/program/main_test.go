@@ -210,8 +210,8 @@ main = f (g 1)
 
 	t.Run("should match cases", func(t *testing.T) {
 		program := BuildProgramFromString(`main = (match
-  \1 [.ok]
-  \X [+ 40 X]
+ \1 [.ok]
+ \X [+ 40 X]
 ) 2
 `).Value()
 		assert.Equal(t, base.NewNumberFromString("42"), execute(program))

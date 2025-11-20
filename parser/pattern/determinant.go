@@ -10,9 +10,7 @@ import (
 	stPattern "github.com/SSripilaipong/muto/syntaxtree/pattern"
 )
 
-var RsDeterminant = ps.Map(rslt.Value, Determinant())
-
-func Determinant() func(xs []psBase.Character) []tuple.Of2[stPattern.DeterminantObject, []psBase.Character] {
+func Determinant() func([]psBase.Character) tuple.Of2[rslt.Of[stPattern.DeterminantObject], []psBase.Character] {
 
 	castHead := func(head base.Determinant) stPattern.DeterminantObject {
 		return stPattern.NewDeterminantObject(head, stPattern.PatternsToFixedParamPart([]base.Pattern{}))
@@ -21,15 +19,16 @@ func Determinant() func(xs []psBase.Character) []tuple.Of2[stPattern.Determinant
 		return stPattern.NewDeterminantObject(head, paramPart)
 	})
 
-	return func(xs []psBase.Character) []tuple.Of2[stPattern.DeterminantObject, []psBase.Character] {
-		head := ps.First(
+	var parser func([]psBase.Character) tuple.Of2[rslt.Of[stPattern.DeterminantObject], []psBase.Character]
+	parser = func(xs []psBase.Character) tuple.Of2[rslt.Of[stPattern.DeterminantObject], []psBase.Character] {
+		headParser := ps.First(
 			psBase.DeterminantClass,
-			ps.Map(base.ToDeterminant, psBase.InParentheses(Determinant())),
+			ps.Map(base.ToDeterminant, psBase.InParentheses(parser)),
 		)
+		withParam := ps.Map(castObject, psBase.SpaceSeparated2(headParser, ParamPart()))
+		withoutParam := ps.Map(castHead, headParser)
 
-		return ps.First(
-			ps.Map(castObject, psBase.SpaceSeparated2(head, ParamPart())),
-			ps.Map(castHead, head),
-		)(xs)
+		return ps.First(withParam, withoutParam)(xs)
 	}
+	return parser
 }

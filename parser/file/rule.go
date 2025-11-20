@@ -1,7 +1,6 @@
 package file
 
 import (
-	"github.com/SSripilaipong/go-common/rslt"
 	"github.com/SSripilaipong/go-common/tuple"
 
 	ps "github.com/SSripilaipong/muto/common/parsing"
@@ -13,13 +12,21 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-var Rule = ps.Map(rslt.Fmap(mergeRule), psBase.RsSpaceSeparated3(psPattern.RsDeterminant, psBase.RsEqualSign, psResult.RsSimplifiedNode))
+var determinant = psPattern.Determinant()
+var Rule = ps.Map(mergeRule, psBase.SpaceSeparated3(
+	determinant,
+	psBase.EqualSign,
+	psResult.SimplifiedNodeInstant,
+))
 
 var mergeRule = tuple.Fn3(func(p stPattern.DeterminantObject, _ psBase.Character, r stResult.SimplifiedNode) syntaxtree.Rule {
 	return syntaxtree.NewRule(p, r)
 })
 
-var ActiveRule = ps.RsMap(mergeActiveRule, psBase.RsSpaceSeparated2(psBase.RsAtSign, Rule))
+var ActiveRule = ps.Map(
+	mergeActiveRule,
+	psBase.SpaceSeparated2(psBase.AtSign, Rule),
+)
 
 var mergeActiveRule = tuple.Fn2(func(_ psBase.Character, r syntaxtree.Rule) syntaxtree.ActiveRule {
 	return syntaxtree.NewActiveRule(r.Pattern(), r.Result())

@@ -5,19 +5,14 @@ import (
 	"github.com/SSripilaipong/go-common/tuple"
 )
 
-func Map[S, R1, R2 any](f func(R1) R2, p func([]S) []tuple.Of2[R1, []S]) func([]S) []tuple.Of2[R2, []S] {
-	return func(s []S) []tuple.Of2[R2, []S] {
-		var result []tuple.Of2[R2, []S]
-		for _, c := range p(s) {
-			r, k := c.Return()
-			result = append(result, tuple.New2(f(r), k))
+func Map[S, R1, R2 any](f func(R1) R2, p func([]S) tuple.Of2[rslt.Of[R1], []S]) func([]S) tuple.Of2[rslt.Of[R2], []S] {
+	return func(s []S) tuple.Of2[rslt.Of[R2], []S] {
+		r := p(s)
+		if IsResultErr(r) {
+			return tuple.New2(rslt.Error[R2](ResultError(r)), s)
 		}
-		return result
+		return tuple.New2(rslt.Value(f(ResultValue(r))), r.X2())
 	}
-}
-
-func RsMap[S, R1, R2 any](f func(R1) R2, p func([]S) []tuple.Of2[rslt.Of[R1], []S]) func([]S) []tuple.Of2[rslt.Of[R2], []S] {
-	return Map(rslt.Fmap(f), p)
 }
 
 func DeRs[S, R any](f func([]S) []tuple.Of2[rslt.Of[R], []S]) func([]S) []tuple.Of2[R, []S] {

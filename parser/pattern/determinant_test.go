@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	ps "github.com/SSripilaipong/muto/common/parsing"
 	"github.com/SSripilaipong/muto/parser/base"
 	"github.com/SSripilaipong/muto/syntaxtree"
 	stBase "github.com/SSripilaipong/muto/syntaxtree/base"
@@ -19,7 +20,9 @@ func TestDeterminant_tag(t *testing.T) {
 		expectedResult := stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("f"), stPattern.PatternsToParamPart([]stBase.Pattern{
 			syntaxtree.NewNumber("1"), syntaxtree.NewTag(`.abc`), syntaxtree.NewNumber("2"),
 		}))
-		assert.Equal(t, base.SingleResult(expectedResult, []base.Character{}), base.AsParserResult(r))
+		assert.True(t, ps.IsResultOk(r))
+		assert.Equal(t, expectedResult, ps.ResultValue(r))
+		assert.Empty(t, r.X2())
 	})
 
 	t.Run("should parse tag as a child of a nested named rule", func(t *testing.T) {
@@ -29,7 +32,9 @@ func TestDeterminant_tag(t *testing.T) {
 				syntaxtree.NewTag(`.abc`), syntaxtree.NewNumber("2"),
 			})),
 		}))
-		assert.Equal(t, base.SingleResult(expectedResult, []base.Character{}), base.AsParserResult(r))
+		assert.True(t, ps.IsResultOk(r))
+		assert.Equal(t, expectedResult, ps.ResultValue(r))
+		assert.Empty(t, r.X2())
 	})
 }
 
@@ -42,7 +47,9 @@ func TestDeterminant_variadic(t *testing.T) {
 			stPattern.NewNonDeterminantObject(syntaxtree.NewLocalClass("f"),
 				stPattern.NewLeftVariadicParamPart("Xs", stPattern.FixedParamPart{})),
 		}))
-		assert.Equal(t, base.SingleResult(expectedResult, []base.Character{}), base.AsParserResult(r))
+		assert.True(t, ps.IsResultOk(r))
+		assert.Equal(t, expectedResult, ps.ResultValue(r))
+		assert.Empty(t, r.X2())
 	})
 }
 
@@ -55,7 +62,9 @@ func TestDeterminant_nested_object(t *testing.T) {
 			stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("f"), stPattern.PatternsToParamPart([]stBase.Pattern{})),
 			stPattern.PatternsToParamPart([]stBase.Pattern{}),
 		)
-		assert.Equal(t, base.SingleResult(expectedResult, []base.Character{}), base.AsParserResult(r))
+		assert.True(t, ps.IsResultOk(r))
+		assert.Equal(t, expectedResult, ps.ResultValue(r))
+		assert.Empty(t, r.X2())
 	})
 
 	t.Run("should match empty nested head with outer params", func(t *testing.T) {
@@ -64,7 +73,9 @@ func TestDeterminant_nested_object(t *testing.T) {
 			stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("f"), stPattern.PatternsToParamPart([]stBase.Pattern{})),
 			stPattern.PatternsToParamPart([]stBase.Pattern{syntaxtree.NewNumber("1")}),
 		)
-		assert.Equal(t, base.SingleResult(expectedResult, []base.Character{}), base.AsParserResult(r))
+		assert.True(t, ps.IsResultOk(r))
+		assert.Equal(t, expectedResult, ps.ResultValue(r))
+		assert.Empty(t, r.X2())
 	})
 
 	t.Run("should match nested head with inner params", func(t *testing.T) {
@@ -76,6 +87,8 @@ func TestDeterminant_nested_object(t *testing.T) {
 			),
 			stPattern.PatternsToParamPart([]stBase.Pattern{syntaxtree.NewNumber("2")}),
 		)
-		assert.Equal(t, base.SingleResult(expectedResult, []base.Character{}), base.AsParserResult(r))
+		assert.True(t, ps.IsResultOk(r))
+		assert.Equal(t, expectedResult, ps.ResultValue(r))
+		assert.Empty(t, r.X2())
 	})
 }
