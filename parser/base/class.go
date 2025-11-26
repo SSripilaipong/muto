@@ -11,26 +11,26 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-var DeterminantClass = ps.Map(stBase.ToDeterminant, ps.Filter(validDeterminantClass, Class))
+var DeterminantClass = ps.Map(stBase.ToDeterminant, ps.Filter(validDeterminantClass, ps.ToParser(Class))).Legacy
 
 var NonDeterminantClassRulePattern = ps.First(
-	ps.Map(stBase.ToPattern, Class),
-	ps.Map(stBase.ToPattern, ImportedClass),
-)
+	ps.Map(stBase.ToPattern, ps.ToParser(Class)),
+	ps.Map(stBase.ToPattern, ps.ToParser(ImportedClass)),
+).Legacy
 
 var ClassResultNode = ps.First(
-	ps.Map(stResult.ToNode, Class),
-	ps.Map(stResult.ToNode, ImportedClass),
-)
+	ps.Map(stResult.ToNode, ps.ToParser(Class)),
+	ps.Map(stResult.ToNode, ps.ToParser(ImportedClass)),
+).Legacy
 
 var ImportedClass = ps.Map(parseImportedClass, ps.Sequence3(
-	ImportPathToken, Dot, Class,
-))
+	ps.ToParser(ImportPathToken), ps.ToParser(Dot), ps.ToParser(Class),
+)).Legacy
 
 var Class = ps.Map(st.NewLocalClass, ps.First(
 	ps.Filter(validClassName, identifierStartingWithNonUpperCase),
 	ps.Filter(classSymbol, symbol),
-))
+)).Legacy
 
 var parseImportedClass = tuple.Fn3(func(module string, _ Character, class st.LocalClass) st.ImportedClass {
 	return st.NewImportedClass(module, class.Name())

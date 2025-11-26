@@ -12,16 +12,16 @@ import (
 )
 
 var Number = ps.First(
-	ps.Map(syntaxtree.NewNumber, unsignedNumber),
+	ps.Map(syntaxtree.NewNumber, ps.ToParser(unsignedNumber)),
 	ps.Map(digitsWithMinusSign, ps.Sequence2(
-		MinusSign,
-		unsignedNumber,
+		ps.ToParser(MinusSign),
+		ps.ToParser(unsignedNumber),
 	)),
-)
+).Legacy
 
-var NumberResultNode = ps.Map(stResult.ToNode, Number)
+var NumberResultNode = ps.Map(stResult.ToNode, ps.ToParser(Number)).Legacy
 
-var NumberPattern = ps.Map(st.ToPattern, Number)
+var NumberPattern = ps.Map(st.ToPattern, ps.ToParser(Number)).Legacy
 
 var digitsWithMinusSign = tuple.Fn2(func(ms Character, x string) syntaxtree.Number {
 	return syntaxtree.NewNumber("-" + x)
@@ -29,14 +29,14 @@ var digitsWithMinusSign = tuple.Fn2(func(ms Character, x string) syntaxtree.Numb
 
 var unsignedNumber = ps.First(
 	ps.Map(floatingNumber, ps.Sequence3(
-		digits,
-		Dot,
-		digits,
+		ps.ToParser(digits),
+		ps.ToParser(Dot),
+		ps.ToParser(digits),
 	)),
-	digits,
-)
+	ps.ToParser(digits),
+).Legacy
 
-var digits = ps.Map(tokensToString, ps.GreedyRepeatAtLeastOnce(Digit))
+var digits = ps.Map(tokensToString, ps.GreedyRepeatAtLeastOnce(ps.ToParser(Digit))).Legacy
 
 var floatingNumber = tuple.Fn3(func(left string, _dot Character, right string) string {
 	return fmt.Sprintf("%s.%s", left, right)

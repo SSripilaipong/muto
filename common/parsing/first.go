@@ -1,15 +1,10 @@
 package parsing
 
-import (
-	"errors"
-
-	"github.com/SSripilaipong/go-common/rslt"
-	"github.com/SSripilaipong/go-common/tuple"
-)
+import "errors"
 
 var ErrFirstNoMatch = errors.New("first: no parser matched")
 
-func First[S, R any](ps ...func([]S) tuple.Of2[rslt.Of[R], []S]) func([]S) tuple.Of2[rslt.Of[R], []S] {
+func First[S, R any](ps ...Parser[R, S]) Parser[R, S] {
 	if len(ps) == 0 {
 		panic("ps must not be empty")
 	}
@@ -17,15 +12,15 @@ func First[S, R any](ps ...func([]S) tuple.Of2[rslt.Of[R], []S]) func([]S) tuple
 		return ps[0]
 	}
 	alternatives := First[S, R](ps[1:]...)
-	return func(s []S) tuple.Of2[rslt.Of[R], []S] {
+	return func(s []S) ParseResult[R, S] {
 		first := ps[0](s)
-		if IsResultOk(first) {
+		if first.IsOk() {
 			return first
 		}
 		alt := alternatives(s)
-		if IsResultOk(alt) {
+		if alt.IsOk() {
 			return alt
 		}
-		return tuple.New2(rslt.Error[R](ErrFirstNoMatch), s)
+		return NewParseResultError[R](ErrFirstNoMatch, s)
 	}
 }

@@ -11,7 +11,7 @@ var ParseModuleFromString = fn.Compose(psBase.FilterResult, ParseModuleCombinati
 
 var ParseModuleCombinationFromString = fn.Compose(module, psBase.StringToCharTokens)
 
-var module = ps.Map(newModule, File)
+var module = ps.Map(newModule, ps.ToParser(File)).Legacy
 
 func newModule(f syntaxtree.File) syntaxtree.Module {
 	return syntaxtree.NewModule([]syntaxtree.File{f})

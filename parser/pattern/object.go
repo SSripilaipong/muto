@@ -21,23 +21,23 @@ func Object() func(xs []psBase.Character) tuple.Of2[rslt.Of[stPattern.NonDetermi
 	var parser func(xs []psBase.Character) tuple.Of2[rslt.Of[stPattern.NonDeterminantObject], []psBase.Character]
 	parser = func(xs []psBase.Character) tuple.Of2[rslt.Of[stPattern.NonDeterminantObject], []psBase.Character] {
 		headParser := ps.First(
-			psBase.FixedVarWithUnderscorePattern,
-			psBase.BooleanPattern,
-			psBase.StringPattern,
-			psBase.RunePattern,
-			psBase.NumberPattern,
-			psBase.TagPattern,
-			psBase.NonDeterminantClassRulePattern,
-			ps.Map(base.ToPattern, parser),
-		)
+			ps.ToParser(psBase.FixedVarWithUnderscorePattern),
+			ps.ToParser(psBase.BooleanPattern),
+			ps.ToParser(psBase.StringPattern),
+			ps.ToParser(psBase.RunePattern),
+			ps.ToParser(psBase.NumberPattern),
+			ps.ToParser(psBase.TagPattern),
+			ps.ToParser(psBase.NonDeterminantClassRulePattern),
+			ps.Map(base.ToPattern, ps.ToParser(parser)),
+		).Legacy
 
 		return psBase.InParentheses(ps.First(
-			ps.Map(castObject, psBase.SpaceSeparated2(
+			ps.Map(castObject, ps.ToParser(psBase.SpaceSeparated2(
 				headParser,
 				ParamPart(),
-			)),
-			ps.Map(castHead, headParser),
-		))(xs)
+			))),
+			ps.Map(castHead, ps.ToParser(headParser)),
+		).Legacy)(xs)
 	}
 	return parser
 }

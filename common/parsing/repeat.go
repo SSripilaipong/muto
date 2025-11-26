@@ -1,38 +1,30 @@
 package parsing
 
-import (
-	"github.com/SSripilaipong/go-common/rslt"
-	"github.com/SSripilaipong/go-common/tuple"
-
-	"github.com/SSripilaipong/muto/common/slc"
-)
-
-func OptionalGreedyRepeat[S, R any](p func([]S) tuple.Of2[rslt.Of[R], []S]) func([]S) tuple.Of2[rslt.Of[[]R], []S] {
-	return func(s []S) tuple.Of2[rslt.Of[[]R], []S] {
-		r := p(s)
-		if IsResultErr(r) {
-			return tuple.New2(rslt.Value([]R{}), s)
+func OptionalGreedyRepeat[S, R any](p Parser[R, S]) Parser[[]R, S] {
+	return func(s []S) ParseResult[[]R, S] {
+		var result []R
+		remaining := s
+		for {
+			r := p(remaining)
+			if r.IsError() {
+				return NewParseResultValue(result, remaining)
+			}
+			result = append(result, r.Value())
+			remaining = r.Remaining()
 		}
-
-		next := OptionalGreedyRepeat(p)(r.X2())
-		if IsResultErr(next) {
-			return tuple.New2(rslt.Error[[]R](ResultError(next)), s)
-		}
-
-		result := append(slc.Pure(ResultValue(r)), ResultValue(next)...)
-		return tuple.New2(rslt.Value(result), next.X2())
 	}
 }
 
-func GreedyRepeatAtLeastOnce[S, R any](p func([]S) tuple.Of2[rslt.Of[R], []S]) func([]S) tuple.Of2[rslt.Of[[]R], []S] {
-	return func(s []S) tuple.Of2[rslt.Of[[]R], []S] {
+func GreedyRepeatAtLeastOnce[S, R any](p Parser[R, S]) Parser[[]R, S] {
+	repeat := OptionalGreedyRepeat(p)
+	return func(s []S) ParseResult[[]R, S] {
 		first := p(s)
-		if IsResultErr(first) {
-			return tuple.New2(rslt.Error[[]R](ResultError(first)), s)
+		if first.IsError() {
+			return NewParseResultError[[]R](first.Error(), s)
 		}
 
-		rest := OptionalGreedyRepeat(p)(first.X2())
-		result := append(slc.Pure(ResultValue(first)), ResultValue(rest)...)
-		return tuple.New2(rslt.Value(result), rest.X2())
+		rest := repeat(first.Remaining())
+		result := append([]R{first.Value()}, rest.Value()...)
+		return NewParseResultValue(result, rest.Remaining())
 	}
 }

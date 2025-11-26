@@ -13,11 +13,11 @@ import (
 )
 
 var determinant = psPattern.Determinant()
-var Rule = ps.Map(mergeRule, psBase.SpaceSeparated3(
+var Rule = ps.Map(mergeRule, ps.ToParser(psBase.SpaceSeparated3(
 	determinant,
 	psBase.EqualSign,
 	psResult.SimplifiedNodeInstant,
-))
+)))
 
 var mergeRule = tuple.Fn3(func(p stPattern.DeterminantObject, _ psBase.Character, r stResult.SimplifiedNode) syntaxtree.Rule {
 	return syntaxtree.NewRule(p, r)
@@ -25,7 +25,7 @@ var mergeRule = tuple.Fn3(func(p stPattern.DeterminantObject, _ psBase.Character
 
 var ActiveRule = ps.Map(
 	mergeActiveRule,
-	psBase.SpaceSeparated2(psBase.AtSign, Rule),
+	ps.ToParser(psBase.SpaceSeparated2(psBase.AtSign, Rule.Legacy)),
 )
 
 var mergeActiveRule = tuple.Fn2(func(_ psBase.Character, r syntaxtree.Rule) syntaxtree.ActiveRule {

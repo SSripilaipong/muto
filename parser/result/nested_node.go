@@ -11,14 +11,14 @@ import (
 
 func nestedNode() func([]psBase.Character) tuple.Of2[rslt.Of[stResult.Node], []psBase.Character] {
 	return ps.First(
-		psBase.InParenthesesWhiteSpaceAllowed(NakedObjectMultilines),
-		nonObjectNestedNode(),
-	)
+		ps.ToParser(psBase.InParenthesesWhiteSpaceAllowed(NakedObjectMultilines)),
+		ps.ToParser(nonObjectNestedNode()),
+	).Legacy
 }
 
 func nonObjectNestedNode() func([]psBase.Character) tuple.Of2[rslt.Of[stResult.Node], []psBase.Character] {
 	return ps.First(
-		ps.Map(stResult.ToNode, structure),
-		ps.Map(stResult.ToNode, reconstructor()),
-	)
+		ps.Map(stResult.ToNode, ps.ToParser(structure)),
+		ps.Map(stResult.ToNode, ps.ToParser(reconstructor())),
+	).Legacy
 }

@@ -10,8 +10,8 @@ import (
 )
 
 var command = ps.First(
-	ps.Map(mergeQuitCommand, commandNamed("q")),
-)
+	ps.Map(mergeQuitCommand, ps.ToParser(commandNamed("q"))),
+).Legacy
 
 func mergeQuitCommand(string) repl.QuitCommand {
 	return repl.NewQuitCommand()

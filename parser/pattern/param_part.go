@@ -13,15 +13,15 @@ import (
 func ParamPart() func([]psBase.Character) tuple.Of2[rslt.Of[stPattern.ParamPart], []psBase.Character] {
 
 	fixedParamParser := ps.First(
-		psBase.FixedVarWithUnderscorePattern,
-		psBase.BooleanPattern,
-		psBase.StringPattern,
-		psBase.RunePattern,
-		psBase.NumberPattern,
-		psBase.TagPattern,
-		psBase.NonDeterminantClassRulePattern,
-		ps.Map(base.ToPattern, Object()),
-	)
+		ps.ToParser(psBase.FixedVarWithUnderscorePattern),
+		ps.ToParser(psBase.BooleanPattern),
+		ps.ToParser(psBase.StringPattern),
+		ps.ToParser(psBase.RunePattern),
+		ps.ToParser(psBase.NumberPattern),
+		ps.ToParser(psBase.TagPattern),
+		ps.ToParser(psBase.NonDeterminantClassRulePattern),
+		ps.Map(base.ToPattern, ps.ToParser(Object())),
+	).Legacy
 
 	castVariadic := func(v psBase.VariadicVarNode) stPattern.ParamPart {
 		return stPattern.NewLeftVariadicParamPart(v.Name(), stPattern.PatternsToFixedParamPart([]base.Pattern{}))
@@ -36,25 +36,25 @@ func ParamPart() func([]psBase.Character) tuple.Of2[rslt.Of[stPattern.ParamPart]
 	return ps.First(
 		ps.Map(
 			castLeftVariadic,
-			psBase.SpaceSeparated2(
+			ps.ToParser(psBase.SpaceSeparated2(
 				psBase.VariadicVarWithUnderscore,
 				psBase.GreedyRepeatAtLeastOnceSpaceSeparated(fixedParamParser),
-			),
+			)),
 		),
 		ps.Map(
 			castVariadic,
-			psBase.VariadicVarWithUnderscore,
+			ps.ToParser(psBase.VariadicVarWithUnderscore),
 		),
 		ps.Map(
 			castRightVariadic,
-			psBase.SpaceSeparated2(
+			ps.ToParser(psBase.SpaceSeparated2(
 				psBase.GreedyRepeatAtLeastOnceSpaceSeparated(fixedParamParser),
 				psBase.VariadicVarWithUnderscore,
-			),
+			)),
 		),
 		ps.Map(
 			stPattern.PatternsToParamPart,
-			psBase.GreedyRepeatAtLeastOnceSpaceSeparated(fixedParamParser),
+			ps.ToParser(psBase.GreedyRepeatAtLeastOnceSpaceSeparated(fixedParamParser)),
 		),
-	)
+	).Legacy
 }

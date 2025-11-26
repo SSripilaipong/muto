@@ -8,15 +8,15 @@ import (
 	"github.com/SSripilaipong/muto/syntaxtree"
 )
 
-var Command = ps.First(importCommand)
+var Command = ps.First(ps.ToParser(importCommand))
 
 var importCommand = ps.Map(
 	parseImportCommand,
-	psBase.SpaceSeparated2(
+	ps.ToParser(psBase.SpaceSeparated2(
 		psBase.FixedChars(":import"),
 		psBase.ImportPath,
-	),
-)
+	)),
+).Legacy
 
 var parseImportCommand = tuple.Fn2(func(_ string, path []string) syntaxtree.Import {
 	return syntaxtree.NewImport(path)

@@ -9,11 +9,11 @@ import (
 
 var Boolean = ps.Map(
 	syntaxtree.NewBoolean,
-	ps.First(FixedChars("true"), FixedChars("false")),
-)
+	ps.First(ps.ToParser(FixedChars("true")), ps.ToParser(FixedChars("false"))),
+).Legacy
 
-var BooleanPattern = ps.Map(st.ToPattern, Boolean)
+var BooleanPattern = ps.Map(st.ToPattern, ps.ToParser(Boolean)).Legacy
 
-var BooleanResultNode = ps.Map(booleanToResultNode, Boolean)
+var BooleanResultNode = ps.Map(booleanToResultNode, ps.ToParser(Boolean)).Legacy
 
 func booleanToResultNode(x syntaxtree.Boolean) stResult.Node { return x }

@@ -11,5 +11,5 @@ var ParseFileFromString = fn.Compose3(psBase.FilterResult, File, psBase.StringTo
 
 var File = ps.Map(
 	syntaxtree.NewFile,
-	psBase.IgnoreLeadingLineBreak(psBase.IgnoreTrailingLineBreak(statements)),
-)
+	ps.ToParser(psBase.IgnoreLeadingLineBreak(psBase.IgnoreTrailingLineBreak(statements.Legacy))),
+).Legacy

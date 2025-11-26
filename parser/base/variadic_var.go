@@ -14,19 +14,19 @@ var VariadicVarWithUnderscore = ps.Map(
 	newVariadicVar,
 	ps.Map(tuple.Fn2(strutil.Concat), ps.Sequence2(
 		identifierStartingWithUpperCaseAndUnderscore,
-		ThreeDots,
+		ps.ToParser(ThreeDots),
 	)),
-)
+).Legacy
 
 var VariadicVar = ps.Map(
 	newVariadicVar,
 	ps.Map(tuple.Fn2(strutil.Concat), ps.Sequence2(
 		identifierStartingWithUpperCase,
-		ThreeDots,
+		ps.ToParser(ThreeDots),
 	)),
-)
+).Legacy
 
-var VariadicVarResultNode = ps.Map(variadicVarToResultNode, VariadicVar)
+var VariadicVarResultNode = ps.Map(variadicVarToResultNode, ps.ToParser(VariadicVar)).Legacy
 
 type VariadicVarNode struct {
 	name string

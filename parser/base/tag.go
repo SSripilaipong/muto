@@ -9,10 +9,10 @@ import (
 	stResult "github.com/SSripilaipong/muto/syntaxtree/result"
 )
 
-var Tag = ps.Map(classToTag, ps.Prefix(Dot, Class))
+var Tag = ps.Map(classToTag, ps.Prefix(ps.ToParser(Dot), ps.ToParser(Class)))
 
-var TagResultNode = ps.Map(stResult.ToNode, Tag)
+var TagResultNode = ps.Map(stResult.ToNode, Tag).Legacy
 
-var TagPattern = ps.Map(stBase.ToPattern, Tag)
+var TagPattern = ps.Map(stBase.ToPattern, Tag).Legacy
 
 var classToTag = fn.Compose3(syntaxtree.NewTag, strutil.WithPrefix("."), syntaxtree.LocalClassToName)

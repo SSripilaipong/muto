@@ -14,11 +14,11 @@ import (
 var ParseStatement = fn.Compose3(psBase.FilterResult, statement, psBase.StringToCharTokens)
 
 var statement = ps.First(
-	ps.Map(replSt.ToStatement, command),
+	ps.Map(replSt.ToStatement, ps.ToParser(command)),
 	ps.Map(mergeRule, fileParser.Rule),
 	ps.Map(mergeActiveRule, fileParser.ActiveRule),
-	ps.Map(mergeNode, psResult.SimplifiedNodeInstant),
-)
+	ps.Map(mergeNode, ps.ToParser(psResult.SimplifiedNodeInstant)),
+).Legacy
 
 func mergeRule(r syntaxtree.Rule) replSt.Statement {
 	return replSt.NewRule(r)

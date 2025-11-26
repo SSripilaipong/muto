@@ -11,5 +11,5 @@ import (
 func EOL[R any](p func([]psBase.Character) tuple.Of2[rslt.Of[R], []psBase.Character]) func([]psBase.Character) tuple.Of2[rslt.Of[R], []psBase.Character] {
 	return ps.Lookahead(func(s []psBase.Character) bool {
 		return len(s) == 0 || psBase.IsLineBreak(s[0].Value())
-	}, p)
+	}, ps.ToParser(p)).Legacy
 }

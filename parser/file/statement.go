@@ -11,10 +11,10 @@ import (
 
 var statements = ps.Map(
 	aggregateStatements,
-	psBase.IgnoreSpaceBetween2(
-		statement,
-		ps.OptionalGreedyRepeat(psBase.WithLeadingLineBreak(statement)),
-	),
+	ps.ToParser(psBase.IgnoreSpaceBetween2(
+		statement.Legacy,
+		ps.OptionalGreedyRepeat(ps.ToParser(psBase.WithLeadingLineBreak(statement.Legacy))).Legacy,
+	)),
 )
 
 var aggregateStatements = tuple.Fn2(func(s base.Statement, ss []base.Statement) []base.Statement {

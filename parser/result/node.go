@@ -18,38 +18,38 @@ func SimplifiedNode() func([]psBase.Character) tuple.Of2[rslt.Of[stResult.Simpli
 	return ps.First(
 		ps.Map(
 			castObjectNodeSimplified,
-			EOL(psBase.InParenthesesWhiteSpaceAllowed(nakedObjectMultilines)),
+			ps.ToParser(EOL(psBase.InParenthesesWhiteSpaceAllowed(nakedObjectMultilines))),
 		),
 		ps.Map(
 			castObjectNodeNaked,
-			nakedObjectWithChildren(),
+			ps.ToParser(nakedObjectWithChildren()),
 		),
 		ps.Map(
 			wrapNodeWithNakedObject,
 			ps.First(
-				nonNestedNode,
-				nonObjectNestedNode(),
+				ps.ToParser(nonNestedNode),
+				ps.ToParser(nonObjectNestedNode()),
 			),
 		),
-	)
+	).Legacy
 }
 
 func anyNode() func([]psBase.Character) tuple.Of2[rslt.Of[stResult.Node], []psBase.Character] {
 	return ps.First(
-		nonNestedNode,
-		nestedNode(),
-	)
+		ps.ToParser(nonNestedNode),
+		ps.ToParser(nestedNode()),
+	).Legacy
 }
 
 var nonNestedNode = ps.First(
-	psBase.BooleanResultNode,
-	psBase.StringResultNode,
-	psBase.RuneResultNode,
-	psBase.NumberResultNode,
-	psBase.ClassResultNode,
-	psBase.TagResultNode,
-	psBase.FixedVarResultNode,
-)
+	ps.ToParser(psBase.BooleanResultNode),
+	ps.ToParser(psBase.StringResultNode),
+	ps.ToParser(psBase.RuneResultNode),
+	ps.ToParser(psBase.NumberResultNode),
+	ps.ToParser(psBase.ClassResultNode),
+	ps.ToParser(psBase.TagResultNode),
+	ps.ToParser(psBase.FixedVarResultNode),
+).Legacy
 
 func castObjectNode(obj objectNode) stResult.Node {
 	return castObjectResult(obj)

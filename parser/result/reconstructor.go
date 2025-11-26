@@ -12,17 +12,17 @@ import (
 
 func reconstructor() func(xs []psBase.Character) tuple.Of2[rslt.Of[stResult.Reconstructor], []psBase.Character] {
 	backSlash := ps.Sequence2(
-		psBase.BackSlash,
-		ps.OptionalGreedyRepeat(psBase.WhiteSpace),
+		ps.ToParser(psBase.BackSlash),
+		ps.OptionalGreedyRepeat(ps.ToParser(psBase.WhiteSpace)),
 	)
-	extractorPart := ps.Prefix(backSlash, psPattern.ParamPart())
+	extractorPart := ps.Prefix(backSlash, ps.ToParser(psPattern.ParamPart())).Legacy
 	builderPart := ps.Map(
 		castObjectResult,
-		psBase.InSquareBracketsWhiteSpacesAllowed(nakedObjectMultilines),
-	)
+		ps.ToParser(psBase.InSquareBracketsWhiteSpacesAllowed(nakedObjectMultilines)),
+	).Legacy
 	toReconstructor := tuple.Fn2(stResult.NewReconstructor)
 	return ps.Map(
 		toReconstructor,
-		psBase.IgnoreWhiteSpaceBetween2(extractorPart, builderPart),
-	)
+		ps.ToParser(psBase.IgnoreWhiteSpaceBetween2(extractorPart, builderPart)),
+	).Legacy
 }

@@ -12,23 +12,23 @@ import (
 func objectParamPart() func(xs []psBase.Character) tuple.Of2[rslt.Of[stResult.FixedParamPart], []psBase.Character] {
 	return ps.Map(
 		stResult.ParamsToFixedParamPart,
-		psBase.OptionalGreedyRepeatSpaceSeparated(objectParam),
-	)
+		ps.ToParser(psBase.OptionalGreedyRepeatSpaceSeparated(objectParam)),
+	).Legacy
 }
 
 func objectParamPartMultilines() func(xs []psBase.Character) tuple.Of2[rslt.Of[stResult.FixedParamPart], []psBase.Character] {
 	return ps.Map(
 		stResult.ParamsToFixedParamPart,
-		psBase.OptionalGreedyRepeatWhiteSpaceSeparated(objectParam),
-	)
+		ps.ToParser(psBase.OptionalGreedyRepeatWhiteSpaceSeparated(objectParam)),
+	).Legacy
 }
 
 func objectParam(xs []psBase.Character) tuple.Of2[rslt.Of[stResult.Param], []psBase.Character] {
 	return ps.First(
 		ps.Map(stResult.ToParam, ps.First(
-			nonNestedNode,
-			nestedNode(),
+			ps.ToParser(nonNestedNode),
+			ps.ToParser(nestedNode()),
 		)),
-		psBase.VariadicVarResultNode,
-	)(xs)
+		ps.ToParser(psBase.VariadicVarResultNode),
+	).Legacy(xs)
 }

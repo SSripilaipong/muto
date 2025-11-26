@@ -15,37 +15,37 @@ import (
 func WithTrailingLineBreak[R any](p func([]Character) tuple.Of2[rslt.Of[R], []Character]) func([]Character) tuple.Of2[rslt.Of[R], []Character] {
 	return ps.Map(
 		tuple.Fn2(func(r R, _ []Character) R { return r }),
-		ps.Sequence2(p, ps.OptionalGreedyRepeat(LineBreak)),
-	)
+		ps.Sequence2(ps.ToParser(p), ps.OptionalGreedyRepeat(ps.ToParser(LineBreak))),
+	).Legacy
 }
 
 func WithLeadingLineBreak[R any](p func([]Character) tuple.Of2[rslt.Of[R], []Character]) func([]Character) tuple.Of2[rslt.Of[R], []Character] {
 	return ps.Map(
 		tuple.Fn2(func(_ []Character, r R) R { return r }),
-		ps.Sequence2(ps.GreedyRepeatAtLeastOnce(LineBreak), p),
-	)
+		ps.Sequence2(ps.GreedyRepeatAtLeastOnce(ps.ToParser(LineBreak)), ps.ToParser(p)),
+	).Legacy
 }
 
 func IgnoreTrailingLineBreak[R any](p func([]Character) tuple.Of2[rslt.Of[R], []Character]) func([]Character) tuple.Of2[rslt.Of[R], []Character] {
 	return ps.Map(
 		tuple.Fn2(func(r R, _ []Character) R { return r }),
-		ps.Sequence2(p, ps.OptionalGreedyRepeat(LineBreak)),
-	)
+		ps.Sequence2(ps.ToParser(p), ps.OptionalGreedyRepeat(ps.ToParser(LineBreak))),
+	).Legacy
 }
 
 func IgnoreLeadingLineBreak[R any](p func([]Character) tuple.Of2[rslt.Of[R], []Character]) func([]Character) tuple.Of2[rslt.Of[R], []Character] {
 	return ps.Map(
 		tuple.Fn2(func(_ []Character, r R) R { return r }),
-		ps.Sequence2(ps.OptionalGreedyRepeat(LineBreak), p),
-	)
+		ps.Sequence2(ps.OptionalGreedyRepeat(ps.ToParser(LineBreak)), ps.ToParser(p)),
+	).Legacy
 }
 
 func InParentheses[R any](x func([]Character) tuple.Of2[rslt.Of[R], []Character]) func([]Character) tuple.Of2[rslt.Of[R], []Character] {
 	withoutParenthesis := tuple.Fn3(func(_ Character, x R, _ Character) R { return x })
 	return ps.Map(
 		withoutParenthesis,
-		ps.Sequence3(OpenParenthesis, x, CloseParenthesis),
-	)
+		ps.Sequence3(ps.ToParser(OpenParenthesis), ps.ToParser(x), ps.ToParser(CloseParenthesis)),
+	).Legacy
 }
 
 func InParenthesesWhiteSpaceAllowed[R any](x func([]Character) tuple.Of2[rslt.Of[R], []Character]) func([]Character) tuple.Of2[rslt.Of[R], []Character] {
@@ -54,8 +54,8 @@ func InParenthesesWhiteSpaceAllowed[R any](x func([]Character) tuple.Of2[rslt.Of
 	}
 	return ps.Map(
 		withoutParenthesis,
-		IgnoreWhiteSpaceBetween3(OpenParenthesis, x, CloseParenthesis),
-	)
+		ps.ToParser(IgnoreWhiteSpaceBetween3(OpenParenthesis, x, CloseParenthesis)),
+	).Legacy
 }
 
 func InBracesWhiteSpacesAllowed[R any](
@@ -66,8 +66,8 @@ func InBracesWhiteSpacesAllowed[R any](
 	}
 	return ps.Map(
 		withoutBrace,
-		IgnoreWhiteSpaceBetween3(OpenBrace, x, CloseBrace),
-	)
+		ps.ToParser(IgnoreWhiteSpaceBetween3(OpenBrace, x, CloseBrace)),
+	).Legacy
 }
 
 func InSquareBracketsWhiteSpacesAllowed[R any](
@@ -78,8 +78,8 @@ func InSquareBracketsWhiteSpacesAllowed[R any](
 	}
 	return ps.Map(
 		withoutBrace,
-		IgnoreWhiteSpaceBetween3(OpenSquareBracket, x, CloseSquareBracket),
-	)
+		ps.ToParser(IgnoreWhiteSpaceBetween3(OpenSquareBracket, x, CloseSquareBracket)),
+	).Legacy
 }
 
 func InSingleQuotes[R any](x func([]Character) tuple.Of2[rslt.Of[R], []Character]) func([]Character) tuple.Of2[rslt.Of[R], []Character] {
@@ -88,8 +88,8 @@ func InSingleQuotes[R any](x func([]Character) tuple.Of2[rslt.Of[R], []Character
 	}
 	return ps.Map(
 		withoutQuotes,
-		ps.Sequence3(SingleQuote, x, SingleQuote),
-	)
+		ps.Sequence3(ps.ToParser(SingleQuote), ps.ToParser(x), ps.ToParser(SingleQuote)),
+	).Legacy
 }
 
 func InDoubleQuotes[R any](x func([]Character) tuple.Of2[rslt.Of[R], []Character]) func([]Character) tuple.Of2[rslt.Of[R], []Character] {
@@ -98,8 +98,8 @@ func InDoubleQuotes[R any](x func([]Character) tuple.Of2[rslt.Of[R], []Character
 	}
 	return ps.Map(
 		withoutQuotes,
-		ps.Sequence3(DoubleQuote, x, DoubleQuote),
-	)
+		ps.Sequence3(ps.ToParser(DoubleQuote), ps.ToParser(x), ps.ToParser(DoubleQuote)),
+	).Legacy
 }
 
 func IgnoreSpaceBetween2[R1, R2 any](
@@ -111,8 +111,8 @@ func IgnoreSpaceBetween2[R1, R2 any](
 	})
 	return ps.Map(
 		merge,
-		ps.Sequence3(p1, ps.OptionalGreedyRepeat(Space), p2),
-	)
+		ps.Sequence3(ps.ToParser(p1), ps.OptionalGreedyRepeat(ps.ToParser(Space)), ps.ToParser(p2)),
+	).Legacy
 }
 
 func IgnoreSpaceBetween3[R1, R2, R3 any](
@@ -125,8 +125,8 @@ func IgnoreSpaceBetween3[R1, R2, R3 any](
 	})
 	return ps.Map(
 		merge,
-		IgnoreSpaceBetween2(p1, IgnoreSpaceBetween2(p2, p3)),
-	)
+		ps.ToParser(IgnoreSpaceBetween2(p1, IgnoreSpaceBetween2(p2, p3))),
+	).Legacy
 }
 
 func IgnoreWhiteSpaceBetween2[R1, R2 any](
@@ -136,7 +136,7 @@ func IgnoreWhiteSpaceBetween2[R1, R2 any](
 	merge := tuple.Fn3(func(r1 R1, _ []Character, r2 R2) tuple.Of2[R1, R2] {
 		return tuple.New2(r1, r2)
 	})
-	return ps.Map(merge, ps.Sequence3(p1, ps.OptionalGreedyRepeat(WhiteSpace), p2))
+	return ps.Map(merge, ps.Sequence3(ps.ToParser(p1), ps.OptionalGreedyRepeat(ps.ToParser(WhiteSpace)), ps.ToParser(p2))).Legacy
 }
 
 func IgnoreWhiteSpaceBetween3[R1, R2, R3 any](
@@ -149,8 +149,8 @@ func IgnoreWhiteSpaceBetween3[R1, R2, R3 any](
 	})
 	return ps.Map(
 		merge,
-		IgnoreWhiteSpaceBetween2(p1, IgnoreWhiteSpaceBetween2(p2, p3)),
-	)
+		ps.ToParser(IgnoreWhiteSpaceBetween2(p1, IgnoreWhiteSpaceBetween2(p2, p3))),
+	).Legacy
 }
 
 func SpaceSeparated2[R1, R2 any](
@@ -162,8 +162,8 @@ func SpaceSeparated2[R1, R2 any](
 	})
 	return ps.Map(
 		merge,
-		ps.Sequence3(p1, ps.GreedyRepeatAtLeastOnce(Space), p2),
-	)
+		ps.Sequence3(ps.ToParser(p1), ps.GreedyRepeatAtLeastOnce(ps.ToParser(Space)), ps.ToParser(p2)),
+	).Legacy
 }
 
 func SpaceSeparated3[R1, R2, R3 any](
@@ -177,13 +177,13 @@ func SpaceSeparated3[R1, R2, R3 any](
 	return ps.Map(
 		merge,
 		ps.Sequence5(
-			p1,
-			ps.GreedyRepeatAtLeastOnce(Space),
-			p2,
-			ps.GreedyRepeatAtLeastOnce(Space),
-			p3,
+			ps.ToParser(p1),
+			ps.GreedyRepeatAtLeastOnce(ps.ToParser(Space)),
+			ps.ToParser(p2),
+			ps.GreedyRepeatAtLeastOnce(ps.ToParser(Space)),
+			ps.ToParser(p3),
 		),
-	)
+	).Legacy
 }
 
 func WhiteSpaceSeparated2[R1, R2 any](
@@ -195,8 +195,8 @@ func WhiteSpaceSeparated2[R1, R2 any](
 	})
 	return ps.Map(
 		merge,
-		ps.Sequence3(p1, ps.GreedyRepeatAtLeastOnce(WhiteSpace), p2),
-	)
+		ps.Sequence3(ps.ToParser(p1), ps.GreedyRepeatAtLeastOnce(ps.ToParser(WhiteSpace)), ps.ToParser(p2)),
+	).Legacy
 }
 
 func WhiteSpaceSeparated3[R1, R2, R3 any](
@@ -210,13 +210,13 @@ func WhiteSpaceSeparated3[R1, R2, R3 any](
 	return ps.Map(
 		merge,
 		ps.Sequence5(
-			p1,
-			ps.GreedyRepeatAtLeastOnce(WhiteSpace),
-			p2,
-			ps.GreedyRepeatAtLeastOnce(WhiteSpace),
-			p3,
+			ps.ToParser(p1),
+			ps.GreedyRepeatAtLeastOnce(ps.ToParser(WhiteSpace)),
+			ps.ToParser(p2),
+			ps.GreedyRepeatAtLeastOnce(ps.ToParser(WhiteSpace)),
+			ps.ToParser(p3),
 		),
-	)
+	).Legacy
 }
 
 func GreedyRepeatAtLeastOnceSpaceSeparated[R any](
@@ -226,8 +226,11 @@ func GreedyRepeatAtLeastOnceSpaceSeparated[R any](
 		return append([]R{x}, slc.Map(tuple.Of2ToX2[[]Character, R])(xs)...)
 	})
 	return ps.Map(merge, ps.Sequence2(
-		p, ps.OptionalGreedyRepeat(ps.Sequence2(ps.GreedyRepeatAtLeastOnce(Space), p)),
-	))
+		ps.ToParser(p), ps.OptionalGreedyRepeat(ps.Sequence2(
+			ps.GreedyRepeatAtLeastOnce(ps.ToParser(Space)),
+			ps.ToParser(p),
+		)),
+	)).Legacy
 }
 
 func GreedyRepeatAtLeastOnceWhiteSpaceSeparated[R any](
@@ -237,31 +240,34 @@ func GreedyRepeatAtLeastOnceWhiteSpaceSeparated[R any](
 		return append([]R{x}, slc.Map(tuple.Of2ToX2[[]Character, R])(xs)...)
 	})
 	return ps.Map(merge, ps.Sequence2(
-		p,
-		ps.OptionalGreedyRepeat(ps.Sequence2(ps.GreedyRepeatAtLeastOnce(WhiteSpace), p)),
-	))
+		ps.ToParser(p),
+		ps.OptionalGreedyRepeat(ps.Sequence2(
+			ps.GreedyRepeatAtLeastOnce(ps.ToParser(WhiteSpace)),
+			ps.ToParser(p),
+		)),
+	)).Legacy
 }
 
 func OptionalGreedyRepeatSpaceSeparated[R any](
 	p func([]Character) tuple.Of2[rslt.Of[R], []Character],
 ) func([]Character) tuple.Of2[rslt.Of[[]R], []Character] {
 	return ps.First(
-		GreedyRepeatAtLeastOnceSpaceSeparated(p),
-		func(xs []Character) tuple.Of2[rslt.Of[[]R], []Character] {
+		ps.ToParser(GreedyRepeatAtLeastOnceSpaceSeparated(p)),
+		ps.ToParser(func(xs []Character) tuple.Of2[rslt.Of[[]R], []Character] {
 			return tuple.New2(rslt.Value([]R{}), xs)
-		},
-	)
+		}),
+	).Legacy
 }
 
 func OptionalGreedyRepeatWhiteSpaceSeparated[R any](
 	p func([]Character) tuple.Of2[rslt.Of[R], []Character],
 ) func([]Character) tuple.Of2[rslt.Of[[]R], []Character] {
 	return ps.First(
-		GreedyRepeatAtLeastOnceWhiteSpaceSeparated(p),
-		func(xs []Character) tuple.Of2[rslt.Of[[]R], []Character] {
+		ps.ToParser(GreedyRepeatAtLeastOnceWhiteSpaceSeparated(p)),
+		ps.ToParser(func(xs []Character) tuple.Of2[rslt.Of[[]R], []Character] {
 			return tuple.New2(rslt.Value([]R{}), xs)
-		},
-	)
+		}),
+	).Legacy
 }
 
 func GreedyRepeatAtLeastOnceIgnoreWhiteSpaceBetween[R any](
@@ -269,22 +275,22 @@ func GreedyRepeatAtLeastOnceIgnoreWhiteSpaceBetween[R any](
 ) func([]Character) tuple.Of2[rslt.Of[[]R], []Character] {
 	withLeadingWhitespace := ps.Map(
 		tuple.Of2ToX2[[]Character, R],
-		ps.Sequence2(ps.OptionalGreedyRepeat(WhiteSpace), p),
-	)
-	rest := ps.OptionalGreedyRepeat(withLeadingWhitespace)
+		ps.Sequence2(ps.OptionalGreedyRepeat(ps.ToParser(WhiteSpace)), ps.ToParser(p)),
+	).Legacy
+	rest := ps.OptionalGreedyRepeat(ps.ToParser(withLeadingWhitespace))
 	merge := tuple.Fn2(func(x R, xs []R) []R { return append([]R{x}, xs...) })
-	return ps.Map(merge, ps.Sequence2(p, rest))
+	return ps.Map(merge, ps.Sequence2(ps.ToParser(p), rest)).Legacy
 }
 
 func OptionalGreedyRepeatIgnoreWhiteSpaceBetween[R any](
 	p func([]Character) tuple.Of2[rslt.Of[R], []Character],
 ) func([]Character) tuple.Of2[rslt.Of[[]R], []Character] {
 	return ps.First(
-		GreedyRepeatAtLeastOnceIgnoreWhiteSpaceBetween(p),
-		func(xs []Character) tuple.Of2[rslt.Of[[]R], []Character] {
+		ps.ToParser(GreedyRepeatAtLeastOnceIgnoreWhiteSpaceBetween(p)),
+		ps.ToParser(func(xs []Character) tuple.Of2[rslt.Of[[]R], []Character] {
 			return tuple.New2(rslt.Value([]R{}), xs)
-		},
-	)
+		}),
+	).Legacy
 }
 
 func EndingWithCommaSpaceAllowed[R any](
@@ -292,18 +298,18 @@ func EndingWithCommaSpaceAllowed[R any](
 ) func([]Character) tuple.Of2[rslt.Of[R], []Character] {
 	return ps.Map(
 		tuple.Of2ToX1,
-		IgnoreSpaceBetween2(
+		ps.ToParser(IgnoreSpaceBetween2(
 			p,
 			Comma,
-		),
-	)
+		)),
+	).Legacy
 }
 
 func OptionalLeadingWhiteSpace[R any](p func([]Character) tuple.Of2[rslt.Of[R], []Character]) func([]Character) tuple.Of2[rslt.Of[R], []Character] {
 	return ps.Map(
 		tuple.Of2ToX2[[]Character, R],
-		ps.Sequence2(ps.OptionalGreedyRepeat(WhiteSpace), p),
-	)
+		ps.Sequence2(ps.OptionalGreedyRepeat(ps.ToParser(WhiteSpace)), ps.ToParser(p)),
+	).Legacy
 }
 
 func GreedyRepeatedLinesInAutoIndentBlockAtLeastOnce[R any](
@@ -311,7 +317,7 @@ func GreedyRepeatedLinesInAutoIndentBlockAtLeastOnce[R any](
 ) func([]Character) tuple.Of2[rslt.Of[[]R], []Character] {
 	errIndentRequired := errors.New("indent required")
 	return func(xs []Character) tuple.Of2[rslt.Of[[]R], []Character] {
-		firstIndent := ps.GreedyRepeatAtLeastOnce(Space)(xs)
+		firstIndent := ps.GreedyRepeatAtLeastOnce(ps.ToParser(Space)).Legacy(xs)
 		if ps.IsResultErr(firstIndent) {
 			return tuple.New2(rslt.Error[[]R](errIndentRequired), xs)
 		}
@@ -329,11 +335,11 @@ func GreedyRepeatedLinesInIndentBlockAtLeastOnce[R any](
 ) func([]Character) tuple.Of2[rslt.Of[[]R], []Character] {
 	indentedLine := ps.Map(
 		tuple.Of2ToX2[[]Character, R],
-		ps.Sequence2(NTimesRepeat(Space, indentWidth), line),
+		ps.Sequence2(ps.ToParser(NTimesRepeat(Space, indentWidth)), ps.ToParser(line)),
 	)
 	indentedLineWithNewLine := ps.Map(
 		tuple.Of2ToX2[[]Character, R],
-		ps.Sequence2(ps.GreedyRepeatAtLeastOnce(LineBreak), indentedLine),
+		ps.Sequence2(ps.GreedyRepeatAtLeastOnce(ps.ToParser(LineBreak)), indentedLine),
 	)
 	mergeMultiple := tuple.Fn2(func(p R, qs []R) []R { return append([]R{p}, qs...) })
 	return ps.First(
@@ -342,7 +348,7 @@ func GreedyRepeatedLinesInIndentBlockAtLeastOnce[R any](
 			ps.OptionalGreedyRepeat(indentedLineWithNewLine),
 		)),
 		ps.Map(slc.Pure, indentedLine),
-	)
+	).Legacy
 }
 
 func NTimesRepeat[R any](
@@ -355,17 +361,17 @@ func NTimesRepeat[R any](
 		}
 	}
 	if n == 1 {
-		return ps.Map(slc.Pure, p)
+		return ps.Map(slc.Pure, ps.ToParser(p)).Legacy
 	}
 	if n == 2 {
-		return ps.Map(tuple.Fn2(func(a R, b R) []R { return []R{a, b} }), ps.Sequence2(p, p))
+		return ps.Map(tuple.Fn2(func(a R, b R) []R { return []R{a, b} }), ps.Sequence2(ps.ToParser(p), ps.ToParser(p))).Legacy
 	}
 
 	half := float64(n) / 2.
 	l, r := int(math.Floor(half)), int(math.Ceil(half))
 	concat := tuple.Fn2(func(a []R, b []R) []R { return append(slices.Clone(a), b...) })
 	return ps.Map(concat, ps.Sequence2(
-		NTimesRepeat[R](p, l),
-		NTimesRepeat[R](p, r),
-	))
+		ps.ToParser(NTimesRepeat[R](p, l)),
+		ps.ToParser(NTimesRepeat[R](p, r)),
+	)).Legacy
 }

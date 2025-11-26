@@ -8,12 +8,15 @@ import (
 )
 
 var ImportPath = ps.Map(parseImportPath, ps.Sequence2(
-	ImportPathToken,
-	ps.OptionalGreedyRepeat(importSubPathToken),
-))
-var importSubPathToken = ps.Prefix(Slash, ImportPathToken)
+	ps.ToParser(ImportPathToken),
+	ps.OptionalGreedyRepeat(ps.ToParser(importSubPathToken)),
+)).Legacy
+var importSubPathToken = ps.Prefix(ps.ToParser(Slash), ps.ToParser(ImportPathToken)).Legacy
 
-var ImportPathToken = ps.Map(CharactersToString, ps.GreedyRepeatAtLeastOnce(Alpha))
+var ImportPathToken = ps.Map(
+	CharactersToString,
+	ps.GreedyRepeatAtLeastOnce(ps.ToParser(Alpha)),
+).Legacy
 
 var parseImportPath = tuple.Fn2(func(t string, ts []string) []string {
 	return append(slc.Pure(t), ts...)

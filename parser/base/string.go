@@ -14,24 +14,27 @@ import (
 )
 
 var String = ps.Map(
-	fn.Compose(syntaxtree.NewString, stringWithQuotes), InDoubleQuotes(innerString),
-)
+	fn.Compose(syntaxtree.NewString, stringWithQuotes), ps.ToParser(InDoubleQuotes(innerString)),
+).Legacy
 
-var StringResultNode = ps.Map(stResult.ToNode, String)
+var StringResultNode = ps.Map(stResult.ToNode, ps.ToParser(String)).Legacy
 
-var StringPattern = ps.Map(st.ToPattern, String)
+var StringPattern = ps.Map(st.ToPattern, ps.ToParser(String)).Legacy
 
-var innerString = ps.Map(slc.Flatten, ps.OptionalGreedyRepeat(ps.First(
-	escapedStringCharacter,
-	nonEscapedStringCharacter,
-)))
+var innerString = ps.Map(
+	slc.Flatten,
+	ps.OptionalGreedyRepeat(ps.First(
+		ps.ToParser(escapedStringCharacter),
+		ps.ToParser(nonEscapedStringCharacter),
+	)),
+).Legacy
 var escapedStringCharacter = ps.Map(escapeStringToRunes,
 	ps.Sequence2(
-		BackSlash,
-		ps.ConsumeIf(fn.Const[Character](true)),
+		ps.ToParser(BackSlash),
+		ps.ToParser(ps.ConsumeIf(fn.Const[Character](true))),
 	),
-)
-var nonEscapedStringCharacter = ps.Map(tokenToRunes, NotDoubleQuote)
+).Legacy
+var nonEscapedStringCharacter = ps.Map(tokenToRunes, ps.ToParser(NotDoubleQuote)).Legacy
 
 func stringWithQuotes(x []rune) string {
 	return fmt.Sprintf(`"%s"`, string(x))

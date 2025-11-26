@@ -29,55 +29,55 @@ func nakedObjectWithChildren() func(xs []psBase.Character) tuple.Of2[rslt.Of[obj
 	paramLinesInBlockStartingWithLineBreak := ps.Map(
 		mergeParamIgnoreNewLine,
 		ps.Sequence2(
-			psBase.LineBreak,
-			paramLinesInBlock,
+			ps.ToParser(psBase.LineBreak),
+			ps.ToParser(paramLinesInBlock),
 		),
-	)
+	).Legacy
 	paramLineFollowedByParamBlock := ps.Map(
 		mergeParamWithFirstParam,
 		ps.Sequence3(
-			paramLine,
-			psBase.LineBreak,
-			paramLinesInBlock,
+			ps.ToParser(paramLine),
+			ps.ToParser(psBase.LineBreak),
+			ps.ToParser(paramLinesInBlock),
 		),
-	)
+	).Legacy
 
 	head := anyNode()
 	return ps.First(
 		ps.Map(mergeObject, ps.Sequence2(
-			head,
-			paramLinesInBlockStartingWithLineBreak,
+			ps.ToParser(head),
+			ps.ToParser(paramLinesInBlockStartingWithLineBreak),
 		)),
 		ps.Map(
 			mergeObject,
-			psBase.SpaceSeparated2(
+			ps.ToParser(psBase.SpaceSeparated2(
 				head,
 				paramLineFollowedByParamBlock,
-			),
+			)),
 		),
 		ps.Map(
 			mergeObject,
-			psBase.SpaceSeparated2(
+			ps.ToParser(psBase.SpaceSeparated2(
 				head,
 				paramLine,
-			),
+			)),
 		),
-	)
+	).Legacy
 }
 
 var ParseNakedObjectMultilines = fn.Compose3(psBase.FilterResult, NakedObjectMultilines, psBase.StringToCharTokens)
 
 func NakedObjectMultilines(xs []psBase.Character) tuple.Of2[rslt.Of[stResult.Node], []psBase.Character] {
-	return ps.Map(castObjectNode, nakedObjectMultilines)(xs)
+	return ps.Map(castObjectNode, ps.ToParser(nakedObjectMultilines)).Legacy(xs)
 }
 
 func nakedObjectMultilines(xs []psBase.Character) tuple.Of2[rslt.Of[objectNode], []psBase.Character] {
 	head := anyNode()
 	params := objectParamPartMultilines()
 	return ps.First(
-		ps.Map(mergeObject, psBase.WhiteSpaceSeparated2(head, params)),
-		ps.Map(nodeToObject, head),
-	)(xs)
+		ps.Map(mergeObject, ps.ToParser(psBase.WhiteSpaceSeparated2(head, params))),
+		ps.Map(nodeToObject, ps.ToParser(head)),
+	).Legacy(xs)
 }
 
 var mergeObject = tuple.Fn2(func(head stResult.Node, params stResult.FixedParamPart) objectNode {

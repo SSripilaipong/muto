@@ -1,16 +1,13 @@
 package parsing
 
-import (
-	"github.com/SSripilaipong/go-common/optional"
-	"github.com/SSripilaipong/go-common/rslt"
-	"github.com/SSripilaipong/go-common/tuple"
-)
+import "github.com/SSripilaipong/go-common/optional"
 
-func GreedyOptional[S, R any](p func([]S) tuple.Of2[rslt.Of[R], []S]) func([]S) tuple.Of2[rslt.Of[optional.Of[R]], []S] {
-	return First(
-		Map(optional.Value[R], p),
-		func(xs []S) tuple.Of2[rslt.Of[optional.Of[R]], []S] {
-			return tuple.New2(rslt.Value(optional.Empty[R]()), xs)
-		},
-	)
+func GreedyOptional[S, R any](p Parser[R, S]) Parser[optional.Of[R], S] {
+	return func(s []S) ParseResult[optional.Of[R], S] {
+		r := p(s)
+		if r.IsError() {
+			return NewParseResultValue(optional.Empty[R](), s)
+		}
+		return NewParseResultValue(optional.Value(r.Value()), r.Remaining())
+	}
 }

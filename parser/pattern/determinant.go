@@ -22,13 +22,13 @@ func Determinant() func([]psBase.Character) tuple.Of2[rslt.Of[stPattern.Determin
 	var parser func([]psBase.Character) tuple.Of2[rslt.Of[stPattern.DeterminantObject], []psBase.Character]
 	parser = func(xs []psBase.Character) tuple.Of2[rslt.Of[stPattern.DeterminantObject], []psBase.Character] {
 		headParser := ps.First(
-			psBase.DeterminantClass,
-			ps.Map(base.ToDeterminant, psBase.InParentheses(parser)),
-		)
-		withParam := ps.Map(castObject, psBase.SpaceSeparated2(headParser, ParamPart()))
-		withoutParam := ps.Map(castHead, headParser)
+			ps.ToParser(psBase.DeterminantClass),
+			ps.Map(base.ToDeterminant, ps.ToParser(psBase.InParentheses(parser))),
+		).Legacy
+		withParam := ps.Map(castObject, ps.ToParser(psBase.SpaceSeparated2(headParser, ParamPart())))
+		withoutParam := ps.Map(castHead, ps.ToParser(headParser))
 
-		return ps.First(withParam, withoutParam)(xs)
+		return ps.First(withParam, withoutParam).Legacy(xs)
 	}
 	return parser
 }

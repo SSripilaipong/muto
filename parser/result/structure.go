@@ -11,34 +11,34 @@ import (
 )
 
 func structure(xs []psBase.Character) tuple.Of2[rslt.Of[stResult.Structure], []psBase.Character] {
-	structureValue := ps.First(nonNestedNode, nestedNode())
+	structureValue := ps.First(ps.ToParser(nonNestedNode), ps.ToParser(nestedNode())).Legacy
 	recordTuple := ps.Map(
 		mergeStructureRecord,
-		psBase.IgnoreSpaceBetween3(structureKey, psBase.Colon, structureValue),
-	)
+		ps.ToParser(psBase.IgnoreSpaceBetween3(structureKey, psBase.Colon, structureValue)),
+	).Legacy
 
 	structureRecordWithComma := psBase.EndingWithCommaSpaceAllowed(recordTuple)
 	optionalCommaSeparatedRecords := psBase.OptionalGreedyRepeatIgnoreWhiteSpaceBetween(structureRecordWithComma)
 
-	optionalTrailingRecord := ps.GreedyOptional(psBase.OptionalLeadingWhiteSpace(recordTuple))
+	optionalTrailingRecord := ps.GreedyOptional(ps.ToParser(psBase.OptionalLeadingWhiteSpace(recordTuple)))
 	parser := ps.Map(
 		mergeStructure,
-		psBase.InBracesWhiteSpacesAllowed(ps.Sequence2(
-			optionalCommaSeparatedRecords,
+		ps.ToParser(psBase.InBracesWhiteSpacesAllowed(ps.Sequence2(
+			ps.ToParser(optionalCommaSeparatedRecords),
 			optionalTrailingRecord,
-		)),
+		).Legacy)),
 	)
-	return ps.Filter(noRepeatStructureKeys, parser)(xs)
+	return ps.Filter(noRepeatStructureKeys, parser).Legacy(xs)
 }
 
 var structureKey = ps.First(
-	psBase.BooleanResultNode,
-	psBase.NumberResultNode,
-	psBase.StringResultNode,
-	psBase.RuneResultNode,
-	psBase.ClassResultNode,
-	psBase.TagResultNode,
-)
+	ps.ToParser(psBase.BooleanResultNode),
+	ps.ToParser(psBase.NumberResultNode),
+	ps.ToParser(psBase.StringResultNode),
+	ps.ToParser(psBase.RuneResultNode),
+	ps.ToParser(psBase.ClassResultNode),
+	ps.ToParser(psBase.TagResultNode),
+).Legacy
 
 func noRepeatStructureKeys(x stResult.Structure) bool {
 	mem := make(map[stResult.Node]bool) // Node is too loose as a map key

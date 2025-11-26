@@ -8,9 +8,9 @@ import (
 
 func TestSequence3(t *testing.T) {
 	t.Run("should accept sequence", func(t *testing.T) {
-		p := Sequence3(char('a'), char('b'), char('c'))
+		p := Sequence3(ToParser(char('a')), ToParser(char('b')), ToParser(char('c')))
 		r := p([]rune("abc"))
-		assert.True(t, IsResultOk(r))
-		assert.Empty(t, r.X2())
+		assert.True(t, r.IsOk())
+		assert.Empty(t, r.Remaining())
 	})
 }

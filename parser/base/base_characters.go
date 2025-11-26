@@ -27,5 +27,5 @@ var NotSingleQuote = char("not single quote", fn.Not(IsSingleQuote))
 var Digit = char("digit", IsDigit)
 var Space = char("space", IsSpace)
 var LineBreak = char("line break", IsLineBreak)
-var WhiteSpace = ps.First(Space, LineBreak)
+var WhiteSpace = ps.First(ps.ToParser(Space), ps.ToParser(LineBreak)).Legacy
 var Alpha = char("alpha", fn.Or(fn.Or(IsASCIILetter, IsASCIIDigit), fn.Or(IsUnderscore, IsHyphen)))
