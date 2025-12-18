@@ -16,21 +16,21 @@ func TestControl_do(t *testing.T) {
 	class := NewModule().GetClass("do")
 
 	t.Run("should become last node", func(t *testing.T) {
-		result := mutateUntilTerminated(base.NewOneLayerObject(class,
+		result := base.MutateUntilTerminated(base.NewOneLayerObject(class,
 			base.NewNumberFromString("123"), base.NewNumberFromString("456"),
 		))
 		assert.Equal(t, base.NewNumberFromString("456"), result)
 	})
 
 	t.Run("should mutate with one children", func(t *testing.T) {
-		result := mutateUntilTerminated(base.NewOneLayerObject(class,
+		result := base.MutateUntilTerminated(base.NewOneLayerObject(class,
 			base.NewNumberFromString("123"),
 		))
 		assert.Equal(t, base.NewNumberFromString("123"), result)
 	})
 
 	t.Run("should mutate with more than 2 children", func(t *testing.T) {
-		result := mutateUntilTerminated(base.NewOneLayerObject(class,
+		result := base.MutateUntilTerminated(base.NewOneLayerObject(class,
 			base.NewNumberFromString("123"), base.NewNumberFromString("456"), base.NewNumberFromString("789"),
 		))
 		assert.Equal(t, base.NewNumberFromString("789"), result)
@@ -48,7 +48,7 @@ func TestControl_match(t *testing.T) {
 	literal := builder.NewLiteralBuilderFactoryWithClassCollection()
 
 	t.Run("should apply first case", func(t *testing.T) {
-		result := mutateUntilTerminated(base.NewCompoundObject(class, base.NewParamChain([][]base.Node{
+		result := base.MutateUntilTerminated(base.NewCompoundObject(class, base.NewParamChain([][]base.Node{
 			{builder.NewReconstructor( // \A [.ok]
 				extractor.NewExactNodeList([]extractor.NodeExtractor{extractor.NewVariable("A")}),
 				literal.NewBuilder(stResult.WrapNodeWithObject(st.NewTag(".ok"))),
@@ -59,7 +59,7 @@ func TestControl_match(t *testing.T) {
 	})
 
 	t.Run("should apply second case", func(t *testing.T) {
-		result := mutateUntilTerminated(base.NewCompoundObject(class, base.NewParamChain([][]base.Node{
+		result := base.MutateUntilTerminated(base.NewCompoundObject(class, base.NewParamChain([][]base.Node{
 			{
 				builder.NewReconstructor( // \"not this one" [.first]
 					extractor.NewExactNodeList([]extractor.NodeExtractor{extractor.NewString("not this one")}),
@@ -80,7 +80,7 @@ func TestControl_ret(t *testing.T) {
 	class := NewModule().GetClass("ret")
 
 	t.Run("should apply first case", func(t *testing.T) {
-		result := mutateUntilTerminated(base.NewOneLayerObject(class,
+		result := base.MutateUntilTerminated(base.NewOneLayerObject(class,
 			base.NewNumberFromString("123"),
 		))
 		assert.Equal(t, base.NewNumberFromString("123"), result)
@@ -94,7 +94,7 @@ func TestControl_compose(t *testing.T) {
 	isStringClass := module.GetClass("string?")
 
 	t.Run("should compose 2 functions", func(t *testing.T) {
-		result := mutateUntilTerminated(base.NewCompoundObject(class, base.NewParamChain([][]base.Node{
+		result := base.MutateUntilTerminated(base.NewCompoundObject(class, base.NewParamChain([][]base.Node{
 			{isStringClass, stringClass},
 			{base.NewNumberFromString("123")},
 		}))) // (compose string? string) 123
@@ -108,7 +108,7 @@ func TestControl_curry(t *testing.T) {
 	addClass := module.GetClass("+")
 
 	t.Run("should curry add function", func(t *testing.T) {
-		result := mutateUntilTerminated(base.NewCompoundObject(class, base.NewParamChain([][]base.Node{
+		result := base.MutateUntilTerminated(base.NewCompoundObject(class, base.NewParamChain([][]base.Node{
 			{addClass, base.NewNumberFromString("5")},
 			{base.NewNumberFromString("20")},
 		}))) // (curry + 5) 20
@@ -122,7 +122,7 @@ func TestControl_with(t *testing.T) {
 	literal := builder.NewLiteralBuilderFactoryWithClassCollection()
 
 	t.Run("should match variables", func(t *testing.T) {
-		result := mutateUntilTerminated(base.NewCompoundObject(class, base.NewParamChain([][]base.Node{
+		result := base.MutateUntilTerminated(base.NewCompoundObject(class, base.NewParamChain([][]base.Node{
 			{base.NewString("abc"), base.NewTag("xxx")},
 			{builder.NewReconstructor(
 				extractor.NewExactNodeList([]extractor.NodeExtractor{extractor.NewVariable("A"), extractor.NewTag("xxx")}),
@@ -138,7 +138,7 @@ func TestControl_use(t *testing.T) {
 	class := module.GetClass("use")
 
 	t.Run("should match variables", func(t *testing.T) {
-		result := mutateUntilTerminated(base.NewCompoundObject(class, base.NewParamChain([][]base.Node{
+		result := base.MutateUntilTerminated(base.NewCompoundObject(class, base.NewParamChain([][]base.Node{
 			{base.NewTag("ok")},
 			{base.NewConventionalList(base.NewRune('a'), base.NewRune('b'))},
 		}))) // (use .ok) ($ 'a' 'b')

@@ -36,7 +36,7 @@ func TestLocalChannel(t *testing.T) {
 
 	got := make(chan base.Node, 1)
 	go func() {
-		got <- mutateUntilTerminatedResult(base.NewOneLayerObject(receiver))
+		got <- base.MutateUntilTerminated(base.NewOneLayerObject(receiver))
 	}()
 
 	select {
@@ -46,7 +46,7 @@ func TestLocalChannel(t *testing.T) {
 	}
 
 	sent := base.NewString("hello")
-	senderResult := mutateUntilTerminatedResult(base.NewOneLayerObject(sender, sent))
+	senderResult := base.MutateUntilTerminated(base.NewOneLayerObject(sender, sent))
 	assert.True(t, base.NodeEqual(senderResult, base.Null()))
 
 	select {
@@ -55,14 +55,4 @@ func TestLocalChannel(t *testing.T) {
 	case <-time.After(200 * time.Millisecond):
 		t.Fatal("timed out waiting for receiver")
 	}
-}
-
-func mutateUntilTerminatedResult(node base.Node) base.Node {
-	if !base.IsMutableNode(node) {
-		return node
-	}
-	if result, isMutated := base.UnsafeNodeToMutable(node).Mutate().Return(); isMutated {
-		return mutateUntilTerminatedResult(result)
-	}
-	return node
 }

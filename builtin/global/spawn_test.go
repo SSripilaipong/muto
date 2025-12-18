@@ -41,7 +41,7 @@ func TestSpawn(t *testing.T) {
 		),
 	)
 
-	result := mutateUntilTerminated(obj)
+	result := base.MutateUntilTerminated(obj)
 	assert.Equal(t, base.Null(), result)
 	assert.True(t, port.called)
 	assert.Equal(t, []base.Node{

@@ -36,7 +36,7 @@ func TestNewChannelUsesPortal(t *testing.T) {
 	})))
 
 	class := mod.GetClass("new-channel")
-	result := mutateUntilTerminated(base.NewOneLayerObject(class))
+	result := base.MutateUntilTerminated(base.NewOneLayerObject(class))
 
 	assert.True(t, port.called)
 	assert.True(t, base.NodeEqual(result, expected))

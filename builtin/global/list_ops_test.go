@@ -16,14 +16,14 @@ func TestList_map(t *testing.T) {
 	stringClass := module.GetClass("string")
 
 	t.Run("should return empty list", func(t *testing.T) {
-		result := mutateUntilTerminated(base.NewOneLayerObject(class,
+		result := base.MutateUntilTerminated(base.NewOneLayerObject(class,
 			stringClass, base.NewOneLayerObject(base.NewTag("my-data")),
 		)) // map string ($)
 		assert.Equal(t, base.NewOneLayerObject(base.NewUnlinkedRuleBasedClass("$")), result)
 	})
 
 	t.Run("should apply to each data", func(t *testing.T) {
-		result := mutateUntilTerminated(base.NewOneLayerObject(class,
+		result := base.MutateUntilTerminated(base.NewOneLayerObject(class,
 			stringClass, base.NewOneLayerObject(base.NewTag("my-data"), base.NewNumberFromString("1"), base.NewNumberFromString("2")),
 		)) // map string ($ 1 2)
 		assert.Equal(t, base.NewConventionalList(base.NewString("1"), base.NewString("2")), result)
@@ -36,14 +36,14 @@ func TestList_filter(t *testing.T) {
 	isStringClass := module.GetClass("string?")
 
 	t.Run("should return empty list", func(t *testing.T) {
-		result := mutateUntilTerminated(base.NewOneLayerObject(class,
+		result := base.MutateUntilTerminated(base.NewOneLayerObject(class,
 			isStringClass, base.NewOneLayerObject(base.NewTag("my-data")),
 		)) // filter string? ($)
 		assert.Equal(t, base.NewConventionalList(), result)
 	})
 
 	t.Run("should apply to each data", func(t *testing.T) {
-		result := mutateUntilTerminated(base.NewOneLayerObject(class,
+		result := base.MutateUntilTerminated(base.NewOneLayerObject(class,
 			isStringClass, base.NewOneLayerObject(base.NewTag("my-data"),
 				base.NewNumberFromString("1"), base.NewString("2"), base.NewNumberFromString("3"), base.NewString("4"),
 			),
