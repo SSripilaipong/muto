@@ -19,6 +19,7 @@ var rawStatements = codesToStatements([]string{
 	filterCode,
 	printCode,
 	inputCode,
+	spawnCode,
 })
 
 func codesToStatements(codes []string) []stBase.Statement {
