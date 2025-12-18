@@ -8,8 +8,9 @@ import (
 
 func NewDefaultPortal() *portal.Portal {
 	return portal.New(rods.NewMap(map[string]portal.Port{
-		"stdout":  NewStdOut(),
-		"stdin":   NewStdIn(),
-		"spawner": NewGoroutineSpawner(),
+		"stdout":   NewStdOut(),
+		"stdin":    NewStdIn(),
+		"spawner":  NewGoroutineSpawner(),
+		"chbroker": NewLocalChannel(),
 	}))
 }

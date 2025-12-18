@@ -7,6 +7,12 @@ type Rule interface {
 	Normal(obj Object) optional.Of[Node]
 }
 
+type NoActiveRule struct{}
+
+func (NoActiveRule) Active(Object) optional.Of[Node] {
+	return optional.Empty[Node]()
+}
+
 type RuleBasedClass struct {
 	name    string
 	mutator Rule
