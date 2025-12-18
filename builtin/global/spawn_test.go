@@ -14,12 +14,12 @@ import (
 
 type capturePort struct {
 	called bool
-	node   base.Node
+	nodes  []base.Node
 }
 
-func (p *capturePort) Call(node base.Node) optional.Of[base.Node] {
+func (p *capturePort) Call(nodes []base.Node) optional.Of[base.Node] {
 	p.called = true
-	p.node = node
+	p.nodes = nodes
 	return optional.Value[base.Node](base.Null())
 }
 
@@ -44,12 +44,12 @@ func TestSpawn(t *testing.T) {
 	result := mutateUntilTerminated(obj)
 	assert.Equal(t, base.Null(), result)
 	assert.True(t, port.called)
-	assert.Equal(t, base.NewOneLayerObject(
+	assert.Equal(t, []base.Node{
 		base.NewUnlinkedRuleBasedClass("a"),
 		base.NewUnlinkedRuleBasedClass("b"),
 		base.NewOneLayerObject(
 			base.NewUnlinkedRuleBasedClass("c"),
 			base.NewUnlinkedRuleBasedClass("d"),
 		),
-	), port.node)
+	}, port.nodes)
 }

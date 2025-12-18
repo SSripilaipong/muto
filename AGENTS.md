@@ -5,7 +5,7 @@
 - Builtins split into global rules/mutators and portal devices in `builtin/global/code.go`, `builtin/global/mutator.go`, and `builtin/portal/default.go`.
 
 ## Quick start (tested)
-- Tests (worked here): `GOCACHE=tmp/go-cache go test ./...` using module config in `go.mod` and cache dir `tmp/go-cache`.
+- Tests (worked here): `GOCACHE=$PWD/tmp/go-cache go test ./...` using module config in `go.mod` and cache dir `tmp/go-cache` (GOCACHE must be absolute).
 - Build CLI: `make build` from `Makefile` outputs `build/muto` per `Makefile`.
 - Run sample file: `make run` uses `tmp/main.mu` via `Makefile`.
 - Explain mode: `make run-explain` prints mutation steps via `cmd/cli/run/execute.go` and `program/main.go`.
@@ -67,7 +67,7 @@
 - `syntaxtree` AST nodes are in `syntaxtree/module.go`, `syntaxtree/rule.go`, and `syntaxtree/active_rule.go`.
 - `syntaxtree/result` nodes are in `syntaxtree/result/object.go`.
 - `examples` sample program lives in `examples/tictactoe.mu`.
-- `tmp` task artifacts include `tmp/plan.md` and cache `tmp/go-cache`.
+- `tmp` task artifacts include `tmp/plan.md` and cache `tmp/go-cache` (use an absolute path for `GOCACHE`).
 - `README.md` documents language concepts and CLI usage in `README.md`.
 
 ## Execution flows

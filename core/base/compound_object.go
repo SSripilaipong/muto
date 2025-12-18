@@ -104,8 +104,8 @@ func newCompoundObject(class Node, params ParamChain) Object {
 	return CompoundObject{class: class, paramChain: params}
 }
 
-func NewOneLayerObject(class Node, children ...Node) Object {
-	return NewCompoundObject(class, NewParamChain(slc.Pure(children)))
+func NewOneLayerObject(head Node, tail ...Node) Object {
+	return NewCompoundObject(head, NewParamChain(slc.Pure(tail)))
 }
 
 func NewNamedOneLayerObject(name string, children ...Node) Object {

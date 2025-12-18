@@ -80,10 +80,9 @@ func appendRemainingParamToNode(paramChain base.ParamChain) func(base.Node) opti
 		if paramChain.Size() == 0 {
 			return optional.Value(node)
 		}
-		if !base.IsObjectNode(node) {
-			return optional.Value[base.Node](base.NewCompoundObject(node, paramChain))
+		if base.IsObjectNode(node) {
+			return optional.Value[base.Node](base.UnsafeNodeToObject(node).AppendParams(paramChain))
 		}
-
-		return optional.Value[base.Node](base.UnsafeNodeToObject(node).AppendParams(paramChain))
+		return optional.Value[base.Node](base.NewCompoundObject(node, paramChain))
 	}
 }

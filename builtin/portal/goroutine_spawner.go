@@ -13,10 +13,12 @@ func NewGoroutineSpawner() Spawner {
 	return Spawner{}
 }
 
-func (s Spawner) Call(node base.Node) optional.Of[base.Node] {
-	if base.IsMutableNode(node) {
-		go mutateUntilTerminated(node)
+func (s Spawner) Call(nodes []base.Node) optional.Of[base.Node] {
+	if len(nodes) == 0 {
+		return optional.Empty[base.Node]()
 	}
+	spawnNode := base.NewOneLayerObject(nodes[0], nodes[1:]...)
+	go mutateUntilTerminated(spawnNode)
 	return optional.Value[base.Node](base.Null())
 }
 

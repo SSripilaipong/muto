@@ -32,34 +32,34 @@ func (t *portalMutator) Mutate(obj base.Object) optional.Of[base.Node] {
 }
 
 func (t *portalMutator) callCommand(param base.ParamChain) optional.Of[base.Node] {
-	keyNode, valueNode, ok := t.validateCallParam(param)
+	keyNode, valueNodes, ok := t.validateCallParam(param)
 	if !ok {
 		return optional.Empty[base.Node]()
 	}
-	return t.call(keyNode, valueNode)
+	return t.call(keyNode, valueNodes)
 }
 
-func (t *portalMutator) call(keyNode base.Node, valueNode base.Node) optional.Of[base.Node] {
+func (t *portalMutator) call(keyNode base.Node, valueNodes []base.Node) optional.Of[base.Node] {
 	key := base.UnsafeNodeToString(keyNode).Value()
 	if port, portExists := t.portal.Port(key).Return(); portExists {
-		return port.Call(valueNode)
+		return port.Call(valueNodes)
 	}
 	return optional.Empty[base.Node]()
 }
 
-func (t *portalMutator) validateCallParam(param base.ParamChain) (base.Node, base.Node, bool) {
+func (t *portalMutator) validateCallParam(param base.ParamChain) (base.Node, []base.Node, bool) {
 	if param.Size() != 1 {
 		return nil, nil, false
 	}
 	children := param.DirectParams()
-	if len(children) != 2 {
+	if len(children) < 2 {
 		return nil, nil, false
 	}
-	keyNode, valueNode := children[0], children[1]
+	keyNode := children[0]
 	if !base.IsStringNode(keyNode) {
 		return nil, nil, false
 	}
-	return keyNode, valueNode, true
+	return keyNode, children[1:], true
 }
 
 func (t *portalMutator) MountPortal(p *portal.Portal) {

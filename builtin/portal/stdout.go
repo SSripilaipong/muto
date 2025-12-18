@@ -15,7 +15,11 @@ func NewStdOut() StdOut {
 	return StdOut{}
 }
 
-func (s StdOut) Call(x base.Node) optional.Of[base.Node] {
+func (s StdOut) Call(nodes []base.Node) optional.Of[base.Node] {
+	if len(nodes) != 1 {
+		return optional.Empty[base.Node]()
+	}
+	x := nodes[0]
 	if !base.IsStringNode(x) {
 		return optional.Empty[base.Node]()
 	}

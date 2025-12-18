@@ -7,5 +7,5 @@ import (
 )
 
 type Port interface {
-	Call(node base.Node) optional.Of[base.Node]
+	Call(nodes []base.Node) optional.Of[base.Node]
 }
