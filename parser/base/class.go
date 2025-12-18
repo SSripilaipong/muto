@@ -14,13 +14,13 @@ import (
 var DeterminantClass = ps.Map(stBase.ToDeterminant, ps.Filter(validDeterminantClass, ps.ToParser(Class))).Legacy
 
 var NonDeterminantClassRulePattern = ps.First(
-	ps.Map(stBase.ToPattern, ps.ToParser(Class)),
 	ps.Map(stBase.ToPattern, ps.ToParser(ImportedClass)),
+	ps.Map(stBase.ToPattern, ps.ToParser(Class)),
 ).Legacy
 
 var ClassResultNode = ps.First(
-	ps.Map(stResult.ToNode, ps.ToParser(Class)),
 	ps.Map(stResult.ToNode, ps.ToParser(ImportedClass)),
+	ps.Map(stResult.ToNode, ps.ToParser(Class)),
 ).Legacy
 
 var ImportedClass = ps.Map(parseImportedClass, ps.Sequence3(

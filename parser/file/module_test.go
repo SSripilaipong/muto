@@ -117,6 +117,20 @@ func TestParseObject(t *testing.T) {
 		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
 	})
 
+	t.Run("should parse imported class as object head", func(t *testing.T) {
+		s := `main = time.sleep 1`
+		expected := expectedStatements([]base.Statement{
+			syntaxtree.NewRule(
+				stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("main"), stPattern.PatternsToParamPart([]base.Pattern{})),
+				stResult.NewNakedObject(
+					syntaxtree.NewImportedClass("time", "sleep"),
+					stResult.FixedParamPart([]stResult.Param{syntaxtree.NewNumber("1")}),
+				),
+			),
+		})
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
+	})
+
 	t.Run("should parse nested object", func(t *testing.T) {
 		s := `h ((g 1) X) = 999`
 		expected := expectedStatements([]base.Statement{
