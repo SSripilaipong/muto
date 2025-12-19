@@ -151,3 +151,7 @@ func (r StructureRecord) String() string {
 func (r StructureRecord) replaceValue(value Node) StructureRecord {
 	return NewStructureRecord(r.Key(), value)
 }
+
+func UnsafeNodeToStructure(n Node) Structure {
+	return n.(Structure)
+}

@@ -4,18 +4,6 @@ import (
 	"github.com/SSripilaipong/go-common/optional"
 )
 
-func StrictUnaryOp(f func(x Node) optional.Of[Node]) func(params ParamChain) optional.Of[Node] {
-	return func(params ParamChain) optional.Of[Node] {
-		innerChildren := params.DirectParams()
-		if len(innerChildren) != 1 {
-			return optional.Empty[Node]()
-		}
-
-		remainingParams := params.SliceFromNodeOrEmpty(0, 1)
-		return ProcessMutationResultWithParamChain(f(innerChildren[0]), remainingParams)
-	}
-}
-
 func ProcessMutationResultWithParamChain(r optional.Of[Node], remainingChain ParamChain) optional.Of[Node] {
 	result, ok := r.Return()
 	if !ok {

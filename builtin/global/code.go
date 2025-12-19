@@ -1,13 +1,10 @@
 package global
 
 import (
-	"fmt"
-
-	fileParser "github.com/SSripilaipong/muto/parser/file"
-	stBase "github.com/SSripilaipong/muto/syntaxtree/base"
+	"github.com/SSripilaipong/muto/parser"
 )
 
-var rawStatements = codesToStatements([]string{
+var rawStatements = parser.StringsToStatementsOrPanic([]string{
 	doCode,
 	matchCode,
 	retCode,
@@ -22,15 +19,3 @@ var rawStatements = codesToStatements([]string{
 	spawnCode,
 	newChannelCode,
 })
-
-func codesToStatements(codes []string) []stBase.Statement {
-	var statements []stBase.Statement
-	for _, code := range codes {
-		file, err := fileParser.ParseFileFromString(code).Return()
-		if err != nil {
-			panic(fmt.Errorf("cannot build global module: %w", err))
-		}
-		statements = append(statements, file.Statements()...)
-	}
-	return statements
-}
