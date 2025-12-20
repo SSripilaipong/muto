@@ -7,17 +7,9 @@ import (
 	"strings"
 
 	"github.com/SSripilaipong/muto/core/base"
-	mutation "github.com/SSripilaipong/muto/core/mutation/rule"
-	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
-	"github.com/SSripilaipong/muto/parser"
-	st "github.com/SSripilaipong/muto/syntaxtree"
 )
 
-const requestCode = `(request Data) Command = Data (.get Command)`
-
-var requestClass = buildRequestClass()
-
-func newRequestObject(r *http.Request) (base.Object, error) {
+func newRequestObject(r *http.Request, requestClass base.Class) (base.Object, error) {
 	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		return nil, err
@@ -99,17 +91,4 @@ func sortedKeys(values map[string][]string) []string {
 	}
 	sort.Strings(keys)
 	return keys
-}
-
-func buildRequestClass() *base.RuleBasedClass {
-	statements := parser.StringsToStatementsOrPanic([]string{requestCode})
-	rules := st.FilterRuleFromStatement(statements)
-	if len(rules) != 1 {
-		panic("cannot build class in http-server module")
-	}
-	builder := mutation.NewRuleBuilder()
-	unit := builder.BuildNamedUnit(rules[0])
-	switcher := mutator.NewSwitchFromSingleObjectMutator(unit)
-	appendable := mutator.NewAppendable(unit.Name(), switcher, mutator.NewSwitch(nil))
-	return base.NewRuleBasedClass(unit.Name(), appendable)
 }

@@ -6,18 +6,28 @@ import (
 	"github.com/SSripilaipong/go-common/optional"
 
 	"github.com/SSripilaipong/muto/core/base"
+	"github.com/SSripilaipong/muto/core/module"
 	"github.com/SSripilaipong/muto/core/portal"
 )
 
-type Server struct{}
-
-func New() Server {
-	return Server{}
+type ModuleMountable interface {
+	MountModule(module.Module)
 }
 
-func (Server) Call(nodes []base.Node) optional.Of[base.Node] {
+type Server struct {
+	requestClass base.Class
+}
+
+func New() *Server {
+	return &Server{}
+}
+
+func (s *Server) Call(nodes []base.Node) optional.Of[base.Node] {
+	if s.requestClass == nil {
+		return optional.Value[base.Node](base.NewErrorWithMessage("http-server: request class not available"))
+	}
 	return base.StrictStructureUnaryOp(func(config base.Structure) optional.Of[base.Node] {
-		server, err := buildHTTPServer(config)
+		server, err := buildHTTPServer(config, s.requestClass)
 		if err != nil {
 			return optional.Value[base.Node](base.NewErrorWithMessage(err.Error()))
 		}
@@ -28,7 +38,11 @@ func (Server) Call(nodes []base.Node) optional.Of[base.Node] {
 	})(base.NewParamChain([][]base.Node{nodes}))
 }
 
-func buildHTTPServer(config base.Structure) (*http.Server, error) {
+func (s *Server) MountModule(mod module.Module) {
+	s.requestClass = mod.GetClass("request")
+}
+
+func buildHTTPServer(config base.Structure, requestClass base.Class) (*http.Server, error) {
 	handlerNode, err := parseHandler(config)
 	if err != nil {
 		return nil, err
@@ -52,8 +66,8 @@ func buildHTTPServer(config base.Structure) (*http.Server, error) {
 		Addr:         addr,
 		ReadTimeout:  readTimeout,
 		WriteTimeout: writeTimeout,
-		Handler:      newHandler(handlerNode),
+		Handler:      newHandler(handlerNode, requestClass),
 	}, nil
 }
 
-var _ portal.Port = Server{}
+var _ portal.Port = (*Server)(nil)

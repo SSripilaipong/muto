@@ -7,11 +7,12 @@ import (
 )
 
 type handler struct {
-	handler base.Node
+	handler      base.Node
+	requestClass base.Class
 }
 
-func newHandler(node base.Node) http.Handler {
-	return &handler{handler: node}
+func newHandler(node base.Node, requestClass base.Class) http.Handler {
+	return &handler{handler: node, requestClass: requestClass}
 }
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +22,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
-	reqObj, err := newRequestObject(r)
+	reqObj, err := newRequestObject(r, h.requestClass)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
