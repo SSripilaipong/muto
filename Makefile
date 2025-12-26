@@ -24,5 +24,8 @@ build: build-cli
 build-cli:
 	go build -o build/muto ./cmd/cli
 
+install-latest:
+	go install github.com/SSripilaipong/muto@$(shell git rev-parse origin/main)
+
 go-get-common:
 	go get github.com/SSripilaipong/go-common@$(shell curl -s https://api.github.com/repos/SSripilaipong/go-common/commits/main | jq -r .sha)
