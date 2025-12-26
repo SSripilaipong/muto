@@ -25,7 +25,7 @@ func (p *channelCapturePort) Call(nodes []base.Node) optional.Of[base.Node] {
 }
 
 func TestNewChannelUsesPortal(t *testing.T) {
-	mod := NewModule()
+	mod := NewBaseModule()
 	expected := base.NewConventionalList(
 		base.NewUnlinkedRuleBasedClass("sender"),
 		base.NewUnlinkedRuleBasedClass("receiver"),

@@ -29,6 +29,13 @@ muto run --explain main.mu
 muto repl
 ```
 
+In the REPL, import builtin modules with `:import` before use:
+
+```text
+:import time
+time.sleep 0
+```
+
 If you are working from source:
 
 ```shell
@@ -169,4 +176,3 @@ main = time.sleep 1
 - `muto run <file>`: run a file
 - `muto run --explain <file>`: print each mutation step
 - `muto repl`: start the interactive REPL
-

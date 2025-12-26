@@ -34,7 +34,16 @@ func (p Base) GetClass(name string) base.Class {
 
 func (p Base) AppendNormal(m mutator.NamedUnit) {
 	p.MutatorCollection().AppendNormal(m)
-	m.VisitClass(mutator.ClassVisitorFunc(p.MutatorCollection().LinkClass))
+}
+
+func (p Base) ExtendCollection(collection mutator.Collection) {
+	p.MutatorCollection().Extend(collection)
+	p.MutatorCollection().VisitClass(mutator.ClassVisitorFunc(collection.LaxLinkClass))
+}
+
+func (p Base) ExtendImportedCollection(moduleName string, collection mutator.Collection) {
+	p.MutatorCollection().Extend(collection)
+	p.MutatorCollection().MapImportedCollection(moduleName, collection)
 }
 
 func (p Base) BuildRule(rule st.Rule) mutator.NamedUnit {
@@ -47,16 +56,12 @@ func (p Base) BuildNode(node stResult.SimplifiedNode) optional.Of[base.Node] {
 	return builder.Build(parameter.New())
 }
 
-func (p Base) LoadGlobal(global Module) {
-	p.MutatorCollection().LoadGlobal(global.MutatorCollection())
-}
-
 func (p Base) MountPortal(q *portal.Portal) {
 	p.MutatorCollection().MountPortal(q)
 }
 
 func (p Base) MapImportedModules(mapping ImportMapping) {
-	p.MutatorCollection().MapImportedCollections(mapping)
+	p.MutatorCollection().MapImportedCollectionMapping(mapping)
 }
 
 func (p Base) MutatorCollection() mutator.Collection {

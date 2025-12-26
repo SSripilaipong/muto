@@ -67,6 +67,9 @@ func newReplCommand(st replSt.Command) optional.Of[Command] {
 	switch {
 	case replSt.IsQuitCommand(st):
 		return optional.Value[Command](NewQuit())
+	case replSt.IsImportCommand(st):
+		cmd := replSt.UnsafeCommandToImportCommand(st)
+		return optional.Value[Command](NewImport(cmd.JoinedPath()))
 	}
 	fmt.Println("unknown command:", st)
 	return optional.Empty[Command]()

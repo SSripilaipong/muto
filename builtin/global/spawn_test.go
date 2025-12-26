@@ -24,7 +24,7 @@ func (p *capturePort) Call(nodes []base.Node) optional.Of[base.Node] {
 }
 
 func TestSpawn(t *testing.T) {
-	mod := NewModule()
+	mod := NewBaseModule()
 	port := &capturePort{}
 	mod.MountPortal(corePortal.New(rods.NewMap(map[string]corePortal.Port{
 		"spawner": port,

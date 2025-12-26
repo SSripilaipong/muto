@@ -12,8 +12,9 @@ import (
 type Module interface {
 	BuildNode(node stResult.SimplifiedNode) optional.Of[base.Node]
 	GetClass(name string) base.Class
-	LoadGlobal(global Module)
 	MountPortal(q *portal.Portal)
 	MutatorCollection() mutator.Collection
 	MapImportedModules(mapping ImportMapping)
+	ExtendCollection(collection mutator.Collection)
+	ExtendImportedCollection(moduleName string, collection mutator.Collection)
 }

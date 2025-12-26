@@ -2,15 +2,15 @@ package program
 
 import (
 	"github.com/SSripilaipong/muto/core/base"
-	coreMutation "github.com/SSripilaipong/muto/core/module"
+	"github.com/SSripilaipong/muto/core/module"
 )
 
 type Program struct {
-	mainModule        coreMutation.Dynamic
+	mainModule        module.Dynamic
 	afterMutationHook func(node base.Node)
 }
 
-func New(pkg coreMutation.Dynamic) Program {
+func New(pkg module.Dynamic) Program {
 	return Program{mainModule: pkg}
 }
 
@@ -53,6 +53,6 @@ func (p Program) WithAfterMutationHook(f func(node base.Node)) Program {
 	return p
 }
 
-func (p Program) MainModule() coreMutation.Dynamic {
+func (p Program) MainModule() module.Dynamic {
 	return p.mainModule
 }

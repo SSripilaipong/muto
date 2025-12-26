@@ -16,19 +16,21 @@ import (
 type Repl struct {
 	replReader.Reader
 	replExecutor.Executor
+	program *replProgram.Wrapper
 }
 
 func New(lineReader replReader.LineReader, printer replProgram.Printer) Repl {
-	globalMod := global.NewModule()
+	globalMod := global.NewBaseModule()
 	ports := portal.NewDefaultPortal()
-	imported := builtin.NewBuiltinImportMapping(nil).Attach(globalMod, ports)
+	imported := builtin.NewBuiltinImportMapping(nil).Attach(ports)
 
-	mod := module.BuildUserDefinedModule(stBase.NewModule(nil)).
-		Attach(module.NewDependency(globalMod, ports, imported))
+	mod := module.BuildUserDefinedModuleFromBase(globalMod, stBase.NewModule(nil)).
+		Attach(module.NewDependency(ports, imported))
 
-	prog := replProgram.New(program.New(mod), printer)
+	prog := replProgram.New(program.New(mod), printer, ports, imported)
 	return Repl{
 		Reader:   replReader.New(command.NewParser(prog), lineReader, printer),
 		Executor: replExecutor.New(prog),
+		program:  prog,
 	}
 }

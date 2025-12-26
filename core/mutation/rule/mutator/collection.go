@@ -50,7 +50,27 @@ func (c Collection) GetMutator(name string) optional.Of[base.Rule] {
 func (c Collection) LinkClass(class base.Class) {
 	if mutator, exists := c.mutators[class.Name()]; exists {
 		class.LinkRule(mutator)
+	} else {
+		class.UnlinkRule()
 	}
+}
+
+func (c Collection) LaxLinkClass(class base.Class) {
+	if mutator, exists := c.mutators[class.Name()]; exists {
+		class.LinkRule(mutator)
+	}
+}
+
+func (c Collection) Extend(d Collection) {
+	for name, t := range d.IterMutators() {
+		m, exists := c.mutators[name]
+		if !exists {
+			c.mutators[name] = t
+		} else {
+			c.mutators[name] = m.Concat(t)
+		}
+	}
+	c.selfLink()
 }
 
 func (c Collection) AppendNormal(mutator NamedUnit) Appendable {
@@ -62,6 +82,7 @@ func (c Collection) AppendNormal(mutator NamedUnit) Appendable {
 	} else {
 		c.mutators[name] = m.ConcatNormal(sw)
 	}
+	c.selfLink()
 	return c.mutators[name]
 }
 
@@ -73,11 +94,6 @@ func (c Collection) IterMutators() iter.Seq2[string, Appendable] {
 			}
 		}
 	}
-}
-
-func (c Collection) LoadGlobal(builtin Collection) {
-	c.VisitClass(ClassVisitorFunc(builtin.LinkClass))
-	maps.Copy(c.mutators, builtin.mutators)
 }
 
 func (c Collection) VisitClass(v ClassVisitor) {
@@ -96,8 +112,12 @@ func (c Collection) selfLink() {
 	c.VisitClass(ClassVisitorFunc(c.LinkClass))
 }
 
-func (c Collection) MapImportedCollections(mapping CollectionMapping) {
+func (c Collection) MapImportedCollectionMapping(mapping CollectionMapping) {
 	c.VisitClass(ClassVisitorFunc(mapImportedModules(mapping)))
+}
+
+func (c Collection) MapImportedCollection(moduleName string, collection Collection) {
+	c.VisitClass(ClassVisitorFunc(mapImportedCollection(moduleName, collection)))
 }
 
 func makeNormalMutatorMap(ms []NamedUnit) map[string]Appendable {
@@ -141,5 +161,18 @@ func mapImportedModules(mapping CollectionMapping) func(class base.Class) {
 			panic(fmt.Sprintf("unimported module name %#v", moduleName))
 		}
 		importedCollection.LinkClass(target)
+	}
+}
+
+func mapImportedCollection(moduleName string, collection Collection) func(class base.Class) {
+	return func(class base.Class) {
+		if !base.IsImportedClass(class) {
+			return
+		}
+		target := base.UnsafeClassToImportedClass(class)
+		if moduleName != target.Module() {
+			return
+		}
+		collection.LinkClass(target)
 	}
 }

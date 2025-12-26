@@ -32,8 +32,8 @@ func TestBuildUserDefinedModule(t *testing.T) {
 			stResult.NewNakedObject(st.NewString(`"ok"`), stResult.FixedParamPart{}),
 		)) // (test) = "ok"
 
-		module := BuildUserDefinedModule(stTree).
-			Attach(NewDependency(Base{}, nil, NewImportMapping(rods.NewMap(map[string]Module{
+		module := BuildUserDefinedModuleFromBase(NewBase(mutator.NewCollectionFromMutators(nil, nil), ruleBuilder), stTree).
+			Attach(NewDependency(nil, NewImportMapping(rods.NewMap(map[string]Module{
 				"my-module": NewBase(mutator.NewCollectionFromMutators([]mutator.NamedUnit{test}, nil), ruleBuilder),
 			}))))
 		main := base.NewOneLayerObject(module.GetClass("main"))

@@ -8,10 +8,10 @@ import (
 )
 
 type Executor struct {
-	program replProgram.Wrapper
+	program *replProgram.Wrapper
 }
 
-func New(prog replProgram.Wrapper) Executor {
+func New(prog *replProgram.Wrapper) Executor {
 	return Executor{
 		program: prog,
 	}
@@ -25,6 +25,8 @@ func (e Executor) Execute(cmd command.Command) optional.Of[int] {
 		return e.program.MutateNode(command.UnsafeCommandToMutateNodeCommand(cmd).InitialNode())
 	case command.IsAddRuleCommand(cmd):
 		return e.program.AddRule(command.UnsafeCommandToAddRuleCommand(cmd).Rule())
+	case command.IsImportCommand(cmd):
+		return e.program.ImportBuiltin(command.UnsafeCommandToImportCommand(cmd).Name())
 	}
 	return optional.Empty[int]()
 }

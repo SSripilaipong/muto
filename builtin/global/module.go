@@ -10,7 +10,7 @@ import (
 	st "github.com/SSripilaipong/muto/syntaxtree"
 )
 
-func NewModule() module.Base {
+func NewBaseModule() module.Base {
 	builder := mutation.NewRuleBuilder()
 
 	buildAll := slc.Map(builder.BuildNamedUnit)

@@ -2,13 +2,12 @@ package module
 
 import (
 	"github.com/SSripilaipong/muto/common/slc"
-	ruleMutation "github.com/SSripilaipong/muto/core/mutation/rule"
 	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
 	st "github.com/SSripilaipong/muto/syntaxtree"
 	stBase "github.com/SSripilaipong/muto/syntaxtree/base"
 )
 
-func BuildUserDefinedModule(syntaxTree st.Module) Unattached[Serializable] {
+func BuildUserDefinedModuleFromBase(mod Base, syntaxTree st.Module) Unattached[Serializable] {
 	files := syntaxTree.Files()
 	if len(files) > 1 {
 		panic("currently only support at most 1 file")
@@ -17,13 +16,11 @@ func BuildUserDefinedModule(syntaxTree st.Module) Unattached[Serializable] {
 	if len(files) == 1 {
 		ss = files[0].Statements()
 	}
+	buildAll := slc.Map(mod.builder.BuildNamedUnit)
+	activeRules := buildAll(st.FilterActiveRuleFromStatement(ss))
+	normalRules := buildAll(st.FilterRuleFromStatement(ss))
 
-	ruleBuilder := ruleMutation.NewRuleBuilder()
-
-	buildAll := slc.Map(ruleBuilder.BuildNamedUnit)
-	active := buildAll(st.FilterActiveRuleFromStatement(ss))
-	normal := buildAll(st.FilterRuleFromStatement(ss))
-
-	collection := mutator.NewCollectionFromMutators(normal, active)
-	return NewUnattached(NewSerializable(NewBase(collection, ruleBuilder), syntaxTree))
+	collection := mutator.NewCollectionFromMutators(normalRules, activeRules)
+	mod.ExtendCollection(collection)
+	return NewUnattached(NewSerializable(mod, syntaxTree))
 }

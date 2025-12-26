@@ -8,7 +8,6 @@ import (
 	"github.com/SSripilaipong/go-common/optional"
 	"github.com/SSripilaipong/go-common/rods"
 
-	"github.com/SSripilaipong/muto/builtin/global"
 	"github.com/SSripilaipong/muto/core/base"
 	corePortal "github.com/SSripilaipong/muto/core/portal"
 )
@@ -26,7 +25,6 @@ func (p *httpServerCapturePort) Call(nodes []base.Node) optional.Of[base.Node] {
 
 func TestHTTPServerStartUsesPortal(t *testing.T) {
 	mod := NewModule()
-	mod.LoadGlobal(global.NewModule())
 	port := &httpServerCapturePort{}
 	mod.MountPortal(corePortal.New(rods.NewMap(map[string]corePortal.Port{
 		"http-server": port,

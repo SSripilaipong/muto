@@ -10,6 +10,7 @@ const (
 	TypeQuit       Type = "QUIT"
 	TypeAddRule    Type = "ADD_RULE"
 	TypeMutateNode Type = "MUTATE_NODE"
+	TypeImport     Type = "IMPORT"
 )
 
 func IsQuitCommand(c Command) bool {
@@ -22,6 +23,10 @@ func IsAddRuleCommand(c Command) bool {
 
 func IsMutateNodeCommand(c Command) bool {
 	return c.CommandType() == TypeMutateNode
+}
+
+func IsImportCommand(c Command) bool {
+	return c.CommandType() == TypeImport
 }
 
 type TypeMixin struct {

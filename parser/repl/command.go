@@ -11,9 +11,22 @@ import (
 
 var command = ps.First(
 	ps.Map(mergeQuitCommand, ps.ToParser(commandNamed("q"))),
+	ps.ToParser(importCommand),
 ).Legacy
 
-func mergeQuitCommand(string) repl.QuitCommand {
+var importCommand = ps.Map(
+	parseImportCommand,
+	ps.ToParser(base.SpaceSeparated2(
+		base.FixedChars(":import"),
+		base.ImportPath,
+	)),
+).Legacy
+
+var parseImportCommand = tuple.Fn2(func(_ string, path []string) repl.Statement {
+	return repl.NewImportCommand(path)
+})
+
+func mergeQuitCommand(string) repl.Statement {
 	return repl.NewQuitCommand()
 }
 

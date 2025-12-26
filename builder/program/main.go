@@ -18,12 +18,12 @@ var BuildProgramFromString = fn.Compose(
 )
 
 func BuildProgramFromSyntaxTree(p st.Module) rslt.Of[program.Program] {
-	globalMod := global.NewModule()
+	baseMod := global.NewBaseModule()
 	ports := portal.NewDefaultPortal()
 
-	imported := builtin.NewBuiltinImportMapping(p.ImportNames()).Attach(globalMod, ports)
+	imported := builtin.NewBuiltinImportMapping(p.ImportNames()).Attach(ports)
 
-	mod := module.BuildUserDefinedModule(p).
-		Attach(module.NewDependency(globalMod, ports, imported))
+	mod := module.BuildUserDefinedModuleFromBase(baseMod, p).
+		Attach(module.NewDependency(ports, imported))
 	return rslt.Value(program.New(mod))
 }

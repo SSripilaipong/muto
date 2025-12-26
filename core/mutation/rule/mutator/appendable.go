@@ -41,6 +41,10 @@ func (m Appendable) ConcatActive(sw Switch) Appendable {
 	return NewAppendable(m.name, m.normal, m.active.Concat(sw))
 }
 
+func (m Appendable) Concat(t Appendable) Appendable {
+	return m.ConcatNormal(t.normal).ConcatActive(t.active)
+}
+
 func (m Appendable) ActiveSwitch() Switch {
 	return m.active
 }

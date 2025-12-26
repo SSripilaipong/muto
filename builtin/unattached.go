@@ -13,8 +13,7 @@ func NewUnattachedImportMapping(mapping module.ImportMapping) UnattachedImportMa
 	return UnattachedImportMapping{mapping: mapping}
 }
 
-func (m UnattachedImportMapping) Attach(global module.Base, q *portal.Portal) module.ImportMapping {
-	m.mapping.LoadGlobal(global)
+func (m UnattachedImportMapping) Attach(q *portal.Portal) module.ImportMapping {
 	m.mapping.MountPortal(q)
 	return m.mapping
 }

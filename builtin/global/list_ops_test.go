@@ -11,7 +11,7 @@ import (
 )
 
 func TestList_map(t *testing.T) {
-	module := NewModule()
+	module := NewBaseModule()
 	class := module.GetClass("map")
 	stringClass := module.GetClass("string")
 
@@ -31,7 +31,7 @@ func TestList_map(t *testing.T) {
 }
 
 func TestList_filter(t *testing.T) {
-	module := NewModule()
+	module := NewBaseModule()
 	class := module.GetClass("filter")
 	isStringClass := module.GetClass("string?")
 

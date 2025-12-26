@@ -13,7 +13,7 @@ import (
 )
 
 func TestControl_do(t *testing.T) {
-	class := NewModule().GetClass("do")
+	class := NewBaseModule().GetClass("do")
 
 	t.Run("should become last node", func(t *testing.T) {
 		result := base.MutateUntilTerminated(base.NewOneLayerObject(class,
@@ -43,7 +43,7 @@ func TestControl_do(t *testing.T) {
 }
 
 func TestControl_match(t *testing.T) {
-	module := NewModule()
+	module := NewBaseModule()
 	class := module.GetClass("match")
 	literal := builder.NewLiteralBuilderFactoryWithClassCollection()
 
@@ -77,7 +77,7 @@ func TestControl_match(t *testing.T) {
 }
 
 func TestControl_ret(t *testing.T) {
-	class := NewModule().GetClass("ret")
+	class := NewBaseModule().GetClass("ret")
 
 	t.Run("should apply first case", func(t *testing.T) {
 		result := base.MutateUntilTerminated(base.NewOneLayerObject(class,
@@ -88,7 +88,7 @@ func TestControl_ret(t *testing.T) {
 }
 
 func TestControl_compose(t *testing.T) {
-	module := NewModule()
+	module := NewBaseModule()
 	class := module.GetClass("compose")
 	stringClass := module.GetClass("string")
 	isStringClass := module.GetClass("string?")
@@ -103,7 +103,7 @@ func TestControl_compose(t *testing.T) {
 }
 
 func TestControl_curry(t *testing.T) {
-	module := NewModule()
+	module := NewBaseModule()
 	class := module.GetClass("curry")
 	addClass := module.GetClass("+")
 
@@ -117,7 +117,7 @@ func TestControl_curry(t *testing.T) {
 }
 
 func TestControl_with(t *testing.T) {
-	module := NewModule()
+	module := NewBaseModule()
 	class := module.GetClass("with")
 	literal := builder.NewLiteralBuilderFactoryWithClassCollection()
 
@@ -134,7 +134,7 @@ func TestControl_with(t *testing.T) {
 }
 
 func TestControl_use(t *testing.T) {
-	module := NewModule()
+	module := NewBaseModule()
 	class := module.GetClass("use")
 
 	t.Run("should match variables", func(t *testing.T) {

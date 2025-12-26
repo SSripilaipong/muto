@@ -7,6 +7,7 @@ import (
 type Class interface {
 	Node
 	LinkRule(mutator Rule)
+	UnlinkRule()
 	ClassType() ClassType
 	Children() []Node
 	ActivelyMutateWithObjMutateFunc(params ParamChain) optional.Of[Node]

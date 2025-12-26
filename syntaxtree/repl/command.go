@@ -7,11 +7,16 @@ type Command interface {
 type CommandType string
 
 const (
-	CommandTypeQuit CommandType = "QUIT"
+	CommandTypeQuit   CommandType = "QUIT"
+	CommandTypeImport CommandType = "IMPORT"
 )
 
 func IsQuitCommand(cmd Command) bool {
 	return cmd.CommandType() == CommandTypeQuit
+}
+
+func IsImportCommand(cmd Command) bool {
+	return cmd.CommandType() == CommandTypeImport
 }
 
 type commandTypeMixin struct {
@@ -28,4 +33,8 @@ func (t commandTypeMixin) CommandType() CommandType {
 
 func UnsafeStatementToReplCommand(s Statement) Command {
 	return s.(Command)
+}
+
+func UnsafeCommandToImportCommand(s Command) ImportCommand {
+	return s.(ImportCommand)
 }

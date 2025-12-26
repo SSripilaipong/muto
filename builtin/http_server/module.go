@@ -1,9 +1,9 @@
 package httpserver
 
 import (
+	"github.com/SSripilaipong/muto/builtin/global"
 	"github.com/SSripilaipong/muto/common/slc"
 	"github.com/SSripilaipong/muto/core/module"
-	mutation "github.com/SSripilaipong/muto/core/mutation/rule"
 	"github.com/SSripilaipong/muto/core/mutation/rule/mutator"
 	"github.com/SSripilaipong/muto/core/portal"
 	st "github.com/SSripilaipong/muto/syntaxtree"
@@ -18,10 +18,11 @@ type Module struct {
 }
 
 func NewModule() Module {
-	builder := mutation.NewRuleBuilder()
-	normal := slc.Map(builder.BuildNamedUnit)(st.FilterRuleFromStatement(rawStatements))
-	collection := mutator.NewCollectionFromMutators(normal, nil)
-	return Module{Base: module.NewBase(collection, builder)}
+	mod := global.NewBaseModule()
+	normal := slc.Map(mod.BuildRule)(st.FilterRuleFromStatement(rawStatements))
+
+	mod.ExtendCollection(mutator.NewCollectionFromMutators(normal, nil))
+	return Module{mod}
 }
 
 func (m Module) MountPortal(q *portal.Portal) {

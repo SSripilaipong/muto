@@ -13,14 +13,12 @@ func NewUnattached[M Attachable](module M) Unattached[M] {
 }
 
 func (m Unattached[M]) Attach(dep Dependency) M {
-	m.module.LoadGlobal(dep.Global())
 	m.module.MountPortal(dep.Portal())
 	m.module.MapImportedModules(dep.Builtins())
 	return m.module
 }
 
 type Attachable interface {
-	LoadGlobal(global Module)
 	MountPortal(q *portal.Portal)
 	MapImportedModules(mapping ImportMapping)
 }
