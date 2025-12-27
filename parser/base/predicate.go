@@ -42,7 +42,10 @@ func IsIdentifierFollowingLetter(x rune) bool {
 }
 
 func IsSymbol(x rune) bool {
-	return (unicode.IsSymbol(x) || unicode.IsPunct(x)) && !isBracket(x) && x != '_'
+	return (unicode.IsSymbol(x) || unicode.IsPunct(x)) &&
+		!isBracket(x) &&
+		x != '_' &&
+		x != ','
 }
 
 func isBracket(s rune) bool {

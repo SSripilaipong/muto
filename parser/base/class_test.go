@@ -38,6 +38,13 @@ func TestClass(t *testing.T) {
 		assert.Equal(t, tuple.New2(rslt.Value(expectedResult), expectedRemainder), IgnoreLineAndColumnInNewResult(r))
 	})
 
+	t.Run("should stop symbol at comma", func(t *testing.T) {
+		r := Class(StringToCharTokens(`-->,.!`))
+		expectedResult := st.NewLocalClass(`-->`)
+		expectedRemainder := IgnoreLineAndColumn(StringToCharTokens(`,.!`))
+		assert.Equal(t, tuple.New2(rslt.Value(expectedResult), expectedRemainder), IgnoreLineAndColumnInNewResult(r))
+	})
+
 	t.Run("should not match name starting with underscore", func(t *testing.T) {
 		r := Class(StringToCharTokens(`_`))
 		assert.True(t, ps.IsResultErr(r))
