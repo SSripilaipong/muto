@@ -45,7 +45,7 @@ func (r senderRule) Normal(obj base.Object) optional.Of[base.Node] {
 		r.ch <- value
 	}()
 	remaining := params.SliceFromNodeOrEmpty(0, 1)
-	return base.ProcessMutationResultWithParamChain(optional.Value[base.Node](base.Null()), remaining)
+	return base.ProcessMutationResultWithParams(optional.Value[base.Node](base.Null()), remaining)
 }
 
 type receiverRule struct {

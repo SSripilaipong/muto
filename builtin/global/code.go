@@ -8,6 +8,8 @@ var rawStatements = parser.StringsToStatementsOrPanic([]string{
 	doCode,
 	matchCode,
 	retCode,
+	okCode,
+	errorCode,
 	composeCode,
 	curryCode,
 	withCode,

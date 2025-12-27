@@ -15,7 +15,7 @@ func strictUnaryOp(f func(x base.Node) optional.Of[base.Node]) func(t base.Objec
 		}
 
 		remainingParams := params.SliceFromNodeOrEmpty(0, 1)
-		return base.ProcessMutationResultWithParamChain(f(innerChildren[0]), remainingParams)
+		return base.ProcessMutationResultWithParams(f(innerChildren[0]), remainingParams)
 	}
 }
 
@@ -28,7 +28,7 @@ func strictBinaryOp(f func(x, y base.Node) optional.Of[base.Node]) func(t base.O
 		}
 
 		remainingParams := params.SliceFromNodeOrEmpty(0, 2)
-		return base.ProcessMutationResultWithParamChain(f(innerChildren[0], innerChildren[1]), remainingParams)
+		return base.ProcessMutationResultWithParams(f(innerChildren[0], innerChildren[1]), remainingParams)
 	}
 }
 
@@ -42,6 +42,6 @@ func leftVariadicUnaryOp(f func(xs []base.Node, x base.Node) optional.Of[base.No
 		}
 
 		remainingParams := base.NewParamChain(nil).AppendAll(params.SliceFromOrEmpty(1))
-		return base.ProcessMutationResultWithParamChain(f(innerChildren[:length-1], innerChildren[length-1]), remainingParams)
+		return base.ProcessMutationResultWithParamsChaining(f(innerChildren[:length-1], innerChildren[length-1]), remainingParams)
 	}
 }

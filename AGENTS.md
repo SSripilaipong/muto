@@ -11,6 +11,9 @@
 - Explain mode: `make run-explain` prints mutation steps via `cmd/cli/run/execute.go` and `program/main.go`.
 - REPL: `make repl` runs CLI REPL wired in `cmd/cli/repl/cli.go`.
 
+## Agent workflow
+- After any code edit, run `GOCACHE=$PWD/tmp/go-cache go test ./...` unless the user requests otherwise.
+
 ## Makefile targets
 - `make build` -> `go build -o build/muto ./cmd/cli` in `Makefile`.
 - `make build-cli` -> `go build -o build/muto ./cmd/cli` in `Makefile`.
