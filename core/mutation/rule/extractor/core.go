@@ -50,6 +50,13 @@ func (c corePatternFactoryImpl) newForFixedParamPart(params []stBase.Pattern) ex
 }
 
 func (c corePatternFactoryImpl) newCorePatternExtractor(p stBase.Pattern) extractor.NodeExtractor {
+	if stBase.IsPatternTypeConjunction(p) {
+		conj := stPattern.UnsafePatternToConjunction(p)
+		return extractor.NewConjunction(
+			c.newCorePatternExtractor(conj.Main()),
+			c.newCorePatternExtractor(conj.Conj()),
+		)
+	}
 	if r, ok := c.nonObject.TryNonObject(p).Return(); ok {
 		return r
 	}

@@ -126,6 +126,104 @@ func TestVariadicParam(t *testing.T) {
 	})
 }
 
+func TestConjunctionPattern(t *testing.T) {
+	t.Run("should match conjunction on same param", func(t *testing.T) {
+		pattern := stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
+			stPattern.NewConjunction(
+				syntaxtree.NewVariable("X"),
+				stPattern.NewNonDeterminantObject(
+					syntaxtree.NewLocalClass("g"),
+					stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewVariable("Y")}),
+				),
+			),
+		}))
+		obj := base.NewNamedOneLayerObject("f", base.NewNamedOneLayerObject("g", base.NewNumberFromString("1")))
+
+		params := NewNamedRule(pattern).Extract(obj)
+		if assert.True(t, params.IsNotEmpty()) {
+			p := params.Value()
+			assert.Equal(t, base.NewNamedOneLayerObject("g", base.NewNumberFromString("1")), p.VariableValue("X").Value())
+			assert.Equal(t, base.NewNumberFromString("1"), p.VariableValue("Y").Value())
+		}
+	})
+
+	t.Run("should not match when conjunction fails", func(t *testing.T) {
+		pattern := stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
+			stPattern.NewConjunction(
+				syntaxtree.NewVariable("X"),
+				stPattern.NewNonDeterminantObject(
+					syntaxtree.NewLocalClass("g"),
+					stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewVariable("Y")}),
+				),
+			),
+		}))
+		obj := base.NewNamedOneLayerObject("f", base.NewNumberFromString("123"))
+
+		assert.True(t, NewNamedRule(pattern).Extract(obj).IsEmpty())
+	})
+
+	t.Run("should match object-head conjunction without params", func(t *testing.T) {
+		pattern := stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
+			stPattern.NewConjunction(
+				syntaxtree.NewVariable("X"),
+				stPattern.NewNonDeterminantObject(
+					syntaxtree.NewVariable("Y"),
+					stPattern.PatternsToFixedParamPart([]stBase.Pattern{}),
+				),
+			),
+		}))
+		obj := base.NewNamedOneLayerObject("f", base.NewNamedOneLayerObject("g"))
+
+		params := NewNamedRule(pattern).Extract(obj)
+		if assert.True(t, params.IsNotEmpty()) {
+			p := params.Value()
+			assert.Equal(t, base.NewNamedOneLayerObject("g"), p.VariableValue("X").Value())
+			assert.Equal(t, base.NewUnlinkedRuleBasedClass("g"), p.VariableValue("Y").Value())
+		}
+	})
+
+	t.Run("should not match object-head conjunction against class node", func(t *testing.T) {
+		pattern := stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
+			stPattern.NewConjunction(
+				syntaxtree.NewVariable("X"),
+				stPattern.NewNonDeterminantObject(
+					syntaxtree.NewVariable("Y"),
+					stPattern.PatternsToFixedParamPart([]stBase.Pattern{}),
+				),
+			),
+		}))
+		obj := base.NewNamedOneLayerObject("f", base.NewUnlinkedRuleBasedClass("g"))
+
+		assert.True(t, NewNamedRule(pattern).Extract(obj).IsEmpty())
+	})
+
+	t.Run("should require all conjunctions to match", func(t *testing.T) {
+		pattern := stPattern.NewDeterminantObject(syntaxtree.NewLocalClass("f"), stPattern.PatternsToFixedParamPart([]stBase.Pattern{
+			stPattern.NewConjunction(
+				stPattern.NewConjunction(
+					syntaxtree.NewVariable("X"),
+					stPattern.NewNonDeterminantObject(
+						syntaxtree.NewLocalClass("g"),
+						stPattern.PatternsToFixedParamPart([]stBase.Pattern{}),
+					),
+				),
+				stPattern.NewNonDeterminantObject(
+					syntaxtree.NewVariable("Y"),
+					stPattern.PatternsToFixedParamPart([]stBase.Pattern{}),
+				),
+			),
+		}))
+		obj := base.NewNamedOneLayerObject("f", base.NewNamedOneLayerObject("g"))
+
+		params := NewNamedRule(pattern).Extract(obj)
+		if assert.True(t, params.IsNotEmpty()) {
+			p := params.Value()
+			assert.Equal(t, base.NewNamedOneLayerObject("g"), p.VariableValue("X").Value())
+			assert.Equal(t, base.NewUnlinkedRuleBasedClass("g"), p.VariableValue("Y").Value())
+		}
+	})
+}
+
 func TestVariableParam(t *testing.T) {
 	t.Run("should ignore underscore variable", func(t *testing.T) {
 		// pattern: g (f _Bc)

@@ -7,14 +7,15 @@ type Pattern interface {
 type PatternType string
 
 const (
-	PatternTypeVariable PatternType = "VARIABLE"
-	PatternTypeBoolean  PatternType = "BOOLEAN"
-	PatternTypeString   PatternType = "STRING"
-	PatternTypeRune     PatternType = "RUNE"
-	PatternTypeNumber   PatternType = "NUMBER"
-	PatternTypeClass    PatternType = "CLASS"
-	PatternTypeTag      PatternType = "TAG"
-	PatternTypeObject   PatternType = "OBJECT"
+	PatternTypeVariable    PatternType = "VARIABLE"
+	PatternTypeBoolean     PatternType = "BOOLEAN"
+	PatternTypeString      PatternType = "STRING"
+	PatternTypeRune        PatternType = "RUNE"
+	PatternTypeNumber      PatternType = "NUMBER"
+	PatternTypeClass       PatternType = "CLASS"
+	PatternTypeTag         PatternType = "TAG"
+	PatternTypeObject      PatternType = "OBJECT"
+	PatternTypeConjunction PatternType = "CONJUNCTION"
 )
 
 func IsPatternTypeVariable(p Pattern) bool {
@@ -47,6 +48,10 @@ func IsPatternTypeClass(p Pattern) bool {
 
 func IsPatternTypeObject(p Pattern) bool {
 	return p.PatternType() == PatternTypeObject
+}
+
+func IsPatternTypeConjunction(p Pattern) bool {
+	return p.PatternType() == PatternTypeConjunction
 }
 
 func ToPattern[T Pattern](x T) Pattern { return x }

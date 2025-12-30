@@ -51,6 +51,33 @@ func TestParseVariable(t *testing.T) {
 	})
 }
 
+func TestParseConjunctionPattern(t *testing.T) {
+	t.Run("should parse conjunction pattern in param", func(t *testing.T) {
+		s := `f X^(g Y) = h Y X`
+		expected := expectedStatements([]base.Statement{
+			syntaxtree.NewRule(
+				stPattern.NewDeterminantObject(
+					syntaxtree.NewLocalClass("f"),
+					stPattern.PatternsToFixedParamPart([]base.Pattern{
+						stPattern.NewConjunction(
+							syntaxtree.NewVariable("X"),
+							stPattern.NewNonDeterminantObject(
+								syntaxtree.NewLocalClass("g"),
+								stPattern.PatternsToFixedParamPart([]base.Pattern{syntaxtree.NewVariable("Y")}),
+							),
+						),
+					}),
+				),
+				stResult.NewNakedObject(
+					syntaxtree.NewLocalClass("h"),
+					stResult.FixedParamPart([]stResult.Param{syntaxtree.NewVariable("Y"), syntaxtree.NewVariable("X")}),
+				),
+			),
+		})
+		assert.Equal(t, expected, psBase.FilterResult(ParseModuleCombinationFromString(s)))
+	})
+}
+
 func TestParseObjectParam(t *testing.T) {
 	t.Run("should parse boolean as object head", func(t *testing.T) {
 		s := `f (true 456) = 789`
