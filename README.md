@@ -1,178 +1,314 @@
-# mutO language
+# mutO
 
-mutO (mutating Object) is a small rewriting language where programs are a set of rules and evaluation is repeated mutation of a single root object. Objects are trees: a head plus zero or more parameters, and every parameter is itself an object.
+mutO (mutating Object) is a rewriting language where programs are rules and evaluation is repeated mutation of a root object.
 
-## Quick start
+## Install
 
-1) Install Go 1.23.8 or newer.
-2) Install the CLI:
-
-```shell
+```bash
 go install github.com/SSripilaipong/muto@latest
 ```
 
-3) Run a file:
+## Run
 
-```shell
+```bash
+# Run a file
 muto run main.mu
-```
 
-4) Explain each mutation step:
-
-```shell
+# Show each mutation step
 muto run --explain main.mu
-```
 
-5) Start the REPL:
-
-```shell
+# Interactive REPL
 muto repl
 ```
 
-In the REPL, import builtin modules with `:import` before use:
-
-```text
-:import time
-time.sleep 0
-```
-
-If you are working from source:
-
-```shell
-make build
-./build/muto run examples/tictactoe.mu
-```
-
-## How the language works
+## Language
 
 ### Objects
-An object is written as a head followed by parameters. For example:
 
-```muto
-f (g 123) "abc"
+An object is a head followed by parameters:
+
+```
+(f 1 "hello" (g 2))
 ```
 
-This is a tree where the head is `f` and the parameters are `(g 123)` and `"abc"`. Parameters can be objects too.
+This is a tree with head `f` and three parameters. Parameters can be nested objects.
 
 ### Rules
-Rules rewrite objects. A rule is written as:
 
-```muto
-name pattern = result
+Rules rewrite objects:
+
+```
+add X Y = + X Y
 ```
 
-Example:
+When the evaluator sees `add 1 2`, it rewrites to `+ 1 2`, then to `3`.
 
-```muto
-g X = + X 10
+### Variables
+
+- Uppercase names are variables: `X`, `Y`, `Name`
+- `_` prefix ignores the binding: `_X` matches but doesn't bind
+- `...` suffix matches multiple values: `Xs...`
+
 ```
+sum X Y Zs... = sum (+ X Y) Zs...
+sum X = X
 
-When the evaluator sees `g 123`, it becomes `+ 123 10`. If multiple rules can apply, the first matching rule is used.
+main = sum 1 2 3 4 5
+```
 
 ### Mutation order
-Each mutation step for a normal class follows this order:
 
-1) Try active rules on the current object.
-2) Otherwise, mutate the first mutable child (left-to-right across parameter groups).
-3) Otherwise, try normal rules.
-4) If nothing applies, the object is stable.
+Each step:
+1. Try active rules on the object as-is
+2. Otherwise, mutate the leftmost mutable child
+3. Otherwise, try normal rules
+4. If nothing applies, the object is stable
 
 ### Active rules
-Active rules start with `@` and have higher priority than normal rules. They match the object as-is, before children are mutated.
 
-```muto
-main = f (g 10)
+Active rules (prefixed with `@`) match before children mutate:
 
-g = * 9
-f = + 20
-
+```
 @ f (g X) = X
+
+main = f (g 10)
 ```
 
-The active rule matches `f (g 10)` first, so the result is `10`.
+Result: `10` (the active rule matches `f (g 10)` directly)
 
-### Program execution
-A program starts by evaluating the `main` object. The evaluator keeps mutating until the object is stable, then prints the final result. With `--explain`, every mutation result is printed.
+Without `@`, the child `(g 10)` would mutate first.
 
-## Syntax tips
+### Pattern conjunctions
 
-- Variables are usually uppercase: `X`, `Y`, `Xs...`.
-- Variadic patterns use `...`:
+Bind the same value to multiple patterns using `^`:
 
-```muto
-append ($ Xs...) ($ Ys...) = $ Xs... Ys...
+```
+f X^(g Y) = $ X Y
 ```
 
-- `$` is just a normal name, but is commonly used for data objects.
+Matches `f (g 1)` with `X=(g 1)` and `Y=1`.
 
-## Examples
+For determinant (head) conjunctions, bind intermediate objects:
 
-### Hello world
-
-```muto
-main = "Hello, World"
+```
+(f X)^P Y = $ X P Y
 ```
 
-Explain:
+Matches `(f 1) 2` with `X=1`, `P=(f 1)`, `Y=2`.
 
-```text
-"Hello, World"
+### Tags
+
+Tags start with `.` and are literal symbols:
+
+```
+(result .ok) = "success"
+(result .error) = "failed"
 ```
 
-### Adding numbers
+### Structures
 
-```muto
-main = + 1 2
+Structures are key-value stores using tags:
+
+```
+person = { .name: "Alice", .age: 30 }
+
+main = person (.get .name)
 ```
 
-Explain:
+Result: `"Alice"`
 
-```text
-+ 1 2
-3
+### Lists
+
+Use `$` for conventional lists:
+
+```
+nums = $ 1 2 3
+
+first ($ X Xs...) = X
+
+main = first nums
 ```
 
-### Summation
+Result: `1`
 
-```muto
-main = sum 1 2 3 4
+## Builtins
 
-sum X Y = sum (+ X Y)
-sum Z = Z
+### Arithmetic
+| Name | Example | Result |
+|------|---------|--------|
+| `+` | `+ 1 2` | `3` |
+| `-` | `- 5 3` | `2` |
+| `*` | `* 4 5` | `20` |
+| `/` | `/ 10 3` | `3.333...` |
+| `div` | `div 10 3` | `3` |
+| `mod` | `mod 10 3` | `1` |
+
+### Comparison
+| Name | Example | Result |
+|------|---------|--------|
+| `==` | `== 5 5` | `true` |
+| `>` | `> 5 3` | `true` |
+| `>=` | `>= 5 5` | `true` |
+| `<` | `< 3 5` | `true` |
+| `<=` | `<= 5 5` | `true` |
+
+Works on numbers and strings.
+
+### Boolean
+| Name | Example | Result |
+|------|---------|--------|
+| `&` | `& true false` | `false` |
+| `\|` | `\| true false` | `true` |
+| `!` | `! true` | `false` |
+
+### String
+| Name | Example | Result |
+|------|---------|--------|
+| `++` | `++ "hello" " world"` | `"hello world"` |
+| `string` | `string 42` | `"42"` |
+| `string-to-runes` | `string-to-runes "ab"` | `$ 'a' 'b'` |
+
+### Control flow
+
+**match** - Pattern matching:
+```
+(match
+  \1 ["one"]
+  \2 ["two"]
+  \X [X]
+) 3
+```
+Result: `3`
+
+**do** - Sequence, return the last:
+```
+do (print! "a") (print! "b") "done"
 ```
 
-Explain (shortened):
+**compose** - Function composition:
+```
+(compose (+ 1) (* 2)) 3
+```
+Result: `7` (multiply by 2, then add 1)
 
-```text
-sum 1 2 3 4
-sum (+ 1 2) 3 4
-...
-10
+**curry** - Partial application:
+```
+add5 = (curry + 5)
+main = add5 3
+```
+Result: `8`
+
+**with** - Apply arguments to function:
+```
+(with 1 2) +
+```
+Result: `3`
+
+### Result types
+
+**ok/error** - Result wrappers:
+```
+(ok 42) .ok?            -- true
+(ok 42) .error?         -- false
+(ok 42) .value          -- 42
+(error "oops") .ok?     -- false
+(error "oops") .error?  -- true
+(error "oops") .error   -- "oops"
 ```
 
-### Map
+**try** - Catch mutation failure:
+```
+try f 1 2
+```
+Returns `.value result` if mutation succeeds, `.empty` if it fails.
 
-```muto
-main = map (* 10) $ ($ 1 2 3)
+### List operations
 
-map F ($ Ys...) ($ X Xs...) = map F ($ Ys... (F X)) ($ Xs...)
-map F R $ = R
+**map** - Transform each element:
+```
+map (curry * 2) ($ 1 2 3)
+```
+Result: `$ 2 4 6`
+
+**filter** - Keep matching elements:
+```
+filter (curry > 2) ($ 1 2 3 4)
+```
+Result: `$ 3 4`
+
+## IO
+
+```
+-- Print to stdout
+print! "hello"
+
+-- Read line from stdin
+input!
+
+-- Spawn concurrent mutation
+spawn! (long-computation 42)
 ```
 
-## IO and modules
+## Modules
 
-Builtins include arithmetic, strings, lists, and object utilities. IO is provided via `print!`, `input!`, and `spawn!`.
+Import builtin modules in REPL or files:
 
-To use the time module:
-
-```muto
+```
 :import time
 
 main = time.sleep 1
 ```
 
-## CLI reference
+## CLI
 
-- `muto run <file>`: run a file
-- `muto run --explain <file>`: print each mutation step
-- `muto repl`: start the interactive REPL
+```bash
+muto run <file>           # Run a file
+muto run --explain <file> # Show each mutation step
+muto repl                 # Start REPL
+```
+
+REPL commands:
+- Type an expression to evaluate it
+- Type a rule to add it
+- `:import <module>` to import a module
+- `:quit` to exit
+
+## Examples
+
+### Factorial
+
+```
+factorial 0 = ret 1
+factorial N = * N (factorial (- N 1))
+
+main = factorial 5
+```
+
+Result: `120`
+
+### Fibonacci
+
+```
+fib 0 = ret 0
+fib 1 = ret 1
+fib N = + (fib (- N 1)) (fib (- N 2))
+
+main = fib 10
+```
+
+Result: `55`
+
+### FizzBuzz
+
+```
+fizzbuzz N = (match
+  \true  [fb (mod N 3) (mod N 5)]
+  \false [ret N]
+) (| (== 0 (mod N 3)) (== 0 (mod N 5)))
+
+fb 0 0 = ret "FizzBuzz"
+fb 0 _ = ret "Fizz"
+fb _ 0 = ret "Buzz"
+
+main = map fizzbuzz ($ 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)
+```
