@@ -9,8 +9,9 @@ type Determinant interface {
 type DeterminantType string
 
 const (
-	DeterminantTypeObject DeterminantType = "OBJECT"
-	DeterminantTypeClass  DeterminantType = "CLASS"
+	DeterminantTypeObject      DeterminantType = "OBJECT"
+	DeterminantTypeClass       DeterminantType = "CLASS"
+	DeterminantTypeConjunction DeterminantType = "CONJUNCTION"
 )
 
 func ToDeterminant[T Determinant](x T) Determinant { return x }

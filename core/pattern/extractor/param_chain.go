@@ -92,4 +92,24 @@ func (p ParamChain) WrapDisplayString(head string) string {
 
 var _ ParamChainExtractor = ParamChain{}
 
+// ParamChainToNodeAdapter adapts a ParamChainExtractor to work as a NodeExtractor.
+// It extracts the ParamChain from an Object node and delegates to the inner extractor.
+type ParamChainToNodeAdapter struct {
+	inner ParamChainExtractor
+}
+
+func NewParamChainToNodeAdapter(inner ParamChainExtractor) NodeExtractor {
+	return ParamChainToNodeAdapter{inner: inner}
+}
+
+func (a ParamChainToNodeAdapter) Extract(node base.Node) optional.Of[*parameter.Parameter] {
+	if !base.IsObjectNode(node) {
+		return optional.Empty[*parameter.Parameter]()
+	}
+	obj := base.UnsafeNodeToObject(node)
+	return a.inner.Extract(obj.ParamChain())
+}
+
+var _ NodeExtractor = ParamChainToNodeAdapter{}
+
 var mapExtractNodeList = slc.Map(extractNodeList)

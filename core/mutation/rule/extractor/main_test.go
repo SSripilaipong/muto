@@ -253,3 +253,210 @@ func TestRemainingChildren(t *testing.T) {
 		assert.Equal(t, []base.Node{base.NewNumberFromString("2"), base.NewNumberFromString("3")}, NewNamedRule(pattern).Extract(obj).Value().RemainingParamChain().All()[0])
 	})
 }
+
+func TestDeterminantConjunction(t *testing.T) {
+	t.Run("should extract determinant conjunction binding", func(t *testing.T) {
+		// Pattern: (f S)^P Y
+		// Object: (f 1) 2
+		// Expected: S=1, P=(f 1), Y=2
+		pattern := stPattern.NewDeterminantObject(
+			stPattern.NewDeterminantConjunction(
+				stPattern.NewDeterminantObject(
+					syntaxtree.NewLocalClass("f"),
+					stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewVariable("S")}),
+				),
+				[]stBase.Pattern{syntaxtree.NewVariable("P")},
+			),
+			stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewVariable("Y")}),
+		)
+		// obj: (f 1) 2 - represented as f with params [[1], [2]]
+		obj := base.NewCompoundObject(
+			base.NewUnlinkedRuleBasedClass("f"),
+			base.NewParamChain([][]base.Node{
+				{base.NewNumberFromString("1")},
+				{base.NewNumberFromString("2")},
+			}),
+		)
+
+		params := NewNamedRule(pattern).Extract(obj)
+		if assert.True(t, params.IsNotEmpty()) {
+			p := params.Value()
+			assert.Equal(t, base.NewNumberFromString("1"), p.VariableValue("S").Value())
+			assert.Equal(t, base.NewNamedOneLayerObject("f", base.NewNumberFromString("1")), p.VariableValue("P").Value())
+			assert.Equal(t, base.NewNumberFromString("2"), p.VariableValue("Y").Value())
+		}
+	})
+
+	t.Run("should extract multiple conjunctions at same level", func(t *testing.T) {
+		// Pattern: (f S)^P^Q Y
+		// Object: (f 1) 2
+		// Expected: S=1, P=(f 1), Q=(f 1), Y=2
+		pattern := stPattern.NewDeterminantObject(
+			stPattern.NewDeterminantConjunction(
+				stPattern.NewDeterminantObject(
+					syntaxtree.NewLocalClass("f"),
+					stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewVariable("S")}),
+				),
+				[]stBase.Pattern{syntaxtree.NewVariable("P"), syntaxtree.NewVariable("Q")},
+			),
+			stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewVariable("Y")}),
+		)
+		obj := base.NewCompoundObject(
+			base.NewUnlinkedRuleBasedClass("f"),
+			base.NewParamChain([][]base.Node{
+				{base.NewNumberFromString("1")},
+				{base.NewNumberFromString("2")},
+			}),
+		)
+
+		params := NewNamedRule(pattern).Extract(obj)
+		if assert.True(t, params.IsNotEmpty()) {
+			p := params.Value()
+			assert.Equal(t, base.NewNumberFromString("1"), p.VariableValue("S").Value())
+			assert.Equal(t, base.NewNamedOneLayerObject("f", base.NewNumberFromString("1")), p.VariableValue("P").Value())
+			assert.Equal(t, base.NewNamedOneLayerObject("f", base.NewNumberFromString("1")), p.VariableValue("Q").Value())
+			assert.Equal(t, base.NewNumberFromString("2"), p.VariableValue("Y").Value())
+		}
+	})
+
+	t.Run("should fail when conjunction pattern does not match", func(t *testing.T) {
+		// Pattern: (f S)^(g X) Y
+		// Object: (f 1) 2 - head is (f 1), not (g ...)
+		// Expected: no match
+		pattern := stPattern.NewDeterminantObject(
+			stPattern.NewDeterminantConjunction(
+				stPattern.NewDeterminantObject(
+					syntaxtree.NewLocalClass("f"),
+					stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewVariable("S")}),
+				),
+				[]stBase.Pattern{
+					stPattern.NewNonDeterminantObject(
+						syntaxtree.NewLocalClass("g"),
+						stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewVariable("X")}),
+					),
+				},
+			),
+			stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewVariable("Y")}),
+		)
+		obj := base.NewCompoundObject(
+			base.NewUnlinkedRuleBasedClass("f"),
+			base.NewParamChain([][]base.Node{
+				{base.NewNumberFromString("1")},
+				{base.NewNumberFromString("2")},
+			}),
+		)
+
+		assert.True(t, NewNamedRule(pattern).Extract(obj).IsEmpty())
+	})
+
+	t.Run("should extract bare class with conjunction", func(t *testing.T) {
+		// Pattern: f^P X
+		// Object: f 1
+		// Expected: P=f, X=1
+		pattern := stPattern.NewDeterminantObject(
+			stPattern.NewDeterminantConjunction(
+				syntaxtree.NewLocalClass("f"),
+				[]stBase.Pattern{syntaxtree.NewVariable("P")},
+			),
+			stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewVariable("X")}),
+		)
+		obj := base.NewNamedOneLayerObject("f", base.NewNumberFromString("1"))
+
+		params := NewNamedRule(pattern).Extract(obj)
+		if assert.True(t, params.IsNotEmpty()) {
+			p := params.Value()
+			assert.Equal(t, base.NewUnlinkedRuleBasedClass("f"), p.VariableValue("P").Value())
+			assert.Equal(t, base.NewNumberFromString("1"), p.VariableValue("X").Value())
+		}
+	})
+
+	t.Run("should extract nested conjunctions at different levels", func(t *testing.T) {
+		// Pattern: ((f S)^P Y)^Q Z
+		// Object: ((f 1) 2) 3
+		// Expected: S=1, P=(f 1), Y=2, Q=((f 1) 2), Z=3
+		innerConj := stPattern.NewDeterminantConjunction(
+			stPattern.NewDeterminantObject(
+				syntaxtree.NewLocalClass("f"),
+				stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewVariable("S")}),
+			),
+			[]stBase.Pattern{syntaxtree.NewVariable("P")},
+		)
+		middleObj := stPattern.NewDeterminantObject(
+			innerConj,
+			stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewVariable("Y")}),
+		)
+		outerConj := stPattern.NewDeterminantConjunction(
+			middleObj,
+			[]stBase.Pattern{syntaxtree.NewVariable("Q")},
+		)
+		pattern := stPattern.NewDeterminantObject(
+			outerConj,
+			stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewVariable("Z")}),
+		)
+
+		// obj: ((f 1) 2) 3 - represented as f with params [[1], [2], [3]]
+		obj := base.NewCompoundObject(
+			base.NewUnlinkedRuleBasedClass("f"),
+			base.NewParamChain([][]base.Node{
+				{base.NewNumberFromString("1")},
+				{base.NewNumberFromString("2")},
+				{base.NewNumberFromString("3")},
+			}),
+		)
+
+		params := NewNamedRule(pattern).Extract(obj)
+		if assert.True(t, params.IsNotEmpty()) {
+			p := params.Value()
+			assert.Equal(t, base.NewNumberFromString("1"), p.VariableValue("S").Value())
+			assert.Equal(t, base.NewNamedOneLayerObject("f", base.NewNumberFromString("1")), p.VariableValue("P").Value())
+			assert.Equal(t, base.NewNumberFromString("2"), p.VariableValue("Y").Value())
+			// Q should be ((f 1) 2) = f with params [[1], [2]]
+			expectedQ := base.NewCompoundObject(
+				base.NewUnlinkedRuleBasedClass("f"),
+				base.NewParamChain([][]base.Node{
+					{base.NewNumberFromString("1")},
+					{base.NewNumberFromString("2")},
+				}),
+			)
+			assert.Equal(t, expectedQ, p.VariableValue("Q").Value())
+			assert.Equal(t, base.NewNumberFromString("3"), p.VariableValue("Z").Value())
+		}
+	})
+
+	t.Run("should extract conjunction with variable head pattern", func(t *testing.T) {
+		// Pattern: (f S)^(G X) Y
+		// Object: (f 1) 2
+		// Expected: S=1, G=f, X=1, Y=2
+		pattern := stPattern.NewDeterminantObject(
+			stPattern.NewDeterminantConjunction(
+				stPattern.NewDeterminantObject(
+					syntaxtree.NewLocalClass("f"),
+					stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewVariable("S")}),
+				),
+				[]stBase.Pattern{
+					stPattern.NewNonDeterminantObject(
+						syntaxtree.NewVariable("G"),
+						stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewVariable("X")}),
+					),
+				},
+			),
+			stPattern.PatternsToFixedParamPart([]stBase.Pattern{syntaxtree.NewVariable("Y")}),
+		)
+		obj := base.NewCompoundObject(
+			base.NewUnlinkedRuleBasedClass("f"),
+			base.NewParamChain([][]base.Node{
+				{base.NewNumberFromString("1")},
+				{base.NewNumberFromString("2")},
+			}),
+		)
+
+		params := NewNamedRule(pattern).Extract(obj)
+		if assert.True(t, params.IsNotEmpty()) {
+			p := params.Value()
+			assert.Equal(t, base.NewNumberFromString("1"), p.VariableValue("S").Value())
+			assert.Equal(t, base.NewUnlinkedRuleBasedClass("f"), p.VariableValue("G").Value())
+			assert.Equal(t, base.NewNumberFromString("1"), p.VariableValue("X").Value())
+			assert.Equal(t, base.NewNumberFromString("2"), p.VariableValue("Y").Value())
+		}
+	})
+}

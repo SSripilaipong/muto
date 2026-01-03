@@ -216,6 +216,42 @@ main = f (g 1)
 `).Value()
 		assert.Equal(t, base.NewNumberFromString("42"), execute(program))
 	})
+
+	t.Run("should extract determinant conjunction binding", func(t *testing.T) {
+		// Pattern (f S)^P Y captures P as the intermediate object (f 1)
+		program := BuildProgramFromString(`(f S)^P Y = $ S P Y
+main = (f 1) 2
+`).Value()
+		expected := base.NewConventionalList(
+			base.NewNumberFromString("1"),
+			base.NewNamedOneLayerObject("f", base.NewNumberFromString("1")),
+			base.NewNumberFromString("2"),
+		)
+		assert.True(t, expected.Equals(base.UnsafeNodeToObject(execute(program))))
+	})
+
+	t.Run("should extract nested determinant conjunctions at different levels", func(t *testing.T) {
+		// Pattern ((f S)^P Y)^Q Z captures:
+		// - P as the inner object (f 1)
+		// - Q as the middle object ((f 1) 2)
+		program := BuildProgramFromString(`((f S)^P Y)^Q Z = $ S P Y Q Z
+main = ((f 1) 2) 3
+`).Value()
+		expected := base.NewConventionalList(
+			base.NewNumberFromString("1"),
+			base.NewNamedOneLayerObject("f", base.NewNumberFromString("1")),
+			base.NewNumberFromString("2"),
+			base.NewCompoundObject(
+				base.NewUnlinkedRuleBasedClass("f"),
+				base.NewParamChain([][]base.Node{
+					{base.NewNumberFromString("1")},
+					{base.NewNumberFromString("2")},
+				}),
+			),
+			base.NewNumberFromString("3"),
+		)
+		assert.True(t, expected.Equals(base.UnsafeNodeToObject(execute(program))))
+	})
 }
 
 func mutateOnce(program program2.Program) base.Node {

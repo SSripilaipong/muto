@@ -96,9 +96,9 @@ func buildConjunctionPatternParser(
 		}
 		return result
 	})
-	caretPattern := ps.Map(tuple.Fn2(func(_ string, p base.Pattern) base.Pattern { return p }),
+	caretPattern := ps.Map(tuple.Fn2(func(_ psBase.Character, p base.Pattern) base.Pattern { return p }),
 		ps.ToParser(psBase.IgnoreWhiteSpaceBetween2(
-			psBase.FixedChars("^"),
+			psBase.Caret,
 			corePattern,
 		)),
 	)

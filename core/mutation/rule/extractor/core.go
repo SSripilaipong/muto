@@ -67,10 +67,30 @@ func (c corePatternFactoryImpl) newCorePatternExtractor(p stBase.Pattern) extrac
 }
 
 func (c corePatternFactoryImpl) newObjectExtractor(p stPattern.Object) extractor.NodeExtractor {
-	return extractor.NewObject(
+	baseExtractor := extractor.NewObject(
 		c.nonObject.NonObject(stPattern.ExtractNonObjectHead(p)),
 		c.newForParamChain(stPattern.ExtractParamChain(p)),
 	)
+
+	// Extract head conjunctions and wrap with NLayeredConjunction if present
+	headConjs := stPattern.ExtractHeadConjunctions(p)
+	conjLayers := c.buildConjunctionLayers(headConjs)
+	return extractor.NewNLayeredConjunction(baseExtractor, conjLayers)
+}
+
+func (c corePatternFactoryImpl) buildConjunctionLayers(headConjs [][]stBase.Pattern) [][]extractor.NodeExtractor {
+	layers := make([][]extractor.NodeExtractor, len(headConjs))
+	for i, conjs := range headConjs {
+		if len(conjs) == 0 {
+			layers[i] = nil
+			continue
+		}
+		layers[i] = make([]extractor.NodeExtractor, len(conjs))
+		for j, conj := range conjs {
+			layers[i][j] = c.newCorePatternExtractor(conj)
+		}
+	}
+	return layers
 }
 
 func (c corePatternFactoryImpl) newForParamChain(chain []stPattern.ParamPart) extractor.ParamChain {

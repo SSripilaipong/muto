@@ -12,18 +12,28 @@ import (
 )
 
 type namedRule struct {
-	param extractor.ParamChainPartial
+	extractor extractor.NodeExtractor
 }
 
 func NewNamedRule(rule stPattern.DeterminantObject) mutator.Extractor {
 	variable := extractor.NewVariableFactory()
 	core := newCorePatternFactory(variable)
 	topLevel := NewTopLevelFactory(variable)
-	return namedRule{param: newForParamChainPartial(core, topLevel, stPattern.ExtractParamChain(rule))}
+
+	headConjs := stPattern.ExtractHeadConjunctions(rule)
+	conjLayers := core.buildConjunctionLayers(headConjs)
+	paramExtractor := newForParamChainPartial(core, topLevel, stPattern.ExtractParamChain(rule))
+
+	// Wrap ParamChainPartial as NodeExtractor, then compose with NLayeredConjunction
+	inner := extractor.NewParamChainToNodeAdapter(paramExtractor)
+
+	return namedRule{
+		extractor: extractor.NewNLayeredConjunction(inner, conjLayers),
+	}
 }
 
 func (r namedRule) Extract(x base.Object) optional.Of[*parameter.Parameter] {
-	return r.param.Extract(x.ParamChain())
+	return r.extractor.Extract(x)
 }
 
 func newForParamChainPartial(core corePatternFactoryImpl, topLevel TopLevelFactory, chain []stPattern.ParamPart) extractor.ParamChainPartial {
